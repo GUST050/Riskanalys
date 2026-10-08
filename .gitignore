@@ -1,0 +1,26 @@
+# Byråmappar innehåller verksamhetsuppgifter och ska aldrig in i git
+byraer/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Miljö och hemligheter
+.env
+.env.*
+
+# Genererade dokument
+*.docx
+*.pdf
+!mallar/*.docx
+
+# System
+.DS_Store
