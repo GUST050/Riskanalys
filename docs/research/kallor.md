@@ -18,6 +18,9 @@ Hämtade eller lästa 2026-10-08 om inget annat anges.
 - [SOU 2024:58 Ett nytt regelverk mot penningtvätt och finansiering av terrorism](https://regeringen.se/rattsliga-dokument/statens-offentliga-utredningar/2024/08/sou-202458/)
 - [Realtid: Penningtvätt för 130 miljarder varje år – nu skärps kraven på svenska småföretag](https://www.realtid.se/juridik/penningtvatt-for-130-miljarder-varje-ar-nu-skarps-kraven-pa-svenska-smaforetag/)
 - [Prop. 2025/26:129 Utlämnande av uppgifter ur registret över verkliga huvudmän](https://regeringen.se/rattsliga-dokument/proposition/2026/02/prop.-202526129)
+- [Remiss av promemorian EU:s penningtvättspaket (Fi2026/01654), 2026-07-03](https://regeringen.se/remisser/2026/07/remiss-av-promemorian-eus-penningtvattspaket/) och [remissinstanser](https://regeringen.se/contentassets/30bf3363e10f47e29fe7fc9334c6854c/remissinstanser-for-promemorian-eus-penningtvattspaket/)
+- [Lagen.nu: lag (2017:630)](https://lagen.nu/2017:630), konsoliderad till och med SFS 2026:1075. Används för 3 kap. 1–3, 17, 19–20 §§ och 6 kap. 1 §.
+- [IMY: Personuppgifter](https://www.imy.se/verksamhet/dataskydd/det-har-galler-enligt-gdpr/introduktion-till-gdpr/personuppgifter/)
 
 ## Branschlitteratur
 
@@ -42,3 +45,4 @@ Hämtade eller lästa 2026-10-08 om inget annat anges.
 - [OpenFisca (Interoperable Europe)](https://interoperable-europe.ec.europa.eu/collection/justice-law-and-security/solution/openfisca)
 - [docxtpl på PyPI](https://pypi.org/project/docxtpl/)
 - Anthropic: dokumentation för Claude-API:t (modeller, strukturerade svar, källhänvisningar, databehandlingens geografi), läst 2026-10-08
+- [Anthropic: Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing) (lagring av begäran och svar i upp till 29 dagar)

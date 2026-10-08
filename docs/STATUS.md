@@ -14,7 +14,8 @@ Senast uppdaterad 2026-10-08.
 | Val av arkitektur (alternativ 2) | Klar |
 | Fördjupad research (EU-regelverk, metod, teknik) | Klar |
 | Strukturförslag och spec, revision 1 | Klar, granskad av Codex 2026-10-08. Sex brister påtalades och godtogs. |
-| Spec, revision 2 | **Skriven, väntar på granskning** |
+| Spec, revision 2 | Klar, granskad av Codex 2026-10-08. Arkitekturens riktning godkänd, åtta ändringar påtalades och godtogs. |
+| Spec, revision 3 | **Skriven, väntar på granskning** |
 | Implementeringsplan | Ej påbörjad |
 | Etapp M0 (grund) och M1 (tunn kedja) | Ej påbörjade |
 
@@ -36,12 +37,21 @@ Senast uppdaterad 2026-10-08.
 | 2026-10-08 | Mänsklig sakgranskning per avsnitt | Giltiga referenser bevisar inte att texten stämmer i sak |
 | 2026-10-08 | Byrådata i datamapp utanför repot (`RISKANALYS_DATA`) | `.gitignore` är bara ett extra skydd |
 | 2026-10-08 | Första byggetapp blir en tunn kedja genom hela flödet med syntetiska data | Bevisar arkitekturen innan hela regelbasen byggs |
+| 2026-10-08 | Kundmodellen delas i fyra spår: förbud och stopp, obligatoriska åtgärder, riskklassning, rapportering | Olika bestämmelser med egna villkor och undantag |
+| 2026-10-08 | Modellriskhantering ingår | PTL 6 kap. 1 § andra stycket gäller även en enkel regelmotor |
+| 2026-10-08 | Okänd uppgift ger preliminärt resultat som inte kan fastställas | Okänt är inte samma sak som hög risk |
+| 2026-10-08 | Paragrafkarta granskad av sakkunnig | Tester hittar inte krav som aldrig lagts in |
+| 2026-10-08 | Modell och effort avgörs av utvärdering. Testleverantör i automatiska tester. | Kvalitet och kostnad ska mätas, inte antas |
+| 2026-10-08 | Tillåtelselista per AI-anrop. Ingen batch som standard. | Små grupper kan vara personuppgifter. Batch lagrar data i 29 dagar. |
+| 2026-10-08 | Bevarande, säkerhetskopia och återställningsprov | Kontrollsummor återskapar inga förlorade filer |
+| 2026-10-08 | Resultatet heter "fastställt av byrån" | Får inte uppfattas som certifiering |
+| 2026-10-08 | Juridisk granskning, modellvalidering, användningsprov och minsta drift före första riktiga byrå. AMLR som parallellt spår. | AMLR tillämpas från 2027-07-10 |
 
 ## Nästa steg
 
-1. Granska [specen, revision 2](superpowers/specs/2026-10-08-riskanalys-design.md) och godkänn eller begär ändringar.
+1. Granska [specen, revision 3](superpowers/specs/2026-10-08-riskanalys-design.md) och godkänn eller begär ändringar.
 2. Ta fram implementeringsplan för etapp M0 (grund) och M1 (tunn kedja).
-3. Bestäm vem som gör sakkunniggranskningen av regelbasen.
+3. Bestäm vem som gör sakkunniggranskningen av regelbasen och acceptansprovet.
 4. Hämta och jämför Länsstyrelsen Skånes föreskrifter (12FS 2024:8).
 
 ## Öppna frågor
