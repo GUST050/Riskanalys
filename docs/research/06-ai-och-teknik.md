@@ -13,7 +13,7 @@ Fakta om Claude-API:t gäller per oktober 2026 och kommer från Anthropics dokum
 | Långa svar | Strömning rekommenderas vid stora `max_tokens` | Strömning i textgeneratorn |
 | Kostnad | Prompt-cachning av stabila prefix. Batch-API till halva priset för asynkron körning. | Regelbasens innehåll först i anropet. Batch vid omgenerering. |
 | Avböjanden | `stop_reason: "refusal"` ska alltid kontrolleras. Fallback kan slås på serverside. | Felhantering i AI-klienten |
-| Databehandlingens geografi | Anthropics egna API: `inference_geo` med `us` eller `global`. EU-region finns via Google Vertex AI (`eu`) och Amazon Bedrock (EU-regioner). | Fas 1 utan personuppgifter kan använda Anthropics API. Fas 2 kräver EU-behandling via Vertex eller Bedrock. Leverantören kapslas in bakom ett gränssnitt. |
+| Databehandlingens geografi | Anthropics egna API: `inference_geo` med `us` eller `global`. EU-region finns via Google Vertex AI (`eu`) och Amazon Bedrock (EU-regioner). | I fas 1 skickas inga personuppgifter till AI (rollplatshållare i stället för namn), så Anthropics API kan användas. Om personuppgifter någon gång måste skickas krävs EU-behandling via Vertex eller Bedrock. Leverantören kapslas in bakom ett gränssnitt. |
 
 ## Varför AI bara skriver
 

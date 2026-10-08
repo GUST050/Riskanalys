@@ -29,6 +29,7 @@ Byråprofil ──────────────────────�
 - Risknivåer räknas fram av regler, inte av AI.
 - AI skriver text inom ett låst schema och måste hänvisa till regelbasen.
 - En granskare kontrollerar täckning och spårbarhet och letar efter de brister som tillsynen oftast påtalar.
+- En ansvarig person sakgranskar varje avsnitt innan något fastställs. Ett fastställt paket låses med kontrollsummor.
 
 ## Ansvar
 

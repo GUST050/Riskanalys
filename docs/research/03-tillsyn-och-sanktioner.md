@@ -34,7 +34,7 @@ Länsstyrelsen Västra Götalands motsvarighet har sju punkter. Den kräver blan
 
 ## Vanliga brister enligt tillsynsrapport 2026:14
 
-Grund för bristmönsterkatalogen. Programmets granskare ska kontrollera varje mönster.
+Detta är **bristmönsterkatalogen v0**. ID:na nedan gäller. Specen hänvisar till dem, och i etapp M0 flyttas katalogen till `regelbas/kataloger/bristmonster.yaml`, som därefter är den enda källan. Programmets granskare ska kontrollera varje mönster.
 
 | ID | Bristmönster | Hur granskaren kan upptäcka det |
 |---|---|---|
