@@ -1,9 +1,9 @@
 # Riskanalys – designspecifikation
 
-**Status:** Förslag, revision 3 (2026-10-08). Ej godkänd för implementation.
+**Status:** Förslag, revision 4 (2026-10-08). Ej godkänd för implementation.
 **Underlag:** [researchsammanställningen](../../research/README.md).
 **Ändringar:** se [ändringsloggen](#22-ändringslogg) sist i dokumentet.
-**Nästa steg:** granskning av revision 3. Därefter implementeringsplan för M0 och M1.
+**Nästa steg:** granskning av revision 4. Därefter implementeringsplan för M0 och M1.
 
 ---
 
@@ -79,7 +79,7 @@ Strukturen bygger på samma lagerprincip som NIST:s OSCAL: katalog, urval, genom
 
 | # | Block | Ansvar | AI |
 |---|---|---|---|
-| 1 | Källregister | Alla källor med metadata, giltighet per datum och län, kontrollsumma | Nej |
+| 1 | Källregister | Alla källor med metadata, län och kontrollsumma. Lydelser per paragraf med egna datum för ikraftträdande och upphörande (6.4). | Nej |
 | 2 | Kravregister | Ett atomärt krav per post med källa, villkor och sakkunnigstatus. Paragrafkarta per källa (avsnitt 16.1). | Nej (sakkunnig) |
 | 3 | Kataloger | Tjänster, hot, sårbarheter, kundfaktorer, kontroller, varningssignaler, bristmönster | Nej (sakkunnig) |
 | 4 | Referensdata | Landlistor, sanktionsfiler, nationell riskbedömning, utsatta områden | Nej |
@@ -142,6 +142,7 @@ Ett fastställt paket är oföränderligt. En ändring ger en ny version som ers
 | Objekt | Format | Exempel |
 |---|---|---|
 | Källa | `SRC-<kortnamn>` | `SRC-PTL`, `SRC-14FS-2024-11`, `SRC-TS-2026-14`, `SRC-NRA-2024-25` |
+| Paragraflydelse | `LYD-<källa>-<kap>-<§>-<ikraft>` | `LYD-PTL-1-2-2026-11-20` |
 | Krav | `KRV-<källa>-<nr>` | `KRV-LSF-012` |
 | Tjänst | `T-<sektor>-<nr>` | `T-RED-01` (löpande bokföring) |
 | Hot | `H-<nr>` | `H-01` (osanna fakturor) |
@@ -176,11 +177,26 @@ hamtad: 2026-10-01
 kontrollsumma: sha256:...
 ```
 
+**Lydelse** (en version av en paragraf)
+```yaml
+id: LYD-PTL-1-2-2026-11-20
+kalla: SRC-PTL
+lagrum: "1 kap. 2 §"
+ikraft: 2026-11-20
+upphor: null
+inford_genom: "SFS 2026:1023"
+primarkalla: rkrattsbaser    # Regeringskansliets rättsdatabaser
+text_kontrollsumma: sha256:...
+```
+
 **Krav**
 ```yaml
 id: KRV-LSF-003
 kalla: SRC-14FS-2024-11
 lagrum: "2 kap. 3 §"
+lydelse: LYD-LSF-2-3-2024-07-01   # kravets giltighet följer lydelsen
+ikraft: 2024-07-01
+upphor: null
 grund: ska_krav            # ska_krav | allmänt_råd | tillsynspraxis | eu_utkast | metodval
 text: Den allmänna riskbedömningen ska utvärderas minst en gång per år och datum för utvärdering och uppdatering ska framgå.
 galler_om:                 # villkor enligt 6.3
@@ -310,6 +326,17 @@ villkor:
 - Utfallet är *sant*, *falskt* eller *okänt*. *Okänt* uppstår när ett villkor bygger på en uppgift som inte är bekräftad.
 - Vid *okänt* används regelns `vid_okant`. Standard är `preliminart_galler`: regeln tillämpas försiktigt, men resultatet märks **preliminärt** och listar de okända uppgifterna. Ett preliminärt resultat kan aldrig fastställas (avsnitt 10).
 
+### 6.4 Datumstyrning
+
+En konsoliderad lag kan samtidigt innehålla gällande och framtida lydelse av samma paragraf. Penningtvättslagens 1 kap. 2 § har till exempel en lydelse som upphör och en som träder i kraft 2026-11-20. Giltighet för en hel källa räcker därför inte.
+
+- **Giltighet sätts per paragraflydelse** (`LYD-...`) med `ikraft` och `upphor`. Krav, beslutstabellrader och katalogposter som bygger på en lydelse ärver dess giltighet, eller har egna snävare datum.
+- **Ett regelpaket väljs för ett bestämt datum** (`riskanalys ny ... --datum`). Urvalet tar med varje lydelse där `ikraft ≤ datum` och datumet ligger före `upphor`. Datumet låses i manifestet.
+- **Primärkälla för konsoliderade författningar** är Regeringskansliets rättsdatabaser (SFST), som visar både gällande och kommande lydelser. Riksdagens öppna data används som kompletterande kontroll, eftersom den kan ligga efter.
+- **Ändringar som väntar:** när en ny lydelse finns men ännu inte trätt i kraft visar programmet vilka krav och avsnitt som påverkas och från vilket datum.
+- **Tester på båda sidor om varje datumgräns:** för varje lydelse med ett framtida `ikraft` eller `upphor` finns tester för dagen före och samma dag.
+- Paragrafkartan (16.1) gäller ett bestämt datum och län.
+
 ## 7 Riskmetod
 
 ### 7.1 Steg
@@ -386,7 +413,18 @@ Kundmodellen är en mall i fas 1 och en motor i fas 2. Den består av fyra spår
 | **C Riskklassning** | Vilken riskprofil har kunden? | PTL 2 kap. 3–5 §§. Faktorer, poäng och gränser är metodval. Att PEP eller högrisktredjeland också ger hög riskklass är ett metodval, inte ett lagkrav. | Låg, normal eller hög, med motivering. Preliminär om uppgifter saknas. |
 | **D Rapportering** | Ska misstanke rapporteras till Finanspolisen? | PTL 4 kap. 3 § (rapportering) och 4 kap. 9 § (meddelandeförbud) | Rapportskyldighet, oberoende av riskklass |
 
-Riskklassen (spår C) styr omfattningen av förenklade eller skärpta åtgärder. Den ändrar aldrig utfallet i spår A, B eller D.
+Spåren utvärderas var för sig men har **uttryckliga beroenden**. Andra beroenden än dessa finns inte.
+
+| Från | Till | Beroende | Grund |
+|---|---|---|---|
+| C Riskklassning | Kundkännedomens omfattning | Kontroller, bedömningar och utredningar görs i den omfattning som kundens riskprofil kräver | PTL 3 kap. 14 § |
+| C Riskklassning (hög) | B Obligatoriska åtgärder | Hög risk utlöser skärpta åtgärder: särskilt omfattande kontroller, bedömningar och utredningar samt ytterligare åtgärder | PTL 3 kap. 16 § |
+| C Riskklassning (låg) | Kundkännedomens omfattning | Låg risk *tillåter* förenklade åtgärder, men kräver dem inte | PTL 3 kap. 15 § |
+| C Riskklassning | A Förbud och stopp | Om kundkännedomen är *tillräcklig* bedöms mot den risk som ska hanteras. Högre risk kräver mer underlag innan förbindelsen får inledas eller fortsätta. | PTL 3 kap. 1 § |
+| B → C | Riskklassning | Att PEP eller högrisktredjeland *också* ger hög riskklass är ett metodval (se tabellen ovan) | Metodval |
+| Inget spår | D Rapportering | Rapportskyldigheten prövas på sina egna villkor och påverkas inte av riskklass, förbud eller åtgärder | PTL 4 kap. 3 § |
+
+Beroendena finns i beslutstabellerna som egna rader med egna tester. Kundformuläret visar varje beroende för användaren.
 
 ### 7.7 Beslutstabeller
 
@@ -481,13 +519,14 @@ Villkor för fastställelse:
 
 1. Alla **kritiska** profiluppgifter (sådana som används av en beslutstabell eller ett ska-krav) har status *bekräftad* eller *ej tillämplig* med motivering.
 2. Ingen bedömning har status *preliminär*, och texten innehåller inga `[VERIFIERA]`.
-3. Alla krav i regelpaketet som är tillämpliga på byrån har sakkunnigstatus *verifierad*, och regelpaketets paragrafkarta är sakkunniggranskad (avsnitt 16.1).
+3. Alla krav i regelpaketet som är tillämpliga på byrån **för paketets datum** har sakkunnigstatus *verifierad*, och regelpaketets paragrafkarta för samma datum och län är sakkunniggranskad (avsnitt 6.4 och 16.1).
 4. Fynd hanteras efter vad de gäller:
 
    | Fynd gäller | Får fastställas om |
    |---|---|
    | **Metodval** (skala, gräns, poäng, vikt, formulering) | Fyndet är åtgärdat, eller funktionen för regelefterlevnad har accepterat avvikelsen med motivering (registreras som avvikelse) |
-   | **Ett ska-krav eller allmänt råd som saknas eller är fel tillämpat** | Fyndet är åtgärdat, eller en sakkunnig har bedömt det särskilt och dokumenterat varför kravet är uppfyllt eller inte tillämpligt. Byrån kan inte själv acceptera bort ett lagkrav. |
+   | **Allmänt råd, tillsynspraxis eller EU-utkast** (ej bindande) | Fyndet är åtgärdat, eller funktionen för regelefterlevnad har valt en annan metod och motiverat hur det **bindande** krav som rådet hör till ändå uppfylls. Avvikelsen registreras med hänvisning till det bindande kravet. |
+   | **Ska-krav i lag eller föreskrift** som saknas eller är fel tillämpat | Fyndet är åtgärdat, eller en sakkunnig har bedömt det särskilt och dokumenterat varför kravet är uppfyllt eller inte tillämpligt. Byrån kan inte själv acceptera bort ett lagkrav. |
    | **Blockerande** fynd av alla slag | Aldrig. Fyndet måste åtgärdas. |
 
 5. Sakgranskning är gjord för varje avsnitt och gäller den aktuella kontrollsumman.
@@ -594,6 +633,8 @@ Byrådata ligger i `$RISKANALYS_DATA`, aldrig i repot (avsnitt 5.2).
 | Regelbasvalidering | Unika ID:n, inga brutna referenser, giltiga villkor, varje krav har källa, varje tjänst har hot |
 | Paragrafkarta (sakkunnig) | Att inget krav saknas (16.1) |
 | Regelkontrakt | Ett test per beslutstabellrad plus gränsfall och okända uppgifter |
+| Datumgränser | Rätt lydelser väljs dagen före och samma dag som varje ikraftträdande och upphörande (6.4) |
+| Spårberoenden | Varje uttryckligt beroende mellan kundmodellens spår (7.6) har eget test |
 | Typfall | Hela kedjan med syntetiska profiler ger förväntade nivåer, fynd och status |
 | AI-validering | Valideringen fångar påhittade ID:n, siffror, nivåer och personnamn (med testleverantör) |
 | AI-utvärdering | Sakfel, ogrundade påståenden, granskningstid och kostnad per godkänt avsnitt (live, frivilligt, M3) |
@@ -658,8 +699,8 @@ Fas 1 behandlar inga kundärenden. Viss behandling av personuppgifter är ändå
 | **M2 Regelbas v1 och juridisk granskning** | Alla krav, kataloger och beslutstabeller för redovisningsbyråer. Paragrafkarta. Kundmodellens fyra spår. Sakkunniggranskning per beslutsgren. | Alla tillämpliga krav och paragrafkartan har status *verifierad* |
 | **M3 Modellvalidering och AI-utvärdering** | Metodbilaga, valideringsrapport, avvikelselogg, typfall (bland annat saknade uppgifter och liten högrisktjänst), prövning av 20 %-gränsen, AI-utvärdering med riktiga skrivuppgifter | Valideringsrapport klar. Beslut om modell och effort fattat utifrån mätning. |
 | **M4 Användningsprov och minsta drift** | Enkelt lokalt formulär för intag och sakgranskning, ändringskontroll, versionshistorik, återställningsprov, acceptansprov (16.2) | Acceptansprovet är genomfört och dokumenterat |
-| **M5 Första riktiga byrå** | Full allmän riskbedömning för en riktig byrå, fastställd av byrån | Paketet är fastställt av byrån och verifierat |
-| M6 Övriga dokument | Rutiner (med modellriskhantering), kundmodell, instruktioner, kravmatris, tillsynspaket | Alla dokument i avsnitt 11 genereras |
+| **M5 Första riktiga byrå: endast allmän riskbedömning** | Del-leverans. Full allmän riskbedömning för en riktig byrå, fastställd av byrån och märkt "endast allmän riskbedömning". Byråns **befintliga rutiner och riktlinjer ses över mot den nya bedömningen**. Avvikelser förs till åtgärdslistan med ansvarig och datum, eftersom rutinerna ska bygga på riskbedömningen och vara verksamhetsanpassade. | Riskbedömningen är fastställd av byrån och verifierad, och genomgången av befintliga rutiner är dokumenterad |
+| M6 Övriga dokument | Rutiner (med modellriskhantering), kundmodell, instruktioner, kravmatris, tillsynspaket. Ersätter de befintliga rutiner som granskades i M5. | Alla dokument i avsnitt 11 genereras |
 | M7 Provtillsyn och facit | AI-provtillsyn och facitjämförelse | Facitfallen ger förväntat utfall |
 | M8 Full drift | Påminnelser, utlösande händelser från referensdata, belägg | Ändrad högrisklista ger korrekt flaggning |
 | M9 Kundnivå | Egen spec | – |
@@ -675,7 +716,9 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 |---|---|
 | Regelbasen tolkar lagen fel | Sakkunniggranskning per beslutsgren, källa per post, regelkontrakt |
 | Ett krav saknas helt i regelbasen | Paragrafkarta granskad av sakkunnig |
-| Juridiska beslutsgrenar blandas ihop | Kundmodellens fyra separata spår |
+| Juridiska beslutsgrenar blandas ihop | Kundmodellens fyra spår med uttryckliga och testade beroenden |
+| Fel lydelse används för ett datum | Giltighet per paragraflydelse, Regeringskansliets rättsdatabaser som primärkälla, tester på båda sidor om datumgränser |
+| Riskbedömningen fastställs innan rutinerna anpassats | M5 märks "endast allmän riskbedömning" och kräver dokumenterad genomgång av befintliga rutiner |
 | AI hittar på fakta | Låst schema, tillåtelselista, maskinell validering |
 | AI-text stämmer formellt men inte i sak | Sakgranskning per avsnitt före fastställelse |
 | Saknade uppgifter ser ut som säkra slutsatser | Preliminär status som blockerar fastställelse |
@@ -692,7 +735,8 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 
 1. Innehållet i Länsstyrelsen Skånes föreskrifter (12FS 2024:8) behöver jämföras med Stockholms och Västra Götalands.
 2. AMLA:s slutliga riktlinjer om verksamhetsövergripande riskbedömning väntas under fjärde kvartalet 2026. Till dess märks allt som bygger på utkastet som *EU-utkast* eller *metodval*.
-3. De svenska kompletterande reglerna: promemorian *EU:s penningtvättspaket* (Fi2026/01654) var på remiss med svar senast 2026-10-30. Någon proposition har ännu inte setts.
+3. De svenska kompletterande reglerna: promemorian *EU:s penningtvättspaket* (Fi2026/01654), publicerad 2026-07-06, är på remiss med svar senast 2026-10-30. Någon proposition har ännu inte setts.
+6. Ändringen av penningtvättslagens 1 kap. 2 § som träder i kraft 2026-11-20 ska läggas in som ny lydelse och dess betydelse för sektorerna bedömas.
 4. Om Bolagsverket erbjuder elektronisk åtkomst till registret över verkliga huvudmän (påverkar fas 2).
 5. Vem som gör sakkunniggranskningen av regelbasen och acceptansprovet.
 
@@ -706,6 +750,7 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 | Metodavvikelse | Ett motiverat beslut att avvika från ett metodval i ett enskilt fall |
 | Sakgranskning | En människas granskning av att text stämmer med fakta och källa |
 | Paragrafkarta | Förteckning över varje relevant paragraf och hur den hanterats i regelbasen |
+| Lydelse | En version av en paragraf med eget datum för ikraftträdande och upphörande |
 
 ## 22 Ändringslogg
 
@@ -714,3 +759,4 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 | 1 | 2026-10-08 | Första förslaget |
 | 2 | 2026-10-08 | Efter första granskningen (Codex): bristmönstrens ID:n samordnade, kategorier för personuppgifter, dokumentstatus och grindar, typat villkorsformat, manifest med kontrollsummor, mänsklig sakgranskning, datamapp utanför repot, modulerna `faststallelse/` och `lagring/`, M1 som tunn kedja |
 | 3 | 2026-10-08 | Efter andra granskningen (Codex): (1) kundmodellen delad i fyra spår (förbud och stopp, obligatoriska åtgärder, riskklassning, rapportering) med sakkunniggranskning per beslutsgren; (2) modellriskhantering enligt PTL 6 kap. 1 § andra stycket; (3) minsta drift flyttad före första riktiga fastställelse; (4) okänd uppgift ger preliminärt resultat, och små högrisktjänster döljs inte i sammanvägningen; (5) paragrafkarta för fullständighet och promemorian Fi2026/01654; (6) AI-modell och effort som inställningar som avgörs genom utvärdering, och testleverantör i automatiska tester; (7) tillåtelselistor för AI-underlag, små grupper och ingen batch som standard; (8) löftet om återskapande ersatt med bevarande, säkerhetskopia och återställningsprov. Dessutom: grind som skiljer metodavvikelser från lagkrav, "fastställt av byrån", användarflöde, acceptansprov, ny etappordning och AMLR som parallellt spår. |
+| 4 | 2026-10-08 | Efter tredje granskningen (Codex): (1) kundmodellens spår har uttryckliga beroenden enligt PTL 3 kap. 1, 14–16 §§, och rapportering prövas fristående; (2) datumstyrning per paragraflydelse med Regeringskansliets rättsdatabaser som primärkälla och tester på båda sidor om datumgränser (exempel: 1 kap. 2 § ny lydelse 2026-11-20); (3) M5 märkt "endast allmän riskbedömning" med genomgång av befintliga rutiner; (4) egen rad i fastställelsegrinden för allmänna råd, tillsynspraxis och EU-utkast; (5) datum för Fi2026/01654 rättat till 2026-07-06 och remissen beskriven som pågående. |

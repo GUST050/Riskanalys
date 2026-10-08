@@ -4,7 +4,7 @@ Data som ändras över tid och som regelbasen behöver hålla aktuell med datum 
 
 | Referensdata | Källa | Uppdateras | Format och åtkomst | Används till |
 |---|---|---|---|---|
-| Penningtvättslagen (2017:630), konsoliderad | Riksdagens öppna data. Lagen.nu som sekundär kontroll. | Vid lagändring. Ändrad bland annat 2025 (SFS 2025:255 och 2025:603). Lagen.nu anger ändringar införda till och med SFS 2026:1075 (läst 2026-10-08). | REST-API med JSON och text. Exakt adress verifieras i M2. | Kravregister, paragrafkarta |
+| Penningtvättslagen (2017:630), konsoliderad | **Regeringskansliets rättsdatabaser (SFST) som primärkälla.** Riksdagens öppna data och Lagen.nu som kompletterande kontroll, eftersom Riksdagens version kan ligga efter. | Vid lagändring. Ändring införd till och med SFS 2026:1075 (läst 2026-10-08). Innehåller både gällande och kommande lydelse: 1 kap. 2 § får ny lydelse 2026-11-20. | Webbsida. Riksdagens REST-API med JSON och text. Hämtningssätt verifieras i M2. | Kravregister, paragraflydelser, paragrafkarta |
 | Länsstyrelsernas föreskrifter | Länsstyrelsernas webbplatser | Vid ny föreskrift | PDF | Kravregister |
 | EU:s förteckning över högrisktredjeländer | Delegerad förordning (EU) 2016/1675 med ändringar, EUR-Lex | Flera gånger per år | EUR-Lex | Geografiska riskfaktorer, kundmodell |
 | EU:s konsoliderade sanktionslista | EU Financial Sanctions Files (FSF) | Dagligen | XML. Även via OpenSanctions. | Sanktionskontroll (fas 2), sanktionsrisk |

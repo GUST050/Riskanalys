@@ -9,9 +9,10 @@
 | 2024-08 | SOU 2024:58 *Ett nytt regelverk mot penningtvätt och finansiering av terrorism* föreslår en ny penningtvättslag som ersätter PTL och registerlagen |
 | 2026-04-16 | AMLA:s utkast till riktlinjer för verksamhetsövergripande riskbedömning (artikel 10.4 AMLR) går ut på konsultation |
 | 2026-06-08 | Ny nationell riskbedömning 2024/2025 publiceras |
-| 2026-07-03 | Finansdepartementet remitterar promemorian *EU:s penningtvättspaket* (Fi2026/01654) med lagförslag för att anpassa svensk rätt till EU-paketet. Ett senare steg än SOU 2024:58. |
+| 2026-07-06 | Finansdepartementet publicerar och remitterar promemorian *EU:s penningtvättspaket* (Fi2026/01654) med lagförslag för att anpassa svensk rätt till EU-paketet. Ett senare steg än SOU 2024:58. |
 | 2026-07-15 | AMLA:s konsultation stänger |
-| 2026-10-30 | Sista dag för remissvar på Fi2026/01654. Någon proposition har ännu inte setts. |
+| 2026-10-30 | Sista dag för remissvar på Fi2026/01654 (remissen pågår per 2026-10-08). Någon proposition har ännu inte setts. |
+| 2026-11-20 | Ny lydelse av PTL 1 kap. 2 § (tillämpningsområdet) träder i kraft enligt Regeringskansliets rättsdatabaser |
 | Q4 2026 | AMLA:s slutliga riktlinjer väntas |
 | **2027-07-10** | **AMLR börjar tillämpas.** Huvuddelen av AMLD6 ska vara införlivad. |
 

@@ -18,7 +18,8 @@ Hämtade eller lästa 2026-10-08 om inget annat anges.
 - [SOU 2024:58 Ett nytt regelverk mot penningtvätt och finansiering av terrorism](https://regeringen.se/rattsliga-dokument/statens-offentliga-utredningar/2024/08/sou-202458/)
 - [Realtid: Penningtvätt för 130 miljarder varje år – nu skärps kraven på svenska småföretag](https://www.realtid.se/juridik/penningtvatt-for-130-miljarder-varje-ar-nu-skarps-kraven-pa-svenska-smaforetag/)
 - [Prop. 2025/26:129 Utlämnande av uppgifter ur registret över verkliga huvudmän](https://regeringen.se/rattsliga-dokument/proposition/2026/02/prop.-202526129)
-- [Remiss av promemorian EU:s penningtvättspaket (Fi2026/01654), 2026-07-03](https://regeringen.se/remisser/2026/07/remiss-av-promemorian-eus-penningtvattspaket/) och [remissinstanser](https://regeringen.se/contentassets/30bf3363e10f47e29fe7fc9334c6854c/remissinstanser-for-promemorian-eus-penningtvattspaket/)
+- [Regeringskansliets rättsdatabaser: lag (2017:630)](https://rkrattsbaser.gov.se/sfst?bet=2017:630), ändring införd till och med SFS 2026:1075. Visar både gällande och kommande lydelser, bland annat 1 kap. 2 § från 2026-11-20. Primärkälla för konsoliderad lagtext.
+- [Remiss av promemorian EU:s penningtvättspaket (Fi2026/01654), publicerad 2026-07-06](https://regeringen.se/remisser/2026/07/remiss-av-promemorian-eus-penningtvattspaket/) och [remissinstanser](https://regeringen.se/contentassets/30bf3363e10f47e29fe7fc9334c6854c/remissinstanser-for-promemorian-eus-penningtvattspaket/)
 - [Lagen.nu: lag (2017:630)](https://lagen.nu/2017:630), konsoliderad till och med SFS 2026:1075. Används för 3 kap. 1–3, 17, 19–20 §§ och 6 kap. 1 §.
 - [IMY: Personuppgifter](https://www.imy.se/verksamhet/dataskydd/det-har-galler-enligt-gdpr/introduktion-till-gdpr/personuppgifter/)
 

@@ -15,7 +15,8 @@ Senast uppdaterad 2026-10-08.
 | Fördjupad research (EU-regelverk, metod, teknik) | Klar |
 | Strukturförslag och spec, revision 1 | Klar, granskad av Codex 2026-10-08. Sex brister påtalades och godtogs. |
 | Spec, revision 2 | Klar, granskad av Codex 2026-10-08. Arkitekturens riktning godkänd, åtta ändringar påtalades och godtogs. |
-| Spec, revision 3 | **Skriven, väntar på granskning** |
+| Spec, revision 3 | Klar, granskad av Codex 2026-10-08. Fem kvarvarande fynd (två höga, två medel, ett lågt) godtogs. |
+| Spec, revision 4 | **Skriven, väntar på granskning** |
 | Implementeringsplan | Ej påbörjad |
 | Etapp M0 (grund) och M1 (tunn kedja) | Ej påbörjade |
 
@@ -46,10 +47,14 @@ Senast uppdaterad 2026-10-08.
 | 2026-10-08 | Bevarande, säkerhetskopia och återställningsprov | Kontrollsummor återskapar inga förlorade filer |
 | 2026-10-08 | Resultatet heter "fastställt av byrån" | Får inte uppfattas som certifiering |
 | 2026-10-08 | Juridisk granskning, modellvalidering, användningsprov och minsta drift före första riktiga byrå. AMLR som parallellt spår. | AMLR tillämpas från 2027-07-10 |
+| 2026-10-08 | Kundmodellens spår har uttryckliga beroenden | Riskklass styr kundkännedomens omfattning och skärpta åtgärder (PTL 3 kap. 14–16 §§) |
+| 2026-10-08 | Giltighet per paragraflydelse. Regeringskansliets rättsdatabaser som primärkälla. | PTL 1 kap. 2 § får ny lydelse 2026-11-20. Riksdagens version kan ligga efter. |
+| 2026-10-08 | M5 är bara allmän riskbedömning, med genomgång av befintliga rutiner | Rutinerna ska bygga på riskbedömningen |
+| 2026-10-08 | Allmänna råd får avvikas med motivering om det bindande kravet ändå uppfylls | Allmänna råd är inte bindande på samma sätt som lag och föreskrift |
 
 ## Nästa steg
 
-1. Granska [specen, revision 3](superpowers/specs/2026-10-08-riskanalys-design.md) och godkänn eller begär ändringar.
+1. Granska [specen, revision 4](superpowers/specs/2026-10-08-riskanalys-design.md) och godkänn eller begär ändringar.
 2. Ta fram implementeringsplan för etapp M0 (grund) och M1 (tunn kedja).
 3. Bestäm vem som gör sakkunniggranskningen av regelbasen och acceptansprovet.
 4. Hämta och jämför Länsstyrelsen Skånes föreskrifter (12FS 2024:8).
