@@ -8,7 +8,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict
 
 from riskanalys.lagring.kontrollsumma import for_fil
-from riskanalys.lagring.yamlfil import las_yaml, spara_yaml
+from riskanalys.lagring.yamlfil import spara_yaml, las_modell
 
 HISTORIKFIL = Path("drift") / "historik.yaml"
 GENOMGANG_MANADER = 12
@@ -52,7 +52,7 @@ def las_historik(byramapp: Path) -> Historik:
     sokvag = byramapp / HISTORIKFIL
     if not sokvag.is_file():
         return Historik()
-    return Historik.model_validate(las_yaml(sokvag))
+    return las_modell(sokvag, Historik)
 
 
 def spara_historik(byramapp: Path, historik: Historik) -> None:

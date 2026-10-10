@@ -184,7 +184,7 @@ def test_lag_kvarstaende_risk_fore_subjektet_motsager_motorn(giltigt_utkast, rea
 def test_okand_rollplatshallare_underkanns(giltigt_utkast, real_underlag):
     utkast = _andra(giltigt_utkast, 3, text=giltigt_utkast.stycken[3].text + " Ärendet eskaleras till {roll:VD}.")
     fel = validera_utkast(utkast, real_underlag, PERSONER)
-    assert fel == ["Stycke 4 använder platshållaren {roll:VD}, som inte finns. Tillåtna roller: {roll:FfR}."]
+    assert fel == ["Stycke 4 använder platshållaren {roll:VD}, som inte finns. Tillåtna roller: {roll:FfR}, {roll:Ansvarsfunktion}."]
 
 
 def test_kand_rollplatshallare_godkanns(giltigt_utkast, real_underlag):
@@ -196,3 +196,9 @@ def test_egen_variant_av_verifiera_underkanns(giltigt_utkast, real_underlag):
     utkast = _andra(giltigt_utkast, 3, text=giltigt_utkast.stycken[3].text + " Ansvarig: [VERIFIERA: VD].")
     fel = validera_utkast(utkast, real_underlag, PERSONER)
     assert fel == [f"Stycke 4 innehåller en egen variant av {VERIFIERA}. Skriv exakt {VERIFIERA}."]
+
+@pytest.mark.parametrize("falt",["P-Pahittad","P-ORG.namn","P-ROLL.ffr_namn"])
+def test_oklarhet_far_bara_peka_pa_tillatna_aggregat(giltigt_utkast,real_underlag,falt):
+    from riskanalys.dokument.modeller import Oklarhet
+    u=giltigt_utkast.model_copy(update={"oklarheter":[Oklarhet(fraga="Syntetisk fråga",saknad_uppgift=falt)]})
+    assert any("oklarhet" in f.lower() for f in validera_utkast(u,real_underlag,()))

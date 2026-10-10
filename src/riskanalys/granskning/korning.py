@@ -13,6 +13,7 @@ from riskanalys.drift.historik import historikens_kontrollsumma, las_historik
 from riskanalys.fel import RiskanalysFel
 from riskanalys.granskning.kontroller import granska
 from riskanalys.granskning.modeller import Fynd
+from riskanalys.lagring.yamlfil import las_modell
 from riskanalys.lagring.korningar import avslutade_korningar, ny_korningsmapp, senaste_korning
 from riskanalys.lagring.manifest import las_manifest, manifestets_metadata, skriv_manifest, verifiera_manifest
 from riskanalys.profil.modeller import Profil
@@ -29,6 +30,12 @@ _FYNDLISTA = TypeAdapter(tuple[Fynd, ...])
 
 def godkanda_utkast(byramapp: Path, bedomningsmapp: Path) -> tuple[dict[str, AvsnittsUtkast], Path | None]:
     """Godkända AI-utkast från den senaste skrivningen som hör till just den här bedömningen."""
+    rot = byramapp / UTKAST
+    if rot.is_dir():
+        from riskanalys.lagring.manifest import MANIFESTNAMN
+        for m in rot.iterdir():
+            if m.is_dir() and not (m / MANIFESTNAMN).is_file():
+                raise RiskanalysFel(f"Manifest saknas i {m}. Återställ körningen; relevansen kan inte avgöras.")
     horande = [
         mapp
         for mapp in avslutade_korningar(byramapp, UTKAST)
@@ -37,6 +44,8 @@ def godkanda_utkast(byramapp: Path, bedomningsmapp: Path) -> tuple[dict[str, Avs
     if not horande:
         return {}, None
     mapp = horande[-1]
+    fel = verifiera_manifest(mapp)
+    if fel:raise RiskanalysFel(f"Utkastet {mapp} är ändrat. Återställ eller kör skriv igen: {'; '.join(fel)}")
     utkast = {
         post.underlag.avsnitt: post.godkant_utkast
         for post in las_skrivresultat(mapp)
@@ -76,8 +85,8 @@ def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date) -
 
 
 def las_granskning(mapp: Path) -> tuple[Dokument, tuple[Fynd, ...]]:
-    dokument = Dokument.model_validate_json((mapp / DOKUMENTFIL).read_text(encoding="utf-8"))
-    fynd = _FYNDLISTA.validate_json((mapp / FYNDFIL).read_text(encoding="utf-8"))
+    dokument = las_modell(mapp / DOKUMENTFIL, Dokument, json=True)
+    fynd = las_modell(mapp / FYNDFIL, _FYNDLISTA, json=True)
     return dokument, fynd
 
 

@@ -10,9 +10,15 @@ from riskanalys.regelverk.laddning import ladda_regelbas
 def lagg_till(underparsers: Any) -> None:
     parser = underparsers.add_parser("regelbas", help="Arbeta med regelbasen.")
     under = parser.add_subparsers(dest="regelbaskommando", required=True, metavar="underkommando")
+    from riskanalys.kommandon.sakkunnig_kommando import lagg_till as sakkunnigkommandon
+    sakkunnigkommandon(under)
     validera = under.add_parser("validera", help="Läs in regelbasen och kontrollera att den hänger ihop.")
     regelbasargument(validera)
     validera.set_defaults(kor=kor_validera)
+    utkast = under.add_parser("validera-utkast", help="Kontrollera separat AMLR-inventering, inte operativ giltighet.")
+    from pathlib import Path
+    utkast.add_argument("--utkast", type=Path, required=True)
+    utkast.set_defaults(kor=kor_utkast)
     summor = under.add_parser("summor", help="Visa kontrollsummorna som en sakkunnig signerar.")
     regelbasargument(summor)
     summor.set_defaults(kor=kor_summor)
@@ -45,4 +51,11 @@ def kor_summor(args: argparse.Namespace) -> int:
         print(f"{krav.id} {regelbas.kravets_innehallssumma(krav.id)}")
     for paket in regelbas.regelpaket.values():
         print(f"{paket.id} paragrafkarta {regelbas.kartans_innehallssumma(paket.id)}")
+    return 0
+
+
+def kor_utkast(args):
+    from riskanalys.regelverk.amlr import ladda_amlr_utkast
+    u = ladda_amlr_utkast(args.utkast)
+    print(f"Utkast, aldrig operativt: {len(u.artiklar)} inventerade artiklar/bilagor. Återstående: {sum(a.status == 'aterstaende' for a in u.artiklar)}.")
     return 0

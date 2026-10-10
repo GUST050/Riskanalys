@@ -4,6 +4,7 @@ from riskanalys.bedomning.modeller import Bedomning, Kontrollbedomning, Riskdel,
 from riskanalys.profil.modeller import Profil
 from riskanalys.regelverk.modeller import Konsekvens, Kontroll, MatrisRad, Regelbas, Risk, Sannolikhet, Sarbarhet, Tjanst
 from riskanalys.regelverk.urval import Urval
+from riskanalys.regelverk.tillsyn import rattlig_omfattning
 from riskanalys.regelverk.villkor import Faltvarde, Kunskap, Sanning, Utfall, tolka_villkor, utvardera
 
 SANNOLIKHETER: tuple[Sannolikhet, ...] = ("låg", "medel", "hög")
@@ -21,8 +22,11 @@ def steg(niva: str, antal: int, skala: tuple[str, ...]) -> str:
 
 
 def bedom(regelbas: Regelbas, urval: Urval, profil: Profil) -> Bedomning:
+    from riskanalys.profil.omfattning import harled_andelar
+    profil = harled_andelar(profil, regelbas)
     tjanster = tuple(bedom_tjanst(regelbas, regelbas.tjanster[tjanst_id], profil) for tjanst_id in urval.tjanster)
-    preliminar = any(tjanst.status == "preliminär" for tjanst in tjanster)
+    omfattning = rattlig_omfattning(regelbas, profil) if regelbas.utokade_krav else None
+    preliminar = bool(omfattning and omfattning.hinder) or any(tjanst.status == "preliminär" for tjanst in tjanster)
     return Bedomning(
         byra=profil.byra.id,
         regelpaket=urval.regelpaket.id,
@@ -32,10 +36,13 @@ def bedom(regelbas: Regelbas, urval: Urval, profil: Profil) -> Bedomning:
         regelbas_kontrollsumma=regelbas.kontrollsumma,
         status="preliminär" if preliminar else "slutlig",
         tjanster=tjanster,
+        omfattning=omfattning,
     )
 
 
 def bedom_tjanst(regelbas: Regelbas, tjanst: Tjanst, profil: Profil) -> Tjanstbedomning:
+    from riskanalys.profil.omfattning import kompatibilitetsvy
+    profil = kompatibilitetsvy(profil, regelbas)
     varden = profil.faltvarden()
     erbjuds = varden.get(tjanst.erbjuds_falt, _OKAND)
     if erbjuds.kunskap is Kunskap.EJ_TILLAMPLIG or (erbjuds.kunskap is Kunskap.KAND and erbjuds.varde is False):
@@ -49,9 +56,14 @@ def bedom_tjanst(regelbas: Regelbas, tjanst: Tjanst, profil: Profil) -> Tjanstbe
     terrorfinansiering, tf_rad = _riskdel(regelbas, tjanst.grund_tf_sannolikhet, TF_KONSEKVENS, tf_hojning)
     kvarstaende, kvar_regel = _kvarstaende(regelbas, inneboende.risk, kontroller)
     okanda = okant_erbjudande | okanda_sarbarheter | okanda_kontroller
+    from riskanalys.bedomning.sanktioner import bedom_sanktionsrisk
+    sanktioner = bedom_sanktionsrisk(regelbas, tjanst, profil) if regelbas.utokade_krav else None
+    if sanktioner:
+        okanda |= frozenset(sanktioner.okanda_uppgifter)
     metod = regelbas.metod
     return Tjanstbedomning(
         tjanst=tjanst.id,
+        sanktionsrisk=sanktioner,
         erbjuds=None if okant_erbjudande else True,
         status="preliminär" if okanda else "slutlig",
         hot=tjanst.hot,
@@ -89,7 +101,9 @@ def _tillampade_sarbarheter(
         (sarbarhet, utvardera(tolka_villkor(sarbarhet.villkor, definitioner), varden))
         for sarbarhet in (regelbas.sarbarheter[sarbarhet_id] for sarbarhet_id in tjanst.sarbarheter)
     ]
-    tillampade = tuple(sarbarhet for sarbarhet, resultat in utfall if _galler(sarbarhet, resultat))
+    valda = tuple(sarbarhet for sarbarhet, resultat in utfall if _galler(sarbarhet, resultat))
+    ersatta = {id for s in valda for id in s.ersatter}
+    tillampade = tuple(s for s in valda if s.id not in ersatta)
     okanda = frozenset().union(*(resultat.okanda for _, resultat in utfall))
     return tillampade, okanda
 

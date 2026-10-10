@@ -1,0 +1,55 @@
+# Sammanfattningar av föreskrifternas krav. Sakkunnig granskning sker i M2.
+- id: KRV-LSF-001
+  kalla: SRC-14FS-2024-11
+  lagrum: 2 kap. 1 §
+  lydelser: [LYD-LSF-2-1-2024-07-01]
+  grund: ska_krav
+  text: Den allmänna riskbedömningen ska vara dokumenterad. Innehåll och omfattning följer av 2 kap. 1 och 2 §§ penningtvättslagen.
+  galler_om: {alla: []}
+  belagg: [dokument]
+  uppfylls_i: [D-ARB.1]
+- id: KRV-LSF-002
+  kalla: SRC-14FS-2024-11
+  lagrum: 2 kap. 2 §
+  lydelser: [LYD-LSF-2-2-2024-07-01]
+  grund: ska_krav
+  text: Verksamhetsutövaren ska identifiera de produkter och tjänster som tillhandahålls i verksamheten.
+  galler_om: {alla: []}
+  belagg: [dokument]
+  uppfylls_i: [D-ARB.3]
+- id: KRV-LSF-003
+  kalla: SRC-14FS-2024-11
+  lagrum: 2 kap. 2 §
+  lydelser: [LYD-LSF-2-2-2024-07-01]
+  grund: ska_krav
+  text: Verksamhetsutövaren ska identifiera och analysera de hot som är relevanta för tjänsterna, med särskild hänsyn till egen rapportering av misstänkta aktiviteter och myndigheternas information om tillvägagångssätt.
+  galler_om: {alla: []}
+  belagg: [dokument]
+  uppfylls_i: [D-ARB.4]
+- id: KRV-LSF-004
+  kalla: SRC-14FS-2024-11
+  lagrum: 2 kap. 2 §
+  lydelser: [LYD-LSF-2-2-2024-07-01]
+  grund: ska_krav
+  text: Verksamhetsutövaren ska identifiera och analysera sårbarheter, särskilt kunder, distributionskanaler, geografiska riskfaktorer och andra verksamhetsspecifika omständigheter.
+  galler_om: {alla: []}
+  belagg: [dokument]
+  uppfylls_i: [D-ARB.5]
+- id: KRV-LSF-005
+  kalla: SRC-14FS-2024-11
+  lagrum: 2 kap. 2 §
+  lydelser: [LYD-LSF-2-2-2024-07-01]
+  grund: ska_krav
+  text: Verksamhetsutövaren ska värdera riskerna som är förenade med hoten och sårbarheterna och motivera angivna risknivåer.
+  galler_om: {alla: []}
+  belagg: [dokument]
+  uppfylls_i: [D-ARB.6]
+- id: KRV-LSF-006
+  kalla: SRC-14FS-2024-11
+  lagrum: 2 kap. 3 §
+  lydelser: [LYD-LSF-2-3-2024-07-01]
+  grund: ska_krav
+  text: Den allmänna riskbedömningen ska utvärderas minst en gång per år och före nya tjänster, nya marknader eller andra relevanta förändringar. Datum för utvärdering och uppdatering ska framgå av riskbedömningen.
+  galler_om: {alla: []}
+  belagg: [dokument, datum]
+  uppfylls_i: [D-ARB.10]

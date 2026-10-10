@@ -1,0 +1,31 @@
+# Riskmetoden. Skalor, steg och matris är metodval (spec 4.6 och 7).
+riskmatris:
+  - {id: BT-MATRIS-01, sannolikhet: låg, konsekvens: begränsad, risk: låg, grund: metodval, forklaring: Låg sannolikhet och begränsad konsekvens ger låg risk.}
+  - {id: BT-MATRIS-02, sannolikhet: låg, konsekvens: betydande, risk: måttlig, grund: metodval, forklaring: Låg sannolikhet och betydande konsekvens ger måttlig risk.}
+  - {id: BT-MATRIS-03, sannolikhet: låg, konsekvens: allvarlig, risk: måttlig, grund: metodval, forklaring: Låg sannolikhet och allvarlig konsekvens ger måttlig risk.}
+  - {id: BT-MATRIS-04, sannolikhet: medel, konsekvens: begränsad, risk: måttlig, grund: metodval, forklaring: Medelhög sannolikhet och begränsad konsekvens ger måttlig risk.}
+  - {id: BT-MATRIS-05, sannolikhet: medel, konsekvens: betydande, risk: måttlig, grund: metodval, forklaring: Medelhög sannolikhet och betydande konsekvens ger måttlig risk.}
+  - {id: BT-MATRIS-06, sannolikhet: medel, konsekvens: allvarlig, risk: hög, grund: metodval, forklaring: Medelhög sannolikhet och allvarlig konsekvens ger hög risk.}
+  - {id: BT-MATRIS-07, sannolikhet: hög, konsekvens: begränsad, risk: måttlig, grund: metodval, forklaring: Hög sannolikhet och begränsad konsekvens ger måttlig risk.}
+  - {id: BT-MATRIS-08, sannolikhet: hög, konsekvens: betydande, risk: hög, grund: metodval, forklaring: Hög sannolikhet och betydande konsekvens ger hög risk.}
+  - {id: BT-MATRIS-09, sannolikhet: hög, konsekvens: allvarlig, risk: mycket hög, grund: metodval, forklaring: Hög sannolikhet och allvarlig konsekvens ger mycket hög risk.}
+sannolikhet:
+  id: BT-SANN-01
+  grund: metodval
+  forklaring: Sannolikheten utgår från tjänstens grundnivå i katalogen. Varje sårbarhet som gäller höjer den med sin effekt, som högst till hög.
+konsekvens:
+  id: BT-KONS-01
+  grund: metodval
+  forklaring: Konsekvensen är tjänstens grundnivå i katalogen.
+terrorfinansiering:
+  id: BT-TF-01
+  grund: metodval
+  forklaring: Terrorfinansiering bedöms separat. Sannolikheten utgår från tjänstens grundnivå för terrorfinansiering och höjs av sårbarheter som gäller terrorfinansiering. Konsekvensen är alltid allvarlig.
+kvarstaende_ej_belagd:
+  id: BT-KVAR-01
+  grund: metodval
+  forklaring: Om ingen kontroll både finns i rutinerna och är belagd är den kvarstående risken lika med den inneboende risken.
+kvarstaende_sankning:
+  id: BT-KVAR-02
+  grund: metodval
+  forklaring: Om minst en kontroll finns i rutinerna och är belagd sänks risken ett steg per tjänst. Hög eller mycket hög inneboende risk blir därmed aldrig lägre än måttlig.

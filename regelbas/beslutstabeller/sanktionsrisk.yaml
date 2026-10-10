@@ -1,0 +1,22 @@
+id: BT-SANK-01
+grund: metodval
+grund_sannolikhet: låg
+grund_konsekvens: allvarlig
+kontroll: C-SANK
+rader:
+- id: BT-SANK-02
+  villkor:
+    falt: P-GEO.sanktionsanknytning
+    op: ==
+    varde: true
+  sannolikhet: hög
+  grund: metodval
+  forklaring: 'Förslag: bekräftad anknytning ger hög sannolikhet; okänd anknytning
+    hanteras konservativt och preliminärt.'
+  kallor:
+  - SRC-NRA-2024-25
+forklaring: OGRANSKAT metodförslag för separat sanktionsrisk; grundnivå och kontrollsänkning
+  kräver sakkunniggranskning. Riskdimensionen beslutar inga listträffar eller förbud.
+  AMLR:s framtida riskkrav är inte ett gällande PTL-krav.
+kallor:
+- SRC-NRA-2024-25

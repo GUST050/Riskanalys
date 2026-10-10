@@ -25,6 +25,8 @@ def beskriv_tjanstbedomning(regelbas: Regelbas, tjanst: Tjanstbedomning) -> str:
         f"{tjanst.tjanst} {namn}: inneboende risk {tjanst.inneboende.risk}, "
         f"terrorfinansiering {tjanst.terrorfinansiering.risk}, kvarstående risk {tjanst.kvarstaende}."
     )
+    if tjanst.sanktionsrisk and tjanst.sanktionsrisk.inneboende:
+        text += f" Sanktionsrisk {tjanst.sanktionsrisk.inneboende.risk}, kvarstående {tjanst.sanktionsrisk.kvarstaende}."
     if tjanst.okanda_uppgifter:
         text += f" Preliminär. Okända uppgifter: {', '.join(tjanst.okanda_uppgifter)}."
     return text
@@ -35,6 +37,9 @@ def kor_bedom(args: argparse.Namespace) -> int:
     regelbas = ladda_giltig_regelbas(args.regelbas)
     mapp = kor_bedomning(byramapp, regelbas)
     bedomning = las_bedomning(mapp)
+    if bedomning.omfattning:
+        for hinder in bedomning.omfattning.hinder:
+            print(hinder)
     for tjanst in bedomning.tjanster:
         print(beskriv_tjanstbedomning(regelbas, tjanst))
     if bedomning.status == "preliminär":

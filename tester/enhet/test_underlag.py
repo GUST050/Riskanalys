@@ -76,3 +76,18 @@ def test_personuppgift_i_tillatelselistan_stoppas(regelbas, profil_fabrik, real_
 def test_tjanst_som_inte_erbjuds_far_inget_riskavsnitt(regelbas, profil_fabrik, real_varden):
     profil = profil_fabrik(regelbas, {**real_varden, "P-TJ.T-RED-01.erbjuds": False})
     assert tjanster_med_avsnitt(_bedomning(regelbas, profil)) == []
+
+@pytest.mark.parametrize("antal",[0,3,4,5])
+def test_smagruppsandel_och_antal_undertrycks_tillsammans(regelbas,profil_fabrik,real_varden,antal):
+    from riskanalys.regelverk.modeller import Falt
+    from riskanalys.regelverk.urval import valj
+    from riskanalys.bedomning.motor import bedom
+    from riskanalys.dokument.underlag import bygg_underlag
+    f=regelbas.falt["P-KUND.andel_riskbransch"].model_copy(update={"smagrupp":True,"antalfalt":"P-KUND.antal_riskbransch","basfalt":"P-KUND.bas"})
+    count=Falt(id="P-KUND.antal_riskbransch",typ="heltal",fraga="Antal?",varfor="Test",smagrupp=True)
+    rb=regelbas.model_copy(update={"falt":{**regelbas.falt,f.id:f,count.id:count}})
+    p=profil_fabrik(rb,{**real_varden,f.id:antal/100,count.id:antal})
+    t=bedom(rb,valj(rb,p.byra.regelpaket,p.byra.datum,p.byra.lan),p).tjanster[0]
+    a=bygg_underlag(rb,p,t,"D-ARB.6.1")
+    value=next(u.varde for u in a.uppgifter if u.id==f.id)
+    assert value==("färre än 5" if antal<5 else "5 %")

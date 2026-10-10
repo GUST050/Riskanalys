@@ -11,7 +11,7 @@ from riskanalys.dokument.modeller import Avsnitt, Dokument, Oklarhet
 from riskanalys.granskning.modeller import Fynd
 from riskanalys.profil.modeller import Profil
 
-ROLLER = {"FfR": "P-ROLL.ffr_namn"}
+ROLLER = {"FfR": "P-ROLL.ffr_namn", "Ansvarsfunktion": "P-ROLL.ansvarsfunktion"}
 UTKASTMARKERING = "UTKAST – ej fastställt av byrån"
 BILAGERUBRIK = "Bilaga: Åtgärdslista"
 _PLATSHALLARE = re.compile(r"\{roll:(\w+)\}")

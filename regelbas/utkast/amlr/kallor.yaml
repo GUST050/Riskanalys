@@ -1,0 +1,10 @@
+- id: AMLR-2024-1624
+  kontrollsumma: sha256:dc97d8ece5600676d86defe4cafc570fc4a332d77036782ab283da31958d7921
+  status: antagen_framtida_tillampning
+  url: https://eur-lex.europa.eu/legal-content/SV/TXT/HTML/?uri=CELEX:32024R1624
+- id: AMLA-BWRA
+  status: riktlinjeutkast
+  url: https://www.amla.europa.eu/policy/public-consultations/consultation-draft-guidelines-business-wide-risk-assessment_en
+- id: Fi2026-01654
+  status: svenskt_lagforslag
+  url: https://www.regeringen.se/remisser/2026/07/remiss-av-promemorian-eus-penningtvattspaket/

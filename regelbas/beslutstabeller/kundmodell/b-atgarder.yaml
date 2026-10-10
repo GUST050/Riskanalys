@@ -1,0 +1,80 @@
+- id: KB-C-HOG
+  spar: B
+  villkor:
+    falt: K-C.hog
+    op: ==
+    varde: true
+  utfall:
+    atgarder:
+    - KB-SKARPT
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-16-2017-08-01
+  forklaring: 'C→B: särskilt omfattande kundkännedomsåtgärder vid hög risk.'
+- id: KB-C-LAG
+  spar: B
+  villkor:
+    falt: K-C.lag
+    op: ==
+    varde: true
+  utfall:
+    atgarder:
+    - KB-FORENKLAT-KAN-PROVAS
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-15-2017-08-01
+  forklaring: Förenklade åtgärder kan prövas; rader för PEP och högrisktredjeland
+    raderas aldrig.
+- id: KB-HRTL
+  spar: B
+  villkor:
+    alla:
+    - falt: K-HRTL.etablerad
+      op: ==
+      varde: true
+    - inte:
+        alla:
+        - falt: K-HRTL.ees_filial_dotter
+          op: ==
+          varde: true
+        - falt: K-HRTL.moder_omfattas
+          op: ==
+          varde: true
+        - falt: K-HRTL.lag_risk
+          op: ==
+          varde: true
+        - falt: K-HRTL.rutiner
+          op: ==
+          varde: true
+        - falt: K-C.ej_hog
+          op: ==
+          varde: true
+  utfall:
+    atgarder:
+    - KB-HRTL-OVERVAKNING
+    - KB-HRTL-KUND-VH
+    - KB-HRTL-SYFTE
+    - KB-HRTL-MEDEL
+    - KB-HRTL-GODKANNANDE
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-17-2020-01-01
+  forklaring: Skärpt övervakning samt samtliga fyra informations-/godkännandepunkter.
+    Undantaget kräver EES-filial/dotter och alla tre lagvillkor; C måste vara känd
+    och ej hög.
+- id: KB-PEP
+  spar: B
+  villkor:
+    falt: K-PEP.atgarder_kravs
+    op: ==
+    varde: true
+  utfall:
+    atgarder:
+    - KB-PEP-MEDEL
+    - KB-PEP-UPPFOLJNING
+    - KB-PEP-GODKANNANDE-INGA-AVBRYTA
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-19-2017-08-01
+  forklaring: Kund, verklig huvudman och kundens familje-/RCA-anknytning. Godkännande
+    vid både ingående och avbrytande.

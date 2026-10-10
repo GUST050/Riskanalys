@@ -18,8 +18,9 @@ def test_korningsmappar_skrivs_aldrig_over(tmp_path):
     assert avslutade_korningar(tmp_path, "x") == mappar
 
 
-def test_avbruten_korning_utan_manifest_raknas_inte(tmp_path):
+def test_avbruten_korning_utan_manifest_far_inte_doljas(tmp_path):
     forsta = ny_korningsmapp(tmp_path, "x")
     skriv_manifest(forsta, {})
     ny_korningsmapp(tmp_path, "x")
-    assert senaste_korning(tmp_path, "x", "k") == forsta
+    with pytest.raises(RiskanalysFel, match="Manifest saknas"):
+        senaste_korning(tmp_path, "x", "k")

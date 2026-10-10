@@ -1,0 +1,44 @@
+- id: SEKTOR-REDOVISNING
+  sektor: redovisning
+  niva: hög
+  skala:
+  - låg
+  - medel
+  - betydande
+  - hög
+  kalla: SRC-NRA-2024-25
+  sida: 122
+  referensversion: NRA 2024/2025
+- id: SEKTOR-SKATT
+  sektor: skatt
+  niva: hög
+  skala:
+  - låg
+  - medel
+  - betydande
+  - hög
+  kalla: SRC-NRA-2024-25
+  sida: 126
+  referensversion: NRA 2024/2025
+- id: SEKTOR-BOLAG
+  sektor: bolag
+  niva: hög
+  skala:
+  - låg
+  - medel
+  - betydande
+  - hög
+  kalla: SRC-NRA-2024-25
+  sida: 144
+  referensversion: NRA 2024/2025
+- id: SEKTOR-ADRESS
+  sektor: adress
+  niva: betydande
+  skala:
+  - låg
+  - medel
+  - betydande
+  - hög
+  kalla: SRC-NRA-2024-25
+  sida: 147
+  referensversion: NRA 2024/2025

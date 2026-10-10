@@ -13,7 +13,7 @@ from riskanalys.dokument.modeller import Avsnitt, Dokument
 from riskanalys.dokument.rendering import renderat_avsnitt
 from riskanalys.faststallelse.modeller import Sakgranskning
 from riskanalys.fel import RiskanalysFel
-from riskanalys.lagring.yamlfil import las_yaml, spara_yaml
+from riskanalys.lagring.yamlfil import spara_yaml, las_modell
 from riskanalys.profil.modeller import Profil
 
 SAKGRANSKNINGSFIL = Path("sakgranskning") / "sakgranskningar.yaml"
@@ -33,7 +33,7 @@ def las_sakgranskningar(byramapp: Path) -> tuple[Sakgranskning, ...]:
     sokvag = byramapp / SAKGRANSKNINGSFIL
     if not sokvag.is_file():
         return ()
-    return _LISTA.validate_python(las_yaml(sokvag) or [])
+    return las_modell(sokvag, _LISTA)
 
 
 def spara_sakgranskningar(byramapp: Path, sakgranskningar: tuple[Sakgranskning, ...]) -> None:

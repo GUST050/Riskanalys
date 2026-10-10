@@ -43,6 +43,7 @@ def hinder_for_faststallelse(underlag: Faststallelseunderlag, beslutsdatum: date
     return [
         *_uppgifter(underlag),
         *_bedomning(underlag),
+        *_omfattning(underlag),
         *_verifiera(underlag),
         *_sakkunnig(underlag),
         *_paragrafkarta(underlag),
@@ -50,6 +51,7 @@ def hinder_for_faststallelse(underlag: Faststallelseunderlag, beslutsdatum: date
         *_sakgranskning(underlag),
         *_drift(underlag, beslutsdatum),
         *_kronologi(underlag, beslutsdatum),
+        *_m2(underlag, beslutsdatum),
     ]
 
 
@@ -75,9 +77,11 @@ def fyndhinder(post: Fynd) -> list[str]:
 
 def _uppgifter(underlag: Faststallelseunderlag) -> list[str]:
     """Villkor 1: kritiska uppgifter är bekräftade eller ej tillämpliga, och varje status har sina belägg."""
+    from riskanalys.profil.omfattning import omfattningsbrister
+    omfattning = omfattningsbrister(underlag.profil, underlag.regelbas)
     saknade = saknade_kritiska(underlag.profil, underlag.regelbas, underlag.urval)
     hinder = [f"Kritiska uppgifter saknas: {', '.join(saknade)}. Bekräfta dem med 'riskanalys bekrafta'."] if saknade else []
-    return [*hinder, *(f"{rad} Bekräfta uppgiften igen med 'riskanalys bekrafta'." for rad in belaggsbrister(underlag.profil))]
+    return [*hinder, *omfattning, *(f"{rad} Bekräfta uppgiften igen med 'riskanalys bekrafta'." for rad in belaggsbrister(underlag.profil))]
 
 
 def _bedomning(underlag: Faststallelseunderlag) -> list[str]:
@@ -165,3 +169,37 @@ def _kronologi(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]
         for namn, datum in tidigare
         if datum is not None and beslutsdatum < datum
     ]
+
+
+def _omfattning(underlag: Faststallelseunderlag) -> list[str]:
+    """Pröva profilen på nytt; äldre sparade bedömningar får inte kringgå M2."""
+    if not underlag.regelbas.utokade_krav:
+        return []
+    from riskanalys.regelverk.tillsyn import rattlig_omfattning
+    return list(rattlig_omfattning(underlag.regelbas, underlag.profil).hinder)
+
+
+def _m2(u: Faststallelseunderlag, datum: date) -> list[str]:
+    if not u.regelbas.utokade_krav:
+        return []
+    from riskanalys.profil.hantering import kontrollera_profil
+    from riskanalys.fel import RiskanalysFel
+    from riskanalys.regelverk.urval import andringar_mellan, beskriv_vantande
+    hinder = []
+    try:
+        kontrollera_profil(u.profil, u.regelbas)
+        hinder += [beskriv_vantande(a) + " Kör om hela kedjan från bedom med beslutets datum."
+                   for a in andringar_mellan(u.regelbas, u.urval, datum)]
+    except RiskanalysFel as e:
+        hinder.append(str(e) + " Rätta profilen eller datumet och kör om kedjan.")
+    from riskanalys.regelverk.validering_m2 import attesthinder
+    hinder += attesthinder(u.regelbas, u.urval.regelpaket.id)
+    paket = u.regelbas.regelpaket[u.urval.regelpaket.id]
+    if not paket.granskning.galler(u.regelbas.paketets_innehallssumma(paket.id)) or not paket.granskning.av or not paket.granskning.datum:
+        hinder.append("Paketets metod- och kundgrenar är inte verifierade i nuvarande innehåll. Exportera sakkunnigunderlag och importera verkligt granskat beslut.")
+    if u.bedomning.omfattning is None:
+        hinder.append("Äldre bedömning saknar rättslig omfattning. Kör bedom igen.")
+    for t in u.bedomning.tjanster:
+        if t.erbjuds is not False and (t.sanktionsrisk is None or t.sanktionsrisk.inneboende is None or t.sanktionsrisk.kvarstaende is None):
+            hinder.append(f"{t.tjanst}: sanktionsdimension saknas. Kör bedom igen.")
+    return hinder

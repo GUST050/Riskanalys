@@ -7,7 +7,7 @@ from datetime import date
 from typing import Any
 
 from riskanalys.fel import RiskanalysFel
-from riskanalys.profil.modeller import Byra, Profil, Uppgift
+from riskanalys.profil.modeller import Byra, Period, Profil, Uppgift
 from riskanalys.regelverk.modeller import Falt, Regelbas
 from riskanalys.regelverk.urval import Urval
 from riskanalys.regelverk.villkor import Faltdef, VillkorsFel, falt_i, kontrollera_varde, tolka_villkor
@@ -59,6 +59,8 @@ def visa_varde(falt: Falt, varde: Any) -> str:
 
 
 def beskriv_uppgift(falt: Falt, uppgift: Uppgift) -> str:
+    if uppgift.inaktuell:
+        return f"{visa_varde(falt, uppgift.varde)} (inaktuell; tidigare källa: {uppgift.kalla}). Bekräfta antal och bas igen."
     if uppgift.status == "bekräftad":
         return f"{visa_varde(falt, uppgift.varde)} (bekräftad {uppgift.datum}, källa: {uppgift.kalla})"
     if uppgift.status == "ej_tillämplig":
@@ -74,9 +76,14 @@ def bekrafta(
     kalla: str | None,
     roll: str,
     datum: date,
+    period: Period | None = None,
 ) -> Profil:
     """Returnerar en ny profil där uppgiften är bekräftad."""
     falt = _falt(regelbas, falt_id)
+    if falt.antalfalt or falt.basfalt:
+        raise ProfilFel(f"{falt_id} härleds. Bekräfta {falt.antalfalt} och {falt.basfalt}, inte andelen direkt.")
+    if falt.periodkrav and period is None:
+        raise ProfilFel(f"{falt_id} kräver --period-fran och --period-till.")
     if not kalla or not kalla.strip():
         raise ProfilFel("Ange varifrån uppgiften kommer med --kalla, till exempel --kalla \"Kundregistret 2026-09-30\".")
     uppgift = Uppgift(
@@ -85,8 +92,10 @@ def bekrafta(
         kalla=kalla.strip(),
         datum=datum,
         bekraftad_av=f"roll:{roll}",
+        period=period,
     )
-    return _med(profil, falt.id, uppgift)
+    from riskanalys.profil.omfattning import harled_andelar
+    return harled_andelar(_med(profil, falt.id, uppgift), regelbas, andrade_falt=frozenset({falt.id}))
 
 
 def markera_ej_tillamplig(
@@ -105,15 +114,18 @@ def markera_ej_tillamplig(
     return _med(profil, falt.id, uppgift)
 
 
-def kritiska_falt(regelbas: Regelbas, urval: Urval) -> frozenset[str]:
+def kritiska_falt(regelbas: Regelbas, urval: Urval, profil: Profil | None = None) -> frozenset[str]:
     """Uppgifter som riskbedömningen bygger på och som måste vara kända före fastställelse."""
     definitioner = regelbas.faltdefinitioner()
     tjanster = [regelbas.tjanster[tjanst_id] for tjanst_id in urval.tjanster]
-    uttryckliga = {falt.id for falt in regelbas.falt.values() if falt.kritisk}
+    from riskanalys.profil.omfattning import aktivt
+    uttryckliga = {falt.id for falt in regelbas.falt.values() if falt.kritisk and (profil is None or aktivt(falt, profil, regelbas))}
     tillamplighet = {
         falt_id for valt in urval.krav for falt_id in falt_i(tolka_villkor(valt.krav.galler_om, definitioner))
     }
     erbjuds = {tjanst.erbjuds_falt for tjanst in tjanster}
+    if profil is not None:
+        tjanster = [t for t in tjanster if not (profil.ar_bekraftad(t.erbjuds_falt) and profil.uppgifter[t.erbjuds_falt].varde is False)]
     kontroller = {
         falt_id
         for tjanst in tjanster
@@ -139,7 +151,8 @@ def kontrollera_profil(profil: Profil, regelbas: Regelbas) -> None:
     i tysthet. Värden i fält med personuppgifter skrivs inte ut.
     """
     definitioner = regelbas.faltdefinitioner()
-    fel = list(belaggsbrister(profil))
+    from riskanalys.profil.omfattning import omfattningsbrister
+    fel = [*belaggsbrister(profil), *omfattningsbrister(profil, regelbas)]
     for falt_id, uppgift in profil.uppgifter.items():
         if uppgift.status != "bekräftad" or falt_id not in definitioner:
             continue
@@ -192,12 +205,14 @@ def _uppraknad(delar: list[str]) -> str:
 
 def saknade_kritiska(profil: Profil, regelbas: Regelbas, urval: Urval) -> tuple[str, ...]:
     """Kritiska uppgifter som varken är bekräftade eller ej tillämpliga."""
+    from riskanalys.profil.omfattning import kompatibilitetsvy
+    profil = kompatibilitetsvy(profil, regelbas)
     klara = {"bekräftad", "ej_tillämplig"}
     return tuple(
         sorted(
             falt_id
-            for falt_id in kritiska_falt(regelbas, urval)
-            if profil.uppgifter.get(falt_id, Uppgift()).status not in klara
+            for falt_id in kritiska_falt(regelbas, urval, profil)
+            if profil.uppgifter.get(falt_id, Uppgift()).status not in klara or profil.uppgifter.get(falt_id, Uppgift()).inaktuell
         )
     )
 
@@ -238,6 +253,8 @@ def _tal(text: str) -> float:
 
 
 def _andel(text: str) -> float:
+    if text == "1":
+        raise ProfilFel("Ensam 1 är tvetydig. Skriv 1 % för en procent eller 1,0 för hundra procent.")
     procent = _PROCENT.match(text)
     if procent:
         return _tal(procent.group(1)) / 100

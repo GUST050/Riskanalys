@@ -55,6 +55,8 @@ class UnderlagUppgift(Last):
     fraga: str
     varde: str
     bekraftad: bool
+    period: tuple[str, str] | None = None
+    bas: str | None = None
 
 
 class UnderlagBrist(Last):

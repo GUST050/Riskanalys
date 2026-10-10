@@ -16,7 +16,7 @@ from riskanalys.profil.hantering import (
     skapa_profil,
 )
 from riskanalys.profil.lagring import las_profil, spara_profil
-from riskanalys.profil.modeller import Byra, Uppgift
+from riskanalys.profil.modeller import Byra, Period, Uppgift
 from riskanalys.regelverk.urval import beskriv_vantande, valj, vantande_andringar
 
 
@@ -38,6 +38,8 @@ def lagg_till(underparsers: Any) -> None:
     bekraftelse.add_argument("--ej-tillampligt", action="store_true", help="Markera uppgiften som ej tillämplig.")
     bekraftelse.add_argument("--motivering", help="Krävs med --ej-tillampligt.")
     bekraftelse.add_argument("--datum", type=datumargument, default=None, help="Standard är dagens datum.")
+    bekraftelse.add_argument("--period-fran", type=datumargument)
+    bekraftelse.add_argument("--period-till", type=datumargument)
     regelbasargument(bekraftelse)
     bekraftelse.set_defaults(kor=kor_bekrafta)
 
@@ -66,12 +68,17 @@ def kor_bekrafta(args: argparse.Namespace) -> int:
     regelbas = ladda_giltig_regelbas(args.regelbas)
     profil = las_profil(mapp)
     datum = args.datum or date.today()
+    if bool(args.period_fran) != bool(args.period_till):
+        raise ProfilFel("Ange både --period-fran och --period-till.")
+    if args.period_fran and args.period_fran > args.period_till:
+        raise ProfilFel("Periodens från-datum får inte vara efter till-datum.")
+    period = Period(fran=args.period_fran, till=args.period_till) if args.period_fran else None
     if args.ej_tillampligt:
         ny_profil = markera_ej_tillamplig(profil, regelbas, args.falt, args.motivering, args.roll, datum)
     elif args.varde is None:
         raise ProfilFel("Ange ett värde, eller --ej-tillampligt med --motivering.")
     else:
-        ny_profil = bekrafta(profil, regelbas, args.falt, args.varde, args.kalla, args.roll, datum)
+        ny_profil = bekrafta(profil, regelbas, args.falt, args.varde, args.kalla, args.roll, datum, period=period)
     spara_profil(mapp, ny_profil)
     print(f"{args.falt}: {beskriv_uppgift(regelbas.falt[args.falt], ny_profil.uppgifter[args.falt])}")
     return 0
@@ -83,7 +90,7 @@ def kor_profil(args: argparse.Namespace) -> int:
     profil = las_profil(mapp)
     byra = profil.byra
     urval = valj(regelbas, byra.regelpaket, byra.datum, byra.lan)
-    kritiska = kritiska_falt(regelbas, urval)
+    kritiska = kritiska_falt(regelbas, urval, profil)
     print(f"Profil för {byra.id} ({byra.regelpaket}, {byra.lan}, {byra.datum.isoformat()})")
     for falt in regelbas.falt.values():
         markering = "*" if falt.id in kritiska else " "

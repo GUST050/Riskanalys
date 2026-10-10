@@ -30,7 +30,7 @@ from riskanalys.regelverk.urval import valj
 FASTSTALLDA = "faststallda"
 BESLUTSFIL = "beslut.yaml"
 _VERSION = re.compile(r"^v(\d+)$")
-_IGNORERA = shutil.ignore_patterns("__pycache__", ".DS_Store")
+_IGNORERA = shutil.ignore_patterns("__pycache__", ".DS_Store", "utkast", ".granskning-*")
 
 
 class FaststallelseFel(RiskanalysFel):

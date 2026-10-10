@@ -3,66 +3,228 @@
   typ: lag
   utgivare: Riksdagen
   url: https://rkrattsbaser.gov.se/sfst?bet=2017:630
-  hamtad: 2026-10-08
+  hamtad: 2026-10-10
   konsoliderad_tom: SFS 2026:1075
+  kontrollsumma: sha256:ea62170b14367b369e91283350ce824a5dbf8c4504f5a6b2d6fe9c7d7fac7f85
+  galler_fran: 2017-08-01
+  inventarium_kontrollsumma: sha256:864b6cef5044eb0118e4f0d986da004b556476bec13941e1287ae48dfab0cd0a
+  paragrafer:
+  - 1 kap. 1 §
+  - 1 kap. 2 §
+  - 1 kap. 3 §
+  - 1 kap. 4 §
+  - 1 kap. 5 §
+  - 1 kap. 6 §
+  - 1 kap. 7 §
+  - 1 kap. 8 §
+  - 1 kap. 9 §
+  - 1 kap. 10 §
+  - 2 kap. 1 §
+  - 2 kap. 2 §
+  - 2 kap. 3 §
+  - 2 kap. 4 §
+  - 2 kap. 5 §
+  - 2 kap. 6 §
+  - 2 kap. 7 §
+  - 2 kap. 8 §
+  - 2 kap. 9 §
+  - 2 kap. 10 §
+  - 2 kap. 11 §
+  - 2 kap. 12 §
+  - 2 kap. 13 §
+  - 2 kap. 14 §
+  - 2 kap. 15 §
+  - 2 kap. 16 §
+  - 3 kap. 1 §
+  - 3 kap. 2 §
+  - 3 kap. 3 §
+  - 3 kap. 4 §
+  - 3 kap. 5 §
+  - 3 kap. 6 §
+  - 3 kap. 7 §
+  - 3 kap. 8 §
+  - 3 kap. 8 a §
+  - 3 kap. 9 §
+  - 3 kap. 10 §
+  - 3 kap. 11 §
+  - 3 kap. 12 §
+  - 3 kap. 13 §
+  - 3 kap. 14 §
+  - 3 kap. 15 §
+  - 3 kap. 16 §
+  - 3 kap. 17 §
+  - 3 kap. 18 §
+  - 3 kap. 18 a §
+  - 3 kap. 19 §
+  - 3 kap. 20 §
+  - 3 kap. 21 §
+  - 3 kap. 22 §
+  - 3 kap. 23 §
+  - 3 kap. 24 §
+  - 3 kap. 25 §
+  - 3 kap. 26 §
+  - 3 kap. 27 §
+  - 3 kap. 28 §
+  - 3 kap. 29 §
+  - 3 kap. 30 §
+  - 3 kap. 31 §
+  - 3 kap. 32 §
+  - 4 kap. 1 §
+  - 4 kap. 2 §
+  - 4 kap. 3 §
+  - 4 kap. 3 a §
+  - 4 kap. 3 b §
+  - 4 kap. 4 §
+  - 4 kap. 5 §
+  - 4 kap. 6 §
+  - 4 kap. 7 §
+  - 4 kap. 8 §
+  - 4 kap. 9 §
+  - 4 kap. 9 a §
+  - 4 kap. 10 §
+  - 4 kap. 11 §
+  - 4 kap. 12 §
+  - 4 kap. 13 §
+  - 4 a kap. 1 §
+  - 4 a kap. 2 §
+  - 4 a kap. 3 §
+  - 4 a kap. 4 §
+  - 4 a kap. 5 §
+  - 5 kap. 1 §
+  - 5 kap. 2 §
+  - 5 kap. 3 §
+  - 5 kap. 4 §
+  - 5 kap. 5 §
+  - 5 kap. 6 §
+  - 5 kap. 7 §
+  - 5 kap. 8 §
+  - 5 kap. 9 §
+  - 5 kap. 10 §
+  - 5 kap. 11 §
+  - 5 kap. 12 §
+  - 5 kap. 13 §
+  - 6 kap. 1 §
+  - 6 kap. 2 §
+  - 6 kap. 3 §
+  - 6 kap. 4 §
+  - 6 kap. 4 a §
+  - 6 kap. 5 §
+  - 6 a kap. 1 §
+  - 6 a kap. 2 §
+  - 6 a kap. 3 §
+  - 6 a kap. 4 §
+  - 7 kap. 1 §
+  - 7 kap. 2 §
+  - 7 kap. 3 §
+  - 7 kap. 4 §
+  - 7 kap. 5 §
+  - 7 kap. 6 §
+  - 7 kap. 7 §
+  - 7 kap. 8 §
+  - 7 kap. 9 §
+  - 7 kap. 10 §
+  - 7 kap. 11 §
+  - 7 kap. 12 §
+  - 7 kap. 13 §
+  - 7 kap. 14 §
+  - 7 kap. 15 §
+  - 7 kap. 16 §
+  - 7 kap. 17 §
+  - 7 kap. 18 §
+  - 7 kap. 19 §
+  - 7 kap. 20 §
+  - 7 kap. 21 §
+  - 7 kap. 22 §
+  - 7 kap. 23 §
+  - 7 kap. 24 §
+  - 7 kap. 25 §
+  - 7 a kap. 1 §
+  - 7 a kap. 2 §
+  - 7 a kap. 3 §
+  - 7 a kap. 4 §
+  - 7 a kap. 5 §
+  - 7 a kap. 6 §
+  - 7 a kap. 7 §
+  - 7 a kap. 8 §
+  - 7 a kap. 9 §
+  - 7 a kap. 10 §
+  - 7 a kap. 11 §
+  - 8 kap. 1 §
+  geografi: []
 - id: SRC-14FS-2024-11
-  titel: Länsstyrelsen i Västra Götalands läns föreskrifter och allmänna råd om åtgärder mot penningtvätt och finansiering av terrorism (14FS 2024:11)
+  titel: Länsstyrelsen i Västra Götalands läns föreskrifter och allmänna råd om åtgärder
+    mot penningtvätt och finansiering av terrorism (14FS 2024:11)
   typ: föreskrift
   utgivare: Länsstyrelsen i Västra Götalands län
-  url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
-  hamtad: 2026-10-06
+  url: https://www.lansstyrelsen.se/download/18.74c322ef18f9ee08a2929/1716358223326/2024-11%20Penningtv%C3%A4tt%20Dalarnas%20l%C3%A4n%20G%C3%A4vleborgs%20l%C3%A4n%20Hallands%20l%C3%A4n%20V%C3%A4rmlands%20l%C3%A4n%20V%C3%A4stra%20G%C3%B6talands%20l%C3%A4n%20%C3%96rebro%20l%C3%A4n.pdf
+  hamtad: 2026-10-10
   beslutad: 2024-05-20
-  geografi: [Dalarna, Gävleborg, Halland, Värmland, Västra Götaland, Örebro]
+  geografi:
+  - Dalarna
+  - Gävleborg
+  - Halland
+  - Värmland
+  - Västra Götaland
+  - Örebro
   paragrafer:
-    - 1 kap. 1 §
-    - 1 kap. 2 §
-    - 2 kap. 1 §
-    - 2 kap. 2 §
-    - 2 kap. 3 §
-    - 2 kap. 4 §
-    - 2 kap. 5 §
-    - 2 kap. 6 §
-    - 2 kap. 7 §
-    - 2 kap. 8 §
-    - 2 kap. 9 §
-    - 2 kap. 10 §
-    - 2 kap. 11 §
-    - 2 kap. 12 §
-    - 3 kap. 1 §
-    - 3 kap. 2 §
-    - 3 kap. 3 §
-    - 3 kap. 4 §
-    - 3 kap. 5 §
-    - 3 kap. 6 §
-    - 3 kap. 7 §
-    - 4 kap. 1 §
-    - 5 kap. 1 §
-    - 5 kap. 2 §
-    - 6 kap. 1 §
-    - 6 kap. 2 §
-    - 6 kap. 3 §
-    - 6 kap. 4 §
-    - 7 kap. 1 §
-    - 7 kap. 2 §
-    - 7 kap. 3 §
+  - 1 kap. 1 §
+  - 1 kap. 2 §
+  - 2 kap. 1 §
+  - 2 kap. 2 §
+  - 2 kap. 3 §
+  - 2 kap. 4 §
+  - 2 kap. 5 §
+  - 2 kap. 6 §
+  - 2 kap. 7 §
+  - 2 kap. 8 §
+  - 2 kap. 9 §
+  - 2 kap. 10 §
+  - 2 kap. 11 §
+  - 2 kap. 12 §
+  - 3 kap. 1 §
+  - 3 kap. 2 §
+  - 3 kap. 3 §
+  - 3 kap. 4 §
+  - 3 kap. 5 §
+  - 3 kap. 6 §
+  - 3 kap. 7 §
+  - 4 kap. 1 §
+  - 5 kap. 1 §
+  - 5 kap. 2 §
+  - 6 kap. 1 §
+  - 6 kap. 2 §
+  - 6 kap. 3 §
+  - 6 kap. 4 §
+  - 7 kap. 1 §
+  - 7 kap. 2 §
+  - 7 kap. 3 §
+  kontrollsumma: sha256:2881d5422b0547c5d5ff789456cf0290f8fa1e013b5cc52a4f82a0a7e11b81f7
+  galler_fran: 2024-07-01
+  inventarium_kontrollsumma: sha256:f77dcadcab05f98d09d29e7678ce513b259c6bceb8fda65d6be236fd292308b6
 - id: SRC-TS-2026-14
-  titel: Erfarenheter från länsstyrelsernas penningtvättstillsyn – fokus den allmänna riskbedömningen, rapport 2026:14
+  titel: Erfarenheter från länsstyrelsernas penningtvättstillsyn – fokus den allmänna
+    riskbedömningen, rapport 2026:14
   typ: tillsynsrapport
   utgivare: Länsstyrelserna i Skåne, Stockholms och Västra Götalands län
-  url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
-  hamtad: 2026-10-06
+  url: https://www.lansstyrelsen.se/download/18.51b8c30c19d05558bd82e18e/1774259142687/Erfarenheter%20fr%C3%A5n%20l%C3%A4nsstyrelsernas%20penningtv%C3%A4ttstillsyn.pdf
+  hamtad: 2026-10-10
+  kontrollsumma: sha256:d1cf060d911576a1adcdd8677a226780c7f5eab90cd799be29259e123113ea20
 - id: SRC-VAGL-2025-03
-  titel: Information till redovisningskonsulter och skatterådgivare om penningtvätt och finansiering av terrorism (mars 2025)
+  titel: Information till redovisningskonsulter och skatterådgivare om penningtvätt
+    och finansiering av terrorism (mars 2025)
   typ: vägledning
   utgivare: Samordningsfunktionen mot penningtvätt och finansiering av terrorism
-  url: https://polisen.se
-  hamtad: 2026-10-06
+  url: https://polisen.se/0be344afbcdff1a86db5cde12c2188c5/siteassets/dokument/om-polisen/penningtvatt/vagledning-till-redovisningskonsulter-och-skatteradgivare.pdf
+  hamtad: 2026-10-10
+  kontrollsumma: sha256:d657cc892e46eb90c3023881bbabbbd1b7eafeb0f3c75ff493bd2bf841435139
 - id: SRC-NRA-2024-25
-  titel: Nationell riskbedömning av penningtvätt och finansiering av terrorism i Sverige 2024/2025
+  titel: Nationell riskbedömning av penningtvätt och finansiering av terrorism i Sverige
+    2024/2025
   typ: riskbedömning
   utgivare: Samordningsfunktionen mot penningtvätt och finansiering av terrorism
   url: https://polisen.se/0c34c8d8c94e1a371d8cca457b84fb0a/siteassets/dokument/om-polisen/penningtvatt/nationell-riskbedomning-av-penningtvatt-och-finansiering-av-terrorism-i-sverige-2024_2025.pdf
-  hamtad: 2026-10-08
+  hamtad: 2026-10-10
+  kontrollsumma: sha256:69017b4bd5f622e5c71f8200bd16d0c114f32329854c145f4d682bd1dd84f212
 - id: SRC-LST-INGRIPANDEN
   titel: Ingripanden och sanktioner penningtvätt
   typ: beslut
@@ -83,3 +245,157 @@
   url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
   hamtad: 2026-10-09
   beslutad: 2026-09-10
+- id: SRC-PTF
+  titel: Förordning (2009:92) om åtgärder mot penningtvätt och finansiering av terrorism
+  typ: förordning
+  utgivare: Regeringen
+  url: https://rkrattsbaser.gov.se/sfst?bet=2009:92
+  hamtad: 2026-10-10
+  kontrollsumma: sha256:d1f9918a1a9befc3d55e8d54d5d4f5fdea41d976b3d63e148ed533094d3e2eff
+  galler_fran: 2009-03-15
+  inventarium_kontrollsumma: sha256:988b5c17ab5d7b0b18e8cb59b7d2bf9fb7e56c4022c15cb47a171af1aca69219
+  paragrafer:
+  - 1 §
+  - 2 §
+  - 3 §
+  - 4 §
+  - 5 §
+  - 6 §
+  - 7 §
+  - 8 §
+  - 9 §
+  - 10 §
+  - 11 §
+  - 12 §
+  - 12 a §
+  - 13 §
+  - 14 §
+  - 15 §
+  - 15 a §
+  - 15 b §
+  - 15 c §
+  - 16 §
+  - 17 §
+  - 17 a §
+  - 17 b §
+  - 17 c §
+  - 17 d §
+  - 17 e §
+  - 18 §
+  - 19 §
+  - 20 §
+  geografi: []
+  konsoliderad_tom: SFS 2025:888
+- id: SRC-12FS-2024-8
+  titel: Länsstyrelsen i Skåne läns föreskrifter och allmänna råd, 12FS 2024:8
+  typ: föreskrift
+  utgivare: Länsstyrelsen
+  url: https://www.lansstyrelsen.se/download/18.74c322ef18f9ee08a291e0d9/1716879026716/fs2024-8%20L%C3%A4nsstyrelsen%20i%20Sk%C3%A5ne%20l%C3%A4ns%20f%C3%B6reskrifter%20och%20allm%C3%A4nna%20r%C3%A5d%20om%20%C3%A5tg%C3%A4rder%20mot%20penningtv%C3%A4tt%20och%20finansiering%20av%20terrorism.pdf
+  hamtad: 2026-10-10
+  kontrollsumma: sha256:00456e4e02309a7c5a1120bfe76891b25af93f07f7206ff82b5384153dd683fc
+  galler_fran: 2024-07-01
+  inventarium_kontrollsumma: sha256:1b2a3f5b457099c4b5353c3e7bbd03c0d7d959ea35b16d84ccf80361408ab615
+  paragrafer:
+  - 1 kap. 1 §
+  - 1 kap. 2 §
+  - 2 kap. 1 §
+  - 2 kap. 2 §
+  - 2 kap. 3 §
+  - 2 kap. 4 §
+  - 2 kap. 5 §
+  - 2 kap. 6 §
+  - 2 kap. 7 §
+  - 2 kap. 8 §
+  - 2 kap. 9 §
+  - 2 kap. 10 §
+  - 2 kap. 11 §
+  - 2 kap. 12 §
+  - 3 kap. 1 §
+  - 3 kap. 2 §
+  - 3 kap. 3 §
+  - 3 kap. 4 §
+  - 3 kap. 5 §
+  - 3 kap. 6 §
+  - 3 kap. 7 §
+  - 4 kap. 1 §
+  - 5 kap. 1 §
+  - 5 kap. 2 §
+  - 6 kap. 1 §
+  - 6 kap. 2 §
+  - 6 kap. 3 §
+  - 6 kap. 4 §
+  - 7 kap. 1 §
+  - 7 kap. 2 §
+  - 7 kap. 3 §
+  geografi:
+  - Skåne
+  - Blekinge
+  - Kronoberg
+  - Jönköping
+  - Kalmar
+  - Östergötland
+  beslutad: 2024-05-23
+- id: SRC-01FS-2024-20
+  titel: Länsstyrelsen i Stockholms läns föreskrifter och allmänna råd, 01FS 2024:20
+  typ: föreskrift
+  utgivare: Länsstyrelsen
+  url: https://www.lansstyrelsen.se/download/18.707df2a018f9ec7c62149421/1717509242057/01FS%202024-20.pdf
+  hamtad: 2026-10-10
+  kontrollsumma: sha256:5e8c99ea76bab086472d02c7369e94236228dde4922d0fa9e93dd9f824100648
+  galler_fran: 2024-07-01
+  inventarium_kontrollsumma: sha256:89d3294b321c55beaaf25b3378792f47d6b1195491c5ff24a3dd453fe31acf19
+  paragrafer:
+  - 1 kap. 1 §
+  - 1 kap. 2 §
+  - 2 kap. 1 §
+  - 2 kap. 2 §
+  - 2 kap. 3 §
+  - 2 kap. 4 §
+  - 2 kap. 5 §
+  - 2 kap. 6 §
+  - 2 kap. 7 §
+  - 2 kap. 8 §
+  - 2 kap. 9 §
+  - 2 kap. 10 §
+  - 2 kap. 11 §
+  - 2 kap. 12 §
+  - 3 kap. 1 §
+  - 3 kap. 2 §
+  - 3 kap. 3 §
+  - 3 kap. 4 §
+  - 3 kap. 5 §
+  - 3 kap. 6 §
+  - 3 kap. 7 §
+  - 4 kap. 1 §
+  - 5 kap. 1 §
+  - 5 kap. 2 §
+  - 6 kap. 1 §
+  - 6 kap. 2 §
+  - 6 kap. 3 §
+  - 6 kap. 4 §
+  - 7 kap. 1 §
+  - 7 kap. 2 §
+  - 7 kap. 3 §
+  geografi:
+  - Stockholm
+  - Södermanland
+  - Gotland
+  - Västmanland
+  - Uppsala
+  - Jämtland
+  - Västernorrland
+  - Västerbotten
+  - Norrbotten
+  beslutad: 2024-05-27
+- id: EU-269-2014
+  titel: EU 269/2014 artikel 2, lydelse enligt autentisk EUT EU 2025/2037 artikel
+    1.2; avgränsat engelskt källutdrag
+  typ: eu_förordning
+  utgivare: Europeiska unionens råd
+  url: https://eur-lex.europa.eu/eli/reg/2025/2037/oj/eng
+  hamtad: 2026-10-10
+  beslutad: 2025-10-23
+  kontrollsumma: sha256:a922a103d60a4444672dd49ea11d0591dc856d20a7db4cbfae9af75c1b474ff8
+  paragrafer:
+  - artikel 2
+  konsoliderad_tom: 2026-09-28; avgränsad artikelkontroll, inte hela förordningen

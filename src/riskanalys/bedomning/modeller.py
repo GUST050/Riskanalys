@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
+from riskanalys.regelverk.tillsyn import Omfattningsbeslut
 from riskanalys.regelverk.modeller import Konsekvens, Risk, Sannolikhet
 
 Bedomningsstatus = Literal["preliminär", "slutlig"]
@@ -27,7 +28,17 @@ class Kontrollbedomning(Fryst):
     fungerar_och_ar_belagd: bool
 
 
+class Sanktionsbedomning(Fryst):
+    kontroll: Kontrollbedomning | None = None
+    status: Bedomningsstatus
+    inneboende: Riskdel | None
+    kvarstaende: Risk | None
+    regelspar: tuple[str, ...]
+    okanda_uppgifter: tuple[str, ...]
+
+
 class Tjanstbedomning(Fryst):
+    sanktionsrisk: Sanktionsbedomning | None = None
     tjanst: str
     erbjuds: bool | None
     status: Bedomningsstatus
@@ -50,3 +61,4 @@ class Bedomning(Fryst):
     regelbas_kontrollsumma: str
     status: Bedomningsstatus
     tjanster: tuple[Tjanstbedomning, ...]
+    omfattning: Omfattningsbeslut | None = None

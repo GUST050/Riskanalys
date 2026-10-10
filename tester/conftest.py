@@ -207,12 +207,12 @@ def minimal_regelbas(minimal_rot):
     return ladda_regelbas(minimal_rot)
 
 
-REPO_REGELBAS = Path(__file__).resolve().parents[1] / "regelbas"
+REPO_REGELBAS = Path(__file__).resolve().parent / "fixturer" / "regelbas_v0"
 
 
 @pytest.fixture(scope="session")
 def regelbas():
-    """Repots riktiga regelbas. Får inte ändras av tester."""
+    """Fryst M1-regelbas: gamla regressionskontrakt körs mot sin avsedda version."""
     from riskanalys.regelverk.laddning import ladda_regelbas
 
     return ladda_regelbas(REPO_REGELBAS)
@@ -519,3 +519,9 @@ def skriven_byra_med_oppen_fraga(byra_med_profil, regelbas, utkast_med_oppen_fra
 def kedja_med_oppen_fraga(byra_med_profil, signerad_regelbas, utkast_med_oppen_fraga):
     kor_kedja(byra_med_profil, signerad_regelbas, utkast_med_oppen_fraga)
     return byra_med_profil
+
+@pytest.fixture(scope="session")
+def regelbas_v1():
+    """Den verkliga, aktuella regelbasen för M2:s kontrakt."""
+    from riskanalys.regelverk.laddning import ladda_regelbas, STANDARD_REGELBAS
+    return ladda_regelbas(STANDARD_REGELBAS)

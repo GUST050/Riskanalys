@@ -11,6 +11,7 @@ from riskanalys.dokument.leverantor import Anropsdata, Leveranssvar, LeverantorF
 from riskanalys.dokument.modeller import Avsnittsunderlag, AvsnittsUtkast
 from riskanalys.dokument.underlag import bygg_underlag, tjanster_med_avsnitt
 from riskanalys.dokument.validering import validera_utkast
+from riskanalys.lagring.yamlfil import las_modell
 from riskanalys.lagring.korningar import ny_korningsmapp, senaste_korning
 from riskanalys.lagring.manifest import MANIFESTNAMN, skriv_manifest
 from riskanalys.profil.hantering import personnamn
@@ -125,7 +126,7 @@ def _spara_forsok(avsnittsmapp: Path, forsok: Forsok) -> None:
 
 def las_skrivresultat(mapp: Path) -> list[Skrivresultat]:
     return [
-        Skrivresultat.model_validate_json(sokvag.read_text(encoding="utf-8"))
+        las_modell(sokvag, Skrivresultat, json=True)
         for sokvag in sorted(mapp.glob("*.json"))
         if sokvag.name != MANIFESTNAMN
     ]

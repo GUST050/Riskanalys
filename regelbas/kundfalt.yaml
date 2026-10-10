@@ -1,0 +1,167 @@
+- fraga: Har kunden ovanlig eller komplicerad ägarstruktur i förhållande till verksamheten?
+  id: K-KUND.komplex_agarstruktur
+  typ: bool
+  varfor: PTL 2 kap. 5 §. Individuell kundrisk och syfte ska prövas av människa.
+- id: K-KK.tillracklig
+  typ: bool
+  fraga: Är kundkännedomen tillräcklig för riskhantering och övervakning?
+  varfor: PTL 3:1 första stycket.
+- id: K-A.risk_hanterbar
+  typ: bool
+  fraga: Kan risken hanteras med den kundkännedom och övervakning som finns?
+  varfor: PTL 3:1.
+- id: K-ROLL.skatteradgivare
+  typ: bool
+  fraga: Utförs uppdraget i en rättsligt omfattad skatterådgivarroll?
+  varfor: PTL 3:1 andra stycket och 4:8; yrkesnamn räcker inte.
+- id: K-ROLL.advokat
+  typ: bool
+  fraga: Utförs uppdraget av advokat/advokatbolag?
+  varfor: PTL 3:1. Utanför byråpaketets omfattning; kundmallens undantag granskas
+    separat.
+- id: K-ROLL.jurist
+  typ: bool
+  fraga: Utförs uppdraget av annan oberoende jurist?
+  varfor: PTL 3:1. Utanför byråpaketets omfattning.
+- id: K-ROLL.auktoriserad_revisor
+  typ: bool
+  fraga: Utförs uppdraget av auktoriserad/godkänd revisor?
+  varfor: PTL 3:1. Utanför byråpaketets omfattning.
+- id: K-UPPDRAG.rattsligt
+  typ: bool
+  fraga: Syftar förbindelsen till försvar/företrädande eller bedömning av rättslig
+    situation enligt undantaget?
+  varfor: PTL 3:1 andra stycket. Separat från informationens skydd i 4:8.
+- id: K-A.etableringsmisstanke
+  typ: bool
+  fraga: Finns misstanke att tjänsterna kommer att användas för PT/TF vid etablering?
+  varfor: PTL 3:2.
+- id: K-A.transaktionsmisstanke
+  typ: bool
+  fraga: Finns skälig grund att misstänka PT/TF i transaktionen?
+  varfor: PTL 3:3.
+- id: K-A.omojligt_avsta
+  typ: bool
+  fraga: Är det faktiskt inte möjligt att låta bli transaktionen?
+  varfor: PTL 3:3 andra stycket; kräver mänsklig rättslig prövning.
+- id: K-A.avstaende_forsvarar_utredning
+  typ: bool
+  fraga: Skulle ett avstående sannolikt försvåra den vidare utredningen?
+  varfor: PTL 3:3 andra stycket.
+- id: K-C.hog
+  typ: bool
+  fraga: 'Härlett: har en signerad C-metod gett hög risk?'
+  varfor: Härleds av motorn; indata för detta fält ignoreras.
+- id: K-C.lag
+  typ: bool
+  fraga: 'Härlett: har en signerad C-metod gett låg risk?'
+  varfor: Härleds av motorn.
+- id: K-C.ej_hog
+  typ: bool
+  fraga: 'Härlett: har en signerad C-metod gett låg/normal risk?'
+  varfor: Härleds av motorn.
+- id: K-HRTL.etablerad
+  typ: bool
+  fraga: Är kunden etablerad i identifierat högrisktredjeland utanför EES?
+  varfor: PTL 3:11 och 17. Ingen landslista integreras i M2.
+- id: K-HRTL.ees_filial_dotter
+  typ: bool
+  fraga: Är kunden filial/dotter till juridisk person etablerad inom EES?
+  varfor: PTL 3:17 tredje stycket; inledande avgränsning.
+- id: K-HRTL.moder_omfattas
+  typ: bool
+  fraga: Omfattas EES-personen av PTL eller motsvarande krav?
+  varfor: PTL 3:17 tredje stycket punkt 1.
+- id: K-HRTL.lag_risk
+  typ: bool
+  fraga: Har mänsklig kundriskbedömning bekräftat att risken inte är hög?
+  varfor: PTL 3:17 tredje stycket punkt 2. Ska förenas med signerad C-bedömning.
+- id: K-HRTL.rutiner
+  typ: bool
+  fraga: Tillämpar kunden koncerngemensamma eller motsvarande rutiner?
+  varfor: PTL 3:17 tredje stycket punkt 3.
+- id: K-PEP.kund
+  typ: bool
+  fraga: Är kunden PEP?
+  varfor: PTL 3:10, 19–20.
+- id: K-PEP.vh
+  typ: bool
+  fraga: Är verklig huvudman PEP?
+  varfor: PTL 3:10, 19–20.
+- id: K-PEP.familj_rca
+  typ: bool
+  fraga: Är kunden familjemedlem eller känd medarbetare till PEP?
+  varfor: PTL 3:19 tredje stycket och 20 andra stycket.
+- id: K-PEP.funktion_upphort
+  typ: bool
+  fraga: Har alla relevanta PEP-funktioner upphört?
+  varfor: PTL 3:20; annars gäller 19 § fortsatt.
+- id: K-PEP.hog_risk_efter18
+  typ: bool
+  fraga: Kvarstår hög risk efter 18 månader?
+  varfor: PTL 3:20; mänsklig bedömning.
+- id: K-PEP.atgarder_kravs
+  typ: bool
+  fraga: 'Härlett: gäller PEP-åtgärder vid mallens datum?'
+  varfor: Härleds med 18 kalendermånader; råindata ignoreras.
+- id: K-PEP.slutdatum
+  typ: datum
+  fraga: När upphörde den sista relevanta PEP-funktionen?
+  varfor: PTL 3:20; 18 kalendermånader räknas från detta datum.
+- id: K-D.skalig_misstanke
+  typ: bool
+  fraga: Kvarstår skälig misstanke efter närmare bedömning?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-D.transaktion_genomford
+  typ: bool
+  fraga: Har transaktionen genomförts?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-D.avvikelse_misstankt
+  typ: bool
+  fraga: Finns en misstänkt avvikelse att utreda?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-D.utredning_klar
+  typ: bool
+  fraga: Har närmare bedömning enligt 4:2 slutförts?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-D.uppgift_undantagen
+  typ: bool
+  fraga: Omfattas just denna uppgift av undantaget i 4:8?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-SANK.mojlig_traff
+  typ: bool
+  fraga: Finns en möjlig sanktionsidentifiering att utreda?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-SANK.identitet_faststalld
+  typ: bool
+  fraga: Är identiteten rättsligt och faktiskt fastställd?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-SANK.utrett_agande_kontroll
+  typ: bool
+  fraga: Har ägande och kontroll utretts för det tillämpliga förbudet?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-SANK.forbud_tillampligt
+  typ: bool
+  fraga: Har människa bekräftat att exakt artikel 2-förbud omfattar den avsedda handlingen?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-SANK.tillstand
+  typ: bool
+  fraga: Finns tillstånd eller undantag som kräver individuell rättslig prövning?
+  varfor: Individuell mänsklig prövning; D enligt PTL 4:2–3, 8–9. Sanktioner endast
+    EU 269/2014 artikel 2, ingen generell frikännande regel.
+- id: K-SANK.primarkalla
+  typ: val
+  val:
+  - EU-269-2014-art2
+  fraga: Vilket exakt primärt förbud har prövats?
+  varfor: Samlingslista räcker inte. Artikel 2 i EU 269/2014 enligt EU 2025/2037.
+    Andra förbud kräver separat expertunderlag.

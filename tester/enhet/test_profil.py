@@ -50,7 +50,7 @@ def test_ny_profil_saknar_alla_uppgifter(regelbas):
         ("P-KUND.andel_riskbransch", "30 %", 0.3),
         ("P-KUND.andel_riskbransch", "30%", 0.3),
         ("P-KUND.andel_riskbransch", "0,3", 0.3),
-        ("P-KUND.andel_riskbransch", "1", 1.0),
+        ("P-KUND.andel_riskbransch", "1,0", 1.0),
         ("P-ORG.antal_anstallda", "8", 8),
         ("P-KONTROLL.C-07.utformning", "finns", "finns"),
         ("P-ORG.namn", " Testbyrån AB ", "Testbyrån AB"),

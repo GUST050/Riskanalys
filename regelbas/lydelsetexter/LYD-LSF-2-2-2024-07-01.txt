@@ -1,5 +1,7 @@
 Verksamhetsutövaren ska i den allmänna riskbedömningen göra följande:
 – Identifiera de produkter och tjänster som tillhandahålls i verksamheten.
-– Identifiera och analysera de hot som är relevanta för de produkter och tjänster som tillhandahålls i verksamheten. Vid denna bedömning ska verksamhetsutövaren särskilt ta hänsyn till uppgifter som kommer fram vid verksamhetsutövarens rapportering av misstänkta aktiviteter och transaktioner. Verksamhetsutövaren ska också särskilt ta hänsyn till information om tillvägagångssätt för penningtvätt och finansiering av terrorism och andra relevanta uppgifter som myndigheter lämnar.
+– Identifiera och analysera de hot som är relevanta för de produkter och tjänster som tillhandahålls i verksamheten. Vid denna bedömning ska verksamhetsutövaren särskilt ta hänsyn till uppgifter som kommer fram vid verksamhetsutövarens rapportering av misstänkta aktiviteter och transaktioner.
+Verksamhetsutövaren ska också särskilt ta hänsyn till information om tillvägagångssätt för penningtvätt och finansiering av terrorism och andra relevanta uppgifter som myndigheter lämnar.
 – Identifiera och analysera de sårbarheter som kan innebära att de produkter och tjänster som tillhandahålls i verksamheten utnyttjas för penningtvätt eller finansiering av terrorism. Vid denna bedömning ska verksamhetsutövaren särskilt beakta vilka kunder och distributionskanaler som finns samt vilka geografiska riskfaktorer som föreligger. Verksamhetsutövaren ska även beakta andra relevanta verksamhetsspecifika omständigheter som kan innebära en sårbarhet för att verksamhetens produkter och tjänster utnyttjas för penningtvätt eller finansiering av terrorism.
-– Värdera riskerna som är förenade med de bedömda hoten och sårbarheterna. Verksamhetsutövaren ska motivera angivna risknivåer.
+– Värdera riskerna som är förenade med de bedömda hoten och sårbarheterna.
+Verksamhetsutövaren ska motivera angivna risknivåer.

@@ -23,7 +23,8 @@ from riskanalys.granskning.korning import kor_granskning
 from riskanalys.lagring.manifest import las_manifest, verifiera_manifest
 from riskanalys.profil.hantering import bekrafta
 from riskanalys.profil.lagring import las_profil, spara_profil
-from riskanalys.regelverk.laddning import STANDARD_REGELBAS
+from pathlib import Path
+STANDARD_REGELBAS = Path(__file__).resolve().parents[1] / "fixturer" / "regelbas_v0"
 
 BESLUT = Beslut(organ="styrelsen", datum=date(2026, 11, 15), namn="Testa Testsson", roll="FfR")
 SENARE_BESLUT = BESLUT.model_copy(update={"datum": date(2026, 11, 20)})

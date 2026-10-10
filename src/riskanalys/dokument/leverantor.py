@@ -8,6 +8,7 @@ from pydantic import TypeAdapter, ValidationError
 
 from riskanalys.dokument.modeller import Avsnittsunderlag, AvsnittsUtkast, Last
 from riskanalys.fel import RiskanalysFel
+from riskanalys.lagring.yamlfil import las_text
 
 _SVARSLISTA = TypeAdapter(list[AvsnittsUtkast])
 
@@ -93,7 +94,9 @@ class Testleverantor:
 def ladda_testleverantor(fil: Path) -> Testleverantor:
     """Läser förberedda svar från en JSON-fil med en lista av AI-utkast."""
     try:
-        svar = _SVARSLISTA.validate_json(fil.read_text(encoding="utf-8"))
+        svar = _SVARSLISTA.validate_json(las_text(fil))
+    except RiskanalysFel as undantag:
+        raise LeverantorFel(str(undantag)) from undantag
     except FileNotFoundError as undantag:
         raise LeverantorFel(f"Filen med testsvar saknas: {fil}") from undantag
     except ValidationError as undantag:

@@ -14,6 +14,10 @@ FORBJUDNA_FORMULERINGAR = (
     "risken är generellt låg",
 )
 BENAMNINGAR = {
+    "sanktioner_risk": "sanktionsrisken",
+    "kvarstaende_sanktioner_risk": "den kvarstående sanktionsrisken",
+    "sanktioner_sannolikhet": "sannolikheten för sanktioner",
+    "sanktioner_konsekvens": "konsekvensen för sanktioner",
     "inneboende_sannolikhet": "sannolikheten",
     "inneboende_konsekvens": "konsekvensen",
     "inneboende_risk": "den inneboende risken",
@@ -25,9 +29,9 @@ BENAMNINGAR = {
 }
 _TAL = re.compile(r"\d+(?:[.,]\d+)?")
 _VERB = r"\s+(?:är|blir|bedöms(?:\s+\w+)?\s+(?:som|vara))\s+"
-_AMNE = r"(?:\s+för\s+(?P<amne>finansiering\s+av\s+terrorism|terrorfinansiering|penningtvätt))?"
+_AMNE = r"(?:\s+för\s+(?P<amne>finansiering\s+av\s+terrorism|terrorfinansiering|penningtvätt|internationella\s+sanktioner|sanktioner))?"
 _FYLLNAD = r"(?:\s+\w+){0,3}?"
-_TF = r"(?P<tf>terrorfinansierings)?"
+_TF = r"(?P<tf>terrorfinansierings)?(?P<sf>sanktions)?"
 _PASTAENDEN = (
     (
         "risk",
@@ -72,6 +76,8 @@ _PASTAENDEN = (*_PASTAENDEN, *((storhet, re.compile(monster, re.IGNORECASE)) for
 KRAVDA_NIVAER = {
     "terrorfinansiering_risk": "Risken för finansiering av terrorism bedöms som {niva}.",
     "kvarstaende_risk": "Den kvarstående risken är {niva}.",
+    "sanktioner_risk": "Sanktionsrisken är {niva}.",
+    "kvarstaende_sanktioner_risk": "Den kvarstående sanktionsrisken är {niva}.",
 }
 _BOJDA_NIVAER = {"låga": "låg", "höga": "hög", "måttliga": "måttlig"}
 
@@ -113,6 +119,11 @@ def _nyckel(storhet: str, traff: re.Match[str]) -> str:
     if storhet == "kvarstår":
         return "kvarstaende_risk"
     grupper = traff.groupdict()
+    ar_sank = bool(grupper.get("sf")) or "sanktion" in (grupper.get("amne") or "").lower()
+    if ar_sank:
+        if storhet == "risk" and (grupper.get("led") or "").strip().lower() == "kvarstående":
+            return "kvarstaende_sanktioner_risk"
+        return f"sanktioner_{storhet}"
     ar_tf = bool(grupper.get("tf")) or "terror" in (grupper.get("amne") or "").lower()
     if storhet != "risk":
         return f"{'terrorfinansiering' if ar_tf else 'inneboende'}_{storhet}"
@@ -122,7 +133,12 @@ def _nyckel(storhet: str, traff: re.Match[str]) -> str:
 
 
 def _helhet(utkast: AvsnittsUtkast, underlag: Avsnittsunderlag) -> list[str]:
-    fel = []
+    tillatna_falt = {u.id for u in underlag.uppgifter}
+    fel = [
+        f"Oklarhet {nummer}: saknad_uppgift måste vara ett tillåtet, icke-känsligt fält i underlaget."
+        for nummer, fraga in enumerate(utkast.oklarheter, start=1)
+        if fraga.saknad_uppgift not in tillatna_falt
+    ]
     if utkast.avsnitt != underlag.avsnitt:
         fel.append(f"Utkastet gäller avsnitt {utkast.avsnitt}, men underlaget gäller {underlag.avsnitt}.")
     if not utkast.stycken:

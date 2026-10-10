@@ -1,0 +1,21 @@
+c_metodforslag: Ingen kundriskformel är frigiven. Sakkunnig ska fastställa faktorer,
+  viktning och gränser; M3 ska validera dem. Tom C-tabell ger preliminärt utfall.
+c_granskning:
+  status: ej_granskad
+atgarder:
+  KB-SKARPT: Särskilt omfattande kundkännedom, ytterligare information och åtgärder
+    enligt 3:16.
+  KB-FORENKLAT-KAN-PROVAS: Förenkling får prövas med riskanpassad omfattning enligt
+    3:15.
+  KB-HRTL-OVERVAKNING: Skärpt övervakning av förbindelse och enstaka transaktion.
+  KB-HRTL-KUND-VH: Ytterligare information om kund och verklig huvudman.
+  KB-HRTL-SYFTE: Ytterligare information om syfte och art.
+  KB-HRTL-MEDEL: Kundens och VH:s ekonomiska situation och medlens ursprung.
+  KB-HRTL-GODKANNANDE: Behörig beslutsfattares godkännande att etablera/upprätthålla
+    förbindelsen.
+  KB-PEP-MEDEL: Tillgångarnas ursprung.
+  KB-PEP-UPPFOLJNING: Skärpt fortlöpande uppföljning och övervakning.
+  KB-PEP-GODKANNANDE-INGA-AVBRYTA: Behörig beslutsfattares godkännande att ingå eller
+    avbryta förbindelsen.
+  KB-D-MEDDELANDEFORBUD: Pröva meddelandeförbudet och dess egna undantag enligt 4:9.
+    A- och D-undantag ersätter inte denna prövning.

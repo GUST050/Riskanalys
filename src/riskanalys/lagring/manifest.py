@@ -7,7 +7,9 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, ConfigDict, ValidationError, Field
+from typing import Literal
+from riskanalys.lagring.kontrollsumma import for_text
 
 from riskanalys import __version__
 from riskanalys.fel import RiskanalysFel
@@ -23,11 +25,36 @@ class ManifestFel(RiskanalysFel):
     """Manifestet finns men kan inte läsas: trasig JSON, fel kodning eller saknade fält."""
 
 
+class Programproveniens(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    commit: str | None = None
+    arbetskopia: Literal["ren", "andrad", "okand"] = "okand"
+    innehallssumma: str = "okänd (äldre manifest)"
+
+
+def programproveniens(rot: Path | None = None) -> Programproveniens:
+    rot = rot or Path(__file__).resolve().parents[3]
+    filer = sorted((rot / "src").rglob("*.py"))
+    filer += [rot / n for n in ("pyproject.toml", "uv.lock", "requirements.txt") if (rot / n).is_file()]
+    summa = for_text("\n".join(f"{p.relative_to(rot).as_posix()} {for_fil(p)}" for p in filer))
+    commit = None
+    status = "okand"
+    if (rot / ".git").exists():
+        try:
+            commit = subprocess.run(["git", "rev-parse", "HEAD"],cwd=rot,capture_output=True,text=True,check=True).stdout.strip()
+            andringar = subprocess.run(["git", "status", "--porcelain"],cwd=rot,capture_output=True,text=True,check=True).stdout
+            status = "andrad" if andringar else "ren"
+        except (OSError, subprocess.CalledProcessError):
+            pass
+    return Programproveniens(commit=commit,arbetskopia=status,innehallssumma=summa)
+
+
 class Manifest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     skapad: datetime
     programversion: str
+    programproveniens: Programproveniens = Field(default_factory=Programproveniens)
     git_commit: str
     metadata: dict[str, str]
     filer: dict[str, str]
@@ -66,6 +93,7 @@ def skriv_manifest(mapp: Path, metadata: dict[str, str]) -> Manifest:
         skapad=datetime.now(timezone.utc),
         programversion=__version__,
         git_commit=_git_commit(),
+        programproveniens=programproveniens(),
         metadata=metadata,
         filer=_filer(mapp),
     )
@@ -81,7 +109,7 @@ def las_manifest(mapp: Path) -> Manifest:
     """Läser manifestet. Ett manifest som inte går att läsa ger ManifestFel med instruktion om återställning."""
     try:
         return Manifest.model_validate_json((mapp / MANIFESTNAMN).read_text(encoding="utf-8"))
-    except (ValidationError, UnicodeDecodeError) as fel:
+    except (ValidationError, UnicodeDecodeError, OSError) as fel:
         raise ManifestFel(
             f"{skadat_manifest(mapp)} Återställ mappen från säkerhetskopian och försök igen."
         ) from fel

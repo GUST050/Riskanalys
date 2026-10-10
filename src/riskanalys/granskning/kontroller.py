@@ -4,6 +4,7 @@ from datetime import date
 from typing import Any
 
 from riskanalys.bedomning.modeller import Bedomning
+from riskanalys.dokument.omfattning import dokumentmal, krav_for_dokument
 from riskanalys.dokument.modeller import Dokument, Oklarhet
 from riskanalys.dokument.rendering import har_verifiera
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
@@ -13,7 +14,9 @@ from riskanalys.fel import RiskanalysFel
 from riskanalys.granskning.modeller import Fynd
 from riskanalys.profil.modeller import Profil
 from riskanalys.regelverk.modeller import Regelbas
-from riskanalys.regelverk.urval import Urval, kravet_galler
+from riskanalys.regelverk.urval import Urval
+
+from riskanalys.granskning.sektorsrisk import sektorsfynd
 
 RISKAVSNITT = "D-ARB.6."
 
@@ -38,6 +41,7 @@ def granska(
         *_b04(regelbas, bedomning, dokument),
         *_b12(regelbas, dokument),
         *_b16(regelbas, historik),
+        *sektorsfynd(regelbas, bedomning, profil),
     ]
     return tuple(
         Fynd(id=f"F-{granskningsdatum.isoformat()}-{nummer:03d}", **falt)
@@ -59,9 +63,8 @@ def _tackning(regelbas: Regelbas, urval: Urval, profil: Profil, dokument: Dokume
             "men avsnittet saknas.",
             "atgard": "Skapa avsnittet. Är det ett riskavsnitt, kör 'riskanalys skriv' och sedan 'riskanalys granska'.",
         }
-        for valt in urval.krav
-        if kravet_galler(regelbas, valt.krav, varden)
-        for avsnitt in valt.krav.uppfylls_i
+        for valt in krav_for_dokument(regelbas, urval, profil, dokument.id)
+        for avsnitt in dokumentmal(valt.krav, dokument.id)
         if not any(befintligt == avsnitt or befintligt.startswith(avsnitt + ".") for befintligt in finns)
     ]
 

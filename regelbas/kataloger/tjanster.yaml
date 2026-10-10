@@ -1,12 +1,357 @@
 - id: T-RED-01
   namn: Löpande bokföring
   sektor: redovisning
-  beskrivning: Kontering av verifikationer, kund- och leverantörsreskontra, bankavstämning och periodrapporter.
-  erbjuds_falt: P-TJ.T-RED-01.erbjuds
-  hot: [H-01, H-02, H-03]
-  sarbarheter: [S-KUND-01, S-KUND-02, S-KANAL-01, S-VERK-01]
-  kontroller: [C-07]
+  beskrivning: Kontering, reskontra, avstämning och periodrapporter.
+  erbjuds_falt: P-TJ.red01_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-RED-01.erbjuds
+  hot:
+  - H-TJ-01
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  kontroller:
+  - C-TJ-01
+  - C-07
   grund_sannolikhet: medel
   grund_konsekvens: betydande
   grund_tf_sannolikhet: låg
-  kallor: [SRC-VAGL-2025-03, SRC-NRA-2024-25]
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-REDOVISNING
+- id: T-RED-02
+  namn: Bokslut och årsredovisning
+  sektor: redovisning
+  beskrivning: Upprättande av bokslut och årsredovisning.
+  erbjuds_falt: P-TJ.red02_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-RED-02.erbjuds
+  hot:
+  - H-TJ-02
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  kontroller:
+  - C-TJ-02
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-REDOVISNING
+- id: T-RED-03
+  namn: Deklarationer och deklarationsombud
+  sektor: redovisning
+  beskrivning: Upprättande av deklarationer och ombudsuppdrag.
+  erbjuds_falt: P-TJ.red03_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-RED-03.erbjuds
+  hot:
+  - H-TJ-03
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  kontroller:
+  - C-TJ-03
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-REDOVISNING
+- id: T-RED-04
+  namn: Lönehantering
+  sektor: redovisning
+  beskrivning: Löneberedning och lönerapportering.
+  erbjuds_falt: P-TJ.red04_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-RED-04.erbjuds
+  hot:
+  - H-TJ-04
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  kontroller:
+  - C-TJ-04
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-REDOVISNING
+- id: T-RED-05
+  namn: Betalningar och attest i kundens namn
+  sektor: redovisning
+  beskrivning: Byrån utför eller attesterar betalningar för kunden.
+  erbjuds_falt: P-TJ.red05_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-RED-05.erbjuds
+  hot:
+  - H-TJ-05
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  - S-TJ-01
+  kontroller:
+  - C-TJ-05
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-REDOVISNING
+- id: T-RED-06
+  namn: Klientmedelskonto
+  sektor: redovisning
+  beskrivning: Hantering av klientmedel för kundens räkning.
+  erbjuds_falt: P-TJ.red06_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-RED-06.erbjuds
+  hot:
+  - H-TJ-06
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  - S-TJ-02
+  kontroller:
+  - C-TJ-06
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-REDOVISNING
+- id: T-RED-07
+  namn: Ekonomisk rådgivning och ekonomichefstjänster
+  sektor: redovisning
+  beskrivning: Ekonomisk rådgivning, rapportering och ekonomichefsuppdrag.
+  erbjuds_falt: P-TJ.red07_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-RED-07.erbjuds
+  hot:
+  - H-TJ-07
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  kontroller:
+  - C-TJ-07
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-REDOVISNING
+- id: T-SKATT-01
+  namn: Skatterådgivning utöver deklarationer
+  sektor: skatt
+  beskrivning: Råd om skatter, avgifter och gränsöverskridande skatteupplägg.
+  erbjuds_falt: P-TJ.skatt01_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-SKATT-01.erbjuds
+  hot:
+  - H-TJ-08
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  kontroller:
+  - C-TJ-08
+  grund_sannolikhet: hög
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.20'
+    sida: 126
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-SKATT
+- id: T-BOLAG-01
+  namn: Bolagsbildning, lagerbolag och bolagsförmedling
+  sektor: bolag
+  beskrivning: Bildande och förmedling av juridiska personer.
+  erbjuds_falt: P-TJ.bolag01_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-BOLAG-01.erbjuds
+  hot:
+  - H-TJ-09
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  - S-TJ-03
+  kontroller:
+  - C-TJ-09
+  grund_sannolikhet: hög
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.25'
+    sida: 144
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-BOLAG
+- id: T-BOLAG-02
+  namn: Registrerad adress eller postadress
+  sektor: adress
+  beskrivning: Tillhandahållande av registrerad adress och postadress.
+  erbjuds_falt: P-TJ.bolag02_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-BOLAG-02.erbjuds
+  hot:
+  - H-TJ-10
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  kontroller:
+  - C-TJ-10
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.26'
+    sida: 147
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-ADRESS
+- id: T-BOLAG-03
+  namn: Styrelseuppdrag eller bolagsrättsligt ansvar
+  sektor: bolag
+  beskrivning: Uppdrag som styrelseledamot eller bolagsrättsligt ansvarig åt kund.
+  erbjuds_falt: P-TJ.bolag03_erbjuds
+  kompatibilitetsfalt:
+  - P-TJ.T-BOLAG-03.erbjuds
+  hot:
+  - H-TJ-11
+  - H-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  - S-TJ-04
+  kontroller:
+  - C-TJ-11
+  grund_sannolikhet: hög
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.25'
+    sida: 144
+  grund: metodval
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
+    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  sektorreferens: SEKTOR-BOLAG

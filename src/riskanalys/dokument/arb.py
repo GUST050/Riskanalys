@@ -37,6 +37,7 @@ def bygg_arb(
         titel=TITEL,
         avsnitt=(
             _syfte(regelbas, profil, bedomning),
+            *((_metod(regelbas, bedomning),) if regelbas.utokade_krav else ()),
             _tjanster(regelbas, bedomning),
             _hot(regelbas, erbjudna),
             _sarbarheter(regelbas, profil, erbjudna),
@@ -59,6 +60,15 @@ def _varde(regelbas: Regelbas, profil: Profil, falt_id: str) -> str:
 def _syfte(regelbas: Regelbas, profil: Profil, bedomning: Bedomning) -> Avsnitt:
     paket = regelbas.regelpaket[bedomning.regelpaket]
     roll = ROLL_FFR if profil.ar_bekraftad(FALT_FFR) else VERIFIERA
+    ansvarstext = f"Funktionen för regelefterlevnad utövas av {roll}. Funktionen ansvarar för att riskbedömningen utvärderas och hålls aktuell."
+    if regelbas.utokade_krav:
+        special = profil.uppgifter.get("P-ORG.sarskilda_funktioner")
+        ffr = profil.uppgifter.get(FALT_FFR)
+        if (special and special.status == "bekräftad" and special.varde is True) or (ffr and ffr.status == "ej_tillämplig"):
+            roll = "{roll:Ansvarsfunktion}" if profil.ar_bekraftad("P-ROLL.ansvarsfunktion") else VERIFIERA
+            motiv = ffr.motivering if ffr and ffr.status == "ej_tillämplig" else "Särskilda funktioner har dokumenterats."
+            ansvarstext = f"Dokumenterad ansvarsfunktion: {roll}. Ansvarsfördelning: {motiv}. Den rättsliga lämpligheten ska sakgranskas."
+
     stycken = (
         _stycke(
             "beskrivning",
@@ -75,8 +85,7 @@ def _syfte(regelbas: Regelbas, profil: Profil, bedomning: Bedomning) -> Avsnitt:
         ),
         _stycke(
             "beskrivning",
-            f"Funktionen för regelefterlevnad utövas av {roll}. Funktionen ansvarar för att riskbedömningen "
-            "utvärderas och hålls aktuell.",
+            ansvarstext,
             [FALT_FFR],
         ),
     )
@@ -157,3 +166,22 @@ def _utvardering(historik: Historik) -> Avsnitt:
         kalla="regelbas",
         stycken=(_stycke("beskrivning", text, []),),
     )
+
+
+def _metod(regelbas: Regelbas, bedomning: Bedomning) -> Avsnitt:
+    text = "Metoden skiljer inneboende risk före åtgärder från kvarstående risk efter belagda kontroller. Penningtvätt, terrorfinansiering och sanktionsrisk beräknas separat. Grundnivåer, kombinationer och skalor är metodval som kräver sakkunniggranskning. "
+    if bedomning.omfattning:
+        text += f"Rättslig omfattning: punkter {bedomning.omfattning.punkter}; status {bedomning.omfattning.status}. "
+        text += " ".join(bedomning.omfattning.hinder)
+    stycken = [_stycke("beskrivning", text, [])]
+    for t in bedomning.tjanster:
+        if t.inneboende is None:
+            continue
+        ref = regelbas.sektorsreferenser.get(regelbas.tjanster[t.tjanst].sektorreferens)
+        text = f"{t.tjanst}: penningtvätt {t.inneboende.risk}, kvarstående {t.kvarstaende}; terrorfinansiering {t.terrorfinansiering.risk}. "
+        if t.sanktionsrisk and t.sanktionsrisk.inneboende:
+            text += f"Sanktionsrisk {t.sanktionsrisk.inneboende.risk}, kvarstående {t.sanktionsrisk.kvarstaende}. "
+        if ref:
+            text += f"Sektorsreferens {ref.id}: {ref.niva} på källans skala {ref.skala}, {ref.kalla}, sida {ref.sida}, version {ref.referensversion}. Källans skala är separat från byråns motor."
+        stycken.append(_stycke("beskrivning", text, [t.tjanst]))
+    return Avsnitt(id="D-ARB.2", rubrik="Metod, omfattning och referensrisk", kalla="regelbas", stycken=tuple(stycken))

@@ -1,0 +1,104 @@
+- id: KD-3-RAPPORT
+  spar: D
+  villkor:
+    alla:
+    - falt: K-D.skalig_misstanke
+      op: ==
+      varde: true
+    - inte: &id001
+        alla:
+        - nagon:
+          - falt: K-ROLL.skatteradgivare
+            op: ==
+            varde: true
+          - falt: K-ROLL.advokat
+            op: ==
+            varde: true
+          - falt: K-ROLL.jurist
+            op: ==
+            varde: true
+          - falt: K-ROLL.auktoriserad_revisor
+            op: ==
+            varde: true
+        - falt: K-UPPDRAG.rattsligt
+          op: ==
+          varde: true
+        - falt: K-D.uppgift_undantagen
+          op: ==
+          varde: true
+  utfall:
+    beslut: rapportera
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-4-3-2017-08-01
+  forklaring: Rapporteringsprövning även utan genomförd transaktion. Ingen automatisk
+    sändning.
+- id: KD-8-UNDANTAG
+  spar: D
+  villkor:
+    alla:
+    - falt: K-D.skalig_misstanke
+      op: ==
+      varde: true
+    - *id001
+  utfall:
+    beslut: undantag
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-4-8-2019-11-01
+  forklaring: Undantag prövas för just uppgiften och uppdraget; A:s undantag ärvs
+    inte.
+- id: KD-2-UTRED
+  spar: D
+  villkor:
+    alla:
+    - falt: K-D.skalig_misstanke
+      op: ==
+      varde: false
+    - falt: K-D.avvikelse_misstankt
+      op: ==
+      varde: true
+    - falt: K-D.utredning_klar
+      op: ==
+      varde: false
+  utfall:
+    beslut: preliminart
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-4-2-2017-08-01
+  forklaring: Närmare bedömning krävs före slutsats.
+- id: KD-INGEN
+  spar: D
+  villkor:
+    alla:
+    - falt: K-D.skalig_misstanke
+      op: ==
+      varde: false
+    - falt: K-D.utredning_klar
+      op: ==
+      varde: true
+  utfall:
+    beslut: ingen_skalig_misstanke
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-4-2-2017-08-01
+  - LYD-PTL-4-3-2017-08-01
+  forklaring: Mänsklig närmare bedömning slutförd utan kvarstående skälig misstanke.
+- id: KB-D-9
+  spar: B
+  villkor:
+    nagon:
+    - falt: K-D.skalig_misstanke
+      op: ==
+      varde: true
+    - falt: K-D.avvikelse_misstankt
+      op: ==
+      varde: true
+  utfall:
+    atgarder:
+    - KB-D-MEDDELANDEFORBUD
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-4-9-2023-01-01
+  forklaring: Pröva meddelandeförbud och lagens egna undantag manuellt. Ingen extern
+    kommunikation utförs.

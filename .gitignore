@@ -23,6 +23,10 @@ build/
 .env
 .env.*
 
+# Lokala sakkunnigbeslut innehåller granskarens identitet och kompetens
+/regelbas/granskning.yaml
+/regelbas/facitgranskning.yaml
+
 # Genererade dokument
 *.docx
 *.pdf

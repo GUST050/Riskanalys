@@ -7,9 +7,11 @@ from itertools import product
 
 from riskanalys.regelverk.modeller import Kartrad, Regelbas, Regelpaket
 from riskanalys.regelverk.villkor import VillkorsFel, tolka_villkor
+from riskanalys.regelverk.validering_m2 import m2fel
+from riskanalys.regelverk.inventering import kontrollera_inventarium
 
 AVSNITT_ID = re.compile(r"^D-[A-Z]+(\.\d+)+$")
-KAPITEL = re.compile(r"^(\d+ kap\.)")
+KAPITEL = re.compile(r"^(\d+(?: [a-z])? kap\.)")
 KONTROLLVAL = {
     "utformning_falt": ("finns", "saknas"),
     "genomforande_falt": ("belagt", "ej_belagt"),
@@ -21,6 +23,7 @@ KONSEKVENSER = ("begränsad", "betydande", "allvarlig")
 def validera(regelbas: Regelbas) -> list[str]:
     """Returnerar alla fel i regelbasen. Tom lista betyder att regelbasen är giltig."""
     return [
+        *kontrollera_inventarium(regelbas, regelbas.inventarium),
         *_kallor(regelbas),
         *_lydelser(regelbas),
         *_krav(regelbas),
@@ -31,6 +34,8 @@ def validera(regelbas: Regelbas) -> list[str]:
         *_regelpaket(regelbas),
         *_sakkunnig(regelbas),
         *_matris(regelbas),
+        *_tillamplighet(regelbas),
+        *m2fel(regelbas),
     ]
 
 
@@ -79,16 +84,26 @@ def _krav(regelbas: Regelbas) -> list[str]:
         except VillkorsFel as undantag:
             fel.append(f"{krav.id}: villkoret galler_om: {undantag}")
         fel += _saknas(krav.id, krav.lydelser, regelbas.lydelser, "lydelsen ")
-        fel += [
-            f"{krav.id}: lydelsen {lydelse_id} hör till källan {regelbas.lydelser[lydelse_id].kalla}, inte {krav.kalla}."
-            for lydelse_id in krav.lydelser
-            if lydelse_id in regelbas.lydelser and regelbas.lydelser[lydelse_id].kalla != krav.kalla
-        ]
+        refererade = [regelbas.lydelser[i] for i in krav.lydelser if i in regelbas.lydelser]
+        if refererade and krav.kalla not in {lyd.kalla for lyd in refererade}:
+            fel += [f"{krav.id}: lydelsen {lyd.id} hör till källan {lyd.kalla}, inte {krav.kalla}." for lyd in refererade]
+        fel += [f"{krav.id}: lydelsen {lyd.id} har annat lagrum {lyd.lagrum}, inte {krav.lagrum}."
+                for lyd in refererade if lyd.lagrum != krav.lagrum]
         fel += [
             f"{krav.id}: avsnittet {avsnitt} har fel form. Använd till exempel D-ARB.6.1."
             for avsnitt in krav.uppfylls_i
             if not AVSNITT_ID.match(avsnitt)
         ]
+        if regelbas.utokade_krav and not krav.mal:
+            fel.append(f"{krav.id}: v1 kräver explicita typade mål.")
+        for mal in krav.mal:
+            definition = regelbas.maldefinitioner.get(mal.id)
+            if definition is None or (definition.typ, definition.etapp) != (mal.typ, mal.etapp):
+                fel.append(f"{krav.id}: målet {mal.id} är inte definierat med rätt typ och etapp.")
+        if krav.mal and set(krav.uppfylls_i) != {m.id for m in krav.mal if m.typ == "dokument"}:
+            fel.append(f"{krav.id}: dokumentmål och uppfylls_i måste stämma överens.")
+        if not krav.mal and not krav.uppfylls_i:
+            fel.append(f"{krav.id}: mål saknas.")
         if krav.ikraft and krav.upphor and krav.upphor <= krav.ikraft:
             fel.append(f"{krav.id}: upphör {krav.upphor} måste vara efter ikraftträdandet {krav.ikraft}.")
     return fel
@@ -192,13 +207,20 @@ def _kartrad(regelbas: Regelbas, paket: Regelpaket, namn: str, rad: Kartrad) -> 
     plats = f"{namn}, {rad.kalla} {rad.lagrum}"
     if rad.krav and rad.ej_tillamplig:
         return [f"{plats}: ange antingen krav eller ej_tillamplig, inte båda."]
+    if rad.hantering and (rad.krav or rad.ej_tillamplig):
+        return [f"{plats}: hantering får inte kombineras med krav eller ej_tillamplig."]
     fel = []
     for krav_id in rad.krav:
         krav = regelbas.krav.get(krav_id)
         if krav is None or krav_id not in paket.krav:
             fel.append(f"{plats}: kravet {krav_id} finns inte i regelpaketet.")
-        elif (krav.kalla, krav.lagrum) != (rad.kalla, rad.lagrum):
+        elif (rad.kalla, rad.lagrum) not in {
+            (regelbas.lydelser[i].kalla, regelbas.lydelser[i].lagrum)
+            for i in krav.lydelser if i in regelbas.lydelser
+        }:
             fel.append(f"{plats}: kravet {krav_id} gäller {krav.kalla} {krav.lagrum}.")
+    if regelbas.utokade_krav and not rad.hanterad:
+        fel.append(f"{plats}: paragrafen måste hanteras före v1.")
     return fel
 
 
@@ -230,3 +252,14 @@ def _matris(regelbas: Regelbas) -> list[str]:
         for sannolikhet, konsekvens in product(SANNOLIKHETER, KONSEKVENSER)
         if antal[(sannolikhet, konsekvens)] != 1
     ]
+
+
+def _tillamplighet(regelbas: Regelbas) -> list[str]:
+    fel = []
+    for rad in regelbas.tillamplighet.values():
+        fel += _saknas(rad.id, rad.lydelser, regelbas.lydelser, "lydelsen ")
+        try:
+            tolka_villkor(rad.villkor, regelbas.faltdefinitioner())
+        except VillkorsFel as exc:
+            fel.append(f"{rad.id}: {exc}")
+    return fel

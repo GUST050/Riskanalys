@@ -1,0 +1,56 @@
+# Fältregister. Varje uppgift i byråprofilen har ett fält med typ.
+- id: P-ORG.namn
+  typ: text
+  fraga: Vad heter byrån?
+  varfor: Den allmänna riskbedömningen ska avse den egna verksamheten.
+- id: P-ORG.antal_anstallda
+  typ: heltal
+  kritisk: true
+  smagrupp: true
+  fraga: Hur många personer arbetar på byrån, inklusive ägare?
+  varfor: Storleken påverkar hur omfattande riskbedömningen och rutinerna ska vara.
+- id: P-ORG.verksamhetsstallen
+  typ: heltal
+  kritisk: true
+  fraga: På hur många orter eller kontor bedriver byrån verksamhet?
+  varfor: Fler verksamhetsställen ger fler kanaler och kräver tydligare ansvarsfördelning.
+- id: P-ROLL.ffr_namn
+  typ: text
+  personuppgift: true
+  kritisk: true
+  fraga: Vem utövar funktionen för regelefterlevnad?
+  varfor: Ansvaret ska framgå av dokumentationen. Namnet skickas aldrig till AI.
+- id: P-TJ.T-RED-01.erbjuds
+  typ: bool
+  fraga: Erbjuder byrån löpande bokföring?
+  varfor: Varje tjänst som erbjuds ska identifieras och bedömas för sig (14FS 2024:11 2 kap. 2 §).
+- id: P-KUND.andel_riskbransch
+  typ: andel
+  fraga: Hur stor andel av kunderna finns i branscher med förhöjd risk enligt den nationella riskbedömningen, till exempel bygg, restaurang, städ och transport?
+  varfor: Kunder är en sårbarhet som särskilt ska beaktas (14FS 2024:11 2 kap. 2 §).
+- id: P-KUND.andel_kontant
+  typ: andel
+  fraga: Hur stor andel av kunderna har en betydande kontanthantering?
+  varfor: Kontanter gör det svårare att spåra pengarnas ursprung.
+- id: P-KANAL.andel_digitalt_underlag
+  typ: andel
+  fraga: Hur stor andel av kunderna lämnar sitt underlag digitalt, till exempel via app eller e-post, utan personligt möte?
+  varfor: Distributionskanaler är en sårbarhet som särskilt ska beaktas (14FS 2024:11 2 kap. 2 §).
+- id: P-KANAL.bankdata_andel
+  typ: andel
+  fraga: För hur stor andel av kunderna har byrån direkt tillgång till bankdata, till exempel bankfil eller bankkoppling?
+  varfor: Utan bankdata kan byrån inte stämma av underlaget mot verkliga transaktioner.
+- id: P-VERK.juniora_konsulter
+  typ: bool
+  fraga: Arbetar konsulter med mindre än två års erfarenhet självständigt mot kunder?
+  varfor: Verksamhetsspecifika omständigheter ska beaktas (14FS 2024:11 2 kap. 2 §).
+- id: P-KONTROLL.C-07.utformning
+  typ: val
+  val: [finns, saknas]
+  fraga: Finns bankavstämning mot underlag beskriven i byråns rutiner?
+  varfor: En kontroll sänker bara risken om den finns i rutinerna.
+- id: P-KONTROLL.C-07.genomforande
+  typ: val
+  val: [belagt, ej_belagt]
+  fraga: Kan byrån belägga att bankavstämningen görs, till exempel med signerade avstämningar?
+  varfor: En kontroll sänker bara risken om det går att visa att den genomförs.

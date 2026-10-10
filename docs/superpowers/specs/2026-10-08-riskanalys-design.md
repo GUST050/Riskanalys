@@ -1,9 +1,9 @@
 # Riskanalys – designspecifikation
 
-**Status:** Förslag, revision 9 (2026-10-09). Ligger till grund för implementeringsplanen för M0 och M1.
+**Status:** Förslag, revision 10 (2026-10-10). Ligger till grund för M0–M1 och [implementeringsplanen för M2](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md). Juridiskt godkännande återstår.
 **Underlag:** [researchsammanställningen](../../research/README.md).
 **Ändringar:** se [ändringsloggen](#22-ändringslogg) sist i dokumentet.
-**Nästa steg:** etapp M2 (regelbas v1 och juridisk granskning). M0 och M1 är implementerade enligt [implementeringsplanen](../plans/2026-10-08-m0-m1-grund-och-tunn-kedja.md); se [status](../../STATUS.md).
+**Nästa steg:** verklig sakkunniggranskning av M2:s tekniska underlag och sedan M3:s metod-/granskningsutvärdering. M0–M1 och M2:s tekniska implementation är införda; M2 är ännu inte juridiskt godkänd. Se [status](../../STATUS.md) och [M2-planens genomförandelogg](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md#genomförande-2026-10-10) för kontrakt, verifiering och kvarstående arbete.
 
 ---
 
@@ -167,7 +167,7 @@ id: SRC-14FS-2024-11
 titel: Länsstyrelsen i Västra Götalands läns föreskrifter och allmänna råd om åtgärder mot penningtvätt och finansiering av terrorism
 typ: föreskrift            # lag | förordning | föreskrift | allmänt_råd | vägledning | tillsynsrapport | riskbedömning | beslut | eu_förordning | eu_riktlinje_utkast
 utgivare: Länsstyrelsen i Västra Götalands län
-beslutad: 2024-05-22
+beslutad: 2024-05-20
 galler_fran: 2024-07-01
 galler_till: null
 geografi: [Västra Götaland, Halland, Värmland, Örebro, Dalarna, Gävleborg]
@@ -192,7 +192,7 @@ text_kontrollsumma: sha256:...
 **Krav**
 ```yaml
 id: KRV-LSF-003
-kalla: SRC-14FS-2024-11
+kalla: SRC-14FS-2024-11            # huvudkälla; länsurval sker per refererad lydelse
 lagrum: "2 kap. 3 §"
 lydelser: [LYD-LSF-2-3-2024-07-01]   # kravets giltighet följer lydelserna; en ny lydelse läggs till i listan
 ikraft: 2024-07-01
@@ -209,6 +209,8 @@ sakkunnig:
   datum: null
   kontrollsumma: null      # kravets innehåll när det verifierades; verifierad gäller bara det innehållet
 ```
+
+I M2 får ett krav ha alternativa likalydande paragraflydelser från flera län. `kalla` behålls som huvudkälla; vald lydelse avgör den rättsliga hänvisningen och geografin. Skillnader i betydelse kräver separata krav. Krav med flera självständiga rättsliga grunder länkas i kravkartan och behandlas inte som alternativa lydelser. Samtliga källor, lydelser, fält och metodberoenden som godkännandet omfattar ingår i sakkunnigunderlagets kontrollsumma.
 
 **Tjänst, hot, sårbarhet**
 ```yaml
@@ -409,10 +411,10 @@ Kundmodellen är en mall i fas 1 och en motor i fas 2. Den består av fyra spår
 
 | Spår | Fråga | Rättslig grund (verifieras i M2) | Utfall |
 |---|---|---|---|
-| **A Förbud och stopp** | Får affärsförbindelsen inledas eller fortsätta, eller åtgärden utföras? | Otillräcklig kundkännedom (PTL 3 kap. 1 §, med undantag vid rättsligt förfarande). Misstanke vid etablering (3 kap. 2 §). Misstänkt transaktion (3 kap. 3 §, med undantag när det inte går att avstå). Träff på sanktionslista (EU:s sanktionsförordningar). | Tillåtet, stopp, eller stopp med lagens undantag. Varje utfall har egen dokumentation. |
+| **A Förbud och stopp** | Får affärsförbindelsen inledas eller fortsätta, eller åtgärden utföras? | Otillräcklig kundkännedom (PTL 3 kap. 1 §, med avgränsat undantag). Misstanke vid etablering (3 kap. 2 §). Misstänkt transaktion (3 kap. 3 §, med lagens transaktionsundantag). Sanktioner prövas efter identitetsutredning och mot exakt tillämplig bestämmelse. | Tillåtet, stopp, lagstadgat undantag eller preliminärt när underlag saknas. Varje utfall har egen dokumentation. |
 | **B Obligatoriska särskilda åtgärder** | Vilka åtgärder kräver lagen oavsett riskklass? | Högrisktredjeland (3 kap. 17 §): skärpta åtgärder och godkännande av behörig beslutsfattare, med lagens undantag. PEP och närstående (3 kap. 19–20 §§): medlens ursprung, skärpt uppföljning, godkännande, samt 18 månader efter avslutat uppdrag. | Lista över åtgärder som ska genomföras och dokumenteras |
 | **C Riskklassning** | Vilken riskprofil har kunden? | PTL 2 kap. 3–5 §§. Faktorer, poäng och gränser är metodval. Att PEP eller högrisktredjeland också ger hög riskklass är ett metodval, inte ett lagkrav. | Låg, normal eller hög, med motivering. Preliminär om uppgifter saknas. |
-| **D Rapportering** | Ska misstanke rapporteras till Finanspolisen? | PTL 4 kap. 3 § (rapportering) och 4 kap. 9 § (meddelandeförbud) | Rapportskyldighet, oberoende av riskklass |
+| **D Rapportering** | Ska misstanke rapporteras till Finanspolisen? | PTL 4 kap. 2–3 §§ (bedömning och rapportering), 8 § (undantag för vissa anförtrodda uppgifter) och 9 § (meddelandeförbud med undantag) | Rapportskyldighet prövad på egna villkor, oberoende av riskklass |
 
 Spåren utvärderas var för sig men har **uttryckliga beroenden**. Andra beroenden än dessa finns inte.
 
@@ -423,9 +425,11 @@ Spåren utvärderas var för sig men har **uttryckliga beroenden**. Andra beroen
 | C Riskklassning (låg) | Kundkännedomens omfattning | Låg risk *tillåter* förenklade åtgärder, men kräver dem inte | PTL 3 kap. 15 § |
 | C Riskklassning | A Förbud och stopp | Om kundkännedomen är *tillräcklig* bedöms mot den risk som ska hanteras. Högre risk kräver mer underlag innan förbindelsen får inledas eller fortsätta. | PTL 3 kap. 1 § |
 | B → C | Riskklassning | Att PEP eller högrisktredjeland *också* ger hög riskklass är ett metodval (se tabellen ovan) | Metodval |
-| Inget spår | D Rapportering | Rapportskyldigheten prövas på sina egna villkor och påverkas inte av riskklass, förbud eller åtgärder | PTL 4 kap. 3 § |
+| Gemensamma rättsliga uppgifter | A och D, var för sig | Yrkesroll, uppdragets rättsliga syfte och uppgifternas sammanhang prövas separat mot respektive undantag. A:s undantag kopieras inte till D. Rapportering prövas även om A stoppar affären; låg riskklass befriar inte från rapporteringsprövning. | PTL 3 kap. 1 § andra stycket samt 4 kap. 2–3 och 8 §§ |
 
 Beroendena finns i beslutstabellerna som egna rader med egna tester. Kundformuläret visar varje beroende för användaren.
+
+Den rättsliga verksamhetskategorin hålls skild från tjänstens riskkategori. PTL 1 kap. 2 § första stycket 23 gäller bara verksamhetsutövare som inte är sådana personer som avses i 18–22. Bolagsbildning hos en byrå som omfattas av 19 eller 20 utlöser därför ingen automatisk omklassning till 23. Paketet avgränsas till länsstyrelsetillsyn enligt PTF 16 §; annan tillsyn eller en tjänst utanför paketets granskade omfattning ger ett tydligt hinder. Dessa frågor och rapporteringsundantaget har kontrollerats tekniskt mot [PTL](https://rkrattsbaser.gov.se/sfst?bet=2017:630); sakkunnig ska godkänna varje beslutsgren.
 
 ### 7.7 Beslutstabeller
 
@@ -650,6 +654,8 @@ Byrådata ligger i `$RISKANALYS_DATA`, aldrig i repot (avsnitt 5.2).
 
 Tester hittar fel i regler som finns, men inte ett krav som aldrig lades in. Därför har varje regelpaket en **paragrafkarta**: varje paragraf i de relevanta kapitlen av lag och föreskrift, för angivet datum och län, med antingen de krav-ID:n den ger upphov till eller "ej tillämplig för sektorn" med motivering. Kartan granskas och signeras av sakkunnig per version av regelpaketet. Programmet kontrollerar att kartan är fullständig mot källans paragrafindelning.
 
+M2 inventerar hela PTL (även 4 a och 7 a kap.) och hela den valda länsföreskriften. Även registrering hos Bolagsverket enligt PTL 7 kap. 3 § och anmälan av ledningsförändringar enligt 7 kap. 6 § ingår. Definitioner, tillsynsregler och bemyndiganden får en redovisad hantering eller sektormotivering; de får inte bara utelämnas. Övergångsbestämmelser ingår i en separat kontroll av giltighet. Registreringskravens regeldata förbereds i M2; användarflödet och faktisk drift prövas i M4 före M5. En granskning av enbart allmän riskbedömning kontrollerar dokumentets krav, medan den juridiska fullständighetskontrollen fortfarande omfattar hela paketet.
+
 ### 16.2 Acceptansprov
 
 Före första användning hos en riktig byrå går en **oberoende sakkunnig** och en **tänkt användare** igenom flera byråprofiler, däribland:
@@ -671,7 +677,7 @@ Först därefter går det att säga om upplägget ger bättre resultat än dagen
 
 [Research 09](../../research/09-tillsynsbeslut-2026.md#bevarat-underlag-och-återanvändbara-granskningsfall) beskriver bevarade original, OCR och sidkarta utanför repot. [tillsyn-2026.json](../../research/typfall/tillsyn-2026.json) innehåller två nyskrivna syntetiska negativa fall, 17 förväntade fynd och fem kontrollvarianter. Det är ett **facitutkast, inte juridiskt validerat**, och ingen produktutvärdering är ännu genomförd med fallen.
 
-- M2: en oberoende sakkunnig bekräftar eller reviderar facitversionen mot beslut och relevanta krav. Besluten används som tillsynspraxis, inte som universella risknivåer eller en formel för sanktionsavgifter.
+- M2: en oberoende sakkunnig bekräftar eller reviderar facitversionen mot beslut och relevanta krav. Besluten används som tillsynspraxis, inte som universella risknivåer eller en formel för sanktionsavgifter. Facitets 22 fynd/varianter granskas separat från regelpaketens rättsliga objekt, med egen version och innehållssumma. `docs/research/typfall/tillsyn-2026.json` är kanonisk; regelbasens referensfil länkar dit. En facitrevision upphäver endast facitattesten. Granskarens identitet och kompetens sparas i lokala attestfiler utanför offentligt Git. M3 måste verifiera facitbeslutet mot exakt facitversion före utvärdering.
 - M3: granskaren och det mänskliga sakgranskningsflödet ska hitta och förklara alla obligatoriska fynd inom allmän riskbedömning. Saknade fakta får inte fyllas i av AI. Längre språk, högre risknivåer och ett äldre uppgivet utvärderingsdatum får inte ensamma undanröja bristerna. Åtgärdade fynd ska inte fortsätta rapporteras. Missade och ogrundade fynd redovisas i valideringsrapporten och hanteras före M5.
 - M4–M5: pröva att intaget samlar in omfattning per tjänst, kundtyp, kanal och relevant geografi, med period, nämnare, källa och uppgiftsstatus. Fynd inom rutiner prövas när befintliga rutiner ses över; de får inte poängsättas som om de ingick i en granskning av enbart allmän riskbedömning.
 - M7: utvidgad provtillsyn av hela dokumentpaketet. Den ersätter inte prövningen av allmän riskbedömning före första riktiga byrå.
@@ -721,7 +727,7 @@ Fas 1 behandlar inga kundärenden. Viss behandling av personuppgifter är ändå
 | M9 Kundnivå | Egen spec | – |
 | M10 Fler sektorer | Ett sektorspaket per sektor | – |
 
-**Parallellt spår: AMLR.** Startar samtidigt med M2. AMLR:s artiklar och bilagor kartläggs mot kravregistret, och ett eget regelpaket med giltighet från 2027-07-10 byggs och testas vid sidan av dagens paket. Spåret följer promemorian *EU:s penningtvättspaket* (Fi2026/01654) och AMLA:s slutliga riktlinjer. Klart när AMLR-paketet är sakkunniggranskat före 2027-07-10.
+**Parallellt spår: AMLR.** Startar samtidigt med M2. AMLR:s artiklar och bilagor kartläggs mot kravregistret, och ett eget regelpaket med tillämpningsdatum 2027-07-10 byggs och testas vid sidan av dagens paket. M2 levererar kravkarta och ett separat utkastpaket. Ett utkast kan inte väljas operativt, även om användaren anger ett senare datum. Spåret följer promemorian *EU:s penningtvättspaket* (Fi2026/01654) och AMLA:s slutliga riktlinjer; lagförslag och riktlinjeutkast blir inte bindande genom att datumet passerar. Hela spåret är klart när AMLR-paketet och de svenska kompletteringarna är sakkunniggranskade före 2027-07-10.
 
 M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2–M4 ser till att metoden är juridiskt granskad, validerad och användbar innan en riktig byrå fastställer något.
 
@@ -748,10 +754,10 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 
 ## 20 Öppna frågor
 
-1. Innehållet i Länsstyrelsen Skånes föreskrifter (12FS 2024:8) behöver jämföras med Stockholms och Västra Götalands.
-2. AMLA:s slutliga riktlinjer om verksamhetsövergripande riskbedömning väntas under fjärde kvartalet 2026. Till dess märks allt som bygger på utkastet som *EU-utkast* eller *metodval*.
+1. Skånes föreskrifter har jämförts maskinellt med Stockholms och Västra Götalands (research 10). Tabell 1 i 3 kap. 4 § har även jämförts visuellt på PDF-sidorna 5–6 utan observerade skillnader i kontroll- eller dokumentationskraven. Sakkunnigs juridiska bedömning återstår.
+2. AMLA:s konsultation om verksamhetsomfattande riskbedömning är stängd. På den kontrollerade konsultationssidan finns ännu inget slutligt resultat (2026-10-10, research 10). Publiceringsläget kontrolleras på nytt före användning. Till dess märks allt som bygger på utkastet som *EU-utkast* eller *metodval*.
 3. De svenska kompletterande reglerna: promemorian *EU:s penningtvättspaket* (Fi2026/01654), publicerad 2026-07-06, är på remiss med svar senast 2026-10-30. Någon proposition har ännu inte setts.
-6. Ändringen av penningtvättslagens 1 kap. 2 § som träder i kraft 2026-11-20 ska läggas in som ny lydelse och dess betydelse för sektorerna bedömas.
+6. Ändringen av PTL 1 kap. 2 § 2026-11-20 har jämförts: punkterna 19, 20 och 23 är oförändrade (research 10). Båda lydelserna och testerna runt datumgränsen ska införas i M2; sakkunnig verifierar tillämpligheten.
 4. Om Bolagsverket erbjuder elektronisk åtkomst till registret över verkliga huvudmän (påverkar fas 2).
 5. Vem som gör sakkunniggranskningen av regelbasen och acceptansprovet.
 7. Grundnivåerna i tjänstekatalogen ska kalibreras mot sektorsrisken. Den nationella riskbedömningen 2024/2025 kallar risken för bokförings- och revisionstjänster hög ([research 09](../../research/09-tillsynsbeslut-2026.md)). Regelbas v1 ska också ha bolagsbildning och skatterådgivning i tjänstekatalogen och omfattning per tjänst i profilen.
@@ -781,3 +787,4 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 | 7 | 2026-10-09 | På användarens begäran: tillsynsmaterialet bevarat lokalt utanför repot med OCR och kontrollsummor. Två syntetiska granskningsfall med 17 förväntade fynd och fem kontrollvarianter kopplade till originalens sidor. Avsnitt 16.3 kräver prövning av allmän riskbedömning i M3 före M5; utvidgad facitjämförelse kvarstår i M7. Facit väntar på sakkunniggranskning. |
 | 8 | 2026-10-09 | Efter Codex negativa prov av planens kodblock: sakkunnigstatus binds också till refererade lydelser, källans giltighetsuppgifter och fälten i `galler_om` (6.2 och 16.1); sakgranskningen gäller avsnittet med insatta namn, exakt som det exporteras (10); tidigare fastställda paket verifieras mot manifest innan de används (5.3). 16.3 anger att ett bristmönster räknas som upptäckt först med granskningskontroll och test. |
 | 9 | 2026-10-09 | Efter Codex granskning av rättningarna: ett saknat eller skadat manifest rapporteras som en avvikelse med instruktion om återställning, aldrig som en krasch (5.3). |
+| 10 | 2026-10-10 | Efter granskning av M2-underlaget: rapporteringsundantaget i PTL 4 kap. 8 § och separata undantagsprövningar i kundmodellen; rättslig avgränsning av punkt 23; full PTL-inventering inklusive 7 kap.; korrekt beslutsdatum för 14FS; alternativ lydelse per län med bevarad huvudkälla; AMLR som separat utkastpaket utan operativt urval. M2-plan tillagd. Alla juridiska slutsatser väntar på sakkunniggranskning. |

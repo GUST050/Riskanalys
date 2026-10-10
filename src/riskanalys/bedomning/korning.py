@@ -9,7 +9,7 @@ from riskanalys.lagring.kontrollsumma import for_fil
 from riskanalys.fel import RiskanalysFel
 from riskanalys.lagring.korningar import ny_korningsmapp
 from riskanalys.lagring.manifest import manifestets_metadata, skriv_manifest, verifiera_manifest
-from riskanalys.lagring.yamlfil import las_yaml
+from riskanalys.lagring.yamlfil import las_modell
 from riskanalys.profil.hantering import kontrollera_profil
 from riskanalys.profil.lagring import PROFILFIL, las_profil
 from riskanalys.profil.modeller import Profil
@@ -45,11 +45,11 @@ def kor_bedomning(byramapp: Path, regelbas: Regelbas) -> Path:
 
 
 def las_bedomning(mapp: Path) -> Bedomning:
-    return Bedomning.model_validate_json((mapp / BEDOMNINGSFIL).read_text(encoding="utf-8"))
+    return las_modell(mapp / BEDOMNINGSFIL, Bedomning, json=True)
 
 
 def las_bedomningsprofil(mapp: Path) -> Profil:
-    return Profil.model_validate(las_yaml(mapp / PROFILKOPIA))
+    return las_modell(mapp / PROFILKOPIA, Profil)
 
 
 def profilen_har_andrats(byramapp: Path, bedomningsmapp: Path) -> bool:

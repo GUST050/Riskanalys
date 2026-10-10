@@ -1,33 +1,188 @@
-# Gränsvärdena är metodval och prövas i modellvalideringen (M2).
 - id: S-KUND-01
   namn: Kunder i branscher med förhöjd risk
   omrade: kund
   grund: metodval
-  villkor: {falt: P-KUND.andel_riskbransch, op: ">=", varde: 0.2}
-  effekt: {sannolikhet: 1}
-  kallor: [SRC-NRA-2024-25, SRC-TS-2026-14]
+  villkor:
+    falt: P-KUND.andel_riskbransch
+    op: '>='
+    varde: 0.2
+  effekt:
+    sannolikhet: 1
+  kallor:
+  - SRC-NRA-2024-25
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
 - id: S-KUND-02
   namn: Kunder med betydande kontanthantering
   omrade: kund
   grund: metodval
-  villkor: {falt: P-KUND.andel_kontant, op: ">=", varde: 0.1}
-  effekt: {sannolikhet: 1}
+  villkor:
+    falt: P-KUND.andel_kontant
+    op: '>='
+    varde: 0.1
+  effekt:
+    sannolikhet: 1
   galler: bada
-  kallor: [SRC-PTL, SRC-VAGL-2025-03]
+  kallor:
+  - SRC-PTL
+  - SRC-VAGL-2025-03
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
 - id: S-KANAL-01
   namn: Digitalt underlag utan tillgång till bankdata
   omrade: kanal
   grund: metodval
   villkor:
     alla:
-      - {falt: P-KANAL.andel_digitalt_underlag, op: ">=", varde: 0.5}
-      - {falt: P-KANAL.bankdata_andel, op: "<", varde: 0.5}
-  effekt: {sannolikhet: 1}
-  kallor: [SRC-TS-2026-14]
+    - falt: P-KANAL.andel_digitalt_underlag
+      op: '>='
+      varde: 0.5
+    - falt: P-KANAL.bankdata_andel
+      op: <
+      varde: 0.5
+  effekt:
+    sannolikhet: 1
+  kallor:
+  - SRC-TS-2026-14
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
 - id: S-VERK-01
   namn: Juniora konsulter arbetar självständigt
   omrade: verk
   grund: metodval
-  villkor: {falt: P-VERK.juniora_konsulter, op: "==", varde: true}
-  effekt: {sannolikhet: 1}
-  kallor: [SRC-TS-2026-14]
+  villkor:
+    falt: P-VERK.juniora_konsulter
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  kallor:
+  - SRC-TS-2026-14
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+- id: S-GEO-01
+  namn: Transaktioner med utlandsanknytning
+  omrade: geo
+  grund: metodval
+  villkor:
+    falt: P-GEO.andel_utland_transaktion
+    op: '>'
+    varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-KOMB-01
+  namn: Riskbransch kombinerad med svagt bankunderlag
+  omrade: kanal
+  grund: metodval
+  villkor:
+    alla:
+    - falt: P-KUND.andel_riskbransch
+      op: '>='
+      varde: 0.2
+    - falt: P-KANAL.bankdata_andel
+      op: <
+      varde: 0.5
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter:
+  - S-KUND-01
+  - S-KANAL-01
+- id: S-TJ-01
+  namn: 'Transaktionsnära uppdrag: red05'
+  omrade: tj
+  grund: metodval
+  villkor:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-TJ-02
+  namn: 'Transaktionsnära uppdrag: red06'
+  omrade: tj
+  grund: metodval
+  villkor:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-TJ-03
+  namn: 'Transaktionsnära uppdrag: bolag01'
+  omrade: tj
+  grund: metodval
+  villkor:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-TJ-04
+  namn: 'Transaktionsnära uppdrag: bolag03'
+  omrade: tj
+  grund: metodval
+  villkor:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []

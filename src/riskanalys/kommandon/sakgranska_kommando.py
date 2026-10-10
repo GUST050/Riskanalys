@@ -94,9 +94,15 @@ def beskriv_motorns_nivaer(tjanst: Tjanstbedomning) -> str:
     inneboende, tf = tjanst.inneboende, tjanst.terrorfinansiering
     if inneboende is None or tf is None:
         return f"Tjänsten {tjanst.tjanst} har inga risknivåer."
+    sank = tjanst.sanktionsrisk
+    sanktext = (
+        f"Sanktionsrisk {sank.inneboende.risk} (sannolikhet {sank.inneboende.sannolikhet}, "
+        f"konsekvens {sank.inneboende.konsekvens}), kvarstående sanktionsrisk {sank.kvarstaende}. "
+        if sank and sank.inneboende else ""
+    )
     return (
         f"Riskmotorns nivåer: inneboende risk {inneboende.risk} (sannolikhet {inneboende.sannolikhet}, "
         f"konsekvens {inneboende.konsekvens}), risk för terrorfinansiering {tf.risk} (sannolikhet {tf.sannolikhet}, "
         f"konsekvens {tf.konsekvens}), kvarstående risk {tjanst.kvarstaende}. "
-        "Kontrollera att texten anger samma nivåer."
+        + sanktext + "Kontrollera att texten anger samma nivåer."
     )

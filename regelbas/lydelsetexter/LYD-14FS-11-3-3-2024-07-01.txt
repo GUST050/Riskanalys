@@ -1,0 +1,3 @@
+Verksamhetsutövaren ska identifiera en kund som är en fysisk person genom att begära uppgifter om personens namn, personnummer, samordningsnummer eller motsvarande nummer samt adress.
+Verksamhetsutövaren ska identifiera en kund som är en juridisk person genom att begära uppgifter om den juridiska personens namn och organisationsnummer, registrerad adress samt företrädare.
+Om kunden företräds av ett ombud eller motsvarande, ska verksamhetsutövaren också identifiera den personen i enlighet med första stycket.

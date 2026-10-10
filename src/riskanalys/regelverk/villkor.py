@@ -92,7 +92,8 @@ class Utfall:
 def kontrollera_varde(definition: Faltdef, varde: Any) -> None:
     """Kontrollerar att ett värde passar fältets typ."""
     typ = definition.typ
-    ar_tal = isinstance(varde, (int, float)) and not isinstance(varde, bool)
+    import math
+    ar_tal = isinstance(varde, (int, float)) and not isinstance(varde, bool) and math.isfinite(varde)
     if typ == "bool":
         ok = isinstance(varde, bool)
     elif typ == "heltal":
@@ -134,6 +135,8 @@ def tolka_villkor(data: Any, falt: dict[str, Faltdef]) -> Villkor:
 
 def _tolka_jamforelse(data: dict[str, Any], falt: dict[str, Faltdef]) -> Jamforelse:
     falt_id, op = data["falt"], data["op"]
+    if not isinstance(falt_id, str) or not isinstance(op, str):
+        raise VillkorsFel("falt och op måste vara text. Rätta villkoret i YAML-filen.")
     if falt_id not in falt:
         raise VillkorsFel(f"Okänt fält {falt_id!r}. Fältet måste finnas i fältregistret.")
     if op not in OPERATORER:

@@ -1,8 +1,8 @@
-# Fältregister. Varje uppgift i byråprofilen har ett fält med typ.
 - id: P-ORG.namn
   typ: text
   fraga: Vad heter byrån?
-  varfor: Den allmänna riskbedömningen ska avse den egna verksamheten.
+  varfor: Dokumentet måste avse den egna verksamheten.
+  kritisk: true
 - id: P-ORG.antal_anstallda
   typ: heltal
   kritisk: true
@@ -20,37 +20,1186 @@
   kritisk: true
   fraga: Vem utövar funktionen för regelefterlevnad?
   varfor: Ansvaret ska framgå av dokumentationen. Namnet skickas aldrig till AI.
+  kritisk_om:
+    falt: P-ORG.sarskilda_funktioner
+    op: ==
+    varde: false
 - id: P-TJ.T-RED-01.erbjuds
   typ: bool
-  fraga: Erbjuder byrån löpande bokföring?
-  varfor: Varje tjänst som erbjuds ska identifieras och bedömas för sig (14FS 2024:11 2 kap. 2 §).
+  fraga: 'Kompatibilitetsfält: erbjuds löpande bokföring?'
+  varfor: Samma tjänst som P-TJ.red01_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red01_erbjuds
 - id: P-KUND.andel_riskbransch
   typ: andel
-  fraga: Hur stor andel av kunderna finns i branscher med förhöjd risk enligt den nationella riskbedömningen, till exempel bygg, restaurang, städ och transport?
-  varfor: Kunder är en sårbarhet som särskilt ska beaktas (14FS 2024:11 2 kap. 2 §).
+  fraga: Hur många aktiva kunder har verksamhet i riskbranscher? (beräknad andel)
+  varfor: Härleds ur P-KUND.antal_riskbransch/P-KUND.antal_aktiva; kategorier kan
+    överlappa.
+  antalfalt: P-KUND.antal_riskbransch
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
 - id: P-KUND.andel_kontant
   typ: andel
-  fraga: Hur stor andel av kunderna har en betydande kontanthantering?
-  varfor: Kontanter gör det svårare att spåra pengarnas ursprung.
+  fraga: Hur många aktiva kunder har betydande kontanthantering? (beräknad andel)
+  varfor: Härleds ur P-KUND.antal_kontant/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KUND.antal_kontant
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
 - id: P-KANAL.andel_digitalt_underlag
   typ: andel
-  fraga: Hur stor andel av kunderna lämnar sitt underlag digitalt, till exempel via app eller e-post, utan personligt möte?
-  varfor: Distributionskanaler är en sårbarhet som särskilt ska beaktas (14FS 2024:11 2 kap. 2 §).
+  fraga: Hur många aktiva kunder lämnar digitalt underlag? (beräknad andel)
+  varfor: Härleds ur P-KANAL.antal_digitalt_underlag/P-KUND.antal_aktiva; kategorier
+    kan överlappa.
+  antalfalt: P-KANAL.antal_digitalt_underlag
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
 - id: P-KANAL.bankdata_andel
   typ: andel
-  fraga: För hur stor andel av kunderna har byrån direkt tillgång till bankdata, till exempel bankfil eller bankkoppling?
-  varfor: Utan bankdata kan byrån inte stämma av underlaget mot verkliga transaktioner.
+  fraga: För hur många aktiva kunder finns tillgång till bankdata? (beräknad andel)
+  varfor: Härleds ur P-KANAL.antal_bankdata/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KANAL.antal_bankdata
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
 - id: P-VERK.juniora_konsulter
   typ: bool
   fraga: Arbetar konsulter med mindre än två års erfarenhet självständigt mot kunder?
   varfor: Verksamhetsspecifika omständigheter ska beaktas (14FS 2024:11 2 kap. 2 §).
 - id: P-KONTROLL.C-07.utformning
   typ: val
-  val: [finns, saknas]
+  val:
+  - finns
+  - saknas
   fraga: Finns bankavstämning mot underlag beskriven i byråns rutiner?
   varfor: En kontroll sänker bara risken om den finns i rutinerna.
 - id: P-KONTROLL.C-07.genomforande
   typ: val
-  val: [belagt, ej_belagt]
+  val:
+  - belagt
+  - ej_belagt
   fraga: Kan byrån belägga att bankavstämningen görs, till exempel med signerade avstämningar?
   varfor: En kontroll sänker bara risken om det går att visa att den genomförs.
+- id: P-ORG.sateslan
+  typ: val
+  fraga: I vilket län har företaget sitt säte, eller är du folkbokförd om verksamheten
+    drivs som fysisk person?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  val:
+  - Dalarna
+  - Gävleborg
+  - Halland
+  - Värmland
+  - Västra Götaland
+  - Örebro
+  - Skåne
+  - Blekinge
+  - Kronoberg
+  - Jönköping
+  - Kalmar
+  - Östergötland
+  - Stockholm
+  - Södermanland
+  - Gotland
+  - Västmanland
+  - Uppsala
+  - Jämtland
+  - Västernorrland
+  - Västerbotten
+  - Norrbotten
+- id: P-ORG.utlandsk_filial
+  typ: bool
+  fraga: Drivs verksamheten genom en svensk filial till en utländsk verksamhetsutövare?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-VERK.auktoriserad_revision
+  typ: bool
+  fraga: Driver ni verksamhet som auktoriserad eller godkänd revisor eller registrerat
+    revisionsbolag?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-VERK.bokforing
+  typ: bool
+  fraga: Utför ni yrkesmässigt bokföring eller revision som inte är auktoriserad/godkänd
+    revision?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-VERK.skatteradgivning
+  typ: bool
+  fraga: Ger ni yrkesmässiga råd om skatteupplägg eller andra skatter och avgifter
+    utöver deklarationsarbete?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-VERK.advokat
+  typ: bool
+  fraga: Utförs uppdrag av advokat eller advokatbolag enligt PTL 1 kap. 4 § första
+    stycket?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-VERK.oberoende_jurist
+  typ: bool
+  fraga: Utförs uppdrag av annan oberoende jurist enligt PTL 1 kap. 4 § första stycket?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-VERK.bolagstjanster
+  typ: bool
+  fraga: Hjälper ni med bolagsstart/förmedling, adress, styrelseuppdrag eller andra
+    tjänster i PTL 1 kap. 4 § andra stycket?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-VERK.trust
+  typ: bool
+  fraga: Förvaltar ni truster eller liknande juridiska konstruktioner?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-VERK.nominell_aktieagare
+  typ: bool
+  fraga: Agerar ni som nominell aktieägare för någon annan eller arrangerar sådana
+    uppdrag?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt
+    PTF 16 §; faktisk tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+- id: P-ORG.koncernmoder
+  typ: bool
+  fraga: Är byrån yttersta moderföretag i en koncern?
+  varfor: 'PTL 2 kap. 9–12 §§: koncerngemensamma rutiner prövas endast för moderföretaget.'
+  kritisk: true
+- id: P-KUND.antal_aktiva
+  typ: heltal
+  fraga: Hur många aktiva kunder finns under redovisningsperioden?
+  varfor: Nämnare för kund-, kanal- och tjänsteandelar; varje kund räknas en gång
+    i basen.
+  periodkrav: true
+  kritisk: true
+  enhet: kunder
+- id: P-VERK.omsattning
+  typ: tal
+  fraga: Vilken är byråns omsättning i SEK under samma period?
+  varfor: Bas för tjänsteintäkter utan dubbelräkning; tjänsteintäkter kan vara mindre
+    än totalen.
+  periodkrav: true
+  kritisk: true
+  enhet: SEK
+- id: P-KUND.antal_riskbransch
+  typ: heltal
+  fraga: Hur många aktiva kunder har verksamhet i riskbranscher?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+- id: P-KUND.antal_kontant
+  typ: heltal
+  fraga: Hur många aktiva kunder har betydande kontanthantering?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+- id: P-KANAL.antal_digitalt_underlag
+  typ: heltal
+  fraga: Hur många aktiva kunder lämnar digitalt underlag?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+- id: P-KANAL.antal_bankdata
+  typ: heltal
+  fraga: För hur många aktiva kunder finns tillgång till bankdata?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+- id: P-KUND.antal_nya
+  typ: heltal
+  fraga: Hur många av de aktiva kunderna är nya under perioden?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+- id: P-KUND.andel_nya
+  typ: andel
+  fraga: Hur många av de aktiva kunderna är nya under perioden? (beräknad andel)
+  varfor: Härleds ur P-KUND.antal_nya/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KUND.antal_nya
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-KUND.antal_juridisk
+  typ: heltal
+  fraga: Hur många aktiva kunder är juridiska personer?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+- id: P-KUND.andel_juridisk
+  typ: andel
+  fraga: Hur många aktiva kunder är juridiska personer? (beräknad andel)
+  varfor: Härleds ur P-KUND.antal_juridisk/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KUND.antal_juridisk
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-GEO.antal_utland_agare
+  typ: heltal
+  fraga: Hur många aktiva kunder har ägaranknytning utanför Sverige?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+- id: P-GEO.andel_utland_agare
+  typ: andel
+  fraga: Hur många aktiva kunder har ägaranknytning utanför Sverige? (beräknad andel)
+  varfor: Härleds ur P-GEO.antal_utland_agare/P-KUND.antal_aktiva; kategorier kan
+    överlappa.
+  antalfalt: P-GEO.antal_utland_agare
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-GEO.antal_utland_transaktion
+  typ: heltal
+  fraga: Hur många aktiva kunder har transaktioner utanför Sverige?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+- id: P-GEO.andel_utland_transaktion
+  typ: andel
+  fraga: Hur många aktiva kunder har transaktioner utanför Sverige? (beräknad andel)
+  varfor: Härleds ur P-GEO.antal_utland_transaktion/P-KUND.antal_aktiva; kategorier
+    kan överlappa.
+  antalfalt: P-GEO.antal_utland_transaktion
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-VERK.antal_rapporter
+  typ: heltal
+  fraga: Hur många egna misstankerapporter har lämnats under perioden?
+  varfor: Egna observationer ska beaktas enligt PTL 2:1 och LSF 2:2; rapportantal
+    är inte en riskpoäng.
+  periodkrav: true
+  kritisk: true
+  smagrupp: true
+- id: P-VERK.antal_avbojanden
+  typ: heltal
+  fraga: Hur många kundrelationer eller transaktioner har avböjts på grund av misstanke?
+  varfor: Egna observationer ska beaktas enligt PTL 2:1 och LSF 2:2; rapportantal
+    är inte en riskpoäng.
+  periodkrav: true
+  kritisk: true
+  smagrupp: true
+- id: P-GEO.sanktionsanknytning
+  typ: bool
+  fraga: Finns kund-, ägar- eller transaktionsanknytning som behöver prövas mot internationella
+    sanktioner?
+  varfor: Riskindikator, inte bekräftad listträff. Inga kundidentiteter eller listintegration
+    i M2.
+  kritisk: true
+- id: P-ORG.sarskilda_funktioner
+  typ: bool
+  fraga: Har organisationen särskilda funktioner enligt PTL 6 kap. 2 §?
+  varfor: FfR ersätts bara om särskilda funktioner och ansvarsfördelning har dokumenterats.
+  kritisk: true
+- id: P-ROLL.ansvarsfunktion
+  typ: text
+  fraga: Vilken funktion ansvarar när särskilda funktioner har utsetts?
+  varfor: Dokumentera ansvar och beslut; lokalt fält, skickas inte till AI.
+  kritisk: true
+  personuppgift: true
+  kritisk_om:
+    falt: P-ORG.sarskilda_funktioner
+    op: ==
+    varde: true
+- id: P-TJ.red01_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån löpande bokföring?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.red01_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder löpande bokföring?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id001
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red01_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder löpande bokföring? (beräknad andel)
+  varfor: Härleds ur P-TJ.red01_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red01_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id001
+- id: P-TJ.red01_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från löpande bokföring?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id001
+  smagruppsantal: P-TJ.red01_antal_kunder
+- id: P-TJ.red01_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från löpande bokföring? (beräknad andel)
+  varfor: Härleds ur P-TJ.red01_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red01_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id001
+  smagruppsantal: P-TJ.red01_antal_kunder
+- id: P-TJ.red01_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id001
+- id: P-KONTROLL.C-TJ-01.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av löpande bokföring?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id001
+- id: P-KONTROLL.C-TJ-01.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av löpande bokföring?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id001
+- id: P-TJ.red02_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån bokslut och årsredovisning?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-RED-02.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds bokslut och årsredovisning?'
+  varfor: Samma tjänst som P-TJ.red02_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red02_erbjuds
+- id: P-TJ.red02_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder bokslut och årsredovisning?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id002
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red02_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder bokslut och årsredovisning? (beräknad andel)
+  varfor: Härleds ur P-TJ.red02_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red02_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id002
+- id: P-TJ.red02_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från bokslut och årsredovisning?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id002
+  smagruppsantal: P-TJ.red02_antal_kunder
+- id: P-TJ.red02_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från bokslut och årsredovisning? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.red02_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red02_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id002
+  smagruppsantal: P-TJ.red02_antal_kunder
+- id: P-TJ.red02_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id002
+- id: P-KONTROLL.C-TJ-02.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av bokslut och årsredovisning?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id002
+- id: P-KONTROLL.C-TJ-02.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av bokslut och årsredovisning?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id002
+- id: P-TJ.red03_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån deklarationer och deklarationsombud?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-RED-03.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds deklarationer och deklarationsombud?'
+  varfor: Samma tjänst som P-TJ.red03_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red03_erbjuds
+- id: P-TJ.red03_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder deklarationer och deklarationsombud?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id003
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red03_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder deklarationer och deklarationsombud? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.red03_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red03_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id003
+- id: P-TJ.red03_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från deklarationer och deklarationsombud?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id003
+  smagruppsantal: P-TJ.red03_antal_kunder
+- id: P-TJ.red03_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från deklarationer och deklarationsombud?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.red03_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red03_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id003
+  smagruppsantal: P-TJ.red03_antal_kunder
+- id: P-TJ.red03_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id003
+- id: P-KONTROLL.C-TJ-03.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av deklarationer och deklarationsombud?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id003
+- id: P-KONTROLL.C-TJ-03.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av deklarationer och deklarationsombud?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id003
+- id: P-TJ.red04_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån lönehantering?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-RED-04.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds lönehantering?'
+  varfor: Samma tjänst som P-TJ.red04_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red04_erbjuds
+- id: P-TJ.red04_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder lönehantering?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id004
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red04_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder lönehantering? (beräknad andel)
+  varfor: Härleds ur P-TJ.red04_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red04_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id004
+- id: P-TJ.red04_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från lönehantering?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id004
+  smagruppsantal: P-TJ.red04_antal_kunder
+- id: P-TJ.red04_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från lönehantering? (beräknad andel)
+  varfor: Härleds ur P-TJ.red04_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red04_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id004
+  smagruppsantal: P-TJ.red04_antal_kunder
+- id: P-TJ.red04_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id004
+- id: P-KONTROLL.C-TJ-04.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av lönehantering?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id004
+- id: P-KONTROLL.C-TJ-04.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av lönehantering?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id004
+- id: P-TJ.red05_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån betalningar och attest i kundens namn?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-RED-05.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds betalningar och attest i kundens namn?'
+  varfor: Samma tjänst som P-TJ.red05_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red05_erbjuds
+- id: P-TJ.red05_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder betalningar och attest i kundens namn?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id005
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red05_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder betalningar och attest i kundens namn? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.red05_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red05_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id005
+- id: P-TJ.red05_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från betalningar och attest i kundens namn?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id005
+  smagruppsantal: P-TJ.red05_antal_kunder
+- id: P-TJ.red05_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från betalningar och attest i kundens namn?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.red05_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red05_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id005
+  smagruppsantal: P-TJ.red05_antal_kunder
+- id: P-TJ.red05_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id005
+- id: P-KONTROLL.C-TJ-05.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av betalningar och attest i kundens namn?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id005
+- id: P-KONTROLL.C-TJ-05.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av betalningar och attest i kundens
+    namn?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id005
+- id: P-TJ.red06_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån klientmedelskonto?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-RED-06.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds klientmedelskonto?'
+  varfor: Samma tjänst som P-TJ.red06_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red06_erbjuds
+- id: P-TJ.red06_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder klientmedelskonto?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id006
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red06_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder klientmedelskonto? (beräknad andel)
+  varfor: Härleds ur P-TJ.red06_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red06_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id006
+- id: P-TJ.red06_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från klientmedelskonto?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id006
+  smagruppsantal: P-TJ.red06_antal_kunder
+- id: P-TJ.red06_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från klientmedelskonto? (beräknad andel)
+  varfor: Härleds ur P-TJ.red06_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red06_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id006
+  smagruppsantal: P-TJ.red06_antal_kunder
+- id: P-TJ.red06_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id006
+- id: P-KONTROLL.C-TJ-06.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av klientmedelskonto?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id006
+- id: P-KONTROLL.C-TJ-06.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av klientmedelskonto?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id006
+- id: P-TJ.red07_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-RED-07.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds ekonomisk rådgivning och ekonomichefstjänster?'
+  varfor: Samma tjänst som P-TJ.red07_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red07_erbjuds
+- id: P-TJ.red07_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id007
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red07_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder ekonomisk rådgivning och ekonomichefstjänster?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.red07_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red07_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id007
+- id: P-TJ.red07_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id007
+  smagruppsantal: P-TJ.red07_antal_kunder
+- id: P-TJ.red07_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från ekonomisk rådgivning och ekonomichefstjänster?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.red07_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red07_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id007
+  smagruppsantal: P-TJ.red07_antal_kunder
+- id: P-TJ.red07_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id007
+- id: P-KONTROLL.C-TJ-07.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id007
+- id: P-KONTROLL.C-TJ-07.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id007
+- id: P-TJ.skatt01_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån skatterådgivning utöver deklarationer?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-SKATT-01.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds skatterådgivning utöver deklarationer?'
+  varfor: Samma tjänst som P-TJ.skatt01_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.skatt01_erbjuds
+- id: P-TJ.skatt01_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder skatterådgivning utöver deklarationer?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id008
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.skatt01_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder skatterådgivning utöver deklarationer? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.skatt01_antal_kunder/P-KUND.antal_aktiva; kategorier kan
+    överlappa.
+  antalfalt: P-TJ.skatt01_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id008
+- id: P-TJ.skatt01_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från skatterådgivning utöver deklarationer?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id008
+  smagruppsantal: P-TJ.skatt01_antal_kunder
+- id: P-TJ.skatt01_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från skatterådgivning utöver deklarationer?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.skatt01_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.skatt01_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id008
+  smagruppsantal: P-TJ.skatt01_antal_kunder
+- id: P-TJ.skatt01_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id008
+- id: P-KONTROLL.C-TJ-08.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av skatterådgivning utöver deklarationer?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id008
+- id: P-KONTROLL.C-TJ-08.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av skatterådgivning utöver deklarationer?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id008
+- id: P-TJ.bolag01_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-BOLAG-01.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds bolagsbildning, lagerbolag och bolagsförmedling?'
+  varfor: Samma tjänst som P-TJ.bolag01_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.bolag01_erbjuds
+- id: P-TJ.bolag01_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id009
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.bolag01_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder bolagsbildning, lagerbolag och bolagsförmedling?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag01_antal_kunder/P-KUND.antal_aktiva; kategorier kan
+    överlappa.
+  antalfalt: P-TJ.bolag01_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id009
+- id: P-TJ.bolag01_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id009
+  smagruppsantal: P-TJ.bolag01_antal_kunder
+- id: P-TJ.bolag01_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från bolagsbildning, lagerbolag och bolagsförmedling?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag01_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag01_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id009
+  smagruppsantal: P-TJ.bolag01_antal_kunder
+- id: P-TJ.bolag01_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id009
+- id: P-KONTROLL.C-TJ-09.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id009
+- id: P-KONTROLL.C-TJ-09.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av bolagsbildning, lagerbolag
+    och bolagsförmedling?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id009
+- id: P-TJ.bolag02_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån registrerad adress eller postadress?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-BOLAG-02.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds registrerad adress eller postadress?'
+  varfor: Samma tjänst som P-TJ.bolag02_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.bolag02_erbjuds
+- id: P-TJ.bolag02_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder registrerad adress eller postadress?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id010
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.bolag02_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder registrerad adress eller postadress? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.bolag02_antal_kunder/P-KUND.antal_aktiva; kategorier kan
+    överlappa.
+  antalfalt: P-TJ.bolag02_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id010
+- id: P-TJ.bolag02_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från registrerad adress eller postadress?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id010
+  smagruppsantal: P-TJ.bolag02_antal_kunder
+- id: P-TJ.bolag02_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från registrerad adress eller postadress?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag02_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag02_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id010
+  smagruppsantal: P-TJ.bolag02_antal_kunder
+- id: P-TJ.bolag02_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id010
+- id: P-KONTROLL.C-TJ-10.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av registrerad adress eller postadress?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id010
+- id: P-KONTROLL.C-TJ-10.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av registrerad adress eller postadress?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id010
+- id: P-TJ.bolag03_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån styrelseuppdrag eller bolagsrättsligt ansvar?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+- id: P-TJ.T-BOLAG-03.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds styrelseuppdrag eller bolagsrättsligt ansvar?'
+  varfor: Samma tjänst som P-TJ.bolag03_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.bolag03_erbjuds
+- id: P-TJ.bolag03_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder styrelseuppdrag eller bolagsrättsligt ansvar?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id011
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.bolag03_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder styrelseuppdrag eller bolagsrättsligt ansvar?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag03_antal_kunder/P-KUND.antal_aktiva; kategorier kan
+    överlappa.
+  antalfalt: P-TJ.bolag03_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id011
+- id: P-TJ.bolag03_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från styrelseuppdrag eller bolagsrättsligt
+    ansvar?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id011
+  smagruppsantal: P-TJ.bolag03_antal_kunder
+- id: P-TJ.bolag03_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från styrelseuppdrag eller bolagsrättsligt
+    ansvar? (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag03_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag03_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id011
+  smagruppsantal: P-TJ.bolag03_antal_kunder
+- id: P-TJ.bolag03_sektorsmotivering
+  typ: text
+  fraga: Hur förklaras tjänstens bedömda inneboende risk i förhållande till NRA:s
+    sektorsrisk?
+  varfor: Mänsklig motivering av jämförbarhet och egna riskförhållanden; texten skickas
+    inte till AI.
+  kritisk_om: *id011
+- id: P-KONTROLL.C-TJ-11.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av styrelseuppdrag eller bolagsrättsligt ansvar?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id011
+- id: P-KONTROLL.C-TJ-11.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av styrelseuppdrag eller bolagsrättsligt
+    ansvar?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id011
+- id: P-KONTROLL.C-SANK.utformning
+  typ: val
+  val:
+  - finns
+  - saknas
+  fraga: Hur dokumenteras sanktionskontrollens utformning?
+  varfor: Separat metodförslag; en obelagd kontroll sänker inte risken.
+- id: P-KONTROLL.C-SANK.genomforande
+  typ: val
+  val:
+  - belagt
+  - ej_belagt
+  fraga: Hur dokumenteras sanktionskontrollens genomforande?
+  varfor: Separat metodförslag; en obelagd kontroll sänker inte risken.

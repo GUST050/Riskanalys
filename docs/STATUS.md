@@ -4,7 +4,9 @@ Senast uppdaterad 2026-10-10.
 
 ## Läge
 
-**Fas:** M1 klar. Nästa etapp är M2 (regelbas v1 och juridisk granskning).
+**Fas:** M2:s tekniska implementation är införd; juridisk sakkunniggranskning återstår. M3 är nästa byggsteg efter granskning och eventuella rättelser.
+
+**Aktuellt:** [M2-planens genomförandelogg](superpowers/plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md#genomförande-2026-10-10) beskriver implementation, verifiering och överlämning. Regelbas `1.0.0` har 107 krav, 11 tjänster och tre länspaket. **Ingen verklig sakkunnigattest har tillkommit; M2-etappen är ännu inte juridiskt klar.** M2-koden och rättelserna versioneras som teknisk baslinje på `codex/m0-m1`; verkligt juridiskt godkännande återstår.
 
 | Steg | Status |
 |---|---|
@@ -27,6 +29,9 @@ Senast uppdaterad 2026-10-10.
 | Senaste kodblocksgranskningen | Codex bekräftade 2026-10-09 att 446 tester passerar, att de fyra regressionstesterna för sakkunnigstatus, sakgodkännande och tidigare paket fallerar före rättningen och passerar efter, och att arkivets 173 kontrollsummor stämmer. Två kvarstående punkter: ett skadat manifest gav en krasch i `verifiera` och `faststall`, och Task 22 tog bort facitpunkten ur nästa steg. **Båda rättade i planen 2026-10-09.** Sju nya eller skärpta tester fallerar mot planens tidigare kod och passerar efter. Hela den återskapade sviten: 452 passerar, ett livetest bortvalt. Codex godkände därefter planen för implementation och reproducerade 452 passerande tester och ett bortvalt livetest. |
 | Etapp M0 (grund) och M1 (tunn kedja) | Klara 2026-10-10. Typfallet och återställningsprovet passerar. Koden är införd i repot enligt planens 22 tasks, testerna skrivna före koden. Hela sviten: 495 passerar, ett livetest bortvalt, utan `ANTHROPIC_API_KEY` och med testleverantören. Hela kommandokedjan körd för hand med syntetiska uppgifter i en datamapp med mellanslag och å, ä, ö: med en signerad testkopia av regelbasen fastställs och verifieras paketet; med repots regelbas stoppas fastställelsen eftersom kraven och paragrafkartan inte är sakkunniggranskade. Paketet återställt från säkerhetskopia i en tom datamapp och verifierat. M0–M1 är granskat av Codex och versionshanteras på `codex/m0-m1`. |
 | Slutgranskning av M0–M1 | Gjord 2026-10-10 av en fristående granskare (Claude Opus). Inga kritiska fynd. Sex viktiga fynd rättade med tester som fallerade före rättningen: risknivåer som saknades eller stod i en annan form i AI-texten, okända rollplatshållare som blev `[VERIFIERA: …]` i ett fastställt dokument, systemfiler från Finder som gjorde paketet ogiltigt, saknade uppgifter i manifest som gav en krasch, profilvärden som inte prövades mot fältregistret och en sökväg med annat skiftläge som kringgick spärren mot byrådata i repot. Tretton mindre punkter förs till M2–M4 (förteckning sist i planen). Codex granskade därefter implementationen samma dag och fann två brister till, båda rättade med tester som fallerade före rättningen: AI:ns öppna frågor kunde följa med till fastställelse utan att hanteras, och en handredigerad profil kunde ha status bekräftad eller ej tillämplig utan källa, datum, bekräftare eller motivering. Regressionstesterna i Task 22 fångar de fel de skrivits för, prövat genom att felen återinförts i en kopia. **Tillsynsfallens 17 fynd är inte prövade av M1:s tester.** |
+| Källkontroll inför M2 | [Research 10](research/10-kallkontroll-och-gapinventering-m2.md) kompletterad av Codex 2026-10-10: rapporteringsundantag, registrering enligt PTL 7 kap., avgränsning av punkt 23, tre länspaket och separat AMLR-utkast. Tio källfilers storlek och SHA-256 stämmer; paragrafuttag omfattar PTL 142 lydelser/141 lagrum, PTF 29 och 31 per föreskrift. Visuell jämförelse av tabell 1 på sidorna 5–6 visade samma kontroll- och dokumentationskrav. Juridisk granskning återstår. |
+| [Implementeringsplan M2](superpowers/plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md) | Skriven och självgranskad av Codex på användarens begäran 2026-10-10. 18 uppgifter med filer, gränssnitt, kontrakt, grindar, tidsestimat och överlämning till M3. Alla tretton restpunkter har placering. Teknisk implementation och verklig sakkunniggranskning redovisas separat. **Teknisk implementation och kontrakt är införda; se genomförandeloggen och färsk verifiering nedan.** |
+| Rättat researchverktyg | `lydelsetexter.py` hanterar nu SFS i kommandoraden, datumversioner och felkoder. Åtta regressioner fallerade före rättningen; samtliga nio verktygstester passerar. Färsk fullsvit 2026-10-10: **504 passerar, ett livtest bortvalt**, utan API-nyckel (14,81 s). Uttag via CLI prövat för alla paragrafer i de fem lokala rättskällorna; tre M1-paragrafsummor bevaras. Ingen ändring i `src/` eller den operativa regelbasen i denna planeringsomgång. |
 
 ## Beslut
 
@@ -74,15 +79,32 @@ Senast uppdaterad 2026-10-10.
 | 2026-10-10 | Varje riskavsnitt ska ange inneboende risk, risk för terrorfinansiering och kvarstående risk med motorns nivåer, och `sakgranska` visar motorns nivåer bredvid texten | Slutgranskningen visade att AI-text kunde utelämna eller motsäga en nivå utan att valideringen märkte det. Ovanliga formuleringar fångas fortfarande bara av sakgranskningen. |
 | 2026-10-10 | En öppen fråga från AI blir ett granskningsfynd som måste hanteras före fastställelse, och sakgranskaren ser frågan. En uppgifts status gäller bara med sina belägg: bekräftad kräver källa, datum och bekräftare, ej tillämplig kräver motivering, datum och bekräftare. | Codex visade att båda annars kunde fastställas som verifierbara paket (spec 10, villkor 1 och 2). |
 
+## M2 – färsk verifiering 2026-10-10
+
+**Färsk fullsvit efter Claudes granskning och sista konfliktgrindsrättelsen: 836 passerade, 1 livetest bortvalt, 261,79 s**, körd med `env -u ANTHROPIC_API_KEY .venv/bin/pytest -q`. Före denna rättelseomgång passerade 800 tester. Nya prov omfattar versionsskydd, andelsbelägg, oberoende facitimport, rättsliga undantag, granskningskonflikter och små komplement. Hela kedjan och byteidentisk återställning passerar för alla tre län. Åtta negativa CLI-prov (sju fastställelsefall samt handredigerad bekräftelse vid bedömning) stoppar utan paket, inklusive äldre bedömning och rättslig datumgräns.
+
+- Regelbasvalidering: giltig `1.0.0`, 107 krav, 11 tjänster, 201/201 hanterade paragrafer i VG, Skåne och Stockholm. Samtliga kartor är `ej_granskad`.
+- AMLR-utkast: 90 artiklar och sex bilagor, 92 återstående poster, eget verifierat manifest. Utkastet kan aldrig väljas operativt via ett framtida datum.
+- Tillsynsmaterial: två fall, 17 förväntade fynd och fem varianter; 173 arkivkontrollsummor stämmer. **Facitet är ännu inte sakkunniggranskat och de 17 fynden inte produktutvärderade.**
+- Fristående teknisk slutgranskning och rättelser dokumenteras i M2-planen. Syntetiska granskare signerar endast testkopior. Inga betalda AI-anrop eller installationer har gjorts.
+
+### Claudes M2-granskning och rättelser
+
+Codex reproducerade och rättade versionsbortfallet (2.0.0/10.0.0), den tysta förlusten av äldre andelsbelägg, facitkopplingen och okänt paket vid import/export. Kandidatraderna i spår A har rättats efter källkontroll men är fortsatt ogranskade. Facitets 22 objekt har en separat version/summa och en kanonisk fil; regelpaketen har 194 rättsliga/metodobjekt var. Lokala attestfiler med granskarens identitet undantas från Git. Motstridiga aktuella beslut stoppar båda berörda paketen oavsett läsordning. Små komplement skyddas också i AI-underlaget. Kärnmodulerna har gjorts mer läsbara. Detaljer och begränsningar finns i [planens rättelselog](superpowers/plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md#rättelser-efter-claudes-granskning-2026-10-10).
+
+Tidigare expertunderlag bevaras som historiska och ska inte användas för den rättade regelbasen. Ingen faktisk sakkunniggranskning har gjorts. Användaren har begärt commit/push av den tekniska M2-baslinjen. Slutlig testkörning efter alla kodändringar: **836 passerade, 1 livetest bortvalt, 261,79 s**, exitkod 0. Regelbasvalidering, AMLR-manifest, tillsynsarkiv, kompileringskontroll och `git diff --check` passerar. Ingen linter har installerats eller körts i rättelseomgången.
+
+### Kontroll inför commit/push
+
+En sista teknisk granskning hittade att konfliktgrinden missade gemensamma krav som var inaktiva för den aktuella byråprofilen. Rättat: paketets alla granskade krav ingår nu i konfliktkontrollen. Fyra regressioner fallerade före rättningen, och motsvarande grind prövas för båda paket och läsordningar. Källuttagens originalbytes bevaras; Git:s whitespacekontroll avgränsas för dessa frysta utdrag. Färsk fullsvit efter denna rättelse: **836 passerade, 1 livetest bortvalt, 261,79 s**, exitkod 0. Elva riktade konfliktprov passerar också. Den fristående tekniska återgranskningen fann inga kvarvarande P1/P2 i granskade kärnflöden. De tre exporterade underlagen motsvarar dagens regelbas, med giltiga innehållssummor och manifest. Verklig sakkunniggranskning och M3/M4 återstår.
+
 ## Nästa steg
 
-1. Ta fram och granska implementeringsplanen för M2 (regelbas v1 och juridisk granskning).
-2. Förbered sakkunniggranskningen av kraven och paragrafkartan i M2.
-3. Bestäm vem som gör sakkunniggranskningen av regelbasen och acceptansprovet.
-4. Låt sakkunnig bekräfta eller revidera [tillsynsfallens facitutkast](research/typfall/tillsyn-2026.json) mot de lokalt bevarade originalen. Använd fallen för M2 och pröva granskningen i M3 enligt spec 16.3.
-5. Hämta och jämför Länsstyrelsen Skånes föreskrifter (12FS 2024:8).
-6. Ta med de tretton mindre punkterna från slutgranskningen av M0–M1 i planen för M2 (förteckning sist i [implementeringsplanen](superpowers/plans/2026-10-08-m0-m1-grund-och-tunn-kedja.md)).
+1. Utse en oberoende sakkunnig och låt denne granska de tre paketens exporter samt krav, datum, tillsyn/yrkesroller, FS-tabeller, NRA-skala, metodval och kundgrenar. Tre rättade, ogranskade exporter finns i `../underlag/sakkunnig-m2-2026-10-10-r2/{vg,skane,stockholm}/`, med verifierade manifest och gemensam README. Inga riktiga godkännanden finns.
+2. Bekräfta eller revidera de 17 tillsynsfynden/fem varianterna mot lokala original, inklusive beslutens rättsliga status. Importera endast verkligt granskade beslut. Facit har en separat import och attest; en facitrevision kräver ny facitgranskning och upphäver inte paketens juridiska attester.
+3. Bygg M3: metod- och granskningsutvärdering med sakkunnigbekräftat facit. Pröva automatiska/manuella B-kontroller, falska fynd, sakfel, granskningstid och AI-kostnad mot manuellt arbete. Kund-C behöver en granskad metod och får ingen normalrisk som standard.
+4. Genomför M4:s användningsprov, säker drift, installation och återställning före första riktiga byrå. M2:s gröna teknik är ingen leverans av en färdig användarprodukt.
 
 ## Öppna frågor
 
-Se avsnitt 17 i specen.
+Se avsnitt 20 i specen samt M2-planens avsnitt om verkliga beslut.

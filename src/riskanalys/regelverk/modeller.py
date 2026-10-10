@@ -4,7 +4,7 @@ import json
 from datetime import date
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from riskanalys.lagring.kontrollsumma import for_text
 from riskanalys.regelverk.villkor import Faltdef
@@ -16,7 +16,7 @@ Risk = Literal["låg", "måttlig", "hög", "mycket hög"]
 Allvar = Literal["blockerande", "hög", "medel", "låg"]
 Belagg = Literal["dokument", "datum", "logg", "beslut", "register"]
 KONTROLLSUMMA = r"^sha256:[0-9a-f]{64}$"
-KALLANS_GILTIGHET = frozenset({"id", "typ", "utgivare", "geografi", "beslutad", "konsoliderad_tom", "kontrollsumma"})
+KALLANS_GILTIGHET = frozenset({"id", "typ", "utgivare", "geografi", "beslutad", "konsoliderad_tom", "kontrollsumma", "galler_fran", "galler_till", "inventarium_kontrollsumma"})
 
 
 class Strikt(BaseModel):
@@ -31,6 +31,13 @@ class Falt(Strikt):
     personuppgift: bool = False
     kritisk: bool = False
     smagrupp: bool = False
+    smagruppsantal: str | None = None
+    periodkrav: bool = False
+    basfalt: str | None = None
+    antalfalt: str | None = None
+    kritisk_om: dict[str, Any] | None = None
+    alias_for: str | None = None
+    enhet: str | None = None
     val: tuple[str, ...] = ()
 
 
@@ -57,6 +64,20 @@ class Kalla(Strikt):
     konsoliderad_tom: str | None = None
     kontrollsumma: str | None = None
     paragrafer: tuple[str, ...] = ()
+    galler_fran: date | None = None
+    galler_till: date | None = None
+    inventarium_kontrollsumma: str | None = Field(default=None, pattern=KONTROLLSUMMA)
+
+
+class InventeradLydelse(Strikt):
+    """Oberoende inventeringspost; okänt datum får inte gissas från lagens ursprung."""
+
+    kalla: str
+    lagrum: str
+    text: str = Field(min_length=1)
+    ikraft: date | None = None
+    upphor: date | None = None
+    inford_genom: str | None = None
 
 
 class Lydelse(Strikt):
@@ -82,6 +103,16 @@ class Sakkunnig(Strikt):
         return self.status == "verifierad" and self.kontrollsumma == innehallssumma
 
 
+class Kravmal(Strikt):
+    typ: Literal["dokument", "drift", "kundmall"]
+    id: str
+    etapp: str
+
+
+class Maldefinition(Kravmal):
+    beskrivning: str
+
+
 class Krav(Strikt):
     id: str
     kalla: str
@@ -91,13 +122,23 @@ class Krav(Strikt):
     text: str
     galler_om: dict[str, Any]
     belagg: tuple[Belagg, ...] = Field(min_length=1)
-    uppfylls_i: tuple[str, ...] = Field(min_length=1)
+    uppfylls_i: tuple[str, ...] = ()
+    mal: tuple[Kravmal, ...] = ()
     ikraft: date | None = None
     upphor: date | None = None
     sakkunnig: Sakkunnig = Sakkunnig()
 
 
+class Kallhanvisning(Strikt):
+    kalla: str
+    avsnitt: str
+    sida: int = Field(ge=1)
+
+
 class Hot(Strikt):
+    sakkunnig: Sakkunnig = Sakkunnig()
+    grund: Grund = "metodval"
+    kallhanvisningar: tuple[Kallhanvisning, ...] = ()
     id: str
     namn: str
     beskrivning: str
@@ -110,6 +151,9 @@ class Effekt(Strikt):
 
 
 class Sarbarhet(Strikt):
+    sakkunnig: Sakkunnig = Sakkunnig()
+    kallhanvisningar: tuple[Kallhanvisning, ...] = ()
+    ersatter: tuple[str, ...] = ()
     id: str
     namn: str
     omrade: Literal["kund", "kanal", "geo", "verk", "tj"]
@@ -122,6 +166,9 @@ class Sarbarhet(Strikt):
 
 
 class Kontroll(Strikt):
+    sakkunnig: Sakkunnig = Sakkunnig()
+    grund: Grund = "metodval"
+    kallhanvisningar: tuple[Kallhanvisning, ...] = ()
     id: str
     namn: str
     beskrivning: str
@@ -131,6 +178,12 @@ class Kontroll(Strikt):
 
 
 class Tjanst(Strikt):
+    sakkunnig: Sakkunnig = Sakkunnig()
+    grund: Grund = "metodval"
+    kallhanvisningar: tuple[Kallhanvisning, ...] = ()
+    kompatibilitetsfalt: tuple[str, ...] = ()
+    metodmotivering: str = ""
+    sektorreferens: str | None = None
     id: str
     namn: str
     sektor: str
@@ -156,6 +209,7 @@ class Bristmonster(Strikt):
 
 
 class MatrisRad(Strikt):
+    sakkunnig: Sakkunnig = Sakkunnig()
     id: str
     sannolikhet: Sannolikhet
     konsekvens: Konsekvens
@@ -165,8 +219,18 @@ class MatrisRad(Strikt):
 
 
 class Regel(Strikt):
+    sakkunnig: Sakkunnig = Sakkunnig()
     id: str
     grund: Grund
+    forklaring: str
+
+
+class Tillamplighetsrad(Strikt):
+    id: str
+    punkt: int = Field(ge=18, le=23)
+    villkor: dict[str, Any]
+    grund: Literal["ska_krav"] = "ska_krav"
+    lydelser: tuple[str, ...] = Field(min_length=1)
     forklaring: str
 
 
@@ -204,10 +268,11 @@ class Kartrad(Strikt):
     lagrum: str
     krav: tuple[str, ...] = ()
     ej_tillamplig: str | None = None
+    hantering: str | None = None
 
     @property
     def hanterad(self) -> bool:
-        return bool(self.krav) or bool(self.ej_tillamplig)
+        return bool(self.krav) or bool(self.ej_tillamplig) or bool(self.hantering)
 
 
 class Kartomfattning(Strikt):
@@ -234,6 +299,7 @@ class Paragrafkarta(Strikt):
 
 
 class Regelpaket(Strikt):
+    granskning: Sakkunnig = Sakkunnig()
     id: str
     namn: str
     sektor: str
@@ -244,10 +310,97 @@ class Regelpaket(Strikt):
     paragrafkarta: Paragrafkarta
 
 
+class Sektorsreferens(Strikt):
+    id: str
+    sektor: str
+    niva: str
+    skala: tuple[str, ...]
+    kalla: str
+    sida: int
+    referensversion: str
+
+
+class Skalmappning(Strikt):
+    id: str
+    grund: Literal["metodval"] = "metodval"
+    mappning: dict[str, Risk]
+    forklaring: str
+    sakkunnig: Sakkunnig = Sakkunnig()
+
+
+class Sanktionsrad(Strikt):
+    id: str
+    villkor: dict[str, Any]
+    sannolikhet: Sannolikhet
+    grund: Literal["metodval"] = "metodval"
+    forklaring: str
+    kallor: tuple[str, ...]
+
+
+class Sanktionsmetod(Strikt):
+    id: str
+    grund: Literal["metodval"] = "metodval"
+    grund_sannolikhet: Sannolikhet
+    grund_konsekvens: Konsekvens
+    kontroll: str
+    rader: tuple[Sanktionsrad, ...]
+    forklaring: str
+    kallor: tuple[str, ...]
+    sakkunnig: Sakkunnig = Sakkunnig()
+
+
+class Kundrad(Strikt):
+    id: str
+    spar: Literal["A", "B", "C", "D"]
+    villkor: dict[str, Any]
+    utfall: dict[str, Any]
+    grund: Grund
+    lydelser: tuple[str, ...]
+    forklaring: str
+    ikraft: date | None = None
+    upphor: date | None = None
+    sakkunnig: Sakkunnig = Sakkunnig()
+
+    @model_validator(mode="after")
+    def typat_utfall(self):
+        nyckel = {"A": "beslut", "B": "atgarder", "C": "risk", "D": "beslut"}[self.spar]
+        if set(self.utfall) != {nyckel}:
+            raise ValueError(f"Spår {self.spar} kräver endast {nyckel}.")
+        varde = self.utfall[nyckel]
+        if self.spar == "B":
+            if not isinstance(varde, list) or not varde or any(not isinstance(i, str) or not i.startswith("KB-") for i in varde):
+                raise ValueError("B kräver en lista av definierade KB-åtgärds-ID:n.")
+        else:
+            tillatna = {"A": {"tillatet", "stopp", "undantag", "preliminart"},
+                        "C": {"låg", "normal", "hög", "preliminär"},
+                        "D": {"rapportera", "undantag", "ingen_skalig_misstanke", "preliminart"}}
+            if not isinstance(varde, str) or varde not in tillatna[self.spar]:
+                raise ValueError(f"Ogiltigt utfall för {self.spar}.")
+        if self.grund == "ska_krav" and not self.lydelser:
+            raise ValueError("Bindande kundrad kräver rättslig lydelse.")
+        if self.ikraft and self.upphor and self.ikraft >= self.upphor:
+            raise ValueError("Kundradens upphörande ska vara efter ikraftträdande.")
+        return self
+
+
+class Kundmall(Strikt):
+    falt: dict[str, Falt]
+    rader: tuple[Kundrad, ...]
+    lydelser: dict[str, Lydelse] = {}
+    atgarder: dict[str, str] = {}
+    c_granskning: Sakkunnig = Sakkunnig()
+    c_metodforslag: str = "Ingen produktionsformel är frigiven; kompletteras och valideras av sakkunnig."
+
+    def c_innehallssumma(self) -> str:
+        return _summa({"falt": {k: f.model_dump(mode="json") for k, f in sorted(self.falt.items())},
+                       "rader": [r.model_dump(mode="json", exclude={"sakkunnig"}) for r in self.rader if r.spar == "C"],
+                       "metodforslag": self.c_metodforslag})
+
+
 class Regelbas(BaseModel):
     model_config = ConfigDict(frozen=True)
 
-    version: str
+    version: str = Field(pattern=r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
     falt: dict[str, Falt]
     kallor: dict[str, Kalla]
     lydelser: dict[str, Lydelse]
@@ -261,6 +414,28 @@ class Regelbas(BaseModel):
     tillatelselistor: dict[str, Tillatelselista]
     regelpaket: dict[str, Regelpaket]
     kontrollsumma: str
+    inventarium: tuple[InventeradLydelse, ...] = ()
+    tillamplighet: dict[str, Tillamplighetsrad] = {}
+    maldefinitioner: dict[str, Maldefinition] = {}
+    sektorsreferenser: dict[str, Sektorsreferens] = {}
+    skalmappning: Skalmappning | None = None
+    sanktionsmetod: Sanktionsmetod | None = None
+    kundmall: Kundmall | None = None
+    facit: dict[str, Any] | None = None
+
+    @property
+    def utokade_krav(self) -> bool:
+        """M2:s skydd gäller alla senare innehållsversioner, även 2.x och 10.x."""
+        return int(self.version.split(".")[0]) >= 1
+
+    def paketets_innehallssumma(self, paket_id: str) -> str:
+        """Konservativ bindning: gemensam regelbas plus valt paket, utan attestmetadata."""
+        if paket_id not in self.regelpaket:
+            from riskanalys.fel import RiskanalysFel
+            raise RiskanalysFel(f"Okänt regelpaket {paket_id}. Välj ett befintligt paket och exportera en ny granskningsmall.")
+        data = self.model_dump(mode="json", exclude={"kontrollsumma", "regelpaket", "facit"})
+        data["regelpaket"] = self.regelpaket[paket_id].model_dump(mode="json")
+        return _summa(utan_granskningsmetadata(data))
 
     def faltdefinitioner(self) -> dict[str, Faltdef]:
         return {falt.id: Faltdef(falt.id, falt.typ, falt.val) for falt in self.falt.values()}
@@ -277,21 +452,29 @@ class Regelbas(BaseModel):
             self.kontroller,
             self.tjanster,
             self.bristmonster,
+            self.tillamplighet,
+            self.sektorsreferenser,
         )
         alla = {nyckel for samling in samlingar for nyckel in samling}
         alla |= {rad.id for rad in self.metod.riskmatris}
         alla |= {regel.id for regel in self.metod.regler()}
+        if self.skalmappning:
+            alla.add(self.skalmappning.id)
+        if self.sanktionsmetod:
+            alla.add(self.sanktionsmetod.id)
+            alla |= {r.id for r in self.sanktionsmetod.rader}
         return alla
 
     def kravets_innehallssumma(self, krav_id: str) -> str:
         """Det en sakkunnig godkänner för ett krav: kravet, dess lydelser med giltighet och textsumma,
         källans giltighetsuppgifter och definitionerna av de fält som villkoret galler_om använder."""
         krav = self.krav[krav_id]
-        kalla = self.kallor.get(krav.kalla)
+        kalla_ids = sorted({self.lydelser[i].kalla for i in krav.lydelser if i in self.lydelser})
         underlag = {
             "krav": krav.model_dump(mode="json", exclude={"sakkunnig"}),
             "lydelser": [self.lydelser[i].model_dump(mode="json") for i in krav.lydelser if i in self.lydelser],
-            "kalla": kalla.model_dump(mode="json", include=KALLANS_GILTIGHET) if kalla else None,
+            "kallor": [self.kallor[i].model_dump(mode="json", include=KALLANS_GILTIGHET)
+                       for i in kalla_ids if i in self.kallor],
             "falt": [
                 self.falt[falt_id].model_dump(mode="json")
                 for falt_id in sorted(_falt_i_villkorsdata(krav.galler_om))
@@ -335,3 +518,12 @@ def _falt_i_villkorsdata(data: Any) -> set[str]:
     if isinstance(data, list):
         return set().union(*(_falt_i_villkorsdata(del_) for del_ in data))
     return set()
+
+
+def utan_granskningsmetadata(data):
+    if isinstance(data, dict):
+        return {k: utan_granskningsmetadata(v) for k, v in data.items()
+                if k not in {"sakkunnig", "granskning", "c_granskning"}}
+    if isinstance(data, (list, tuple)):
+        return [utan_granskningsmetadata(v) for v in data]
+    return data
