@@ -31,3 +31,16 @@ python3 -I sanktionsstatistik.py <stockholm.txt> <vastra_gotaland.txt>
 ```
 
 Klassificeringen bygger på textmönster och ska ses som ungefärlig. Se begränsningarna i [03-tillsyn-och-sanktioner.md](../03-tillsyn-och-sanktioner.md).
+
+## verifiera_tillsynsmaterial.py
+
+Kontrollerar det syntetiska granskningsmaterialets struktur: unika ID:n, befintliga B-referenser, dokument- och sidhänvisningar samt kontrollvarianter. Med `--underlag` kontrolleras även SHA-256 och sidkarta i det lokala källarkivet. Standardbiblioteket räcker; inga paket installeras och inga API-anrop görs.
+
+Kör från repots rot:
+
+```bash
+python3 -I docs/research/verktyg/verifiera_tillsynsmaterial.py
+python3 -I docs/research/verktyg/verifiera_tillsynsmaterial.py --underlag ../underlag/tillsyn-2026-10-09
+```
+
+Resultatet är en materialkontroll. Programmets granskningsförmåga och facitets juridiska riktighet ska prövas enligt [research 09](../09-tillsynsbeslut-2026.md#bevarat-underlag-och-återanvändbara-granskningsfall).

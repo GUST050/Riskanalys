@@ -1,0 +1,481 @@
+{
+  "schema_version": 1,
+  "version": "0.1.0",
+  "status": "facitutkast_ej_sakkunniggranskat",
+  "utvarderingsstatus": "ej_kord",
+  "syfte": "Återanvändbara syntetiska negativa granskningsfall och kontroller, härledda från användarens tillsynsmaterial.",
+  "kallregister": "../09-tillsynsbeslut-2026.md",
+  "begransningar": [
+    "Ingen rå OCR-text, personuppgift eller byråmall återges. Texterna i indata är nyskrivna syntetiska sammanfattningar; även datumen är testdata.",
+    "Inga maskerade uppgifter har återskapats.",
+    "Förväntade fynd är ett arbetsfacit som ska kontrolleras av oberoende sakkunnig före användning som juridiskt facit.",
+    "Kundakter ingår inte i dessa testindata. Fynd i omradet rutiner ska bara poängsättas när rutiner ingår i granskningsuppdraget.",
+    "Inga sanktionsbelopp eller fasta risknivåer härleds som universella regler ur ärendena."
+  ],
+  "dokumentkarta": [
+    {
+      "id": "TS-01-BESLUT",
+      "sidor": 13
+    },
+    {
+      "id": "TS-02-BESLUT",
+      "sidor": 19
+    },
+    {
+      "id": "TS-01-ARB",
+      "sidor": 2
+    },
+    {
+      "id": "TS-02-ARB",
+      "sidor": 12
+    },
+    {
+      "id": "TS-02-RUTIN",
+      "sidor": 12
+    }
+  ],
+  "fall": [
+    {
+      "id": "TS-01",
+      "inspirerat_av": "6045-2026",
+      "status": "facitutkast_ej_sakkunniggranskat",
+      "indata_typ": "syntetisk_omskrivning",
+      "indata": {
+        "tillsynsperiod": {
+          "fran": "2025-01-01",
+          "till": "2025-12-31"
+        },
+        "dokument_datum": "2026-02-01",
+        "historik": [
+          {
+            "utvarderingsdatum": "2025-12-01",
+            "tidigare_dokumentversion": "saknas"
+          }
+        ],
+        "verksamhetsfakta": [
+          "Byrån erbjuder löpande bokföring, bokslut, deklarationer och redovisningsrådgivning.",
+          "Det saknas dokumenterad omfattning per tjänst och kundtyp.",
+          "Leveranssätt och geografiska anknytningar är inte tillräckligt kartlagda."
+        ],
+        "riskbedomning": "Byrån arbetar främst med mindre svenska företag. Vi har beaktat kundrisk, tjänsterisk, geografisk risk och transaktionsrisk. Bokföring innebär ekonomisk administration och vi hanterar inte klientmedel. Transaktionerna gäller främst fakturor, löner och skatter. Den samlade risken är låg till måttlig. Vi använder ett KYC-system och ser över riskbedömningen regelbundet.",
+        "rutiner": "Vi identifierar kunden och verklig huvudman och övervakar transaktioner. Förstärkta åtgärder övervägs vid riskindikatorer."
+      },
+      "forvantade_fynd": [
+        {
+          "id": "TS-01-F01",
+          "bristmonster": [
+            "B-23"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Inlämnade handlingar är upprättade efter tillsynsperioden; ett uppgivet utvärderingsdatum bevisar inte att handlingen fanns då.",
+          "forvantad_atgard": "Efterfråga den bevarade version som faktiskt fanns under perioden. Visa separat uppgivet giltighetsdatum och verklig registreringstid.",
+          "belagg": [
+            {
+              "dokument": "TS-01-BESLUT",
+              "sidor": [
+                3,
+                4
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-01-F02",
+          "bristmonster": [
+            "B-03",
+            "B-04"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Tjänster räknas upp utan identifierade tillvägagångssätt, verksamhetsspecifika sårbarheter och motiverad risk per tjänst.",
+          "forvantad_atgard": "Beskriv för varje tjänst hur den kan utnyttjas, varför byrån är exponerad och vad som motiverar nivån.",
+          "belagg": [
+            {
+              "dokument": "TS-01-BESLUT",
+              "sidor": [
+                4
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-01-F03",
+          "bristmonster": [
+            "B-24"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Det framgår inte hur ofta och på vilket sätt tjänsterna erbjuds eller hur relevanta kundriskfaktorer förekommer.",
+          "forvantad_atgard": "Samla in verifierad omfattning och kundfördelning och koppla dem till respektive tjänsts analys.",
+          "belagg": [
+            {
+              "dokument": "TS-01-BESLUT",
+              "sidor": [
+                4
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-01-F04",
+          "bristmonster": [
+            "B-08",
+            "B-09",
+            "B-10"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Leveranskanaler och förekommande geografiska anknytningar beskrivs och bedöms inte tillräckligt.",
+          "forvantad_atgard": "Efterfråga kanalernas faktiska användning och geografiska anknytningar; Sverige som hemvist räcker inte som analys.",
+          "belagg": [
+            {
+              "dokument": "TS-01-BESLUT",
+              "sidor": [
+                4,
+                5
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-01-F05",
+          "bristmonster": [
+            "B-17",
+            "B-19"
+          ],
+          "omrade": "rutiner",
+          "ska_hittas": true,
+          "observation": "Rutinerna är generella och anger åtgärder utan tillräckliga situationsanpassade regler för hur och när de genomförs.",
+          "forvantad_atgard": "Koppla rutiner till identifierade risker och ange ansvarig roll, utlösande situation, åtgärd och dokumentation.",
+          "belagg": [
+            {
+              "dokument": "TS-01-BESLUT",
+              "sidor": [
+                5,
+                6
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        }
+      ]
+    },
+    {
+      "id": "TS-02",
+      "inspirerat_av": "6572-2026",
+      "status": "facitutkast_ej_sakkunniggranskat",
+      "indata_typ": "syntetisk_omskrivning",
+      "indata": {
+        "tillsynsperiod": {
+          "fran": "2025-01-01",
+          "till": "2025-12-31"
+        },
+        "dokument_datum": "2026-02-01",
+        "historik": [
+          {
+            "tidigare_dokumentversion": "overskriven"
+          }
+        ],
+        "verksamhetsfakta": [
+          "Byrån erbjuder löpande bokföring, bokslut, betalningsuppdrag, hjälp med bolagsstart och skatteplanering.",
+          "Omfattning per tjänst, kundbransch, nya kunder och kundantagning på distans saknas.",
+          "Riskbranscher och bristande branschkunskap kan förekomma tillsammans; omfattningen är ännu inte kartlagd.",
+          "Det framgår inte vilka relevanta erfarenheter från egen rapportering som finns."
+        ],
+        "riskbedomning": "Vi har använt myndigheternas vägledningar och riskrapporter. Bokföring kan innehålla felaktiga fakturor och bokslut kan bygga på felaktiga underlag. Vi hjälper kunder att starta bolag och ger råd om laglig skatteplanering. Tjänsternas samlade risk är normal. Riskbranscher kännetecknas av kontanter, underleverantörer, svåröverskådliga betalningsflöden och internationella transaktioner. Vi har inga kontantkunder, så branschrisken är normal. Riskfaktorer kan samverka. Kunder från välkända rådgivare har låg risk eftersom rådgivaren gjort kontroll. Geografisk risk är normal eftersom kunderna finns i Sverige. Verksamhetens sammanvägda risk är normal till hög.",
+        "rutiner": "Vi använder PEP-register för verklig och alternativ verklig huvudman. Vid hög risk finns förslag på extra åtgärder. Vid låg risk behöver inga kundkännedomsåtgärder göras."
+      },
+      "forvantade_fynd": [
+        {
+          "id": "TS-02-F01",
+          "bristmonster": [
+            "B-23"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Tidigare version har skrivits över och den inlämnade versionen är daterad efter tillsynsperioden.",
+          "forvantad_atgard": "Bevara tidigare versioner; kräv belägg för den version som faktiskt gällde under perioden.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                4
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F02",
+          "bristmonster": [
+            "B-14",
+            "B-15"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Rapporter och vägledningar listas utan att det framgår hur relevant myndighetsinformation och egen rapportering påverkat analysen.",
+          "forvantad_atgard": "Redovisa relevanta uppgifter ur källorna och deras påverkan; efterfråga egen rapportering utan att hitta på sådan.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                4,
+                5
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F03",
+          "bristmonster": [
+            "B-03",
+            "B-04"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Kortfattade tjänsterisker följs av en gemensam normalnivå utan tillräcklig analys per tjänst.",
+          "forvantad_atgard": "Ange motiverad risk per tjänst kopplad till dess hot och sårbarheter.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                5,
+                6
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F04",
+          "bristmonster": [
+            "B-26"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Hjälp med bolagsstart och skatteplanering behandlas inte som egna tjänster med relevant sektorsrisk.",
+          "forvantad_atgard": "Identifiera faktisk bolagsbildning och skatterådgivning, pröva tillämpligt regelpaket och motivera nivåerna mot källorna.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                5,
+                6
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F05",
+          "bristmonster": [
+            "B-24"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Användning per tjänst, fördelning av kundstock, nya kunder och kundantagning utan fysiskt möte saknar tillräcklig omfattning.",
+          "forvantad_atgard": "Samla in omfattning per tjänst, kundtyp och kanal med period, nämnare, källa och status för saknade uppgifter.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                6,
+                7
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F06",
+          "bristmonster": [
+            "B-06",
+            "B-13"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Frånvaro av kontanter används för normalnivå utan tillräcklig bedömning av övriga förekommande faktorer.",
+          "forvantad_atgard": "Analysera faktorer som faktiskt förekommer; frånvaro av en faktor får inte ensam ersätta den bedömningen.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                6,
+                7
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F07",
+          "bristmonster": [
+            "B-25"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Risker räknas upp var för sig utan analys av kombinationer i verksamheten.",
+          "forvantad_atgard": "Analysera faktiska kombinationer av tjänst, kundtyp, kanal och personalens kunskap; fyll inte i maskerade uppgifter.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                6,
+                7
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F08",
+          "bristmonster": [
+            "B-27"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Hänvisning från kända rådgivare används som stöd för låg risk utan tillräcklig prövning av förutsättningarna och möjliggörarrisken.",
+          "forvantad_atgard": "Pröva förutsättningarna för förlitan separat och bedöm möjliggörarrisken; rådgivarens rykte är inte en automatisk risksänkning.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                7,
+                8
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F09",
+          "bristmonster": [
+            "B-09",
+            "B-10"
+          ],
+          "omrade": "allman_riskbedomning",
+          "ska_hittas": true,
+          "observation": "Geografisk normalnivå motiveras med att utländska kunder saknas medan andra relevanta geografiska risker inte analyseras.",
+          "forvantad_atgard": "Bedöm relevanta anknytningar även inom Sverige och motivera deras betydelse i den egna verksamheten.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                8
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F10",
+          "bristmonster": [
+            "B-17",
+            "B-19"
+          ],
+          "omrade": "rutiner",
+          "ska_hittas": true,
+          "observation": "Rutinerna saknar koppling till identifierade risker och skärpta åtgärder uttrycks som förslag.",
+          "forvantad_atgard": "Ange situationsanpassade handlingsregler kopplade till respektive risk.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                9,
+                10,
+                11
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F11",
+          "bristmonster": [
+            "B-28"
+          ],
+          "omrade": "rutiner",
+          "ska_hittas": true,
+          "observation": "Rutinen medger att kundkännedomsåtgärder helt utelämnas vid låg risk.",
+          "forvantad_atgard": "Skilj förenklade åtgärder från att utelämna kundkännedom; pröva uttryckliga undantag för den enskilda åtgärden.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                11
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        },
+        {
+          "id": "TS-02-F12",
+          "bristmonster": [
+            "B-29"
+          ],
+          "omrade": "rutiner",
+          "ska_hittas": true,
+          "observation": "PEP/RCA-bedömningen begränsas till verklig eller alternativ verklig huvudman.",
+          "forvantad_atgard": "Pröva vilka personer som ska omfattas enligt tillämpligt krav och inkludera kunden när relevant.",
+          "belagg": [
+            {
+              "dokument": "TS-02-BESLUT",
+              "sidor": [
+                10
+              ]
+            }
+          ],
+          "grund_for_facit": "myndighetens_bedomning"
+        }
+      ]
+    }
+  ],
+  "kontrollvarianter": [
+    {
+      "id": "TS-V01",
+      "fall": "TS-02",
+      "andring": "Gör språket mer utförligt och professionellt utan att tillföra fakta eller analys.",
+      "forvantat": "Alla obligatoriska fynd inom samma granskningsomfattning kvarstår."
+    },
+    {
+      "id": "TS-V02",
+      "fall": "TS-02",
+      "andring": "Byt enbart risknivåerna normal/låg till hög.",
+      "forvantat": "Fynd om saknad omfattning, analys, samverkan och historik kvarstår. En hög nivå räcker inte som motivering."
+    },
+    {
+      "id": "TS-V03",
+      "fall": "TS-01",
+      "andring": "Lägg till ett äldre uppgivet utvärderingsdatum utan att lägga till någon bevarad äldre version.",
+      "forvantat": "TS-01-F01 kvarstår; ett uppgivet datum är inte belägg för ett då existerande dokument."
+    },
+    {
+      "id": "TS-V04",
+      "fall": "TS-02",
+      "andring": "Ange separat, underbyggd risk per tjänst men behåll alla andra brister.",
+      "forvantat": "TS-02-F03 ska inte längre anges som att separat riskbedömning saknas. Övriga kvarstående brister ska fortfarande hittas.",
+      "kontroll": "Underbyggnaden granskas av människa; ingen helhetsgodkänning följer av denna ändring."
+    },
+    {
+      "id": "TS-V05",
+      "fall": "TS-02",
+      "andring": "Ersätt rutinens avstående vid låg risk med konkreta förenklade åtgärder som prövats mot tillämpliga krav; behåll övriga brister.",
+      "forvantat": "TS-02-F11 ska inte längre rapporteras som att alla åtgärder utelämnas. Övriga kvarstående brister ska fortfarande hittas.",
+      "kontroll": "Den ändrade rutinens juridiska innehåll ska granskas av sakkunnig."
+    }
+  ],
+  "godkannandekriterier": {
+    "negativa_fall": "Samtliga ska_hittas-fynd inom beställd omfattning ska ha en sakligt riktig förklaring och hänvisning till relevant del av testindata. Enbart matchande B-ID eller allmänt påstående om brister räcker inte.",
+    "status": "Fallen får inte klassas som färdiga för fastställelse inom den prövade omfattningen.",
+    "saknade_fakta": "Efterfråga saknade fakta. Hitta inte på andelar, källstöd, historik eller kontrollernas effektivitet.",
+    "avvikelse": "Missat obligatoriskt fynd, ogrundat fynd eller ohanterad kontrollvariant ska redovisas och hanteras före första riktiga byrå. Sakgranskare kan motiverat revidera facitutkastet med versionsändring.",
+    "upprepning": "Om en AI-granskare används: tre körningar per oförändrat fall och konfiguration; samtliga måste klara de obligatoriska kriterierna. Modell, effort, promptsumma, svar, kostnad och manuell bedömning sparas.",
+    "sakkunnig": "Sakkunnig signerar facitversion och avgör juridiska tolkningsfrågor; automatiska kontroller ersätter inte denna prövning."
+  }
+}

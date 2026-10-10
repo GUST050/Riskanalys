@@ -1,0 +1,10 @@
+# Fält som får skickas till AI per avsnittstyp. Personuppgifter får aldrig stå här.
+- id: risk_per_tjanst
+  falt:
+    - P-ORG.antal_anstallda
+    - P-KUND.andel_riskbransch
+    - P-KUND.andel_kontant
+    - P-KANAL.andel_digitalt_underlag
+    - P-KANAL.bankdata_andel
+    - P-VERK.juniora_konsulter
+  undvik: [B-02, B-03, B-04, B-12, B-13, B-24, B-25]

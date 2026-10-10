@@ -1,0 +1,28 @@
+id: RP-RED-VG
+namn: Redovisningskonsulter under tillsyn av Länsstyrelsen i Västra Götalands län
+sektor: redovisning
+lan: [Dalarna, Gävleborg, Halland, Värmland, Västra Götaland, Örebro]
+kallor: [SRC-PTL, SRC-14FS-2024-11, SRC-TS-2026-14, SRC-VAGL-2025-03, SRC-NRA-2024-25]
+krav: [KRV-LSF-001, KRV-LSF-002, KRV-LSF-003, KRV-LSF-004, KRV-LSF-005, KRV-LSF-006]
+tjanster: [T-RED-01]
+# Paragrafkartan täcker i M1 bara föreskrifternas 2 kap. Paragraferna 4–12 § hanteras ännu inte
+# i regelbasen. Det är avsiktligt synligt: de stoppar fastställelsen tills M2 har lagt in kraven.
+paragrafkarta:
+  giltig_fran: 2024-07-01
+  omfattning:
+    - {kalla: SRC-14FS-2024-11, kapitel: [2 kap.]}
+  rader:
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 1 §, krav: [KRV-LSF-001]}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 2 §, krav: [KRV-LSF-002, KRV-LSF-003, KRV-LSF-004, KRV-LSF-005]}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 3 §, krav: [KRV-LSF-006]}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 4 §}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 5 §}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 6 §}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 7 §}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 8 §}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 9 §}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 10 §}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 11 §}
+    - {kalla: SRC-14FS-2024-11, lagrum: 2 kap. 12 §}
+  sakkunnig:
+    status: ej_granskad

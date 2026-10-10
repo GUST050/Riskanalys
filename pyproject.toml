@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "riskanalys"
+version = "0.1.0"
+description = "Verksamhetsanpassad dokumentation enligt penningtvättsregelverket"
+requires-python = ">=3.12"
+dependencies = [
+  "pydantic>=2.14,<3",
+  "pyyaml>=6.0.3,<7",
+  "python-docx>=1.2,<2",
+  "anthropic>=1.12,<2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=9.1,<10", "httpx2>=2.13,<3"]
+
+[project.scripts]
+riskanalys = "riskanalys.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tester"]
+addopts = "--import-mode=importlib -m 'not live'"
+markers = [
+  "live: anropar riktiga Claude-API:t, kostar pengar och körs bara med RISKANALYS_LIVE=1",
+]

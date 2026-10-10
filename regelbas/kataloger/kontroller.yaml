@@ -1,0 +1,6 @@
+- id: C-07
+  namn: Bankavstämning mot underlag
+  beskrivning: Byrån stämmer av kundens bankkonton mot bokfört underlag och utreder differenser och transaktioner som saknar underlag.
+  utformning_falt: P-KONTROLL.C-07.utformning
+  genomforande_falt: P-KONTROLL.C-07.genomforande
+  kallor: [SRC-TS-2026-14]

@@ -1,0 +1,13 @@
+- id: H-01
+  namn: Osanna och falska fakturor
+  beskrivning: Fakturor utan verklig prestation används för att flytta pengar, dölja brottsvinster eller göra felaktiga avdrag. De passerar byrån som vanliga verifikationer.
+  kallor: [SRC-VAGL-2025-03, SRC-NRA-2024-25]
+- id: H-02
+  namn: Brottsvinster redovisas som intäkter
+  beskrivning: Pengar från brott blandas in i en lagligt bedriven verksamhet och redovisas som försäljning, så att de ser legala ut.
+  kallor: [SRC-VAGL-2025-03, SRC-NRA-2024-25]
+- id: H-03
+  namn: Oförklarade in- och utflöden
+  beskrivning: Insättningar, uttag och överföringar saknar underlag eller affärsmässig förklaring och kan dölja penningtvätt eller finansiering av terrorism.
+  galler_tf: true
+  kallor: [SRC-VAGL-2025-03]

@@ -36,7 +36,7 @@ Fakta om Claude-API:t gäller per oktober 2026 och kommer från Anthropics dokum
 | Kommandorad | Typer eller Click | Enkelt att utöka |
 | Tester | pytest | Ett test per beslutstabellrad, plus facitjämförelser |
 | Word-export | docxtpl (Jinja-taggar i Word-mallar) eller python-docx | docxtpl släppte senast version 0.20.2 i november 2025 och har en underhållare. Taggar måste ligga i samma "run" i Word. python-docx är reserv. |
-| PDF | Konvertering från Word (till exempel LibreOffice i kommandoradsläge) | Bestäms i etapp M1, där den första testexporten görs |
+| PDF | Konvertering från Word (till exempel LibreOffice i kommandoradsläge) | Skjuts till etapp M4. M1 exporterar Word med python-docx. |
 | Text ur källdokument | pdftotext, standardbiblioteket för mhtml, docx och xlsx | Se [verktyg/extrahera_text.py](verktyg/extrahera_text.py) |
 | AI | Anthropics officiella Python-SDK (`anthropic`) | Ingen egen HTTP-klient |
 

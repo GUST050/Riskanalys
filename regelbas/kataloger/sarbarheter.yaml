@@ -1,0 +1,33 @@
+# Gränsvärdena är metodval och prövas i modellvalideringen (M2).
+- id: S-KUND-01
+  namn: Kunder i branscher med förhöjd risk
+  omrade: kund
+  grund: metodval
+  villkor: {falt: P-KUND.andel_riskbransch, op: ">=", varde: 0.2}
+  effekt: {sannolikhet: 1}
+  kallor: [SRC-NRA-2024-25, SRC-TS-2026-14]
+- id: S-KUND-02
+  namn: Kunder med betydande kontanthantering
+  omrade: kund
+  grund: metodval
+  villkor: {falt: P-KUND.andel_kontant, op: ">=", varde: 0.1}
+  effekt: {sannolikhet: 1}
+  galler: bada
+  kallor: [SRC-PTL, SRC-VAGL-2025-03]
+- id: S-KANAL-01
+  namn: Digitalt underlag utan tillgång till bankdata
+  omrade: kanal
+  grund: metodval
+  villkor:
+    alla:
+      - {falt: P-KANAL.andel_digitalt_underlag, op: ">=", varde: 0.5}
+      - {falt: P-KANAL.bankdata_andel, op: "<", varde: 0.5}
+  effekt: {sannolikhet: 1}
+  kallor: [SRC-TS-2026-14]
+- id: S-VERK-01
+  namn: Juniora konsulter arbetar självständigt
+  omrade: verk
+  grund: metodval
+  villkor: {falt: P-VERK.juniora_konsulter, op: "==", varde: true}
+  effekt: {sannolikhet: 1}
+  kallor: [SRC-TS-2026-14]

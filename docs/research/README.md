@@ -14,6 +14,8 @@ Underlag för [designspecifikationen](../superpowers/specs/2026-10-08-riskanalys
 | [06-ai-och-teknik.md](06-ai-och-teknik.md) | Claude-API, Python-verktyg och datahantering |
 | [07-referensdata-och-integrationer.md](07-referensdata-och-integrationer.md) | Listor, register och datakällor som behöver hållas aktuella |
 | [08-lardomar-fran-ai-utkast.md](08-lardomar-fran-ai-utkast.md) | Vad ett tidigare AI-genererat dokumentpaket visar |
+| [09-tillsynsbeslut-2026.md](09-tillsynsbeslut-2026.md) | Två fullständiga sanktionsbeslut från 2026: vad Länsstyrelsen underkänner, nya bristmönster B-23–B-29 |
+| [typfall/tillsyn-2026.json](typfall/tillsyn-2026.json) | Två syntetiska granskningsfall, 17 förväntade fynd och fem kontrollvarianter med sidhänvisningar. Facitutkast för M2–M5 och M7. |
 | [kallor.md](kallor.md) | Källförteckning med länkar |
 | [verktyg/](verktyg/) | Skript som användes för att extrahera text och sammanställa statistik |
 
@@ -23,6 +25,7 @@ Underlag för [designspecifikationen](../superpowers/specs/2026-10-08-riskanalys
 2. Föreskrifterna från Länsstyrelsen i Stockholm och Västra Götaland jämfördes ord för ord.
 3. Sanktionsbesluten på Länsstyrelsens webbsidor sammanställdes med [verktyg/sanktionsstatistik.py](verktyg/sanktionsstatistik.py).
 4. Kompletterande webbresearch om EU-regelverket, metodstandarder och teknik. Källor i [kallor.md](kallor.md).
+5. Användarens 79 fotograferade tillsynssidor importerades 2026-10-09 till ett lokalt arkiv utanför repot, med SHA-256, OCR och sidkarta. Användning och verifieringskommando finns i [09](09-tillsynsbeslut-2026.md#bevarat-underlag-och-återanvändbara-granskningsfall). Testindata är nyskrivna syntetiska omskrivningar.
 
 Upphovsrättsskyddat material återges inte. Interna dokument från en referensbyrå och kunduppgifter har inte publicerats. De beskrivs bara på ett anonymiserat och övergripande sätt.
 

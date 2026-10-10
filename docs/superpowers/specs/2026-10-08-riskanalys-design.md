@@ -1,9 +1,9 @@
 # Riskanalys – designspecifikation
 
-**Status:** Förslag, revision 4 (2026-10-08). Ej godkänd för implementation.
+**Status:** Förslag, revision 9 (2026-10-09). Ligger till grund för implementeringsplanen för M0 och M1.
 **Underlag:** [researchsammanställningen](../../research/README.md).
 **Ändringar:** se [ändringsloggen](#22-ändringslogg) sist i dokumentet.
-**Nästa steg:** granskning av revision 4. Därefter implementeringsplan för M0 och M1.
+**Nästa steg:** etapp M2 (regelbas v1 och juridisk granskning). M0 och M1 är implementerade enligt [implementeringsplanen](../plans/2026-10-08-m0-m1-grund-och-tunn-kedja.md); se [status](../../STATUS.md).
 
 ---
 
@@ -130,7 +130,7 @@ Varje körning skriver ett manifest med kontrollsumma (SHA-256) för varje artef
 - Vid fastställelse **kopieras alla artefakter som manifestet pekar på** in i `faststallda/<version>/`. Paketet är fristående och beror inte på att regelbasen eller mallarna finns kvar i samma version.
 - AI-svaren sparas, eftersom de inte kan köras fram igen.
 - Datamappen ska ingå i en **säkerhetskopia**. Programmet varnar om ingen säkerhetskopia har registrerats för datamappen.
-- `riskanalys verifiera` kontrollerar ett paket mot dess manifest.
+- `riskanalys verifiera` kontrollerar ett paket mot dess manifest. Ett saknat eller skadat manifest rapporteras som en avvikelse med instruktion om återställning från säkerhetskopian, aldrig som en krasch.
 - **Återställningsprov:** ett fastställt paket återställs från säkerhetskopia på en tom installation och verifieras (avsnitt 16).
 
 Ett fastställt paket är oföränderligt. En ändring ger en ny version som ersätter den gamla. Den gamla sparas.
@@ -194,7 +194,7 @@ text_kontrollsumma: sha256:...
 id: KRV-LSF-003
 kalla: SRC-14FS-2024-11
 lagrum: "2 kap. 3 §"
-lydelse: LYD-LSF-2-3-2024-07-01   # kravets giltighet följer lydelsen
+lydelser: [LYD-LSF-2-3-2024-07-01]   # kravets giltighet följer lydelserna; en ny lydelse läggs till i listan
 ikraft: 2024-07-01
 upphor: null
 grund: ska_krav            # ska_krav | allmänt_råd | tillsynspraxis | eu_utkast | metodval
@@ -207,6 +207,7 @@ sakkunnig:
   status: ej_granskad      # ej_granskad | verifierad | ändras
   av: null
   datum: null
+  kontrollsumma: null      # kravets innehåll när det verifierades; verifierad gäller bara det innehållet
 ```
 
 **Tjänst, hot, sårbarhet**
@@ -639,7 +640,8 @@ Byrådata ligger i `$RISKANALYS_DATA`, aldrig i repot (avsnitt 5.2).
 | AI-validering | Valideringen fångar påhittade ID:n, siffror, nivåer och personnamn (med testleverantör) |
 | AI-utvärdering | Sakfel, ogrundade påståenden, granskningstid och kostnad per godkänt avsnitt (live, frivilligt, M3) |
 | Verifiering och återställningsprov | Ett fastställt paket verifieras mot sitt manifest och återställs från säkerhetskopia på en tom installation |
-| Facitjämförelse (M7) | En referensbyrås tidigare underkända riskbedömning ska underkännas. Ett genomarbetat referensutkast ska i stort godkännas. |
+| Tillsynsfall före verklig användning (M3–M5) | Syntetiska negativa fall härledda från besluten 6045-2026 och 6572-2026 ska ge förklarade fynd inom prövad omfattning. Se 16.3. |
+| Utvidgad facitjämförelse (M7) | Tidigare underkända dokument ska underkännas inom respektive omfattning. Ett genomarbetat referensutkast ska i stort godkännas. Återanvänder fallen i 16.3. |
 | **Acceptansprov före verklig användning** | Se 16.2 |
 
 **Syntetiska uppgifter används tills regelbasen är sakkunniggranskad.** Ingen riktig byrå får ett fastställt paket innan dess.
@@ -664,6 +666,19 @@ Resultatet jämförs med manuellt arbete:
 - Hur lång tid tar sakgranskningen?
 
 Först därefter går det att säga om upplägget ger bättre resultat än dagens arbetssätt.
+
+### 16.3 Granskningsfall från verklig tillsyn
+
+[Research 09](../../research/09-tillsynsbeslut-2026.md#bevarat-underlag-och-återanvändbara-granskningsfall) beskriver bevarade original, OCR och sidkarta utanför repot. [tillsyn-2026.json](../../research/typfall/tillsyn-2026.json) innehåller två nyskrivna syntetiska negativa fall, 17 förväntade fynd och fem kontrollvarianter. Det är ett **facitutkast, inte juridiskt validerat**, och ingen produktutvärdering är ännu genomförd med fallen.
+
+- M2: en oberoende sakkunnig bekräftar eller reviderar facitversionen mot beslut och relevanta krav. Besluten används som tillsynspraxis, inte som universella risknivåer eller en formel för sanktionsavgifter.
+- M3: granskaren och det mänskliga sakgranskningsflödet ska hitta och förklara alla obligatoriska fynd inom allmän riskbedömning. Saknade fakta får inte fyllas i av AI. Längre språk, högre risknivåer och ett äldre uppgivet utvärderingsdatum får inte ensamma undanröja bristerna. Åtgärdade fynd ska inte fortsätta rapporteras. Missade och ogrundade fynd redovisas i valideringsrapporten och hanteras före M5.
+- M4–M5: pröva att intaget samlar in omfattning per tjänst, kundtyp, kanal och relevant geografi, med period, nämnare, källa och uppgiftsstatus. Fynd inom rutiner prövas när befintliga rutiner ses över; de får inte poängsättas som om de ingick i en granskning av enbart allmän riskbedömning.
+- M7: utvidgad provtillsyn av hela dokumentpaketet. Den ersätter inte prövningen av allmän riskbedömning före första riktiga byrå.
+
+Ett bristmönster i katalogen räknas inte som upptäckt förrän en granskningskontroll och ett test visar att programmet hittar det. `automatiserad: false` betyder manuell kontroll. Spårningen per bristmönster, med vad M0–M1 täcker och vilken etapp som ansvarar för resten, står i implementeringsplanen för M0–M1 och förs vidare i planerna för senare etapper.
+
+Om AI används som granskare ska alla tre körningar per oförändrat fall och konfiguration klara de obligatoriska kriterierna. Modell, effort, promptsumma, svar, kostnad och mänsklig bedömning sparas. Separata senare fall hålls utanför promptjusteringen. Ett matchande B-ID eller ett generellt påstående om brister räcker inte som godkänt resultat. Råhandlingar och OCR skickas inte till AI; de syntetiska testindata används. Källhänvisningar kontrolleras lokalt mot originalfotona.
 
 ## 17 Personuppgifter och säkerhet
 
@@ -697,7 +712,7 @@ Fas 1 behandlar inga kundärenden. Viss behandling av personuppgifter är ändå
 | **M0 Grund** | Repo, `AGENTS.md`/`CLAUDE.md`, datamapp, lagring och manifest, villkorsformat och utvärderare, scheman, regelbasvalidering, testleverantör för AI, bristmönsterkatalogen v0 flyttad till regelbasen | `riskanalys regelbas validera` är grön, och villkorsutvärderaren har fullständiga regelkontrakt |
 | **M1 Tunn kedja** | Hela flödet för en tjänst med syntetiska data: ett litet kravpaket (allmän riskbedömning, LSF 2 kap. 1–3 §§) → bekräftad syntetisk testprofil → bedömning av löpande bokföring → spårbart AI-utkast (testleverantör) → maskinell granskning → sakgranskning → fastställd testexport med låst paket, versionshistorik och datum för nästa genomgång | Kedjan körs i ett typfallstest, och `riskanalys verifiera` godkänner paketet |
 | **M2 Regelbas v1 och juridisk granskning** | Alla krav, kataloger och beslutstabeller för redovisningsbyråer. Paragrafkarta. Kundmodellens fyra spår. Sakkunniggranskning per beslutsgren. | Alla tillämpliga krav och paragrafkartan har status *verifierad* |
-| **M3 Modellvalidering och AI-utvärdering** | Metodbilaga, valideringsrapport, avvikelselogg, typfall (bland annat saknade uppgifter och liten högrisktjänst), prövning av 20 %-gränsen, AI-utvärdering med riktiga skrivuppgifter | Valideringsrapport klar. Beslut om modell och effort fattat utifrån mätning. |
+| **M3 Modellvalidering och AI-utvärdering** | Metodbilaga, valideringsrapport, avvikelselogg, typfall (bland annat saknade uppgifter och liten högrisktjänst), prövning av 20 %-gränsen, AI-utvärdering med riktiga skrivuppgifter och sakkunnigbekräftade tillsynsfall inom allmän riskbedömning (16.3) | Valideringsrapport klar, tillsynsfall och kontrollvarianter ger förväntade fynd och kvarstående avvikelser är hanterade. Beslut om modell och effort fattat utifrån mätning. |
 | **M4 Användningsprov och minsta drift** | Enkelt lokalt formulär för intag och sakgranskning, ändringskontroll, versionshistorik, återställningsprov, acceptansprov (16.2) | Acceptansprovet är genomfört och dokumenterat |
 | **M5 Första riktiga byrå: endast allmän riskbedömning** | Del-leverans. Full allmän riskbedömning för en riktig byrå, fastställd av byrån och märkt "endast allmän riskbedömning". Byråns **befintliga rutiner och riktlinjer ses över mot den nya bedömningen**. Avvikelser förs till åtgärdslistan med ansvarig och datum, eftersom rutinerna ska bygga på riskbedömningen och vara verksamhetsanpassade. | Riskbedömningen är fastställd av byrån och verifierad, och genomgången av befintliga rutiner är dokumenterad |
 | M6 Övriga dokument | Rutiner (med modellriskhantering), kundmodell, instruktioner, kravmatris, tillsynspaket. Ersätter de befintliga rutiner som granskades i M5. | Alla dokument i avsnitt 11 genereras |
@@ -739,6 +754,7 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 6. Ändringen av penningtvättslagens 1 kap. 2 § som träder i kraft 2026-11-20 ska läggas in som ny lydelse och dess betydelse för sektorerna bedömas.
 4. Om Bolagsverket erbjuder elektronisk åtkomst till registret över verkliga huvudmän (påverkar fas 2).
 5. Vem som gör sakkunniggranskningen av regelbasen och acceptansprovet.
+7. Grundnivåerna i tjänstekatalogen ska kalibreras mot sektorsrisken. Den nationella riskbedömningen 2024/2025 kallar risken för bokförings- och revisionstjänster hög ([research 09](../../research/09-tillsynsbeslut-2026.md)). Regelbas v1 ska också ha bolagsbildning och skatterådgivning i tjänstekatalogen och omfattning per tjänst i profilen.
 
 ## 21 Definitioner
 
@@ -760,3 +776,8 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 | 2 | 2026-10-08 | Efter första granskningen (Codex): bristmönstrens ID:n samordnade, kategorier för personuppgifter, dokumentstatus och grindar, typat villkorsformat, manifest med kontrollsummor, mänsklig sakgranskning, datamapp utanför repot, modulerna `faststallelse/` och `lagring/`, M1 som tunn kedja |
 | 3 | 2026-10-08 | Efter andra granskningen (Codex): (1) kundmodellen delad i fyra spår (förbud och stopp, obligatoriska åtgärder, riskklassning, rapportering) med sakkunniggranskning per beslutsgren; (2) modellriskhantering enligt PTL 6 kap. 1 § andra stycket; (3) minsta drift flyttad före första riktiga fastställelse; (4) okänd uppgift ger preliminärt resultat, och små högrisktjänster döljs inte i sammanvägningen; (5) paragrafkarta för fullständighet och promemorian Fi2026/01654; (6) AI-modell och effort som inställningar som avgörs genom utvärdering, och testleverantör i automatiska tester; (7) tillåtelselistor för AI-underlag, små grupper och ingen batch som standard; (8) löftet om återskapande ersatt med bevarande, säkerhetskopia och återställningsprov. Dessutom: grind som skiljer metodavvikelser från lagkrav, "fastställt av byrån", användarflöde, acceptansprov, ny etappordning och AMLR som parallellt spår. |
 | 4 | 2026-10-08 | Efter tredje granskningen (Codex): (1) kundmodellens spår har uttryckliga beroenden enligt PTL 3 kap. 1, 14–16 §§, och rapportering prövas fristående; (2) datumstyrning per paragraflydelse med Regeringskansliets rättsdatabaser som primärkälla och tester på båda sidor om datumgränser (exempel: 1 kap. 2 § ny lydelse 2026-11-20); (3) M5 märkt "endast allmän riskbedömning" med genomgång av befintliga rutiner; (4) egen rad i fastställelsegrinden för allmänna råd, tillsynspraxis och EU-utkast; (5) datum för Fi2026/01654 rättat till 2026-07-06 och remissen beskriven som pågående. |
+| 5 | 2026-10-08 | Efter fjärde granskningen (Codex, av implementeringsplanen): kravet har `lydelser` (lista) i stället för `lydelse`, så att ett krav kan följa sin paragraf genom flera lydelser (6.4). Övriga fynd gällde planen och är rättade där: nästa genomgång räknas bara från utvärderingar, lydelser har `text_kontrollsumma` med sparad paragraftext, krav har `galler_om` och `belagg`, varje AI-försök sparas löpande med faktisk svarsmodell, och nivåer i AI-text binds till sin risktyp. |
+| 6 | 2026-10-09 | Efter femte granskningen (Codex, av implementeringsplanen): sakkunnigstatus *verifierad* binds till en kontrollsumma av det granskade innehållet, för både krav och paragrafkarta (6.2 och 16.1). Övriga fynd gällde planen och är rättade där: paragrafkartan har en rad per paragraf och kontrolleras mot källans paragrafindelning, beslutsdatum får inte ligga före granskning, sakgranskning, utvärdering eller tidigare fastställelse, ett fastställt paket publiceras med ett enda namnbyte, och export, sakgranskning och fastställelse kontrollerar manifesten för allt de läser. Öppen fråga 7 om kalibrering mot sektorsrisken, efter två fullständiga tillsynsbeslut (research 09). |
+| 7 | 2026-10-09 | På användarens begäran: tillsynsmaterialet bevarat lokalt utanför repot med OCR och kontrollsummor. Två syntetiska granskningsfall med 17 förväntade fynd och fem kontrollvarianter kopplade till originalens sidor. Avsnitt 16.3 kräver prövning av allmän riskbedömning i M3 före M5; utvidgad facitjämförelse kvarstår i M7. Facit väntar på sakkunniggranskning. |
+| 8 | 2026-10-09 | Efter Codex negativa prov av planens kodblock: sakkunnigstatus binds också till refererade lydelser, källans giltighetsuppgifter och fälten i `galler_om` (6.2 och 16.1); sakgranskningen gäller avsnittet med insatta namn, exakt som det exporteras (10); tidigare fastställda paket verifieras mot manifest innan de används (5.3). 16.3 anger att ett bristmönster räknas som upptäckt först med granskningskontroll och test. |
+| 9 | 2026-10-09 | Efter Codex granskning av rättningarna: ett saknat eller skadat manifest rapporteras som en avvikelse med instruktion om återställning, aldrig som en krasch (5.3). |
