@@ -1,6 +1,6 @@
 # Riskanalys – designspecifikation
 
-**Status:** Förslag, revision 10 (2026-10-10). Ligger till grund för M0–M1 och [implementeringsplanen för M2](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md). Juridiskt godkännande återstår.
+**Status:** Förslag, revision 16 (2026-10-11). Ligger till grund för M0–M1 och [implementeringsplanen för M2](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md). Juridiskt godkännande återstår.
 **Underlag:** [researchsammanställningen](../../research/README.md).
 **Ändringar:** se [ändringsloggen](#22-ändringslogg) sist i dokumentet.
 **Nästa steg:** verklig sakkunniggranskning av M2:s tekniska underlag och sedan M3:s metod-/granskningsutvärdering. M0–M1 och M2:s tekniska implementation är införda; M2 är ännu inte juridiskt godkänd. Se [status](../../STATUS.md) och [M2-planens genomförandelogg](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md#genomförande-2026-10-10) för kontrakt, verifiering och kvarstående arbete.
@@ -384,26 +384,17 @@ Riskmatris (metodval):
 | Inneboende hög eller mycket hög risk blir aldrig lägre än måttlig | Metodval. AMLA:s utkast anger att hög inneboende risk inte helt kan tas bort med kontroller, men anger ingen nivå. |
 | Terrorfinansiering har alltid konsekvensen allvarlig | Metodval, följer myndigheternas vägledning om att små belopp kan finansiera terrorism |
 
-### 7.4 Sammanvägning
+### 7.4 Tjänstevis redovisning och framtida sammanvägning
 
-| Regel | Grund |
-|---|---|
-| Varje tjänsts egen risk redovisas alltid, oavsett tjänstens vikt | Metodval |
-| Tjänsterna vägs samman med dokumenterade vikter, som standard andel av kunder eller omsättning | Metodval |
-| Den samlade nivån är lägst den högsta nivån bland tjänster som väger minst 20 % | Metodval. Gränsen prövas mot typfall i M3 och kan ändras med motivering. |
-| En tjänst med hög eller mycket hög risk ska alltid få egna slutsatser och åtgärder, även om den väger under gränsen | Metodval. Hindrar att en liten högrisktjänst döljs i sammanvägningen. |
-| Motorn redovisar varje faktors bidrag så att ingen enskild faktor ensam avgör | Metodval, följer AMLA:s utkast |
-| Avvikelse från sektorns nivå i den nationella riskbedömningen ska motiveras | Tillsynspraxis (rapport 2026:14) |
+Dagens motor redovisar varje tjänsts penningtvättsrisk, terrorfinansieringsrisk och separata sanktionsrisk. Ingen sammanvägd byrånivå beräknas. Varje tjänst får egen motivering och slutsatser, även om andelen kunder eller omsättning är liten. Avvikelse från NRA:s sektorsnivå kräver underlagsmotivering (B-13). NRA:s skala jämställs inte med motorns skala.
+
+En framtida viktad byrånivå kräver en separat sakkunniggranskad metod och prov i M3. Den tidigare 20-procentsgränsen är ett obygget förslag och används inte i dagens dokument eller motor.
 
 ### 7.5 Proportionalitetsnivå
 
-| Nivå | Typfall | Effekt |
-|---|---|---|
-| Enkel | Få anställda, ett kontor, enkla tjänster, inga behörigheter i kundernas namn | Kortare, mer beskrivande dokument. Samma krav täcks. |
-| Standard | Typisk redovisningsbyrå | Full analys per tjänst |
-| Utökad | Många anställda, flera kontor, behörigheter, utländska kunder, koncern | Fler scenarier, funktioner för intern kontroll, tätare uppföljning |
+PTL 2 kap. 2 § kräver omfattning efter storlek och art. Implementerat metodförslag `BT-OMF-01` använder dokumenterade personer, kontor, omsättning, tjänster, komplexitet, utlandsanknytning och den tjänstevisa risken. Nivåerna är **enkel**, **standard** och **utökad**. Alla nivåer innehåller fullständig analys av varje erbjuden tjänst och samma rättsliga kravtäckning; utökad nivå lägger till hypotetiska scenarier och anger behov av fördjupad kontrolluppföljning. Ingen nivå beslutar automatiskt om särskilda funktioner, kundklass eller faktisk uppföljningstakt.
 
-Nivån beräknas av faktorerna i Länsstyrelsens föreskrifter 6 kap. 3 § (omsättning, anställda, verksamhetsställen, verksamhet, tjänster, komplexitet, riskbedömning). Gränsvärdena är metodval och kan justeras med motivering.
+Trösklarna finns enbart i `regelbas/beslutstabeller/metod.yaml`: enkel högst två personer, ett kontor, högst tre miljoner kronor och bara de enklare redovisningstjänsterna; utökad minst tio personer, två kontor, tio miljoner kronor, särskilda betalnings-/företrädartjänster, komplexitet/utlandsanknytning eller hög/mycket hög tjänsterisk. Annars standard. **Trösklar, nivånamn och riskutlöst utökning är ogranskade metodval, inte föreskrivna gränser.** Saknade aktuella underlag ger preliminär bedömning. Byrån ger egen motivering i `P-OMFATTNING.motivering`; metodregeln ingår i sakkunnigattesten. PTL 2:2, föreskrifternas organisationsfaktorer och rapport 2026:14 ger stöd för vilka förhållanden som behöver prövas, inte dessa siffervärden.
 
 ### 7.6 Kundmodellen: fyra separata spår
 
@@ -605,6 +596,78 @@ I varje steg ska användaren
 - kunna **rätta ett felaktigt förslag** (rättelsen loggas och valideras),
 - se vad som är *preliminärt* och varför.
 
+
+### 14.1 Fullständigt intag och skrivning av hela riskbedömningen
+
+Programmet ansvarar för att fråga efter allt relevant underlag som behövs för den valda leveransen. Användaren ska kunna börja med en tom profil, utan en tidigare riskbedömning, YAML-redigering eller kännedom om fält-ID:n. Första leveransen är hela den allmänna riskbedömningen. Rutiner, kundmall och övriga dokument har separata leveranser; en färdig riskbedömning får inte beskrivas som bevis för att alla byråns skyldigheter är genomförda.
+
+Intaget ska vara en sparbar intervju med grundfrågor och villkorade följdfrågor. Varje fråga hör till ett versionerat fält och redovisar syfte, koppling till krav/metod och vilket avsnitt svaret används i. Befintliga fältfrågor är utgångspunkt, men antalet besvarade fält är inte ett bevis för ett fullständigt underlag.
+
+| Område | Underlag som intervjun ska täcka när det är relevant |
+|---|---|
+| Byrån och omfattningen | Verksamhetsutövare, säteslän/filial, faktiska yrkesroller, bedömningsdatum, storlek, verksamhetsställen och ansvarsfördelning |
+| Tjänster och befogenheter | Alla erbjudna tjänster, hur de utförs, omfattning, betalningsbehörighet, klientmedel, bolagstjänster och andra befogenheter |
+| Kunder | Aggregerade kundtyper, branscher, ägarstrukturer och relevanta riskegenskaper; antal, nämnare, statistikperiod och källa |
+| Leverans och kontakt | Kundintag, distansarbete, identitetskontroll, ombud/tredje parter, system, underlag och insyn i transaktioner |
+| Geografi | Relevanta länder och anknytningar, omfattning och omständigheter som påverkar respektive tjänst |
+| Hot och erfarenheter | Verksamhetens relevanta scenarier för penningtvätt och terrorfinansiering, avvikelser och lärdomar av egen rapportering utan kundidentifierande uppgifter |
+| Sårbarheter och kontroller | Tjänsternas och organisationens svagheter, faktiska arbetssätt, kontrollernas utformning, genomförande och belägg för deras effekt |
+| Uppföljning | Befintliga rutiner, kända brister, ansvar, utvärdering/uppdatering och planerade relevanta förändringar |
+
+Om en tjänst erbjuds ska programmet fråga hur den används och av vilka kundgrupper, kanaler och geografiska anknytningar. Gemensamma totalsiffror räcker inte automatiskt som underlag för varje tjänst. Härledda andelar beräknas från antal och nämnare med samma period; användaren behöver inte svara på samma uppgift flera gånger. Överlappande kategorier förklaras och får inte behandlas som en fördelning som måste summera till 100 procent.
+
+Intervjun ska tillåta att användaren sparar och fortsätter senare, svarar att en uppgift är okänd, samt anger noll, nej eller ej tillämpligt där det är ett sakligt svar. Saknas får inte omvandlas till nej, noll eller låg risk. Villkorade frågor visas när tillämpligheten är känd; vid okänd tillämplighet ställs först frågan som avgör den. Ett svar om ej tillämpligt behöver en motivering och får inte användas för att acceptera bort ett tillämpligt krav.
+
+Programmet ska kontrollera typ, period, källa, belägg, aktualitet och motsägelser. När ett grundsvar ändras ska berörda följdsvar, bedömningar och godkännanden omprövas; tidigare uppgifter bevaras för spårbarhet och blir inte automatiskt bekräftade för den nya situationen.
+
+**Rättelser efter Claude-granskningen 2026-10-10:** Webb och CLI använder samma intagshantering för kanoniska intagsfält och atomiskt revisionsskydd vid sparande. Äldre alias kan läsas men ändras genom sin kanoniska fråga. Aktiva frågor kan inte väljas bort med CLI. XML-ogiltiga tecken avvisas vid svar/bekräftelse och handredigerade profiler kontrolleras före AI-anrop. Datum-, validerings- och exportfel har skilda meddelanden. Skrivformuläret har en engångstoken bunden till profilrevisionen; token förbrukas före skrivning även vid fel. Ett nytt uttryckligt försök kräver ett nytt formulär. Detta skyddar dubbelpostning inom en lokal session, inte flera samtidigt startade program mot samma byrå.
+
+”Vet inte” gör uppgiften obekräftad men behåller tidigare värde, källa, beläggsdatum, bekräftare och period. Tidigare belägg visas som historiska, inte som bekräftelse av ett aktuellt faktum. Ny okänd uppgift får registreringsdatum; rollen behövs först för en bekräftelse. Kompletteringsmotiveringen sparas och profilhistoriken bevarar tidigare revisioner.
+
+Säteslän och filialstatus får rättas i samma bedömningsprofil via svarshanteringen. Profilens effektiva län och regelpaket uppdateras tillsammans vid ett uttryckligt sätesläns-/filialsvar när båda grundsvaren är kända. Ett orelaterat svar får inte tyst rätta en handredigerad län/paket-konflikt. Berörda verksamhetsuppgifter blir inaktuella och gamla bedömningar/utkast kan inte användas som aktuella. Även återbekräftelse av samma grundvärde utlöser denna omprövning om profilens effektiva län eller regelpaket ändras. Handredigerade motsägelser mellan län och paket stoppas fortsatt. Bedömningsdatum ändras inte av denna rättelse. Detta är en korrigeringspolicy för intaget; en ny bedömning med nytt datum behöver separat profil.
+
+### 14.2 När underlaget räcker
+
+En versionerad täckningskarta ska koppla varje tillämpligt dokumentkrav, metodberoende och verksamhetspåstående till frågor, uppgifter eller beräknat underlag. Tillämpliga krav utan koppling ska redovisas som en lucka. Även nödvändiga beskrivande uppgifter ska ingå; enbart fält som riskmotorn använder räcker inte.
+
+Programmet ska visa vad som saknas, varför det behövs och vilken fråga eller åtgärd som löser luckan. Kontrollen av fullständighet görs mot kravkartan och underlagets kvalitet, inte bara mot om formuläret är ifyllt. Om ett relevant förhållande ligger utanför stödet ska det visas och hanteras före fastställelse.
+
+När underlaget räcker bygger motorn bedömningen och programmet skriver och sammanställer hela riskbedömningen med källhänvisningar, motiveringar och uppföljning. Användaren ska inte behöva skriva analysens avsnitt. Sakuppgifter bekräftas och texten sakgranskas i samma användarflöde. Om skrivningen skapar en ny oklarhet ska den återföras till en konkret kompletteringsfråga; ett svar behöver ompröva berörda bedömningar och textavsnitt. Öppna oklarheter och saknade kritiska uppgifter hindrar fastställelse enligt avsnitt 10.
+
+### 14.3 Prov som krävs för intaget
+
+Före första riktiga byrå ska syntetiska användningsprov visa att:
+
+- en tom profil kan fyllas genom intervjun och ge hela riskbedömningen utan manuell text- eller profilredigering,
+- olika tjänster, tillsynsområden och verksamhetsstorlekar ger rätt följdfrågor och dokumentunderlag,
+- en liten tjänst med hög risk inte försvinner bakom byråns totalsiffror,
+- saknade, motstridiga, inaktuella eller otillräckligt belagda svar ger riktade kompletteringar och hindrar fastställelse,
+- ändrade grundsvar omprövar berörda följdsvar och godkännanden utan att radera tidigare belägg,
+- varje tillämpligt krav har ett kontrollerat underlag och varje verksamhetspåstående är spårbart,
+- personuppgifter stannar i lokal lagring och tillåtelselistan gäller även kompletteringssvaren.
+
+Den första tekniska delen av intaget är implementerad 2026-10-10 enligt [intagsplanen](../plans/2026-10-10-intag-och-hel-riskbedomning.md): lokal sparbar intervju, kontroll av beroenden och hela Word-utkastet. Obligatoriska sakuppgifter behövs före skrivning; redan dokumenterad sektorsmotivering är frivillig inför utkastet men B-13 och sakgranskning gäller före fastställelse. Faktisk utvärdering registreras uttryckligen. Aktiva frågor kan inte avfärdas som ej tillämpliga; nej/noll/okänt och villkorat dolda frågor används. Fråge- och täckningskontrakten ska dessutom prövas mot sakkunnigbekräftade tillsynsfall i M3; M4 omfattar pilot, det sammanhållna sakgranskningsflödet, installation och driftprov före M5. Dokumentimport är ett senare stöd och får inte vara ett villkor för att skapa den första riskbedömningen.
+
+### 14.4 Registeruppgifter i lokalt intag
+
+SCB:s avgiftsfria AFR används efter registrering av personlig nyckel. Nyckeln hålls lokalt i `RISKANALYS_SCB_API_KEY` och visas aldrig i formulär, ögonblicksbilder eller fel. Organisationsnummer identifierar juridiska personer; enskilda näringsidkare kan fortsatt besvara intaget manuellt.
+
+Hämtningar blir separata, privata ögonblicksbilder med ursprung, identitet, hämtningstid och kontrollsumma. Hämtningstid är inte uppgiftens giltighetsdatum. API:t ger aktuell registerbild och kan inte styrka historiska förhållanden. Lokal SCB-JSON-import är tillåten men märks som ej verifierat ursprung. Förslag bekräftar inga profiluppgifter automatiskt och skriver aldrig över tidigare svar.
+
+Namn och säteslän kan föreslås; registrerat arbetsställeantal kräver kontroll mot faktiska arbetsställen. Anställdas storleksklass ersätter inte personer inklusive ägare. Omsättningsklass/år ersätter inte aktuell exakt omsättning och period. SNI/juridisk form/registerstatus används som bakgrund; tjänster, kundgrupper, befogenheter, kanaler, geografi, kontroller och erfarenheter frågas fortfarande. Bekräftelse använder ordinarie profilvalidering och invaliderar berörda följdsvar. Vid motstridiga källuppgifter visas både registerförslag och profilsvar. En hämtning blir inte en ny bedömning eller utvärdering.
+
+Filialsvaret vid registerstart kräver eget underlag; SCB-bildens allmänna källhänvisning kan inte belägga det. En ny hämtning/import efter profilens bedömningsdag avvisas före nätanrop och visas inte som möjligt val. Lagringen har samma datumgrind och behåller tidigare användbar bild. Bekräftelse kontrollerar fortfarande bildens datum. Bedömningsdatum uppdateras aldrig automatiskt för att få en hämtning att passa.
+
+Samlad registerstart och senare bekräftelse kräver ett uttryckligt fälturval, även i råa formuläranrop. Saknat säteslänsurval vid registerstart får inte bekräfta länet. Alla valda svar valideras genom ordinarie svarshantering i minnet före ett enda atomiskt CAS-sparande. Avvikande tidigare svar kräver separat ersättningsval. Grundändringar behandlas före följdsvar. Bekräftelse gör inga nätanrop och markerade förslag blir inte sakkunnigattester.
+
+SCB-registerschema 2 lägger till F-skatt/moms/arbetsgivarstatus som bakgrund. Schema 3 lägger till `agKat`: endast kod 41 (privat svenskkontrollerat utan koncerntillhörighet) ger ett villkorat ”nej”-förslag för yttersta moderföretag. Koden, begränsningen och kravet på aktuell egen kontroll visas före bekräftelse. Andra/saknade koder ger inget sådant förslag och filial härleds inte. Schema 1 och 2 serialiseras med samma fält och summa som tidigare. Nyckel kan anges i lokalt lösenordsfält för serverns session, utan lagring eller återgivning; miljövariabel stöds fortfarande. Tidigare roll föreslås, och senaste framgångsrikt sparade roll återanvänds inom sessionen. Tjänsteutbudet kan bekräftas på en sida med gemensam källa, roll och datum; nej för omarkerade tjänster kräver uttrycklig bekräftelse av hela listan. Enskilda okända svar finns kvar. Progressen räknar frågor som kan besvaras nu; fullständighetsgrinden är oförändrad. Fråge-/översiktssidan använder en färsk profil per förfrågan och ingen kvarhängande cache av belägg.
+
+Enkla verksamhetsfakta och beskrivningar har det uttryckliga underlagsvalet ”Egen kännedom om verksamheten” enligt en begränsad tillåtelselista. Det gäller inte numeriska uppgifter, periodstatistik, sektorsmotiveringar eller kontrollutformning/genomförande/belägg. Tidigare aktuella bekräftade manuella underlag kan föreslås inom samma kategori; ekonomistatistik, kundstatistik och erfarenhetsstatistik hålls åtskilda, liksom varje kontroll och dess fas. Registerbildens källhänvisning blir inget generellt manuellt underlag. Statistikperiod föreslås från aktuell bekräftad kundbas respektive omsättning. Ett återanvänt underlag måste finnas i den färska profilen, passa kategorin och ha exakt samma period som det nya svaret. Okända/inaktuella svar är inga förslag. Formuläret visar valet; sparande kräver användarens bekräftelse och ordinarie validering/CAS.
+
+Grund-/översiktssidan och skrivknappen anger faktisk leverans: byråns allmänna riskbedömning som Word-utkast, med verksamhet, risker per tjänst, kontroller och åtgärder samt granskningsbilaga vid öppna fynd. Separata rutindokument och individuella kundriskbedömningar ingår inte i detta intags skrivflöde. Sakgranskning, utvärdering och fastställelse är senare uttryckliga steg.
+
+Bolagsverkets avgiftsfria HVD prioriteras därefter om verifierat tekniskt kontrakt och åtkomst finns. Allabolag kräver separat åtkomst-/villkorsprövning. Råa registerdata och identiteter går inte till AI.
+
 ## 15 Mappstruktur
 
 ```
@@ -788,3 +851,16 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 | 8 | 2026-10-09 | Efter Codex negativa prov av planens kodblock: sakkunnigstatus binds också till refererade lydelser, källans giltighetsuppgifter och fälten i `galler_om` (6.2 och 16.1); sakgranskningen gäller avsnittet med insatta namn, exakt som det exporteras (10); tidigare fastställda paket verifieras mot manifest innan de används (5.3). 16.3 anger att ett bristmönster räknas som upptäckt först med granskningskontroll och test. |
 | 9 | 2026-10-09 | Efter Codex granskning av rättningarna: ett saknat eller skadat manifest rapporteras som en avvikelse med instruktion om återställning, aldrig som en krasch (5.3). |
 | 10 | 2026-10-10 | Efter granskning av M2-underlaget: rapporteringsundantaget i PTL 4 kap. 8 § och separata undantagsprövningar i kundmodellen; rättslig avgränsning av punkt 23; full PTL-inventering inklusive 7 kap.; korrekt beslutsdatum för 14FS; alternativ lydelse per län med bevarad huvudkälla; AMLR som separat utkastpaket utan operativt urval. M2-plan tillagd. Alla juridiska slutsatser väntar på sakkunniggranskning. |
+| 11 | 2026-10-10 | På användarens förtydligande: komplett intag från tom profil, villkorade följdfrågor, täckningskarta för krav och beskrivande underlag, kontroll av motsägelser/aktualitet samt skrivning av hela riskbedömningen. Frågekontrakt prövas i M3; sammanhållet lokalt flöde i M4 före första riktiga byrå. Befintlig riskbedömning behövs inte för att börja. |
+| 12 | 2026-10-10 | Lokalt intag och hela Word-utkastet implementerat före resterande M4. Fråge-/kravkopplingar i regelbas 1.1.0, lokala beskrivningar, faktabaserat intag utan krav på att användaren skriver analysen, explicit utvärdering och bevarade granskningsgrindar. M3/M4:s verksamhetsprov återstår. |
+| 13 | 2026-10-10 | SCB AFR-registerhämtning och lokal JSON-import som källbundna förslag i intaget (§14.4). Särskild bekräftelse, identitetskontroll, privata snapshots och bevarad faktisk verksamhetsintervju. Ingen ny AI-tillåtelse eller juridisk attest. |
+| 14 | 2026-10-10 | Efter Claude-granskning: XML-kontroll före AI, engångsskrivning, gemensam CLI/webb med CAS, egen filialkälla, bevarande av registerbild vid senare hämtning, historiska belägg vid okänt, skilda felvägar och explicit korrigeringspolicy för län/regelpaket. Utvidgad datakällsresearch finns i research 10, avsnitt 14.2. |
+
+| 15 | 2026-10-11 | Samlat källbundet registergodkännande och tjänsteutbud, obligatoriskt fälturval och atomiska batchar, redigerbara rollförslag, sessionsnyckel, SCB-status som versionshanterad bakgrund och request-lokal rendering. Ny källkontroll i research 10 §14.3. Exportpilot för pilotbyrån krävs fortfarande före ny CSV/XLSX-import. |
+| 16 | 2026-10-11 | Avgränsat val av egen kännedom och aktuella tidigare underlag med kategori-/periodkontroll, föreslagen statistikperiod, tydlig faktisk Word-leverans och SCB-schema 3 med villkorat koncernförslag för kod 41. Fler källor och ännu ej integrerade riskrapporter inventeras i research 10 §14.4; inga nya externa anslutningar eller juridiska attester. |
+
+### D-ARB-format efter källkontroll 2026-10-11
+
+Godkänd H5-plan: `docs/superpowers/plans/2026-10-11-d-arb-tjanststruktur.md`. Kontroller/effekt (`D-ARB.7`) står före tjänsteanalysen. Varje `D-ARB.6.n` innehåller beskrivning/omfattning, hot/egen erfarenhet, sårbarheter med underlagsmotivering, kontroller/effekt, motiverade nivåer och slutsatser. `D-ARB.11` anger byråns utförda bevakning; `D-ARB.B1` samlar frågesvar, belägg, perioder, nämnare och källversioner. Bilagan ingår i sakgranskning. Underrubriker, dokumenttitel och disposition binds till sakgodkännandet; historiskt format utan underrubriker kan fortfarande läsas.
+
+Kontrollernas genomförande är skilt från verkan: aktuell bekräftad effekt och belagt utfall med samma period behövs för metodens riskreduktion. Utfallstext stannar lokalt. Noll avvikelser bevisar inte effekt; ett steg om minst en kontroll är verksam förblir ogranskad metod. B-09/B-10/B-15 kontrollerar maskinellt underlag och att deterministisk analys finns i tjänsteavsnittet, men bedömer inte om fri text juridiskt eller sakligt är tillräcklig. Nya indikatorer viktas konservativt per tjänst och kräver sakkunniggranskning samt M3-kalibrering.

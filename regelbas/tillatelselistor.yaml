@@ -6,6 +6,8 @@
   - P-KANAL.andel_digitalt_underlag
   - P-KANAL.bankdata_andel
   - P-VERK.juniora_konsulter
+  - P-VERK.antal_rapporter
+  - P-VERK.antal_avbojanden
   - P-KUND.antal_aktiva
   - P-VERK.omsattning
   - P-KUND.andel_nya

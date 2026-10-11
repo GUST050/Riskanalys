@@ -85,7 +85,8 @@ def test_sanktionskontroll_och_nivaer_foljer_med_till_skrivning_och_sakgransknin
  p=p.model_copy(update={'uppgifter':{**p.uppgifter,'P-TJ.red01_erbjuds':u(True),'P-GEO.sanktionsanknytning':u(False),'P-KONTROLL.C-SANK.utformning':u('finns'),'P-KONTROLL.C-SANK.genomforande':u('belagt')}})
  t=bedom_tjanst(regelbas_v1,regelbas_v1.tjanster['T-RED-01'],p)
  a=bygg_underlag(regelbas_v1,p,t,'D-ARB.6.1')
- assert next(k for k in a.kontroller if k.id=='C-SANK').status=='finns i rutinerna och är belagd'
+ status=next(k for k in a.kontroller if k.id=='C-SANK').status
+ assert 'effekt okänd' in status and 'ingen riskreduktion är belagd' in status
  text=beskriv_motorns_nivaer(t)
  assert f'sanktionsrisk {t.sanktionsrisk.inneboende.risk}' in text.lower()
  assert f'kvarstående sanktionsrisk {t.sanktionsrisk.kvarstaende}' in text

@@ -4,7 +4,7 @@ import argparse
 from datetime import date
 from typing import Any
 
-from riskanalys.drift.historik import Handelse, las_historik, spara_historik
+from riskanalys.drift.historik import Handelse, registrera_handelse
 from riskanalys.kommandon import datumargument
 from riskanalys.lagring.datamapp import befintlig_byramapp
 
@@ -20,7 +20,6 @@ def lagg_till(underparsers: Any) -> None:
 def kor_utvardera(args: argparse.Namespace) -> int:
     mapp = befintlig_byramapp(args.byra)
     datum = args.datum or date.today()
-    historik = las_historik(mapp).med(Handelse(datum=datum, typ="utvärdering", beskrivning=args.beskrivning))
-    spara_historik(mapp, historik)
+    historik = registrera_handelse(mapp, Handelse(datum=datum, typ="utvärdering", beskrivning=args.beskrivning))
     print(f"Utvärdering registrerad {datum.isoformat()}. Nästa genomgång senast {historik.nasta_genomgang()}.")
     return 0

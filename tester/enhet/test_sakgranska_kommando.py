@@ -79,3 +79,17 @@ def test_riskavsnitt_visar_ai_utkastets_oppna_fragor(skriven_byra_med_oppen_frag
     assert (
         "Öppen fråga från AI-utkastet: Har byrån bankkoppling för alla kunder? Uppgift som saknas: P-KANAL.bankdata_andel."
     ) in capsys.readouterr().out
+
+
+def test_sakgranskaren_ser_underrubriken_som_godkannandet_binder(skriven_byra, regelbas, capsys, monkeypatch):
+    from riskanalys.dokument.modeller import Underrubrik
+    from riskanalys.granskning.korning import las_granskning
+    from riskanalys.kommandon import sakgranska_kommando
+    mapp=kor_granskning(skriven_byra,regelbas,date(2026,11,2))
+    d,f=las_granskning(mapp)
+    a=d.avsnitt_med_id()['D-ARB.6.1']
+    a=a.model_copy(update={'underrubriker':(Underrubrik(fore_stycke=0,rubrik='Risknivåer och motivering'),)})
+    d=d.model_copy(update={'avsnitt':tuple(a if s.id==a.id else s for s in d.avsnitt)})
+    monkeypatch.setattr(sakgranska_kommando,'las_granskning',lambda _: (d,f))
+    assert main(['sakgranska','testbyra','--avsnitt',a.id])==0
+    assert 'Risknivåer och motivering' in capsys.readouterr().out

@@ -26,7 +26,10 @@ def bedom(regelbas: Regelbas, urval: Urval, profil: Profil) -> Bedomning:
     profil = harled_andelar(profil, regelbas)
     tjanster = tuple(bedom_tjanst(regelbas, regelbas.tjanster[tjanst_id], profil) for tjanst_id in urval.tjanster)
     omfattning = rattlig_omfattning(regelbas, profil) if regelbas.utokade_krav else None
+    from riskanalys.bedomning.omfattning import bedom_omfattning
+    proportionalitet = bedom_omfattning(regelbas, profil, tjanster)
     preliminar = bool(omfattning and omfattning.hinder) or any(tjanst.status == "preliminär" for tjanst in tjanster)
+    preliminar |= bool(proportionalitet and proportionalitet.status == "preliminär")
     return Bedomning(
         byra=profil.byra.id,
         regelpaket=urval.regelpaket.id,
@@ -37,6 +40,7 @@ def bedom(regelbas: Regelbas, urval: Urval, profil: Profil) -> Bedomning:
         status="preliminär" if preliminar else "slutlig",
         tjanster=tjanster,
         omfattning=omfattning,
+        proportionalitet=proportionalitet,
     )
 
 
@@ -44,12 +48,16 @@ def bedom_tjanst(regelbas: Regelbas, tjanst: Tjanst, profil: Profil) -> Tjanstbe
     from riskanalys.profil.omfattning import kompatibilitetsvy
     profil = kompatibilitetsvy(profil, regelbas)
     varden = profil.faltvarden()
+    from riskanalys.bedomning.erfarenheter import belagd_uppgift
+    for id in regelbas.falt:
+        if id.startswith("P-RISK.") and not belagd_uppgift(regelbas, profil, id):
+            varden[id] = _OKAND
     erbjuds = varden.get(tjanst.erbjuds_falt, _OKAND)
     if erbjuds.kunskap is Kunskap.EJ_TILLAMPLIG or (erbjuds.kunskap is Kunskap.KAND and erbjuds.varde is False):
         return _erbjuds_inte(tjanst)
     okant_erbjudande = frozenset({tjanst.erbjuds_falt}) if erbjuds.kunskap is Kunskap.OKAND else frozenset()
     sarbarheter, okanda_sarbarheter = _tillampade_sarbarheter(regelbas, tjanst, varden)
-    kontroller, okanda_kontroller = _kontroller(regelbas, tjanst, varden)
+    kontroller, okanda_kontroller = _kontroller(regelbas, tjanst, varden, profil)
     hojning = _hojning(sarbarheter, PENNINGTVATT)
     inneboende, rad = _riskdel(regelbas, tjanst.grund_sannolikhet, tjanst.grund_konsekvens, hojning)
     tf_hojning = _hojning(sarbarheter, TERRORFINANSIERING)
@@ -60,9 +68,14 @@ def bedom_tjanst(regelbas: Regelbas, tjanst: Tjanst, profil: Profil) -> Tjanstbe
     sanktioner = bedom_sanktionsrisk(regelbas, tjanst, profil) if regelbas.utokade_krav else None
     if sanktioner:
         okanda |= frozenset(sanktioner.okanda_uppgifter)
+    from riskanalys.bedomning.erfarenheter import bedom_egen_erfarenhet
+    erfarenhet = bedom_egen_erfarenhet(regelbas, profil)
+    if erfarenhet:
+        okanda |= frozenset(erfarenhet.okanda_uppgifter)
     metod = regelbas.metod
     return Tjanstbedomning(
         tjanst=tjanst.id,
+        egen_erfarenhet=erfarenhet,
         sanktionsrisk=sanktioner,
         erbjuds=None if okant_erbjudande else True,
         status="preliminär" if okanda else "slutlig",
@@ -129,13 +142,14 @@ def _riskdel(regelbas: Regelbas, grund: str, konsekvens: str, hojning: int) -> t
 
 
 def _kontroller(
-    regelbas: Regelbas, tjanst: Tjanst, varden: dict[str, Faltvarde]
+    regelbas: Regelbas, tjanst: Tjanst, varden: dict[str, Faltvarde], profil: Profil
 ) -> tuple[tuple[Kontrollbedomning, ...], frozenset[str]]:
-    resultat = [_kontroll(regelbas.kontroller[kontroll_id], varden) for kontroll_id in tjanst.kontroller]
+    resultat = [_kontroll(regelbas.kontroller[kontroll_id], varden, regelbas, profil) for kontroll_id in tjanst.kontroller]
     return tuple(bedomning for bedomning, _ in resultat), frozenset().union(*(okanda for _, okanda in resultat))
 
 
-def _kontroll(kontroll: Kontroll, varden: dict[str, Faltvarde]) -> tuple[Kontrollbedomning, frozenset[str]]:
+def _kontroll(kontroll: Kontroll, varden: dict[str, Faltvarde], regelbas: Regelbas | None = None,
+              profil: Profil | None = None) -> tuple[Kontrollbedomning, frozenset[str]]:
     utformning = varden.get(kontroll.utformning_falt, _OKAND)
     genomforande = varden.get(kontroll.genomforande_falt, _OKAND)
     okanda = frozenset(
@@ -143,11 +157,32 @@ def _kontroll(kontroll: Kontroll, varden: dict[str, Faltvarde]) -> tuple[Kontrol
         for falt_id, varde in ((kontroll.utformning_falt, utformning), (kontroll.genomforande_falt, genomforande))
         if varde.kunskap is Kunskap.OKAND
     )
+    effekt = None
+    effekt_belagd = None
+    if kontroll.effekt_falt or kontroll.utfall_falt:
+        from riskanalys.bedomning.erfarenheter import belagd_uppgift
+        refs = (kontroll.utformning_falt, kontroll.genomforande_falt,
+                kontroll.effekt_falt, kontroll.utfall_falt)
+        saknas = {id for id in refs if not id or not regelbas or not profil
+                  or not belagd_uppgift(regelbas, profil, id)}
+        if not saknas:
+            perioder = {profil.uppgifter[id].period for id in refs
+                        if regelbas.falt[id].periodkrav}
+            if len(perioder) != 1:
+                saknas.update(refs)
+        okanda |= frozenset(id for id in saknas if id)
+        effekt = _kant(varden.get(kontroll.effekt_falt, _OKAND))
+        if effekt == "ej_bedömd":
+            okanda |= frozenset({kontroll.effekt_falt})
+        effekt_belagd = not saknas and effekt == "verksam"
     bedomning = Kontrollbedomning(
         id=kontroll.id,
+        effekt=effekt,
+        effekt_belagd=effekt_belagd,
         utformning=_kant(utformning),
         genomforande=_kant(genomforande),
-        fungerar_och_ar_belagd=_kant(utformning) == "finns" and _kant(genomforande) == "belagt",
+        fungerar_och_ar_belagd=_kant(utformning) == "finns" and _kant(genomforande) == "belagt"
+        and effekt_belagd is not False,
     )
     return bedomning, okanda
 

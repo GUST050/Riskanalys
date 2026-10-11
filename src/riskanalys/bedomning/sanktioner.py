@@ -29,7 +29,7 @@ def bedom_sanktionsrisk(regelbas: Regelbas, tjanst: Tjanst, profil: Profil) -> S
         rad for rad in regelbas.metod.riskmatris
         if rad.sannolikhet == sannolikhet and rad.konsekvens == metod.grund_konsekvens
     )
-    kontroll, brister = _kontroll(regelbas.kontroller[metod.kontroll], profil.faltvarden())
+    kontroll, brister = _kontroll(regelbas.kontroller[metod.kontroll], profil.faltvarden(), regelbas, profil)
     okanda.update(brister)
     spar.extend((riskrad.id, metod.kontroll))
     kvarstaende = steg(riskrad.risk, -1, RISKNIVAER) if kontroll.fungerar_och_ar_belagd else riskrad.risk

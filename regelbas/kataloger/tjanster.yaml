@@ -8,6 +8,13 @@
   hot:
   - H-TJ-01
   - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -15,6 +22,24 @@
   - S-VERK-01
   - S-GEO-01
   - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-01
   - C-07
@@ -28,8 +53,10 @@
     avsnitt: '7.19'
     sida: 123
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
 - id: T-RED-02
   namn: Bokslut och årsredovisning
@@ -41,6 +68,13 @@
   hot:
   - H-TJ-02
   - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -48,6 +82,24 @@
   - S-VERK-01
   - S-GEO-01
   - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-02
   grund_sannolikhet: medel
@@ -60,8 +112,10 @@
     avsnitt: '7.19'
     sida: 123
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
 - id: T-RED-03
   namn: Deklarationer och deklarationsombud
@@ -73,6 +127,13 @@
   hot:
   - H-TJ-03
   - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -80,6 +141,24 @@
   - S-VERK-01
   - S-GEO-01
   - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-03
   grund_sannolikhet: medel
@@ -92,8 +171,10 @@
     avsnitt: '7.19'
     sida: 123
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
 - id: T-RED-04
   namn: Lönehantering
@@ -105,6 +186,13 @@
   hot:
   - H-TJ-04
   - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -112,6 +200,24 @@
   - S-VERK-01
   - S-GEO-01
   - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-04
   grund_sannolikhet: medel
@@ -124,8 +230,10 @@
     avsnitt: '7.19'
     sida: 123
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
 - id: T-RED-05
   namn: Betalningar och attest i kundens namn
@@ -137,6 +245,13 @@
   hot:
   - H-TJ-05
   - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -145,6 +260,24 @@
   - S-GEO-01
   - S-KOMB-01
   - S-TJ-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-05
   grund_sannolikhet: medel
@@ -157,8 +290,10 @@
     avsnitt: '7.19'
     sida: 123
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
 - id: T-RED-06
   namn: Klientmedelskonto
@@ -170,6 +305,13 @@
   hot:
   - H-TJ-06
   - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -178,6 +320,24 @@
   - S-GEO-01
   - S-KOMB-01
   - S-TJ-02
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-06
   grund_sannolikhet: medel
@@ -190,8 +350,10 @@
     avsnitt: '7.19'
     sida: 123
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
 - id: T-RED-07
   namn: Ekonomisk rådgivning och ekonomichefstjänster
@@ -203,6 +365,13 @@
   hot:
   - H-TJ-07
   - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -210,6 +379,24 @@
   - S-VERK-01
   - S-GEO-01
   - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-07
   grund_sannolikhet: medel
@@ -222,8 +409,10 @@
     avsnitt: '7.19'
     sida: 123
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
 - id: T-SKATT-01
   namn: Skatterådgivning utöver deklarationer
@@ -235,6 +424,9 @@
   hot:
   - H-TJ-08
   - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -242,6 +434,24 @@
   - S-VERK-01
   - S-GEO-01
   - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-08
   grund_sannolikhet: hög
@@ -254,8 +464,10 @@
     avsnitt: '7.20'
     sida: 126
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-SKATT
 - id: T-BOLAG-01
   namn: Bolagsbildning, lagerbolag och bolagsförmedling
@@ -267,6 +479,9 @@
   hot:
   - H-TJ-09
   - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -275,6 +490,24 @@
   - S-GEO-01
   - S-KOMB-01
   - S-TJ-03
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-09
   grund_sannolikhet: hög
@@ -287,8 +520,10 @@
     avsnitt: '7.25'
     sida: 144
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-BOLAG
 - id: T-BOLAG-02
   namn: Registrerad adress eller postadress
@@ -300,6 +535,9 @@
   hot:
   - H-TJ-10
   - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -307,6 +545,24 @@
   - S-VERK-01
   - S-GEO-01
   - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-10
   grund_sannolikhet: medel
@@ -319,8 +575,10 @@
     avsnitt: '7.26'
     sida: 147
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-ADRESS
 - id: T-BOLAG-03
   namn: Styrelseuppdrag eller bolagsrättsligt ansvar
@@ -332,6 +590,9 @@
   hot:
   - H-TJ-11
   - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -340,6 +601,24 @@
   - S-GEO-01
   - S-KOMB-01
   - S-TJ-04
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
   kontroller:
   - C-TJ-11
   grund_sannolikhet: hög
@@ -352,6 +631,8 @@
     avsnitt: '7.25'
     sida: 144
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras
-    separat. NRA:s sektorsrisk är inte direkt likställd med motorns skala.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
+    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
+    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
+    viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-BOLAG

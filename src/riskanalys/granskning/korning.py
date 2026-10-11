@@ -28,7 +28,7 @@ GRANSKNINGENS_NYCKLAR = ("bedomning", "utkast", "historik", "datum")
 _FYNDLISTA = TypeAdapter(tuple[Fynd, ...])
 
 
-def godkanda_utkast(byramapp: Path, bedomningsmapp: Path) -> tuple[dict[str, AvsnittsUtkast], Path | None]:
+def godkanda_utkast(byramapp: Path, bedomningsmapp: Path, *, utkastmapp: Path | None = None) -> tuple[dict[str, AvsnittsUtkast], Path | None]:
     """Godkända AI-utkast från den senaste skrivningen som hör till just den här bedömningen."""
     rot = byramapp / UTKAST
     if rot.is_dir():
@@ -41,9 +41,14 @@ def godkanda_utkast(byramapp: Path, bedomningsmapp: Path) -> tuple[dict[str, Avs
         for mapp in avslutade_korningar(byramapp, UTKAST)
         if las_manifest(mapp).metadata.get("bedomning") == bedomningsmapp.name
     ]
-    if not horande:
+    if utkastmapp is not None:
+        if utkastmapp not in horande:
+            raise RiskanalysFel("Det valda AI-utkastet hör inte till bedömningen. Skapa ett nytt utkast.")
+        mapp = utkastmapp
+    elif horande:
+        mapp = horande[-1]
+    else:
         return {}, None
-    mapp = horande[-1]
     fel = verifiera_manifest(mapp)
     if fel:raise RiskanalysFel(f"Utkastet {mapp} är ändrat. Återställ eller kör skriv igen: {'; '.join(fel)}")
     utkast = {
@@ -59,13 +64,13 @@ def oppna_fragor(utkast: dict[str, AvsnittsUtkast]) -> tuple[tuple[str, Oklarhet
     return tuple((avsnitt_id, oklarhet) for avsnitt_id, post in utkast.items() for oklarhet in post.oklarheter)
 
 
-def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date) -> Path:
-    bedomningsmapp = senaste_korning(byramapp, BEDOMNINGAR, f"bedom {byramapp.name}")
+def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *, bedomningsmapp: Path | None = None, utkastmapp: Path | None = None) -> Path:
+    bedomningsmapp = bedomningsmapp or senaste_korning(byramapp, BEDOMNINGAR, f"bedom {byramapp.name}")
     kontrollera_aktuell(byramapp, bedomningsmapp, regelbas)
     bedomning = las_bedomning(bedomningsmapp)
     profil = las_bedomningsprofil(bedomningsmapp)
     urval = valj(regelbas, bedomning.regelpaket, bedomning.datum, bedomning.lan)
-    utkast, utkastmapp = godkanda_utkast(byramapp, bedomningsmapp)
+    utkast, utkastmapp = godkanda_utkast(byramapp, bedomningsmapp, utkastmapp=utkastmapp)
     historik = las_historik(byramapp)
     dokument = bygg_arb(regelbas, profil, bedomning, utkast, historik)
     fynd = granska(regelbas, urval, profil, bedomning, dokument, historik, granskningsdatum, oppna_fragor(utkast))
@@ -74,6 +79,7 @@ def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date) -
     (mapp / FYNDFIL).write_text(_FYNDLISTA.dump_json(fynd, indent=2).decode("utf-8"), encoding="utf-8")
     metadata = {
         "typ": "granskning",
+        "dokumentformat": dokument.formatversion,
         "bedomning": bedomningsmapp.name,
         "utkast": utkastmapp.name if utkastmapp else "",
         "historik": historikens_kontrollsumma(byramapp),

@@ -12,7 +12,8 @@ def test_tf_far_inte_kopieras_och_obelagd_kontroll_sanker_inte(regelbas_v1):
  t=regelbas_v1.tjanster["T-RED-01"].model_copy(update={"grund_tf_sannolikhet":"hög"})
  p=profil(**{"P-GEO.sanktionsanknytning":False,"P-KONTROLL.C-SANK.utformning":"finns","P-KONTROLL.C-SANK.genomforande":"ej_belagt"})
  a=bedom_sanktionsrisk(regelbas_v1,t,p)
- assert a.status=="slutlig" and a.inneboende.sannolikhet=="låg"
+ assert a.status=="preliminär" and a.inneboende.sannolikhet=="låg"
+ assert "P-KONTROLL.C-SANK.effekt" in a.okanda_uppgifter
  assert a.kvarstaende==a.inneboende.risk
  assert bedom_tjanst(regelbas_v1,t,p).sanktionsrisk==a
 

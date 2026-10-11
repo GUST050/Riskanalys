@@ -79,6 +79,8 @@ def bekrafta(
     period: Period | None = None,
 ) -> Profil:
     """Returnerar en ny profil där uppgiften är bekräftad."""
+    from riskanalys.profil.text import kontrollera_text
+    kontrollera_text(text, kalla, roll)
     falt = _falt(regelbas, falt_id)
     if falt.antalfalt or falt.basfalt:
         raise ProfilFel(f"{falt_id} härleds. Bekräfta {falt.antalfalt} och {falt.basfalt}, inte andelen direkt.")
@@ -107,6 +109,8 @@ def markera_ej_tillamplig(
     datum: date,
 ) -> Profil:
     """Returnerar en ny profil där uppgiften är markerad som ej tillämplig."""
+    from riskanalys.profil.text import kontrollera_text
+    kontrollera_text(motivering, roll)
     falt = _falt(regelbas, falt_id)
     if not motivering or not motivering.strip():
         raise ProfilFel("Ange varför uppgiften inte är tillämplig med --motivering.")
@@ -150,6 +154,8 @@ def kontrollera_profil(profil: Profil, regelbas: Regelbas) -> None:
     Ett handredigerat värde eller ett värde av en typ som regelbasen inte längre har får aldrig ändra bedömningen
     i tysthet. Värden i fält med personuppgifter skrivs inte ut.
     """
+    from riskanalys.profil.text import kontrollera_profiltext
+    kontrollera_profiltext(profil)
     definitioner = regelbas.faltdefinitioner()
     from riskanalys.profil.omfattning import omfattningsbrister
     fel = [*belaggsbrister(profil), *omfattningsbrister(profil, regelbas)]

@@ -1,7 +1,7 @@
 - id: C-07
   namn: Bankavstämning mot underlag
-  beskrivning: Byrån stämmer av kundens bankkonton mot bokfört underlag och utreder
-    differenser och transaktioner som saknar underlag.
+  beskrivning: Byrån stämmer av kundens bankkonton mot bokfört underlag och utreder differenser
+    och transaktioner som saknar underlag.
   utformning_falt: P-KONTROLL.C-07.utformning
   genomforande_falt: P-KONTROLL.C-07.genomforande
   kallor:
@@ -12,10 +12,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  effekt_falt: P-KONTROLL.C-07.effekt
+  utfall_falt: P-KONTROLL.C-07.utfall
 - id: C-TJ-01
   namn: Kontroll av löpande bokföring
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-01.utformning
   genomforande_falt: P-KONTROLL.C-TJ-01.genomforande
   grund: metodval
@@ -26,10 +28,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  effekt_falt: P-KONTROLL.C-TJ-01.effekt
+  utfall_falt: P-KONTROLL.C-TJ-01.utfall
 - id: C-TJ-02
   namn: Kontroll av bokslut och årsredovisning
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-02.utformning
   genomforande_falt: P-KONTROLL.C-TJ-02.genomforande
   grund: metodval
@@ -40,10 +44,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  effekt_falt: P-KONTROLL.C-TJ-02.effekt
+  utfall_falt: P-KONTROLL.C-TJ-02.utfall
 - id: C-TJ-03
   namn: Kontroll av deklarationer och deklarationsombud
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-03.utformning
   genomforande_falt: P-KONTROLL.C-TJ-03.genomforande
   grund: metodval
@@ -54,10 +60,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  effekt_falt: P-KONTROLL.C-TJ-03.effekt
+  utfall_falt: P-KONTROLL.C-TJ-03.utfall
 - id: C-TJ-04
   namn: Kontroll av lönehantering
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-04.utformning
   genomforande_falt: P-KONTROLL.C-TJ-04.genomforande
   grund: metodval
@@ -68,10 +76,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  effekt_falt: P-KONTROLL.C-TJ-04.effekt
+  utfall_falt: P-KONTROLL.C-TJ-04.utfall
 - id: C-TJ-05
   namn: Kontroll av betalningar och attest i kundens namn
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-05.utformning
   genomforande_falt: P-KONTROLL.C-TJ-05.genomforande
   grund: metodval
@@ -82,10 +92,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  effekt_falt: P-KONTROLL.C-TJ-05.effekt
+  utfall_falt: P-KONTROLL.C-TJ-05.utfall
 - id: C-TJ-06
   namn: Kontroll av klientmedelskonto
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-06.utformning
   genomforande_falt: P-KONTROLL.C-TJ-06.genomforande
   grund: metodval
@@ -96,10 +108,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  effekt_falt: P-KONTROLL.C-TJ-06.effekt
+  utfall_falt: P-KONTROLL.C-TJ-06.utfall
 - id: C-TJ-07
   namn: Kontroll av ekonomisk rådgivning och ekonomichefstjänster
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-07.utformning
   genomforande_falt: P-KONTROLL.C-TJ-07.genomforande
   grund: metodval
@@ -110,10 +124,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  effekt_falt: P-KONTROLL.C-TJ-07.effekt
+  utfall_falt: P-KONTROLL.C-TJ-07.utfall
 - id: C-TJ-08
   namn: Kontroll av skatterådgivning utöver deklarationer
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-08.utformning
   genomforande_falt: P-KONTROLL.C-TJ-08.genomforande
   grund: metodval
@@ -124,10 +140,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.20'
     sida: 126
+  effekt_falt: P-KONTROLL.C-TJ-08.effekt
+  utfall_falt: P-KONTROLL.C-TJ-08.utfall
 - id: C-TJ-09
   namn: Kontroll av bolagsbildning, lagerbolag och bolagsförmedling
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-09.utformning
   genomforande_falt: P-KONTROLL.C-TJ-09.genomforande
   grund: metodval
@@ -138,10 +156,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.25'
     sida: 144
+  effekt_falt: P-KONTROLL.C-TJ-09.effekt
+  utfall_falt: P-KONTROLL.C-TJ-09.utfall
 - id: C-TJ-10
   namn: Kontroll av registrerad adress eller postadress
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-10.utformning
   genomforande_falt: P-KONTROLL.C-TJ-10.genomforande
   grund: metodval
@@ -152,10 +172,12 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.26'
     sida: 147
+  effekt_falt: P-KONTROLL.C-TJ-10.effekt
+  utfall_falt: P-KONTROLL.C-TJ-10.utfall
 - id: C-TJ-11
   namn: Kontroll av styrelseuppdrag eller bolagsrättsligt ansvar
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget;
-    dokumentera utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
+    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-11.utformning
   genomforande_falt: P-KONTROLL.C-TJ-11.genomforande
   grund: metodval
@@ -166,12 +188,16 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.25'
     sida: 144
+  effekt_falt: P-KONTROLL.C-TJ-11.effekt
+  utfall_falt: P-KONTROLL.C-TJ-11.utfall
 - id: C-SANK
   namn: Kontroll av sanktionsanknytning
-  beskrivning: Utred identitet, ägande/kontroll, tillämpliga förbud och eventuella
-    tillstånd. Ingen automatisk screening i M2.
+  beskrivning: Utred identitet, ägande/kontroll, tillämpliga förbud och eventuella tillstånd.
+    Ingen automatisk screening i M2.
   utformning_falt: P-KONTROLL.C-SANK.utformning
   genomforande_falt: P-KONTROLL.C-SANK.genomforande
   grund: metodval
   kallor:
   - SRC-NRA-2024-25
+  effekt_falt: P-KONTROLL.C-SANK.effekt
+  utfall_falt: P-KONTROLL.C-SANK.utfall

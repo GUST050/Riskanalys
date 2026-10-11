@@ -6,6 +6,7 @@ skriver ut det. Ändras texten eller ett namn som sätts in i den slutar sakgran
 
 from datetime import date
 from pathlib import Path
+import json
 
 from pydantic import TypeAdapter
 
@@ -15,6 +16,7 @@ from riskanalys.faststallelse.modeller import Sakgranskning
 from riskanalys.fel import RiskanalysFel
 from riskanalys.lagring.yamlfil import spara_yaml, las_modell
 from riskanalys.profil.modeller import Profil
+from riskanalys.lagring.kontrollsumma import for_text
 
 SAKGRANSKNINGSFIL = Path("sakgranskning") / "sakgranskningar.yaml"
 _LISTA = TypeAdapter(tuple[Sakgranskning, ...])
@@ -27,6 +29,13 @@ class SakgranskningsFel(RiskanalysFel):
 def granskad_summa(avsnitt: Avsnitt, profil: Profil) -> str:
     """Kontrollsumman för det granskaren ser och exporten innehåller."""
     return renderat_avsnitt(avsnitt, profil).kontrollsumma()
+
+
+def struktur_summa(dokument: Dokument) -> str:
+    """Titel, format och faktisk avsnittsordning i det granskade dokumentet."""
+    return for_text(json.dumps({'titel': dokument.titel, 'avsnitt': [
+        (a.id, a.rubrik, [(u.fore_stycke, u.rubrik) for u in a.underrubriker])
+        for a in dokument.avsnitt]}, ensure_ascii=False, separators=(',', ':')))
 
 
 def las_sakgranskningar(byramapp: Path) -> tuple[Sakgranskning, ...]:
@@ -63,6 +72,7 @@ def registrera_sakgranskning(
     post = Sakgranskning(
         avsnitt=avsnitt.id,
         kontrollsumma=granskad_summa(avsnitt, profil),
+        dokumentstruktur=struktur_summa(dokument) if any(a.underrubriker for a in dokument.avsnitt) else None,
         godkand=godkand,
         roll=roll,
         namn=namn.strip(),
@@ -73,16 +83,19 @@ def registrera_sakgranskning(
 
 
 def galler_sakgranskning(
-    sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil
+    sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None
 ) -> Sakgranskning | None:
     """Den senaste sakgranskningen av avsnittet i exakt den lydelse som exporten skulle få."""
     summa = granskad_summa(avsnitt, profil)
-    giltiga = [post for post in sakgranskningar if post.avsnitt == avsnitt.id and post.kontrollsumma == summa]
+    ny_struktur = bool(dokument and any(a.underrubriker for a in dokument.avsnitt))
+    giltiga = [post for post in sakgranskningar if post.avsnitt == avsnitt.id and post.kontrollsumma == summa
+               and (post.dokumentstruktur == struktur_summa(dokument) if post.dokumentstruktur and dokument
+                    else not post.dokumentstruktur and not ny_struktur)]
     return giltiga[-1] if giltiga else None
 
 
-def sakgranskningsstatus(sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil) -> str:
-    galler = galler_sakgranskning(sakgranskningar, avsnitt, profil)
+def sakgranskningsstatus(sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None) -> str:
+    galler = galler_sakgranskning(sakgranskningar, avsnitt, profil, dokument)
     if galler is not None:
         utfall = "godkänt" if galler.godkand else f"underkänt ({galler.kommentar})"
         return f"{utfall} {galler.datum.isoformat()} av {galler.namn}, roll {galler.roll}"

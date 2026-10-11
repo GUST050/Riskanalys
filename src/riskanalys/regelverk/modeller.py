@@ -23,6 +23,19 @@ class Strikt(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
 
+class Intagsfalt(Strikt):
+    """Frågens syfte och ordning; kopplingen är inget intyg om kravuppfyllelse."""
+
+    grupp: str
+    ordning: int = Field(ge=0)
+    krav: tuple[str, ...] = ()
+    avsnitt: tuple[str, ...] = Field(min_length=1)
+    kallor: tuple[str, ...] = Field(min_length=1)
+    obligatorisk: bool = True
+    beroenden: tuple[str, ...] = ()
+    grund: Literal["metodval"] = "metodval"
+
+
 class Falt(Strikt):
     id: str
     typ: Literal["bool", "heltal", "tal", "andel", "text", "val", "datum"]
@@ -36,6 +49,7 @@ class Falt(Strikt):
     basfalt: str | None = None
     antalfalt: str | None = None
     kritisk_om: dict[str, Any] | None = None
+    intag: Intagsfalt | None = None
     alias_for: str | None = None
     enhet: str | None = None
     val: tuple[str, ...] = ()
@@ -151,6 +165,8 @@ class Effekt(Strikt):
 
 
 class Sarbarhet(Strikt):
+    beskrivning: str = ""
+    metodmotivering: str = ""
     sakkunnig: Sakkunnig = Sakkunnig()
     kallhanvisningar: tuple[Kallhanvisning, ...] = ()
     ersatter: tuple[str, ...] = ()
@@ -166,6 +182,8 @@ class Sarbarhet(Strikt):
 
 
 class Kontroll(Strikt):
+    effekt_falt: str | None = None
+    utfall_falt: str | None = None
     sakkunnig: Sakkunnig = Sakkunnig()
     grund: Grund = "metodval"
     kallhanvisningar: tuple[Kallhanvisning, ...] = ()
@@ -234,7 +252,14 @@ class Tillamplighetsrad(Strikt):
     forklaring: str
 
 
+class Omfattningsmetod(Regel):
+    kallor: tuple[str, ...] = Field(min_length=1)
+    enkel_villkor: dict[str, Any]
+    utokad_villkor: dict[str, Any]
+
+
 class Metod(Strikt):
+    omfattning: Omfattningsmetod | None = None
     riskmatris: tuple[MatrisRad, ...]
     sannolikhet: Regel
     konsekvens: Regel
@@ -249,7 +274,7 @@ class Metod(Strikt):
             self.terrorfinansiering,
             self.kvarstaende_ej_belagd,
             self.kvarstaende_sankning,
-        )
+        ) + ((self.omfattning,) if self.omfattning else ())
 
 
 class Tillatelselista(Strikt):

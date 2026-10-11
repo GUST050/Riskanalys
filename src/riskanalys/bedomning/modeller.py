@@ -22,6 +22,8 @@ class Riskdel(Fryst):
 
 
 class Kontrollbedomning(Fryst):
+    effekt: str | None = None
+    effekt_belagd: bool | None = None
     id: str
     utformning: str | None
     genomforande: str | None
@@ -37,7 +39,17 @@ class Sanktionsbedomning(Fryst):
     okanda_uppgifter: tuple[str, ...]
 
 
+class EgenErfarenhet(Fryst):
+    """Byråövergripande observationer, aldrig en riskpoäng per tjänst."""
+
+    rapporter: Literal["inga", "finns", "saknas"]
+    avbojanden: Literal["inga", "finns", "saknas"]
+    belagd: bool
+    okanda_uppgifter: tuple[str, ...]
+
+
 class Tjanstbedomning(Fryst):
+    egen_erfarenhet: EgenErfarenhet | None = None
     sanktionsrisk: Sanktionsbedomning | None = None
     tjanst: str
     erbjuds: bool | None
@@ -52,7 +64,15 @@ class Tjanstbedomning(Fryst):
     okanda_uppgifter: tuple[str, ...]
 
 
+class Proportionalitet(Fryst):
+    niva: Literal["enkel", "standard", "utökad"]
+    status: Bedomningsstatus
+    regelspar: tuple[str, ...]
+    okanda_uppgifter: tuple[str, ...]
+
+
 class Bedomning(Fryst):
+    proportionalitet: Proportionalitet | None = None
     byra: str
     regelpaket: str
     datum: date

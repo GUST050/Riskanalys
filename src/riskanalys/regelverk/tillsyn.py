@@ -51,7 +51,7 @@ def rattlig_omfattning(regelbas: Regelbas, profil: Profil) -> Omfattningsbeslut:
         except RiskanalysFel as exc:
             hinder.append(str(exc))
         if profil.byra.lan != lan and not filial:
-            hinder.append(f"Profilens säteslän {lan} stämmer inte med låst --lan {profil.byra.lan}. Skapa en ny bedömningsprofil med rätt län.")
+            hinder.append(f"Profilens säteslän {lan} stämmer inte med profilens län {profil.byra.lan}. Rätta grundsvaret via intaget eller bekrafta så att län och regelpaket uppdateras tillsammans; berörda underlag behöver bekräftas igen.")
         if paket and profil.byra.regelpaket != paket:
             hinder.append(f"Manuellt regelpaket {profil.byra.regelpaket} stämmer inte med tillsynsområdet {paket}. Välj rätt paket.")
     if lan is not None and not isinstance(lan, str):

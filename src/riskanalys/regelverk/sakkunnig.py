@@ -120,6 +120,8 @@ def kontrollera_beslut(b: Granskningsbeslut, rb: Regelbas, paket_id: str) -> Non
     fel = validera(rb)
     if fel:
         raise RiskanalysFel('Rätta regelbasen före granskningsimport: ' + '; '.join(fel))
+    if paket_id not in rb.regelpaket:
+        raise RiskanalysFel(f'Okänt regelpaket {paket_id}. Välj ett befintligt paket och exportera en ny granskningsmall.')
     if (b.paket != paket_id or b.version != rb.version
             or b.kontrollsumma != rb.paketets_innehallssumma(paket_id)):
         raise RiskanalysFel('Granskningens paket, version eller innehållssumma har ändrats. Exportera och granska på nytt.')
@@ -190,6 +192,9 @@ def applicera_attester(rb: Regelbas, b: Granskningsbeslut) -> Regelbas:
     for namn in ('sannolikhet', 'konsekvens', 'terrorfinansiering', 'kvarstaende_ej_belagd', 'kvarstaende_sankning'):
         regel = getattr(metod, namn)
         metoduppdateringar[namn] = regel.model_copy(update={'sakkunnig': attest(regel.id, regel.sakkunnig)})
+    if metod.omfattning:
+        regel = metod.omfattning
+        metoduppdateringar['omfattning'] = regel.model_copy(update={'sakkunnig': attest(regel.id, regel.sakkunnig)})
     updates['metod'] = metod.model_copy(update=metoduppdateringar)
     for namn in ('skalmappning', 'sanktionsmetod'):
         post = getattr(rb, namn)

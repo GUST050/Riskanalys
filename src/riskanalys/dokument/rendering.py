@@ -85,7 +85,10 @@ def rendera_docx(
     word.add_paragraph().add_run(statusrad).bold = True
     for avsnitt in (renderat_avsnitt(post, profil) for post in dokument.avsnitt):
         word.add_heading(f"{avsnittsnummer(avsnitt.id)} {avsnitt.rubrik}", level=1)
-        for stycke in avsnitt.stycken:
+        underrubriker = {u.fore_stycke: u.rubrik for u in avsnitt.underrubriker}
+        for index, stycke in enumerate(avsnitt.stycken):
+            if index in underrubriker:
+                word.add_heading(underrubriker[index], level=2)
             word.add_paragraph(stycke.text)
     if bilaga:
         word.add_heading(BILAGERUBRIK, level=1)

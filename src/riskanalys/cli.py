@@ -5,6 +5,7 @@ import sys
 
 from riskanalys.fel import RiskanalysFel
 from riskanalys.kommandon import (
+    intag_kommando,
     bedom_kommando,
     drift_kommando,
     exportera_kommando,
@@ -17,6 +18,7 @@ from riskanalys.kommandon import (
 )
 
 KOMMANDON = [
+    intag_kommando,
     regelbas_kommando,
     profil_kommando,
     drift_kommando,

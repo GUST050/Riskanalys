@@ -126,3 +126,11 @@
   id: DRIFT-MISSTANKE
   etapp: M4
   beskrivning: Operativ status och belägg; levereras i M4.
+- typ: dokument
+  id: D-ARB.11
+  etapp: M2
+  beskrivning: Utförd omvärldsbevakning med relevansbedömning, datum och ansvar.
+- typ: dokument
+  id: D-ARB.B1
+  etapp: M2
+  beskrivning: Underlagsbilaga som ingår i sakgranskning och innehållssumma.

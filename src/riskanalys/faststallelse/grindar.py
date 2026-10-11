@@ -81,6 +81,12 @@ def _uppgifter(underlag: Faststallelseunderlag) -> list[str]:
     omfattning = omfattningsbrister(underlag.profil, underlag.regelbas)
     saknade = saknade_kritiska(underlag.profil, underlag.regelbas, underlag.urval)
     hinder = [f"Kritiska uppgifter saknas: {', '.join(saknade)}. Bekräfta dem med 'riskanalys bekrafta'."] if saknade else []
+    if any(f.intag for f in underlag.regelbas.falt.values()):
+        from riskanalys.intag.tackning import tackning
+        t = tackning(underlag.regelbas, underlag.profil)
+        hinder.extend(t.hinder)
+        if t.saknade:
+            hinder.append('Intaget är ofullständigt: ' + ', '.join(t.saknade))
     return [*hinder, *omfattning, *(f"{rad} Bekräfta uppgiften igen med 'riskanalys bekrafta'." for rad in belaggsbrister(underlag.profil))]
 
 
@@ -133,7 +139,7 @@ def _paragrafkarta(underlag: Faststallelseunderlag) -> list[str]:
 def _sakgranskning(underlag: Faststallelseunderlag) -> list[str]:
     hinder = []
     for avsnitt in underlag.dokument.avsnitt:
-        galler = galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil)
+        galler = galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument)
         if galler is None:
             hinder.append(f"Avsnitt {avsnitt.id} är inte sakgranskat i nuvarande lydelse.")
         elif not galler.godkand:
@@ -155,7 +161,7 @@ def _kronologi(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]
     sakgranskade = [
         galler.datum
         for avsnitt in underlag.dokument.avsnitt
-        if (galler := galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil)) is not None
+        if (galler := galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument)) is not None
     ]
     faststallda = [handelse.datum for handelse in underlag.historik.handelser if handelse.typ == FASTSTALLELSE]
     tidigare = (

@@ -35,6 +35,9 @@ INSTRUKTION = (
     "\"Risken för finansiering av terrorism bedöms som måttlig.\" "
     "Hänvisa till ID:n i underlaget i fältet referenser. Saknas en uppgift, skriv [VERIFIERA] och "
     "lägg till en oklarhet."
+    " Beakta byråns egna rapporter och misstankebaserade avböjanden som hotunderlag när de finns. "
+    "Antalen är byråövergripande, inte tjänstespecifika riskpoäng; noll rapporter bevisar inte frånvaro av hot. "
+    "Motivera sårbarheternas tillämplighet med det skyddade underlaget."
 )
 _STATUS = {Sanning.SANT: "ja", Sanning.FALSKT: "nej", Sanning.OKANT: "okänt"}
 
@@ -61,6 +64,10 @@ def sarbarhet_status(regelbas: Regelbas, profil: Profil, sarbarhet_id: str) -> L
 
 
 def kontrollstatus(kontroll: Kontrollbedomning) -> str:
+    if kontroll.effekt_belagd is not None:
+        text = f"utformning {kontroll.utformning or 'okänd'}, genomförande {kontroll.genomforande or 'okänt'}, effekt {kontroll.effekt or 'okänd'}"
+        return text + ("; belagd riskreducerande verkan enligt metodvillkor" if kontroll.fungerar_och_ar_belagd
+                       else "; ingen riskreduktion är belagd")
     if kontroll.utformning is None:
         return "okänt om kontrollen finns i rutinerna"
     if kontroll.utformning == "saknas":
@@ -108,6 +115,7 @@ def bygg_underlag(
                 id=sarbarhet_id,
                 namn=regelbas.sarbarheter[sarbarhet_id].namn,
                 galler=sarbarhet_status(regelbas, profil, sarbarhet_id),
+                motivering=_sarbarhetsmotivering(regelbas, profil, sarbarhet_id, lista.falt),
             )
             for sarbarhet_id in tjanst.sarbarheter
         ),
@@ -120,6 +128,22 @@ def bygg_underlag(
         regelspar=tjanstbedomning.regelspar + (tjanstbedomning.sanktionsrisk.regelspar if tjanstbedomning.sanktionsrisk else ()),
         undvik=tuple(UnderlagBrist(id=brist_id, namn=regelbas.bristmonster[brist_id].namn) for brist_id in lista.undvik),
     )
+
+
+def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna: tuple[str, ...]) -> str:
+    from riskanalys.regelverk.villkor import falt_i
+    s = regelbas.sarbarheter[id]
+    status = sarbarhet_status(regelbas, profil, id)
+    falt = sorted(falt_i(tolka_villkor(s.villkor, regelbas.faltdefinitioner())))
+    rader = []
+    for ref in falt:
+        if ref not in tillatna:
+            rader.append(f"{ref}: underlag lämnas inte till AI; motiveringen behöver granskas lokalt.")
+            continue
+        u = _uppgift(regelbas, profil, ref)
+        period = f" Period: {'–'.join(u.period)}." if u.period else ""
+        rader.append(f"{ref}: {u.varde}.{period}")
+    return f"Det registrerade villkorets utfall är {status}. " + " ".join(rader)
 
 
 def _kontrollera_lista(regelbas: Regelbas, falt: tuple[str, ...]) -> None:

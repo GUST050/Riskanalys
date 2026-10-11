@@ -201,6 +201,7 @@ def _bygg_paket(
 def _metadata(underlag: Faststallelseunderlag, beslut: Beslut, version: int, granskningsmapp: Path) -> dict[str, str]:
     return {
         "typ": "faststallt_paket",
+        "dokumentformat": underlag.dokument.formatversion,
         "version": str(version),
         "organ": beslut.organ,
         "beslutsdatum": beslut.datum.isoformat(),

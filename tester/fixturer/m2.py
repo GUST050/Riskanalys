@@ -16,6 +16,7 @@ def komplett_profil(rb,p):
         v={'bool':False,'heltal':0,'tal':0.,'text':'Syntetiskt testnamn','datum':DAG,'andel':0.}.get(f.typ)
         if f.typ=='val':v=p.byra.lan if k=='P-ORG.sateslan' else f.val[0]
         if k=='P-ORG.sateslan':v=p.byra.lan
+        if k=='P-BEVAKNING.kallor':v='SRC-TS-2026-14, SRC-VAGL-2025-03'
         if k in {'P-VERK.bokforing','P-VERK.skatteradgivning','P-VERK.bolagstjanster','P-TJ.red01_erbjuds','P-TJ.skatt01_erbjuds','P-TJ.bolag01_erbjuds'}:v=True
         if k in {'P-ORG.antal_anstallda','P-ORG.verksamhetsstallen'}:v=1
         if k=='P-KUND.antal_aktiva':v=100

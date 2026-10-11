@@ -66,7 +66,7 @@
 - id: B-09
   namn: Geografi kopplas bara till sanktionslistor
   upptacks: Kontrollera att utlandskopplingar och lokala riskfaktorer analyseras.
-  automatiserad: false
+  automatiserad: true
   allvar: hög
   grund: tillsynspraxis
   kallor:
@@ -74,7 +74,7 @@
 - id: B-10
   namn: Påstående om att geografiska risker saknas utan motivering
   upptacks: Ingen nivå får anges utan motivering.
-  automatiserad: false
+  automatiserad: true
   allvar: medel
   grund: tillsynspraxis
   kallor:
@@ -114,7 +114,7 @@
 - id: B-15
   namn: Egen rapportering till Finanspolisen vägs inte in
   upptacks: Kontrollera att uppgiften finns i profilen och texten.
-  automatiserad: false
+  automatiserad: true
   allvar: medel
   grund: tillsynspraxis
   kallor:

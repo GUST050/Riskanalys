@@ -1,6 +1,12 @@
 """Läs och spara byråprofilen i byråns datamapp."""
 
 from pathlib import Path
+import fcntl
+import hashlib
+import os
+import tempfile
+
+import yaml
 
 from pydantic import ValidationError
 
@@ -11,10 +17,48 @@ from riskanalys.profil.modeller import Profil
 PROFILFIL = Path("profil") / "profil.yaml"
 
 
-def spara_profil(byramapp: Path, profil: Profil) -> Path:
+def profilrevision(profil: Profil) -> str:
+    return hashlib.sha256(profil.model_dump_json().encode()).hexdigest()
+
+
+def spara_profil(byramapp: Path, profil: Profil, revision: str | None = None) -> Path:
+    """Privat, atomisk skrivning; CAS skyddar intagets öppna flikar och historik bevarar tidigare bytes."""
     sokvag = byramapp / PROFILFIL
-    spara_yaml(sokvag, profil.model_dump(mode="python"))
-    return sokvag
+    temp = None
+    try:
+        sokvag.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        fd = os.open(sokvag.parent / '.skrivlas', os.O_CREAT | os.O_RDWR, 0o600)
+        with os.fdopen(fd, 'w') as las:
+            fcntl.flock(las, fcntl.LOCK_EX)
+            if revision is not None:
+                faktisk = profilrevision(las_profil(byramapp)) if sokvag.exists() else ''
+                if faktisk != revision:
+                    raise RiskanalysFel('Profilen har ändrats i en annan flik eller ett annat program. Läs om sidan före nästa svar.')
+            if sokvag.exists():
+                tidigare = sokvag.read_bytes()
+                historik = sokvag.parent / 'historik'
+                historik.mkdir(exist_ok=True, mode=0o700)
+                h = historik / (hashlib.sha256(tidigare).hexdigest() + '.yaml')
+                if not h.exists():
+                    with os.fdopen(os.open(h, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'wb') as fil:
+                        fil.write(tidigare)
+                        fil.flush()
+                        os.fsync(fil.fileno())
+            fd, temp = tempfile.mkstemp(suffix='.tmp', dir=sokvag.parent)
+            with os.fdopen(fd, 'w', encoding='utf-8') as fil:
+                yaml.safe_dump(profil.model_dump(mode='python'), fil, allow_unicode=True, sort_keys=False)
+                fil.flush()
+                os.fsync(fil.fileno())
+            os.replace(temp, sokvag)
+            temp = None
+            fd = os.open(sokvag.parent, os.O_RDONLY)
+            try:os.fsync(fd)
+            finally:os.close(fd)
+        return sokvag
+    except OSError as exc:
+        raise RiskanalysFel('Profilen kunde inte sparas. Kontrollera ledigt utrymme och skrivbehörighet; tidigare profil finns kvar om namnbytet inte utfördes.') from exc
+    finally:
+        if temp and os.path.exists(temp):os.unlink(temp)
 
 
 def las_profil(byramapp: Path) -> Profil:

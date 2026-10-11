@@ -8,7 +8,8 @@ def m2fel(rb: Regelbas) -> list[str]:
     """Validera M2:s referenser och datatyper för alla innehållsversioner från 1.0."""
     if not rb.utokade_krav:
         return []
-    fel: list[str] = []
+    from riskanalys.regelverk.intagskontrakt import intagskontraktsfel
+    fel: list[str] = intagskontraktsfel(rb)
 
     def villkor(id: str, data: dict, definitioner: dict[str, Faltdef]) -> None:
         try:
@@ -41,6 +42,18 @@ def m2fel(rb: Regelbas) -> list[str]:
                 fel.append(f'{post.id}: ogiltig ersätterreferens {ref}.')
         if cykel(post.id, set()):
             fel.append(f'{post.id}: cirkel i ersätterkedjan.')
+    if rb.metod.omfattning:
+        post = rb.metod.omfattning
+        villkor(post.id, post.enkel_villkor, rb.faltdefinitioner())
+        villkor(post.id, post.utokad_villkor, rb.faltdefinitioner())
+        if any(id not in rb.kallor for id in post.kallor):
+            fel.append(f'{post.id}: okänd källa.')
+    for post in rb.kontroller.values():
+        if bool(post.effekt_falt) != bool(post.utfall_falt):
+            fel.append(f'{post.id}: både effekt och utfall krävs.')
+        for ref in (post.effekt_falt, post.utfall_falt):
+            if ref and ref not in rb.falt:
+                fel.append(f'{post.id}: okänt effektfält {ref}.')
     for samling in (rb.hot, rb.sarbarheter, rb.kontroller, rb.tjanster):
         for post in samling.values():
             if getattr(post, 'effekt', None) or hasattr(post, 'grund_sannolikhet'):

@@ -19,6 +19,7 @@ class Sakgranskning(Fryst):
     namn: str
     datum: date
     kommentar: str | None = None
+    dokumentstruktur: str | None = None
 
 
 class Beslut(Fryst):

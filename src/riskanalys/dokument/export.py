@@ -32,13 +32,13 @@ def utkastens_oklarheter(byramapp: Path, utkastnamn: str) -> tuple[tuple[str, Ok
     )
 
 
-def kor_export_utkast(byramapp: Path, datum: date) -> Path:
+def kor_export_utkast(byramapp: Path, datum: date, *, granskningsmapp: Path | None = None) -> Path:
     """Exporterar den senaste granskningens dokument som ett märkt utkast med åtgärdslista.
 
     Granskningen, bedömningen (profilkopian) och AI-utkasten (oklarheterna) kontrolleras mot sina manifest
     innan något läses, så att ändrade filer aldrig hamnar i exporten.
     """
-    granskningsmapp = senaste_korning(byramapp, GRANSKNING, f"granska {byramapp.name}")
+    granskningsmapp = granskningsmapp or senaste_korning(byramapp, GRANSKNING, f"granska {byramapp.name}")
     kontrollera_kallor(byramapp, granskningsmapp)
     metadata = granskningens_metadata(granskningsmapp)
     profil = granskningens_profil(byramapp, granskningsmapp)
@@ -46,5 +46,6 @@ def kor_export_utkast(byramapp: Path, datum: date) -> Path:
     bilaga = atgardslista(fynd, utkastens_oklarheter(byramapp, metadata["utkast"]))
     mapp = ny_korningsmapp(byramapp, EXPORT)
     rendera_docx(dokument, profil, utkaststatus(datum), mapp / UTKASTFIL, bilaga)
-    skriv_manifest(mapp, {"typ": "export_utkast", "granskning": granskningsmapp.name, "datum": datum.isoformat()})
+    skriv_manifest(mapp, {"typ": "export_utkast", "granskning": granskningsmapp.name,
+                         "dokumentformat": dokument.formatversion, "datum": datum.isoformat()})
     return mapp

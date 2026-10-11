@@ -3,6 +3,7 @@
 import argparse
 from datetime import date
 from typing import Any
+from pydantic import ValidationError
 
 from riskanalys.kommandon import datumargument, ladda_giltig_regelbas, regelbasargument
 from riskanalys.lagring.datamapp import befintlig_byramapp, skapa_byramapp
@@ -15,7 +16,7 @@ from riskanalys.profil.hantering import (
     saknade_kritiska,
     skapa_profil,
 )
-from riskanalys.profil.lagring import las_profil, spara_profil
+from riskanalys.profil.lagring import las_profil, spara_profil, profilrevision
 from riskanalys.profil.modeller import Byra, Period, Uppgift
 from riskanalys.regelverk.urval import beskriv_vantande, valj, vantande_andringar
 
@@ -67,19 +68,41 @@ def kor_bekrafta(args: argparse.Namespace) -> int:
     mapp = befintlig_byramapp(args.byra)
     regelbas = ladda_giltig_regelbas(args.regelbas)
     profil = las_profil(mapp)
+    revision = profilrevision(profil)
     datum = args.datum or date.today()
     if bool(args.period_fran) != bool(args.period_till):
         raise ProfilFel("Ange både --period-fran och --period-till.")
     if args.period_fran and args.period_fran > args.period_till:
         raise ProfilFel("Periodens från-datum får inte vara efter till-datum.")
     period = Period(fran=args.period_fran, till=args.period_till) if args.period_fran else None
-    if args.ej_tillampligt:
+    falt = regelbas.falt.get(args.falt)
+    if falt and falt.alias_for and regelbas.falt[falt.alias_for].intag:
+        raise ProfilFel(f'Besvara det aktuella intagsfältet {falt.alias_for}; äldre alias kan inte ändras via bekrafta.')
+    if falt and falt.intag and not falt.basfalt:
+        from riskanalys.intag.modeller import IntagSvar
+        from riskanalys.intag.svar import besvara
+        if args.varde is None and not args.ej_tillampligt:
+            raise ProfilFel('Ange ett värde och --kalla.')
+        try:
+            svar = IntagSvar(falt=args.falt, text=args.varde or '',
+                kalla=args.kalla or '', roll=args.roll, datum=datum, period=period,
+                status='ej_tillämplig' if args.ej_tillampligt else 'bekräftad', motivering=args.motivering or '')
+        except ValidationError as exc:
+            namn = {'text': 'värdet', 'roll': '--roll', 'kalla': '--kalla', 'motivering': '--motivering'}
+            fel = []
+            for e in exc.errors(include_input=False):
+                falt = namn.get(e['loc'][0], str(e['loc'][0]))
+                grans = e.get('ctx', {}).get('max_length')
+                fel.append(f'{falt}: använd högst {grans} tecken' if grans else f'{falt}: kontrollera värdet')
+            raise ProfilFel('Kontrollera intagssvaret. ' + '; '.join(fel) + '.') from None
+        ny_profil = besvara(regelbas, profil, svar)
+    elif args.ej_tillampligt:
         ny_profil = markera_ej_tillamplig(profil, regelbas, args.falt, args.motivering, args.roll, datum)
     elif args.varde is None:
         raise ProfilFel("Ange ett värde, eller --ej-tillampligt med --motivering.")
     else:
         ny_profil = bekrafta(profil, regelbas, args.falt, args.varde, args.kalla, args.roll, datum, period=period)
-    spara_profil(mapp, ny_profil)
+    spara_profil(mapp, ny_profil, revision=revision)
     print(f"{args.falt}: {beskriv_uppgift(regelbas.falt[args.falt], ny_profil.uppgifter[args.falt])}")
     return 0
 

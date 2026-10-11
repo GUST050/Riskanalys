@@ -1,0 +1,151 @@
+{
+  "kalla": "https://apiafr.scb.se/swagger/v1/swagger.json",
+  "kontrollerad": "2026-10-10",
+  "original_sha256": "0e4c3b87a6137c11b29757247d4079a1706c2464b1219c1a215c9f5b113852cf",
+  "endpoint": "/v1/juridiskaenheter/{peOrgNr}/full",
+  "security": {
+    "ApiKey": {
+      "type": "apiKey",
+      "description": "API Key via X-API-Key header",
+      "name": "X-API-Key",
+      "in": "header"
+    }
+  },
+  "schema": {
+    "type": "object",
+    "properties": {
+      "peOrgNr": {
+        "type": "string"
+      },
+      "orgNr": {
+        "type": "string"
+      },
+      "namn": {
+        "type": "string"
+      },
+      "postAdress": {
+        "$ref": "#/components/schemas/postAdressData"
+      },
+      "kommunSate": {
+        "type": "string"
+      },
+      "lanSate": {
+        "type": "string"
+      },
+      "aeAnt": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "anstKl": {
+        "type": "string"
+      },
+      "ftgStat": {
+        "type": "string"
+      },
+      "jurform": {
+        "type": "string"
+      },
+      "reklamSparrTyp": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "telefonSparrTyp": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "epostSparrTyp": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "startDat": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      },
+      "slutDat": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      },
+      "regDat": {
+        "type": "string",
+        "format": "date-time",
+        "nullable": true
+      },
+      "expImp": {
+        "type": "string"
+      },
+      "tel": {
+        "type": "string"
+      },
+      "epost": {
+        "type": "string"
+      },
+      "omsAr": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "omsKl": {
+        "type": "string"
+      },
+      "agKat": {
+        "type": "string"
+      },
+      "foretagsnamn": {
+        "type": "string"
+      },
+      "foretagsnamnAnt": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "arbGivStat": {
+        "type": "string"
+      },
+      "momsStat": {
+        "type": "string"
+      },
+      "fSkattStat": {
+        "type": "string"
+      },
+      "bolStat": {
+        "type": "string"
+      },
+      "privPubl": {
+        "type": "string"
+      },
+      "sektor": {
+        "type": "string"
+      },
+      "naringsgrenar": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/naringsgrenData"
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "sni_schema": {
+    "type": "object",
+    "properties": {
+      "rangordning": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "naringsgren": {
+        "type": "string"
+      },
+      "andelProcent": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "avdelningsKod": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "identitetsformat_kalla": "https://www.scb.se/contentassets/8a8eb5c3d45f461ea93482f8e8d4de4f/variabelbeskrivning-afr_261009.pdf",
+  "identitet": "Juridisk person: orgNr 10 siffror, peOrgNr 16+orgNr (s.15).",
+  "notering": "Källprojektion för tekniskt kontrakt; syntetiska tester, inget autentiserat uppslag har verifierats."
+}

@@ -65,13 +65,13 @@ def kor_sakgranska(args: argparse.Namespace) -> int:
             args.kommentar,
         )
         spara_sakgranskningar(byramapp, nya)
-        print(f"{args.avsnitt}: {sakgranskningsstatus(nya, dokument.avsnitt_med_id()[args.avsnitt], profil)}")
+        print(f"{args.avsnitt}: {sakgranskningsstatus(nya, dokument.avsnitt_med_id()[args.avsnitt], profil, dokument)}")
         return 0
     if args.avsnitt:
         avsnitt = dokument.avsnitt_med_id().get(args.avsnitt)
         if avsnitt is None:
             raise SakgranskningsFel(f"Avsnittet {args.avsnitt} finns inte i dokumentet.")
-        print(f"{avsnitt.id} {avsnitt.rubrik} ({sakgranskningsstatus(sakgranskningar, avsnitt, profil)})")
+        print(f"{avsnitt.id} {avsnitt.rubrik} ({sakgranskningsstatus(sakgranskningar, avsnitt, profil, dokument)})")
         tjanst = dict(tjanster_med_avsnitt(las_bedomning(granskningens_bedomningsmapp(byramapp, granskningsmapp))))
         if avsnitt.id in tjanst:
             print(beskriv_motorns_nivaer(tjanst[avsnitt.id]))
@@ -79,12 +79,15 @@ def kor_sakgranska(args: argparse.Namespace) -> int:
         for avsnitt_id, oklarhet in utkastens_oklarheter(byramapp, utkastnamn):
             if avsnitt_id == avsnitt.id:
                 print(f"Öppen fråga från AI-utkastet: {oklarhet.fraga} Uppgift som saknas: {oklarhet.saknad_uppgift}.")
-        for stycke in renderat_avsnitt(avsnitt, profil).stycken:
+        rubriker = {u.fore_stycke: u.rubrik for u in avsnitt.underrubriker}
+        for position, stycke in enumerate(renderat_avsnitt(avsnitt, profil).stycken):
+            if position in rubriker:
+                print(f"\n{rubriker[position]}")
             print(f"\n[{stycke.typ}] {stycke.text}")
             print(f"Hänvisningar: {', '.join(stycke.referenser) or 'inga'}")
         return 0
     for avsnitt in dokument.avsnitt:
-        print(f"{avsnitt.id} {avsnitt.rubrik}: {sakgranskningsstatus(sakgranskningar, avsnitt, profil)}")
+        print(f"{avsnitt.id} {avsnitt.rubrik}: {sakgranskningsstatus(sakgranskningar, avsnitt, profil, dokument)}")
     print(f"Visa ett avsnitt med 'riskanalys sakgranska {args.byra} --avsnitt <ID>'.")
     return 0
 

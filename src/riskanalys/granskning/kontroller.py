@@ -17,6 +17,7 @@ from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.regelverk.urval import Urval
 
 from riskanalys.granskning.sektorsrisk import sektorsfynd
+from riskanalys.granskning.analys import analysfynd
 
 RISKAVSNITT = "D-ARB.6."
 
@@ -42,6 +43,7 @@ def granska(
         *_b12(regelbas, dokument),
         *_b16(regelbas, historik),
         *sektorsfynd(regelbas, bedomning, profil),
+        *analysfynd(regelbas, bedomning, profil, dokument),
     ]
     return tuple(
         Fynd(id=f"F-{granskningsdatum.isoformat()}-{nummer:03d}", **falt)

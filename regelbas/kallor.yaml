@@ -152,8 +152,8 @@
   - 8 kap. 1 §
   geografi: []
 - id: SRC-14FS-2024-11
-  titel: Länsstyrelsen i Västra Götalands läns föreskrifter och allmänna råd om åtgärder
-    mot penningtvätt och finansiering av terrorism (14FS 2024:11)
+  titel: Länsstyrelsen i Västra Götalands läns föreskrifter och allmänna råd om åtgärder mot
+    penningtvätt och finansiering av terrorism (14FS 2024:11)
   typ: föreskrift
   utgivare: Länsstyrelsen i Västra Götalands län
   url: https://www.lansstyrelsen.se/download/18.74c322ef18f9ee08a2929/1716358223326/2024-11%20Penningtv%C3%A4tt%20Dalarnas%20l%C3%A4n%20G%C3%A4vleborgs%20l%C3%A4n%20Hallands%20l%C3%A4n%20V%C3%A4rmlands%20l%C3%A4n%20V%C3%A4stra%20G%C3%B6talands%20l%C3%A4n%20%C3%96rebro%20l%C3%A4n.pdf
@@ -202,24 +202,23 @@
   galler_fran: 2024-07-01
   inventarium_kontrollsumma: sha256:f77dcadcab05f98d09d29e7678ce513b259c6bceb8fda65d6be236fd292308b6
 - id: SRC-TS-2026-14
-  titel: Erfarenheter från länsstyrelsernas penningtvättstillsyn – fokus den allmänna
-    riskbedömningen, rapport 2026:14
+  titel: Erfarenheter från länsstyrelsernas penningtvättstillsyn – fokus den allmänna riskbedömningen,
+    rapport 2026:14
   typ: tillsynsrapport
   utgivare: Länsstyrelserna i Skåne, Stockholms och Västra Götalands län
   url: https://www.lansstyrelsen.se/download/18.51b8c30c19d05558bd82e18e/1774259142687/Erfarenheter%20fr%C3%A5n%20l%C3%A4nsstyrelsernas%20penningtv%C3%A4ttstillsyn.pdf
   hamtad: 2026-10-10
   kontrollsumma: sha256:d1cf060d911576a1adcdd8677a226780c7f5eab90cd799be29259e123113ea20
 - id: SRC-VAGL-2025-03
-  titel: Information till redovisningskonsulter och skatterådgivare om penningtvätt
-    och finansiering av terrorism (mars 2025)
+  titel: Information till redovisningskonsulter och skatterådgivare om penningtvätt och finansiering
+    av terrorism (mars 2025)
   typ: vägledning
   utgivare: Samordningsfunktionen mot penningtvätt och finansiering av terrorism
   url: https://polisen.se/0be344afbcdff1a86db5cde12c2188c5/siteassets/dokument/om-polisen/penningtvatt/vagledning-till-redovisningskonsulter-och-skatteradgivare.pdf
   hamtad: 2026-10-10
   kontrollsumma: sha256:d657cc892e46eb90c3023881bbabbbd1b7eafeb0f3c75ff493bd2bf841435139
 - id: SRC-NRA-2024-25
-  titel: Nationell riskbedömning av penningtvätt och finansiering av terrorism i Sverige
-    2024/2025
+  titel: Nationell riskbedömning av penningtvätt och finansiering av terrorism i Sverige 2024/2025
   typ: riskbedömning
   utgivare: Samordningsfunktionen mot penningtvätt och finansiering av terrorism
   url: https://polisen.se/0c34c8d8c94e1a371d8cca457b84fb0a/siteassets/dokument/om-polisen/penningtvatt/nationell-riskbedomning-av-penningtvatt-och-finansiering-av-terrorism-i-sverige-2024_2025.pdf
@@ -388,8 +387,8 @@
   - Norrbotten
   beslutad: 2024-05-27
 - id: EU-269-2014
-  titel: EU 269/2014 artikel 2, lydelse enligt autentisk EUT EU 2025/2037 artikel
-    1.2; avgränsat engelskt källutdrag
+  titel: EU 269/2014 artikel 2, lydelse enligt autentisk EUT EU 2025/2037 artikel 1.2; avgränsat
+    engelskt källutdrag
   typ: eu_förordning
   utgivare: Europeiska unionens råd
   url: https://eur-lex.europa.eu/eli/reg/2025/2037/oj/eng
@@ -399,3 +398,87 @@
   paragrafer:
   - artikel 2
   konsoliderad_tom: 2026-09-28; avgränsad artikelkontroll, inte hela förordningen
+- id: SRC-EBM-2025
+  titel: Ekonomisk brottslighet – Ekobrottsmyndighetens lägesbild 2025
+  utgivare: Ekobrottsmyndigheten
+  url: https://www.ekobrottsmyndigheten.se/wp-content/uploads/2025/05/ebm-lagesbild-2025.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:77fb557b592ef2b4ca355eb99adfead2bdb782094355593a175065e5106538b0
+  typ: riskbedömning
+- id: SRC-FIPO-AR-2025
+  titel: Finanspolisens årsrapport 2025
+  utgivare: Polismyndigheten
+  url: https://polisen.se/b445dba0497ba9eb7943d0fbaa1c8d45/siteassets/dokument/finanspolisen/arsrapporter/finanspolisens-arsrapport-2025.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:e25d0ec45b00d05c6fe62283d4a7d6206ecc2eeb1232760347250b9868e1ce03
+  typ: riskbedömning
+- id: SRC-FIPO-AR-2024
+  titel: Finanspolisens årsrapport 2024
+  utgivare: Polismyndigheten
+  url: https://polisen.se/684e38bed3d8279d53e92af715769214/siteassets/dokument/finanspolisen/arsrapporter/finanspolisen_arsrapport_2024_tillg.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:d3ed90a8af73fa1269b3d8358268b3f8a7242a6035143e508ecf58689bfac678
+  typ: riskbedömning
+- id: SRC-FIPO-FORETAG-2026
+  titel: Storskalig penningtvätt i företagsmiljö
+  utgivare: Polismyndigheten
+  url: https://polisen.se/8fe83310adc2c5c237323d50c6012100/siteassets/dokument/finanspolisen/fipo-informerar/2026_fipo-informerar_storskalig-penningtvatt-i-foretagsmiljo.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:f33e2e84e9646dc6168551201050045941c3be180d8c6cc0ea35efecc575e0f6
+  typ: riskbedömning
+- id: SRC-FIPO-TF-2025
+  titel: 'Finanspolisen informerar: Terrorfinansiering 2025'
+  utgivare: Polismyndigheten
+  url: https://polisen.se/f4dc3a983cd5a7738db26e055dfebdca/siteassets/dokument/finanspolisen/fipo-informerar/fipo-informerar_terrorfinansiering_2025.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:3596d0a1f6f6cf25b3775f27f14ae1ac638dd214d2a5734aea2a26c563960e99
+  typ: riskbedömning
+- id: SRC-FIPO-SWISH-2025
+  titel: Swish och direktbetalningar 2025
+  utgivare: Polismyndigheten
+  url: https://polisen.se/8aec5215d427ca11ae6c11371e99e42e/siteassets/dokument/finanspolisen/fipo-informerar/2025_fipo-informerar_swish_direktbetalningar.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:e1b2e272571a7299a2284c7a86ffa514af533593dd10655685f0455d44672808
+  typ: riskbedömning
+- id: SRC-BRA-2025-20
+  titel: Företag som brottsverktyg, Brå 2025:20
+  utgivare: Brottsförebyggande rådet
+  url: https://bra.se/download/18.51af66dd19afd01636541b6/1765461166378/2025_20_F%C3%B6retag%20som%20brottsverktyg.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:d0149d30aca96d3b4841b857a80e3f731ecdb8b96a1bf6370df970e97d88169d
+  typ: riskbedömning
+- id: SRC-POLIS-UTSATTA-2025
+  titel: Lägesbild över utsatta områden 2025
+  utgivare: Polismyndigheten
+  url: https://polisen.se/siteassets/dokument/organiserad_brottslighet/utsatta-omraden/lagesbild-over-utsatta-omraden-2025.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:db6625ed0d18a6ac4bff207984bb6b698bdb304bdec4890396fd63d5b9553d5d
+  typ: riskbedömning
+- id: SRC-MYND-OB-2025
+  titel: Myndighetsgemensam lägesbild organiserad brottslighet 2025
+  utgivare: Myndigheter mot organiserad brottslighet
+  url: https://www.ekobrottsmyndigheten.se/wp-content/uploads/2025/08/myndighetsgemensam-lagesbild-2025.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:ab1a1112180dd388c0dc8fc19f1bbb73df249bcfa2143c176ae49453b40ec1d3
+  typ: riskbedömning
+- id: SRC-SMOB-2026
+  titel: Samhällsgemensam lägesbild 2026
+  utgivare: Sverige mot organiserad brottslighet (SMOB)
+  url: https://www.iffs.se/media/24545/2026_samhallsgemensam-lagesbild.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:65c4743c7abc37ed184285465a0adc0e5e67987f263931e4c9aaa01c089a2f81
+  typ: riskbedömning
+- id: SRC-NCT-2026
+  titel: NCT Helårsbedömning 2026
+  utgivare: Nationellt centrum för terrorhotbedömning
+  url: https://www.sakerhetspolisen.se/download/18.43f7ac8819be7e0dd51537/1770705828780/NCT%20Hela%CC%8Arsbedo%CC%88mning%202026.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:d6f068add6e7aeb2702acbc8410e6df70c2b283b936eb540659812f92a8e84bc
+  typ: riskbedömning
+- id: SRC-EUROPOL-TESAT-2025
+  titel: European Union Terrorism Situation and Trend Report 2025
+  utgivare: Europol
+  url: https://www.europol.europa.eu/cms/sites/default/files/documents/EU_TE-SAT_2025.pdf
+  hamtad: '2026-10-11'
+  kontrollsumma: sha256:0a18061235353efda54b433510f4ff20a19fca4b8933b00578f4d6f3045ef3f6
+  typ: riskbedömning
