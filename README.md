@@ -43,6 +43,17 @@ python3 -m venv .venv
 .venv/bin/riskanalys regelbas validera
 ```
 
+### API-nycklar
+
+Programmet läser nycklar från `~/.config/riskanalys/.env` när ett kommando startar. Filen ligger utanför repot så att den inte kan committas eller läsas av verktyg som arbetar i projektmappen. Bara två rader används; övriga ignoreras:
+
+```text
+ANTHROPIC_API_KEY=din-anthropic-nyckel
+RISKANALYS_SCB_API_KEY=din-scb-nyckel
+```
+
+Filen får bara vara läsbar för dig (`chmod 600`); annars stoppar programmet och säger hur du rättar det. En variabel som redan är satt i terminalen gäller före filen. `RISKANALYS_NYCKELFIL` pekar ut en annan fil vid behov. Provsviten läser aldrig den riktiga filen. Nyckelvärden visas inte i felmeddelanden.
+
 ### Börja med intaget
 
 `pilotbyra` används som exempel-ID. Har du redan startat intaget med ett annat ID, fortsätt med det för att behålla dina sparade svar.

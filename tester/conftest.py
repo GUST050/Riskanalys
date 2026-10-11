@@ -14,6 +14,12 @@ LYDELSETEXT = "Verksamhetsutövaren ska göra en allmän\nriskbedömning. Syntet
 LYDELSESUMMA = for_text(" ".join(LYDELSETEXT.split()))
 
 
+@pytest.fixture(autouse=True)
+def _ingen_riktig_nyckelfil(tmp_path_factory, monkeypatch):
+    """Provsviten får aldrig läsa användarens riktiga nyckelfil eller göra riktiga API-anrop med den."""
+    monkeypatch.setenv("RISKANALYS_NYCKELFIL", str(tmp_path_factory.getbasetemp() / "ingen-nyckelfil.env"))
+
+
 def _matris() -> list[dict]:
     nivaer = [
         ("låg", "begränsad", "låg"),

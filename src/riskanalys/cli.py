@@ -4,6 +4,7 @@ import argparse
 import sys
 
 from riskanalys.fel import RiskanalysFel
+from riskanalys.nyckelfil import ladda_nycklar
 from riskanalys.kommandon import (
     intag_kommando,
     bedom_kommando,
@@ -41,6 +42,7 @@ def main(argv: list[str] | None = None) -> int:
         kommando.lagg_till(underparsers)
     args = parser.parse_args(argv)
     try:
+        ladda_nycklar()
         return args.kor(args)
     except RiskanalysFel as fel:
         print(f"Fel: {fel}", file=sys.stderr)
