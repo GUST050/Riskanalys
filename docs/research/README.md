@@ -17,6 +17,7 @@ Underlag för [designspecifikationen](../superpowers/specs/2026-10-08-riskanalys
 | [09-tillsynsbeslut-2026.md](09-tillsynsbeslut-2026.md) | Två fullständiga sanktionsbeslut från 2026: vad Länsstyrelsen underkänner, nya bristmönster B-23–B-29 |
 | [10-kallkontroll-och-gapinventering-m2.md](10-kallkontroll-och-gapinventering-m2.md) | Primärkällor, datumlydelser, tre länsföreskrifter och rättad gapinventering inför M2 |
 | [11-kallkontroll-allman-riskbedomning.md](11-kallkontroll-allman-riskbedomning.md) | Den allmänna riskbedömningen jämförd med användarens källor 2026-10-11: vad som uppfylls och tio luckor |
+| [12-promptdesign-ai-skrivning.md](12-promptdesign-ai-skrivning.md) | Promptdesign när AI skriver riskbedömningens delar från faktablad: arbetsfördelning kod/AI, anropsflöde, regelkrav per del, validering och utvärdering (2026-10-11) |
 | [typfall/tillsyn-2026.json](typfall/tillsyn-2026.json) | Två syntetiska granskningsfall, 17 förväntade fynd och fem kontrollvarianter med sidhänvisningar. Facitutkast för M2–M5 och M7. |
 | [kallor.md](kallor.md) | Källförteckning med länkar |
 | [verktyg/](verktyg/) | Skript som användes för att extrahera text och sammanställa statistik |

@@ -1,6 +1,6 @@
 # Riskanalys – designspecifikation
 
-**Status:** Förslag, revision 16 (2026-10-11). Ligger till grund för M0–M1 och [implementeringsplanen för M2](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md). Juridiskt godkännande återstår.
+**Status:** Förslag, revision 17 (2026-10-11). Ligger till grund för M0–M1 och [implementeringsplanen för M2](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md). Juridiskt godkännande återstår.
 **Underlag:** [researchsammanställningen](../../research/README.md).
 **Ändringar:** se [ändringsloggen](#22-ändringslogg) sist i dokumentet.
 **Nästa steg:** verklig sakkunniggranskning av M2:s tekniska underlag och sedan M3:s metod-/granskningsutvärdering. M0–M1 och M2:s tekniska implementation är införda; M2 är ännu inte juridiskt godkänd. Se [status](../../STATUS.md) och [M2-planens genomförandelogg](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md#genomförande-2026-10-10) för kontrakt, verifiering och kvarstående arbete.
@@ -461,20 +461,113 @@ Byrån behöver också en egen rutin för modellriskhantering. Den ingår i ruti
    - Nivåer i texten stämmer med bedömningen.
    - Uppgifter som inte är bekräftade skrivs med `[VERIFIERA]`.
    - Inga förbjudna generiska formuleringar och inga personnamn förekommer.
-4. Ett underkänt svar körs om med valideringsfelen som återkoppling. Efter tre försök stoppar avsnittet med ett fynd.
+4. Ett underkänt svar körs om med valideringsfelen som återkoppling, högst två omförsök per del (8.4.5). Därefter används programmets mall för delen och ett granskningsfynd skapas, så att dokumentet aldrig stannar tyst och aldrig ser färdigt ut.
 5. Godkänt svar sparas med kontrollsumma och går vidare till granskning och sakgranskning (avsnitt 10). Maskinell validering visar inte att en formulering stöds av källan. Det avgör sakgranskningen.
 
 ### 8.3 Modell, kostnad och utvärdering
 
 - Claude via Anthropics officiella Python-SDK, bakom ett eget leverantörsgränssnitt.
-- **Startinställning:** `claude-opus-5-5`, adaptiv tänkning, effort `high`. Modell och effort är inställningar, inte låsta val.
+- **Startinställning:** `claude-opus-5-5`, adaptiv tänkning, effort `high`. Modell och effort är inställningar, inte låsta val. Inför M3 jämförs `claude-sonnet-5-5` på effort `high` och `claude-opus-5-5` på effort `medium` (modellens egen standard); standarden fastställs efter utvärderingen i 8.4.8.
 - **AI-utvärdering (etapp M3)** med riktiga skrivuppgifter innan inställningen fastställs. Mått: sakfel, ogrundade påståenden, andel avsnitt som klarar maskinell validering, sakgranskarens tidsåtgång och kostnad per godkänt avsnitt. Valet av modell och effort görs av projektägaren utifrån mätningen.
 - **Automatiska tester använder en kontrollerad testleverantör** som ger förutbestämda svar. Prov mot det riktiga API:t är frivilliga, körs separat och kostar pengar.
 - Strukturerade svar via SDK:ns `messages.parse` med pydantic-scheman. Claudes inbyggda källhänvisningar går inte att kombinera med strukturerade svar, så programmets egna referens-ID:n används.
-- Regelbasens innehåll läggs först i anropet för att utnyttja prompt-cachning.
+- Prompt-cachning: den fasta systemprompten och faktabladet ligger först och är byte för byte identiska mellan anropen i samma tjänst (8.4.2). Cachningen sparar lite, eftersom utdata står för merparten av kostnaden; huvudskälet till en gemensam prompt är att reglerna finns på ett ställe.
 - **Batch-API används inte som standard.** Det lagrar begäran och svar hos leverantören i upp till 29 dagar. Det får slås på för underlag som är fritt från personuppgifter, och batcherna raderas då efter att resultatet hämtats.
 - Om personuppgifter någon gång måste skickas till AI (fas 2) krävs databehandling inom EU. Anthropics eget API erbjuder i dag bara `us` och `global`, så EU-behandling sker då via Google Vertex AI eller Amazon Bedrock i EU-region.
 - Modell, inställningar, promptmall, svar och tokenförbrukning sparas per anrop och tas med i manifestet.
+
+### 8.4 Skrivning av hela dokumentet från faktablad
+
+Avsnittet bygger på [researchrapporten om promptdesign](../../research/12-promptdesign-ai-skrivning.md) (2026-10-11) och på en provkörning med syntetisk byrå: Sonnet 5.5 klarade tre av fem tjänsteavsnitt på andra försöket och två underkändes efter tre försök. Fyra av fem underkännandeorsaker gällde sådant som koden kan avgöra (talformat, nivåmeningar, obligatoriska meningar, avsnitts-ID och formatet för oklarheter). **Att de försvinner när koden tar över är en hypotes som piloten ska pröva, inte ett uppmätt resultat.** Principen är att AI ska ansvara för så lite som möjligt och att varje AI-skriven del måste vara bättre än programmets mall. Design, modell och effort i detta avsnitt är preliminära tills sakkunnigutvärderingen i 8.4.8 är genomförd; implementationen före dess är experimentell.
+
+#### 8.4.1 Arbetsfördelning
+
+- **Koden äger fakta och beslut:** alla tal (AI skriver dem som platshållare enligt 8.4.5), risknivåmeningar, obligatoriska meningar, jämförelsen med NRA:s sektorsnivå, datum, källförteckningar, kontrollernas status och belägg samt delen *Beskrivning och omfattning*.
+- **Låsta stycken:** kodens stycken i varje del är låsta och skrivs byte för byte likadant varje gång underlaget är detsamma. Hit hör meningen om egen rapportering och erfarenhet (B-15), geografins underlagsstycke (B-09, B-10), nivåmeningarna och beskrivningen. AI-texten skrivs runt dem och får inte återge eller ändra dem.
+- **AI skriver den analyserande texten mellan dem:** hur tjänsten kan utnyttjas hos just den här byrån, varför en uppgift spelar roll och hur faktorerna samverkar.
+- **AI anger aldrig någon nivå** för risk, sannolikhet eller konsekvens, inte heller för delfaktorer. En sådan mening är en riskbedömning som regelmotorn inte har gjort (regel 1). Delfaktorer beskrivs med andel, antal, period och egenskap.
+- Lokala fritexter, namn och kompletteringar går aldrig till AI. Koden sätter in dem som *Byråns komplettering* (14.5).
+
+#### 8.4.2 Promptens delar
+
+Varje anrop består av en fast systemprompt, ett användarmeddelande och ett schema.
+
+- **Systemprompten är densamma i alla anrop.** Den skrivs som löptext där varje regel har sitt skäl, utan versaler eller tryckord, med roll, arbetsfördelning, regler och 3–5 korta syntetiska exempel märkta som illustrativa. Den är minst 512 token så att den kan cachas och innehåller inga datum eller villkorade avsnitt. För Sonnet 5.5 läggs raden *Think the problem through before you answer.* sist, eftersom modellen annars ofta hoppar över tänkandet med strukturerade svar.
+- **Användarmeddelandet har en fast ordning:** `<faktablad>` först (JSON med sorterade nycklar; varje post har id, etikett, visningsvärde, period, källtyp och status), därefter cachebrytpunkt, `<lasta_meningar>`, `<maskinellt_validerat>` (bara för motivering och slutsatser), `<uppgift del="…">` och vid omförsök `<aterkoppling>`.
+- **Faktabladets integritetsgräns:** faktabladet byggs bara ur tillåtelselistan, som i dag. `källtyp` är ett värde från en sluten lista som koden härleder (till exempel register, intern statistik, egen kännedom, dokument, härledning), aldrig profilens fria källtext. Rå källtext, dokumentnamn, sökvägar och bekräftarens identitet stannar lokalt. Smågruppsskyddet gäller oförändrat: små antal visas som "färre än 5", ett litet komplement som undertryckt och en saknad bas som okänd, och sådana värden får ingen platshållare.
+- **Schemat garanterar formen:** `stycken` med `typ`, `referenser` och `text` i den ordningen, där `referenser` är en `enum` över tjänstens ID; `oklarheter` med `uppgift_id` (`enum`) och `fraga`. Alla fält är obligatoriska. Fältet för avsnitts-ID tas bort, eftersom koden redan känner till det. Schemat har inget fält för resonemang; resonemanget sker i modellens tänkande.
+- Ingen instruktion om att modellen ska granska sig själv. Valideraren är kontrollen.
+
+#### 8.4.3 Anropsflöde
+
+Preliminär standard är **ett anrop per analysdel** (design B):
+
+1. Koden bygger faktabladet ur tillåtelselistan och skriver *Beskrivning och omfattning* samt alla låsta stycken.
+2. *Hot och egna erfarenheter* skrivs först. *Sårbarheter och motivering* och *Kontroller och effekt* skrivs därefter parallellt ur samma faktablad.
+3. Varje del valideras för sig och körs om för sig.
+4. *Risknivåer och motivering* skrivs med de maskinellt validerade delarna som underlag, och *Slutsatser* med den maskinellt validerade motiveringen. Maskinellt validerad betyder att delen klarat kontrollerna i 8.4.5, inte att den är sakgranskad.
+
+Byråövergripande avsnitt: D-ARB.2 (motiveringen av omfattningen), D-ARB.4, D-ARB.5 och D-ARB.7 skrivs i egna anrop; D-ARB.9 skrivs sist med tjänsternas godkända slutsatser som underlag. D-ARB.1, D-ARB.3, D-ARB.8, D-ARB.10, omvärldsbevakningen och bilagan skrivs av koden i klartext, utan fält-ID.
+
+Delinstruktionerna är separata moduler. Design A, där ett anrop skriver alla AI-delar i en tjänst, är en inställning med samma moduler och behålls som jämförelse i utvärderingen. Programmets nuvarande mallar (C0) är måttstocken.
+
+#### 8.4.4 Delinstruktioner
+
+Varje delmodul anger mål, de krav som styr, fällor med skäl och 2–3 delspecifika exempel. Den fullständiga tabellen med källor finns i researchrapporten; sammanfattning:
+
+| Del | Skrivs av | Mål för AI-texten | Styrande krav | Fällor som förklaras | Maskinell kontroll |
+|---|---|---|---|---|---|
+| Beskrivning och omfattning | Kod | Ingen AI-uppgift | 14FS 2:2 p. 1; vägledningen | – | Antal eller andel kunder, andel av omsättningen och period finns |
+| Hot och egna erfarenheter | AI; koden skriver meningen om egen rapportering | Minst två konkreta sätt som tjänsten kan utnyttjas hos byrån, kopplade till tjänstens kunder och regelbasens hot; terrorfinansiering när sådana hot finns | PTL 2:1; 14FS 2:2 p. 2; NRA | Allmänna hot för alla tjänster; att få rapporter skulle visa lågt hot | Minst två hot-ID; förbjudna mönster om noll rapporter |
+| Sårbarheter och motivering | AI | Kunder, kanaler, geografi och verksamhetsspecifika förhållanden: gäller, gäller inte eller okänt, varför och hur stor andel. Samverkan mellan faktorer beskrivs som belagd bara när underlaget visar att de avser samma kunder; annars som ett villkorligt scenario, eller som "ingen belagd kombination" | 14FS 2:2 p. 3; vägledningen; AMLR bilaga I (framtida) | "Gäller inte" utan motivering; "bara svenska kunder"; långa kundrelationer som trygghet; påhittade samband mellan separata indikatorer | Minst ett sårbarhets-ID per kategori; geografi omfattar mer än sanktionslistor; ett kombinationsstycke av typen `analys` kräver en referens till en uppgift om överlapp, annars ska det ha typen `scenario` |
+| Kontroller och effekt | Koden skriver status och belägg; AI kopplingen till risken | Vilken risk kontrollen riktar sig mot och vad belägget visar; saknas belagd effekt ska det stå att nivån inte sänks | Vägledningen; metodstöd: AMLA:s riktlinjeutkast och FATF | En beskriven kontroll sänker inte risken; andras kundkännedom sänker inte risken | "Minskar", "begränsar" och "reducerar" bara vid kontroll med belagd effekt |
+
+Status för styrande krav: PTL och Länsstyrelsernas föreskrifter är gällande rätt; Länsstyrelsens vägledning, NRA och tillsynsbesluten är vägledning och tillsynspraxis. AMLR (EU 2024/1624) är framtida regelverk som för redovisningsbyråernas skyldigheter tillämpas från den 10 juli 2027 ([art. 90](https://eur-lex.europa.eu/eli/reg/2024/1624/oj/eng)). AMLA:s riktlinjeutkast och FATF:s vägledning är metodstöd och inte bindande. Två giltiga referenser i ett stycke visar inte att ett samband finns.
+| Risknivåer och motivering | Koden skriver nivåmeningar och NRA-jämförelse; AI motiveringen | Nivån som en kedja av hot, sårbarhet, omfattning och konsekvens; förklara avvikelse från NRA:s sektorsnivå | 14FS 2:2 p. 4; vägledningen | Samma nivå för alla tjänster; text som tonar ned nivån | Minst ett hot-ID och ett sårbarhets-ID; inga nivåord i AI-texten |
+| Slutsatser | AI; koden skriver ansvarsmeningen | Vad nivån betyder för kundkännedom, övervakning och utbildning i just denna tjänst | PTL 2:2–3, 2:8, 2:14; 14FS 2:10 | En slutsats som bara upprepar nivån; allmänna löften | Kundkännedom, övervakning och utbildning nämns; minst ett hot-ID |
+
+#### 8.4.5 Validering och omförsök
+
+**Platshållare.** AI:s råsvar får innehålla två slags platshållare: `{tal:ID}` och `{roll:FfR}`. En `{tal:ID}` är tillåten bara om ID finns i faktabladet, har ett numeriskt värde som inte är skyddat av smågruppsskyddet och finns bland styckets referenser. Okända, otillåtna eller felskrivna platshållare stoppar delen före godkännande. Alla andra fält-ID, villkorsuttryck och interna nycklar är förbjudna i texten. Nästa anrop i kedjan får den maskinellt validerade texten med platshållarna kvar. Koden ersätter platshållarna först vid rendering, och en platshållare som inte kan ersättas stoppar renderingen. Siffror som inte är platshållare kontrolleras som i dag mot faktabladet, efter att mellanslag, hårt mellanslag (U+00A0), smalt hårt mellanslag (U+202F) och decimalkomma normaliserats.
+
+**Det valideraren kan avgöra maskinellt:**
+- schemats form, `enum`-värden och att varje referens finns i faktabladet
+- platshållarna enligt ovan och siffror utanför platshållare
+- att AI-texten saknar nivåord, fält-ID och förbjudna fraser, och inte återger låsta stycken
+- de ID och ord som varje del kräver enligt 8.4.4, till exempel minst två hot-ID eller att kundkännedom, övervakning och utbildning nämns
+- stycketypen för kombinationer (`analys` kräver en referens till överlapp, annars `scenario`)
+- lägsta och högsta längd per del och hur lika samma del är mellan byråns tjänster
+- att stoppskälet inte är `max_tokens` eller ett avböjande.
+
+**Det som kräver sakgranskning:** om resonemanget faktiskt stöds av de refererade uppgifterna, om en referens stöder just det påstående den sitter vid, om ett beskrivet samband är rimligt och om texten är tillräckligt tjänstespecifik. Maskinell validering är en förutsättning för sakgranskning, inte en ersättning.
+
+**Omförsök.** Högst två omförsök per del, bara för den underkända delen, med den citerade felmeningen och de tillåtna värdena. Det andra omförsöket görs på högre effort. Därefter används mallen för delen, delen märks som mall i manifestet och ett granskningsfynd skapas. Anrop med högre `max_tokens` än SDK:ns gräns för vanliga anrop strömmas.
+
+#### 8.4.6 Granskningsgrinden för AI-skrivna delar
+
+Dagens grind (`granskning/analys.py`) bygger om hela tjänsteavsnittet med kod och jämför kontrollsumman; bara riskmotiveringen får komma från AI. Den ersätts i samma ändring som AI börjar skriva fler delar, enligt följande kontrakt:
+
+1. **Dokumentformatets version** anger för varje del vilka stycken som är låsta och vilka som är AI-skrivna. Versionen ingår i exportens och granskningens metadata.
+2. **Låsta stycken** byggs om från aktuell profil, bedömning och regelbas och ska finnas byte för byte på sin plats. B-09, B-10 och B-15 fortsätter att kontrollera sina låsta stycken som i dag.
+3. **AI-stycken** jämförs med det maskinellt validerade utkastet för delen i skrivningens manifest, via kontrollsumma per del. En del som märkts som mall jämförs med mallen.
+4. **Avvikelser** i låsta stycken, AI-stycken, ordning, underrubriker eller formatversion ger ett blockerande fynd, som i dag.
+5. **Ogiltigförklaring:** ändrad formatversion eller ändrad AI-text upphäver tidigare sakgodkännanden av avsnittet. Ett godkännande gäller exakt den text som exporterades.
+
+Prov ska visa att ändrad AI-text, flyttade låsta stycken och gamla sakgodkännanden fångas lika strängt som med dagens grind.
+
+#### 8.4.7 Spårbarhet
+
+För varje anrop sparas en kontrollsumma över systemprompt, delmodul och schemaversion, vald design, begärd och svarande modell, effort, tokenförbrukning inklusive cachefält, stoppskäl och kategori vid avböjande, försöksnummer och valideringsfel per felklass. Ett livetest kontrollerar att cachen träffar vid andra anropet i samma tjänst.
+
+#### 8.4.8 Utvärdering före val (M3)
+
+1. **Pilot:** 2–3 syntetiska profiler med C0, design A och design B. Kostnaden per byrå räknas fram ur förbrukningen.
+2. **Fall:** 24–30 syntetiska profiler, bland annat en liten högrisktjänst bland stora lågrisktjänster, noll rapporter, okända uppgifter och många tjänster, plus 6–8 par där en uppgift ändrats. Delning i utvecklings- och testprofiler låses. En sakkunnig skriver checklistor per fall och del.
+3. **Bedömning i tre lager:** deterministiska kontroller; en AI-domare av annan modell än skribenten med en ja/nej-fråga per kriterium, som används som krav först när den når minst 0,9 träffsäkerhet för både godkända och underkända fall; blind sakkunnig granskning med tidtagning.
+4. **Krav för godkännande** är metodval som projektägaren beslutar, till exempel noll sakfel och nivåfel i den sakkunniges granskning och kortare sakgranskningstid än med C0.
+5. **Val:** bland inställningarna som klarar kraven väljs den med lägst kostnad per godkänt avsnitt och kortast sakgranskningstid. Skillnader inom den statistiska osäkerheten räknas som oavgjorda, och då vinner den enklare inställningen.
+
+Batch-API får användas för syntetiska profiler, som saknar personuppgifter, och batcherna raderas efter att resultatet hämtats. Uppskattad API-kostnad för hela utvärderingen är några hundra dollar; den sakkunniges tid är den verkliga gränsen.
 
 ## 9 Granskning (maskinell)
 
@@ -668,6 +761,23 @@ Grund-/översiktssidan och skrivknappen anger faktisk leverans: byråns allmänn
 
 Bolagsverkets avgiftsfria HVD prioriteras därefter om verifierat tekniskt kontrakt och åtkomst finns. Allabolag kräver separat åtkomst-/villkorsprövning. Råa registerdata och identiteter går inte till AI.
 
+### 14.5 Kryssfrågor i stället för fritext
+
+En syntetisk helkörning med regelbas 1.2.0 och fem tjänster gav 150 frågor på 137 sidor, varav 53 fritexter. Fritexten kan inte gå till AI (regel 2) och klistras därför in ordagrant i Word. Användaren ska i stället lämna fakta genom kryss, och AI skriver texten utifrån dem (8.4).
+
+| Grupp | Frågor | Form |
+|---|---|---|
+| Gemensamma arbetssätt | Kanaler och identifiering, rutiner och omprövning | Kryssrutor för byrån. Varje tjänst bekräftar uttryckligen *Samma som byrån* eller anger sina avvikelser. Bekräftelsen sparas per tjänst med källtyp, period och funktion. |
+| Kundpopulation | Kundtyper och ägarstrukturer, geografi, riskindikatorer | Byråns kryss visar vad som förekommer i hela kundbasen men styrker inget om en enskild tjänst; att byrån har PEP-kunder visar inte att de använder lönehantering. Varje tjänst bekräftar sin egen omfattning med källtyp och period. Omarkerat är okänt tills ett nej har bekräftats. Antal och andelar ärvs aldrig mellan olika kundbaser. Geografi har snabbvalet *Endast Sverige*, som ett svar att bekräfta och inte som ett förifyllt sant värde; analysen ska ändå pröva andra geografiska förhållanden. |
+| Kryss per tjänst | Arbetssätt och befogenheter, avvikelser i tjänsten | Tjänstespecifika alternativ, till exempel betalbehörighet eller ombud hos Skatteverket. Avvikelser har snabbvalet *Inga kända avvikelser i någon tjänst*. |
+| Riskindikatorer på en sida | Regelbasens riskindikatorer | En sida med kryss för byrån i stället för en sida per indikator. Tjänstens omfattning bekräftas enligt raden Kundpopulation. |
+| Fortsatt text | Namn på byrån och funktionen för regelefterlevnad, belägg för kontroller, frivillig sektorsmotivering, övriga riskförhållanden | Belägg får stöd i form av kryss för typ (checklista, logg, stickprov), datum och var underlaget finns. Dokumentnamnet skrivs. |
+
+- **Komplettering:** varje kryssfråga har en frivillig ruta *Komplettering (skickas inte till AI)*. Koden sätter in den som *Byråns komplettering* efter AI-texten. Eftersom AI inte ser kompletteringen kontrollerar sakgranskningen att de inte motsäger varandra.
+- **Regelbasen:** kryssalternativen är regelbasposter med källa och grund; gränser och urval märks `metodval`. Tillåtelselistan utökas med källa för de kryssfakta som AI får se. *Vet inte* är alltid möjligt, och ett ändrat kryss omprövar beroenden på samma sätt som andra grundsvar.
+- **Beskrivning och omfattning** per tjänst skrivs av koden ur kryssen och talen (8.4.1).
+- **Mål:** för en byrå med fem tjänster ska högst cirka tio textrutor behöva fyllas i, och antalet sidor ska vara betydligt lägre än i regelbas 1.2.0. Målet mäts med samma syntetiska helkörning som användes för siffrorna ovan.
+
 ## 15 Mappstruktur
 
 ```
@@ -855,9 +965,9 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 | 12 | 2026-10-10 | Lokalt intag och hela Word-utkastet implementerat före resterande M4. Fråge-/kravkopplingar i regelbas 1.1.0, lokala beskrivningar, faktabaserat intag utan krav på att användaren skriver analysen, explicit utvärdering och bevarade granskningsgrindar. M3/M4:s verksamhetsprov återstår. |
 | 13 | 2026-10-10 | SCB AFR-registerhämtning och lokal JSON-import som källbundna förslag i intaget (§14.4). Särskild bekräftelse, identitetskontroll, privata snapshots och bevarad faktisk verksamhetsintervju. Ingen ny AI-tillåtelse eller juridisk attest. |
 | 14 | 2026-10-10 | Efter Claude-granskning: XML-kontroll före AI, engångsskrivning, gemensam CLI/webb med CAS, egen filialkälla, bevarande av registerbild vid senare hämtning, historiska belägg vid okänt, skilda felvägar och explicit korrigeringspolicy för län/regelpaket. Utvidgad datakällsresearch finns i research 10, avsnitt 14.2. |
-
 | 15 | 2026-10-11 | Samlat källbundet registergodkännande och tjänsteutbud, obligatoriskt fälturval och atomiska batchar, redigerbara rollförslag, sessionsnyckel, SCB-status som versionshanterad bakgrund och request-lokal rendering. Ny källkontroll i research 10 §14.3. Exportpilot för pilotbyrån krävs fortfarande före ny CSV/XLSX-import. |
 | 16 | 2026-10-11 | Avgränsat val av egen kännedom och aktuella tidigare underlag med kategori-/periodkontroll, föreslagen statistikperiod, tydlig faktisk Word-leverans och SCB-schema 3 med villkorat koncernförslag för kod 41. Fler källor och ännu ej integrerade riskrapporter inventeras i research 10 §14.4; inga nya externa anslutningar eller juridiska attester. |
+| 17 | 2026-10-11 | Efter Claudes provkörning med riktig AI och researchrapporten om promptdesign: AI skriver den analyserande texten i alla analysdelar från ett faktablad, medan koden äger tal, nivåer, obligatoriska meningar, låsta stycken, datum och format (8.4). Gemensam systemprompt med regler och skäl, preliminärt ett anrop per analysdel med ett anrop per tjänst som jämförelse, schema med `enum`-referenser, platshållare med stoppregler, högst två omförsök följt av mall och fynd, gräns mellan maskinell validering och sakgranskning, faktablad med sluten källtyp och oförändrat smågruppsskydd, ersättningskontrakt för granskningsgrinden och utvärdering i tre lager före val av modell och design. Kryssfrågor med frivillig lokal komplettering ersätter merparten av fritexten i intaget, utan att tjänstefakta ärvs från byrån (14.5). AMLR märkt som framtida regelverk. Ingen juridisk attest och ingen ändring av riskmetoden. |
 
 ### D-ARB-format efter källkontroll 2026-10-11
 
