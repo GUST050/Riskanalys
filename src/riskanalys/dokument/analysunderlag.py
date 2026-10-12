@@ -1,22 +1,16 @@
 """Lokala motiveringar med källor; fritext skickas aldrig vidare till AI."""
-from riskanalys.bedomning.erfarenheter import ERFARENHETSFALT, belagd_uppgift
+from riskanalys.bedomning.erfarenheter import ERFARENHETSFALT
 from riskanalys.bedomning.modeller import Tjanstbedomning
+from riskanalys.dokument.klartext import VERIFIERA, gransmening, under_grans, uppgiftstext, villkorstext
 from riskanalys.dokument.modeller import Textstycke
-from riskanalys.profil.hantering import visa_varde
 from riskanalys.profil.modeller import Profil
 from riskanalys.profil.omfattning import kompatibilitetsvy
 from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.regelverk.villkor import falt_i, tolka_villkor, utvardera, Sanning
 
-VERIFIERA = "[VERIFIERA]"
-
 
 def _belagg(regelbas: Regelbas, profil: Profil, id: str) -> str:
-    if not belagd_uppgift(regelbas, profil, id):
-        return f"{id}: aktuellt bekräftat underlag saknas. {VERIFIERA}"
-    u = profil.uppgifter[id]
-    period = f" Period: {u.period.fran}–{u.period.till}." if u.period else ""
-    return f"{id} = {visa_varde(regelbas.falt[id], u.varde)}.{period} Källa: {u.kalla}; bekräftat {u.datum}."
+    return uppgiftstext(regelbas, profil, id)
 
 
 def erfarenhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: Tjanstbedomning) -> Textstycke:
@@ -39,20 +33,8 @@ def erfarenhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: Tjanstbedomnin
         if id not in regelbas.falt:
             continue
         refs.append(id)
-        text += f" {rubrik}: " + (_belagg(regelbas, profil, id))
+        text += " " + uppgiftstext(regelbas, profil, id, namn=rubrik)
     return Textstycke(typ="analys", text=text, referenser=refs)
-
-
-def _villkorstext(data: dict, regelbas: Regelbas) -> str:
-    if "falt" in data:
-        id = data["falt"]
-        varde = visa_varde(regelbas.falt[id], data["varde"]) if "varde" in data else ""
-        return f"{id} {data['op']} {varde}".strip()
-    if "inte" in data:
-        return f"inte ({_villkorstext(data['inte'], regelbas)})"
-    key = "alla" if "alla" in data else "nagon"
-    delar = [_villkorstext(d, regelbas) for d in data[key]]
-    return (" och " if key == "alla" else " eller ").join(f"({d})" for d in delar)
 
 
 def sarbarhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: str, id: str) -> Textstycke:
@@ -61,9 +43,12 @@ def sarbarhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: str, id: str) -
     villkor = tolka_villkor(s.villkor, regelbas.faltdefinitioner())
     utfall = utvardera(villkor, profil.faltvarden())
     status = {Sanning.SANT: "uppfyllt", Sanning.FALSKT: "inte uppfyllt", Sanning.OKANT: "okänt"}[utfall.sanning]
-    text = f"{s.namn} ({regelbas.tjanster[tjanst].namn}): Villkoret {_villkorstext(s.villkor, regelbas)} är {status}. "
+    text = (f"{s.namn} ({regelbas.tjanster[tjanst].namn}): Sårbarheten gäller om {villkorstext(s.villkor, regelbas)}. "
+            f"Villkoret är {status}. ")
     refs = [tjanst, id, *sorted(falt_i(villkor))]
-    text += " ".join(_belagg(regelbas, profil, ref) for ref in sorted(falt_i(villkor)))
+    meningar = [gransmening(regelbas, profil, g) for g in under_grans(profil, s.villkor)]
+    meningar += [_belagg(regelbas, profil, ref) for ref in sorted(falt_i(villkor))]
+    text += " ".join(meningar)
     if s.beskrivning:
         text += f" Betydelse för tjänsten: {s.beskrivning} {s.metodmotivering}"
     if utfall.sanning is Sanning.OKANT:

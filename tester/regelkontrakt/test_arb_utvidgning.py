@@ -55,12 +55,12 @@ def test_docx_har_sex_delar_per_tjanst_och_underlag_i_bilaga(tmp_path,regelbas_v
         a=d.avsnitt_med_id()[id]
         assert tuple(u.rubrik for u in a.underrubriker)==RUBRIKER
         assert any('Noll rapporter' in s.text for s in a.stycken)
-        assert any('S-GEO-01' in s.referenser and 'Villkoret' in s.text for s in a.stycken)
+        assert any('S-GEO-01' in s.referenser and 'Sårbarheten gäller om' in s.text for s in a.stycken)
         assert any(t.kvarstaende in s.text for s in a.stycken)
     huvud='\n'.join(s.text for a in d.avsnitt if a.id!='D-ARB.B1' for s in a.stycken)
     assert 'SYNTETISKT_LOKALT_ARBETSSATT' in huvud
     assert regelbas_v1.falt['P-VERK.antal_rapporter'].fraga not in huvud
-    assert regelbas_v1.falt['P-VERK.antal_rapporter'].fraga in '\n'.join(s.text for s in d.avsnitt_med_id()['D-ARB.B1'].stycken)
+    assert f"{regelbas_v1.falt['P-VERK.antal_rapporter'].etikett} (P-VERK.antal_rapporter): " in '\n'.join(s.text for s in d.avsnitt_med_id()['D-ARB.B1'].stycken)
     for id,t in tjanster_med_avsnitt(b):
         assert 'SYNTETISKT_LOKALT_ARBETSSATT' not in bygg_underlag(regelbas_v1,p,t,id).model_dump_json()
     fil=rendera_docx(d,p,utkaststatus(DAG),tmp_path/'syntetisk.docx')

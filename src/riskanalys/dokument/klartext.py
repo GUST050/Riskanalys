@@ -8,6 +8,7 @@ from riskanalys.profil.modeller import Profil
 from riskanalys.regelverk.modeller import Regelbas
 
 VERIFIERA = "[VERIFIERA]"
+_HARLEDNING = "Härledning:"
 
 _TJANSTFALT = {
     "_erbjuds": "{namn} erbjuds",
@@ -69,6 +70,11 @@ def faltnamn(regelbas: Regelbas, falt_id: str) -> str:
     return falt.etikett or _monsternamn(regelbas, falt_id) or falt.fraga.removesuffix(" (beräknad andel)").rstrip("?")
 
 
+def _kalltext(kalla: str) -> str:
+    """Härledda andelar har fält-ID som källa ('Härledning: A/B'); i löptext står en neutral klartext."""
+    return "härledd ur bekräftade antal" if kalla.startswith(_HARLEDNING) else kalla
+
+
 def uppgiftstext(regelbas: Regelbas, profil: Profil, falt_id: str, *, namn: str | None = None,
                  med_id: bool = False) -> str:
     """'Kortnamn: värde (period …; källa: …; bekräftad …).' Fält-ID visas bara i bilagan (med_id)."""
@@ -79,7 +85,7 @@ def uppgiftstext(regelbas: Regelbas, profil: Profil, falt_id: str, *, namn: str 
         return f"{rubrik}: aktuellt bekräftat underlag saknas. {VERIFIERA}"
     u = profil.uppgifter[falt_id]
     delar = [f"period {u.period.fran}–{u.period.till}"] if u.period else []
-    delar += [f"källa: {u.kalla}", f"bekräftad {u.datum}"]
+    delar += [f"källa: {_kalltext(u.kalla)}", f"bekräftad {u.datum}"]
     varde = str(visa_varde(regelbas.falt[falt_id], u.varde)).rstrip(".")
     return f"{rubrik}: {varde} ({'; '.join(delar)})."
 

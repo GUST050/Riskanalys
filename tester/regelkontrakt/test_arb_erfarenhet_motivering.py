@@ -101,7 +101,7 @@ def test_b15_hittar_borttagen_analys_trots_att_antal_finns_i_dokumentet(regelbas
 def test_sarbarhet_motiveras_med_villkor_varde_period_och_kalla(regelbas_v1, profil):
     _, _, d = kedja(regelbas_v1, profil)
     stycke = next(s for s in next(a for a in d.avsnitt if a.id.startswith("D-ARB.6.")).stycken if "S-GEO-01" in s.referenser)
-    assert "Villkoret" in stycke.text and "0 %" in stycke.text
+    assert "Sårbarheten gäller om" in stycke.text and "0 %" in stycke.text
     assert str(PERIOD.fran) in stycke.text and "Syntetisk testkälla" in stycke.text
     assert "inga geografiska risker" not in stycke.text.lower()
     assert "P-BESK.geografi" in stycke.referenser

@@ -40,7 +40,7 @@ def med_intagsunderlag(dokument: Dokument, rb, profil, bedomning) -> Dokument:
 
 def bygg_underlagsbilaga(rb, profil):
     """Alla lokala intagsbelägg granskas i samma dokument; inga råsvar till AI."""
-    from riskanalys.dokument.analysunderlag import _belagg
+    from riskanalys.dokument.klartext import uppgiftstext
     stycken=[]
     for f in rb.falt.values():
         if not f.intag or f.alias_for or not aktivt(f,profil,rb):
@@ -49,7 +49,7 @@ def bygg_underlagsbilaga(rb, profil):
         if f.personuppgift:
             text=f'{f.id}: personuppgift hanteras lokalt i ansvarsfördelningen; källa och datum finns i profilen.'
         else:
-            text=f'{f.fraga} '+_belagg(rb,profil,f.id)
+            text=uppgiftstext(rb,profil,f.id,med_id=True)
         stycken.append(Textstycke(typ='beskrivning',text=text,referenser=[f.id]))
     for k in rb.kallor.values():
         text=f'{k.id}: {k.titel}. Utgivare: {k.utgivare}; hämtad: {k.hamtad}; källa: {k.url}; kontrollsumma: {k.kontrollsumma or "ingen registrerad originalsumma"}. Registrering är inte byråns genomförda omvärldsbevakning.'
