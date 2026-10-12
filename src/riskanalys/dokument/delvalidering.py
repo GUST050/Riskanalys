@@ -12,6 +12,7 @@ LANGD = {"hot": (80, 450), "sarbarheter": (100, 600), "kontroller": (60, 400), "
 _NOLL_RAPPORTER = re.compile(r"\b(?:inga|få|noll)\s+(?:misstanke)?rapporter\b[^.]*\b(?:visar|därför|innebär|tyder)\b", re.IGNORECASE)
 _MINSKNING = re.compile(r"\b(?:minskar|begränsar|reducerar|sänker)\b", re.IGNORECASE)
 _SAMVERKAN = re.compile(r"\b(?:samverk\w*|kombination\w*|tillsammans|förstärk\w*)\b", re.IGNORECASE)
+_INGEN_BELAGD = re.compile(r"\bingen belagd kombination\b", re.IGNORECASE)
 _TILLATNA_SIFFROR = re.compile(r"\{[^{}]*\}|\[VERIFIERA\]")
 _BELAGD_EFFEKT = "belagd riskreducerande verkan enligt metodvillkor"  # ändra till den text som kontrollstatus() använder för belagd effekt
 
@@ -72,9 +73,8 @@ def _per_del(del_id: str, svar: AISvar, fb: Faktablad) -> list[str]:
         fel.extend(f"Sårbarheterna saknar en referens i kategori {k}." for k in sorted(set(fb.sarbarhetsomraden.values())-kategorier))
         fel += [f"Stycke {n} beskriver en kombination utan belagt överlapp. Använd stycketypen scenario."
                 for n, s in enumerate(svar.stycken, 1)
-                if s.typ == "analys" and (
-                    len({r.id for r in fb.sarbarheter if r.id in s.referenser and r.galler != "nej"}) >= 2
-                    or _SAMVERKAN.search(s.text))]
+                if s.typ == "analys" and _SAMVERKAN.search(_INGEN_BELAGD.sub("", s.text)) and
+                    len({r.id for r in fb.sarbarheter if r.id in s.referenser}) >= 2]
     if del_id == "kontroller":
         belagda = {k.id for k in fb.kontroller if _BELAGD_EFFEKT in k.status}
         fel += [f"Stycke {n} säger att risken minskar utan hänvisning till en kontroll med belagd effekt."

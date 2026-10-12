@@ -28,6 +28,9 @@ MODULER = {
         "Beskriv samverkan mellan faktorer som belagd bara när faktabladet visar att de gäller samma kunder; annars "
         "skriver du ett villkorligt scenario med stycketypen scenario.\n"
         "Programmet har redan skrivit underlagsstycket för geografin. Bygg vidare på det."
+        "\nBehandla gärna varje sårbarhet i ett eget stycke. Ord som samverkar, tillsammans, kombination eller "
+        "förstärker betyder att du påstår ett samband; använd då stycketypen scenario om faktabladet inte visar "
+        "att samma kunder berörs."
     ),
     "kontroller": (
         "Skriv delen Kontroller och effekt för tjänsten. Programmet har redan skrivit varje kontrolls status och belägg. "

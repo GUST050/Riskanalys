@@ -127,12 +127,12 @@ def test_tva_s_referenser_ar_inte_kombination_nar_hogst_en_galler(galler, text, 
 
 
 @pytest.mark.parametrize('galler', [('ja', 'ja'), ('ja', 'okänt'), ('okänt', 'okänt')])
-def test_tva_gallande_eller_okanda_sarbarheter_kraver_scenario(galler, faktablad_exempel):
+def test_pastatt_samband_med_gallande_eller_okanda_kraver_scenario(galler, faktablad_exempel):
     ids = ['S-KUND-01', 'S-KUND-02']
     fb = faktablad_exempel.model_copy(update={'sarbarheter': tuple(
         UnderlagSarbarhet(id=id, namn=id, galler=g) for id, g in zip(ids, galler))})
     assert any('överlapp' in f for f in validera_del('sarbarheter',
-        _svar(('analys', ids, 'Byrån redovisar kundernas egenskaper.' + FYLLNAD)), fb, (), ()))
+        _svar(('analys', ids, 'Faktorerna samverkar och påverkar granskningen.' + FYLLNAD)), fb, (), ()))
 
 
 @pytest.mark.parametrize('samverkan', ['samverkar', 'i kombination', 'tillsammans', 'förstärker'])
@@ -162,3 +162,35 @@ def test_skyddat_tal_far_fortfarande_inte_anvandas_i_platshallare(faktablad_exem
     fel = validera_del('hot', svar, fb, (), ())
     assert any('okänt eller skyddat' in f for f in fel)
     assert not any('obekräftad' in f for f in fel)
+
+
+def _fb_med_sarbarheter(fb):
+    return fb.model_copy(update={
+        "sarbarheter": (UnderlagSarbarhet(id="S-KUND-01", namn="Riskbransch", galler="ja"),
+                        UnderlagSarbarhet(id="S-KUND-02", namn="Kontanter", galler="ja")),
+        "sarbarhetsomraden": {"S-KUND-01": "kund", "S-KUND-02": "kund"}})
+
+
+def _kombinationsfel(fb, text, typ="analys"):
+    svar = _svar((typ, ["T-RED-01", "S-KUND-01", "S-KUND-02"], text + FYLLNAD))
+    return [f for f in validera_del("sarbarheter", svar, fb, (), ()) if "kombination" in f]
+
+
+def test_tva_tillampliga_sarbarheter_utan_sambandsord_godtas(faktablad_exempel):
+    assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel), "Både riskbranscher och kontanthantering förekommer bland kunderna.") == []
+
+
+def test_pastatt_samband_utan_overlapp_maste_vara_scenario(faktablad_exempel):
+    fb = _fb_med_sarbarheter(faktablad_exempel)
+    assert _kombinationsfel(fb, "Riskbranscher och kontanthantering samverkar och ökar risken.")
+    assert _kombinationsfel(fb, "Riskbranscher och kontanthantering samverkar och ökar risken.", typ="scenario") == []
+
+
+def test_sambandsord_med_en_sarbarhet_godtas(faktablad_exempel):
+    fb = _fb_med_sarbarheter(faktablad_exempel)
+    svar = _svar(("analys", ["T-RED-01", "S-KUND-01"], "Riskbranscher förekommer tillsammans med många små kunder." + FYLLNAD))
+    assert not [f for f in validera_del("sarbarheter", svar, fb, (), ()) if "kombination" in f]
+
+
+def test_ingen_belagd_kombination_godtas_som_analys(faktablad_exempel):
+    assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel), "Det finns ingen belagd kombination av riskbranscher och kontanthantering.") == []
