@@ -64,3 +64,7 @@ def test_promptarna_foreslar_formuleringen_som_valideringen_godtar():
 
 def test_systemprompten_ber_om_lokal_granskning_i_stallet_for_kommentarer_om_underlaget():
     assert "underlaget behöver granskas lokalt" in systemprompt("claude-opus-5-5")
+
+
+def test_sarbarhetsmodulen_styr_formuleringen_under_gransen():
+    assert "förekommer men ligger under metodens gräns" in delmodul("sarbarheter")

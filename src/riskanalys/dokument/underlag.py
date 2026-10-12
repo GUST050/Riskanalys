@@ -19,6 +19,8 @@ from riskanalys.regelverk.villkor import Sanning, tolka_villkor, utvardera
 
 AVSNITTSTYP = "risk_per_tjanst"
 SMA_GRUPPER_GRANS = 5
+# Visningar som betyder att ett värde är maskat. Faktabladet och gränsmeningen utgår från samma konstant.
+SKYDDADE_VISNINGAR = ("färre än", "undertryckt")
 NIVANYCKLAR = (
     "inneboende_sannolikhet",
     "inneboende_konsekvens",
@@ -129,6 +131,8 @@ def bygg_underlag(
 
 
 def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna: tuple[str, ...]) -> str:
+    from riskanalys.dokument.klartext import faltnamn, gemen, under_grans
+    from riskanalys.profil.omfattning import kompatibilitetsvy
     from riskanalys.regelverk.villkor import falt_i
     s = regelbas.sarbarheter[id]
     status = sarbarhet_status(regelbas, profil, id)
@@ -136,11 +140,21 @@ def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna:
     rader = []
     for ref in falt:
         if ref not in tillatna:
-            rader.append(f"{ref}: underlaget finns i byråns lokala belägg; motiveringen behöver granskas lokalt.")
+            rader.append(f"{faltnamn(regelbas, ref)}: underlaget finns i byråns lokala belägg; motiveringen behöver granskas lokalt.")
             continue
         u = _uppgift(regelbas, profil, ref)
         period = f" Period: {'–'.join(u.period)}." if u.period else ""
-        rader.append(f"{ref}: {u.varde}.{period}")
+        rader.append(f"{faltnamn(regelbas, ref)} ({ref}): {u.varde}.{period}")
+    for g in under_grans(kompatibilitetsvy(profil, regelbas), s.villkor):
+        if g.falt_id not in tillatna:
+            continue
+        visning = _uppgift(regelbas, profil, g.falt_id).varde
+        # Bara den skyddade vyn styr: ett maskat värde ger ingen mening alls, så att 0 och 3 kunder ser likadana ut.
+        if visning.startswith(SKYDDADE_VISNINGAR) or visning == "okänt":
+            continue
+        grans = visa_varde(regelbas.falt[g.falt_id], g.grans)
+        rader.append(f"Faktorn förekommer: {gemen(faltnamn(regelbas, g.falt_id))} är {visning}, men det ligger "
+                     f"under metodens gräns på {grans} för automatiskt riskpåslag.")
     return f"Det registrerade villkorets utfall är {status}. " + " ".join(rader)
 
 

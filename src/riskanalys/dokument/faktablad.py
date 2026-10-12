@@ -5,13 +5,13 @@ from typing import Literal
 from pydantic import Field
 
 from riskanalys.dokument.modeller import Last, UnderlagHot, UnderlagKontroll, UnderlagSarbarhet
-from riskanalys.dokument.underlag import bygg_underlag
+from riskanalys.dokument.klartext import faltnamn
+from riskanalys.dokument.underlag import SKYDDADE_VISNINGAR, bygg_underlag
 from riskanalys.profil.modeller import Profil, Uppgift
 from riskanalys.profil.omfattning import HARLEDNING
 from riskanalys.regelverk.modeller import Falt, Regelbas, Sektorsreferens
 
 Kalltyp = Literal["register", "intern_statistik", "egen_kannedom", "dokument", "harledning"]
-_SKYDDADE = ("färre än", "undertryckt")
 _NUMERISKA = ("heltal", "tal", "andel")
 
 
@@ -82,7 +82,7 @@ def kalltyp(uppgift: Uppgift, falt: Falt) -> Kalltyp | None:
 def _post(regelbas: Regelbas, profil: Profil, u) -> Faktapost:
     falt = regelbas.falt[u.id]
     uppgift = profil.uppgifter.get(u.id, Uppgift())
-    skyddad = u.varde.startswith(_SKYDDADE)
+    skyddad = u.varde.startswith(SKYDDADE_VISNINGAR)
     tal = None
     if not skyddad and u.bekraftad and falt.typ in _NUMERISKA:
         # Använd bara värdet som redan passerat underlagets maskning och kompatibilitetsvy.
@@ -92,7 +92,7 @@ def _post(regelbas: Regelbas, profil: Profil, u) -> Faktapost:
             tal = None
     visning = (visa_tal(tal) + (" %" if falt.typ == "andel" else "")) if tal is not None else u.varde
     return Faktapost(
-        id=u.id, etikett=u.fraga, visningsvarde=visning,
+        id=u.id, etikett=faltnamn(regelbas, u.id), visningsvarde=visning,
         period=f"{u.period[0]}–{u.period[1]}" if u.period else None,
         kalltyp=kalltyp(uppgift, falt),
         status="skyddad" if skyddad else "bekräftad" if u.bekraftad and u.varde != "okänt" else "okänd",

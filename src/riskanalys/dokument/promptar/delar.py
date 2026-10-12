@@ -33,6 +33,8 @@ MODULER = {
         "tillsammans, kombination eller förstärker, eftersom de påstår ett samband som faktabladet inte kan belägga. "
         "Ett möjligt samband skriver du som ett stycke av typen scenario. Saknas belagt samband skriver du att ingen "
         "belagd kombination finns.\n"
+        "Om faktabladet säger att en faktor förekommer men ligger under metodens gräns, skriver du just det. Skriv "
+        "inte att faktorn saknas eller att sårbarheten inte berör byrån.\n"
         "Programmet har redan skrivit underlagsstycket för geografin. Bygg vidare på det."
     ),
     "kontroller": (

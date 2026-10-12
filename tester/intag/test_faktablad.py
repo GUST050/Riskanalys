@@ -1,7 +1,8 @@
 from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
 from riskanalys.dokument.faktablad import bygg_faktablad, faktablad_json, visa_tal
-from riskanalys.dokument.underlag import tjanster_med_avsnitt
+from riskanalys.dokument.underlag import _sarbarhetsmotivering, tjanster_med_avsnitt
 from riskanalys.profil.lagring import spara_profil
+from riskanalys.profil.omfattning import harled_andelar
 
 
 def _faktablad(mapp, rb, profil):
@@ -45,3 +46,44 @@ def test_okant_skyddat_underlag_far_inte_aterskapas_fran_ravarde(rb_intag, klar)
     u = UnderlagUppgift(id=id, fraga='Aktiva kunder', varde='okänt', bekraftad=True)
     post = _post(rb_intag, klar, u)
     assert post.tal is None and post.visningsvarde == 'okänt'
+
+
+RISKBRANSCH = "P-KUND.andel_riskbransch"
+
+
+def _sarb(rb):
+    return next(s.id for s in rb.sarbarheter.values() if s.villkor.get("falt") == RISKBRANSCH)
+
+
+def _med_riskbransch(rb, klar, antal):
+    """Testprofilen har 100 aktiva kunder; andelen härleds ur antalet, som i intaget."""
+    u = klar.uppgifter["P-KUND.antal_riskbransch"].model_copy(update={"varde": antal})
+    profil = klar.model_copy(update={"uppgifter": {**klar.uppgifter, "P-KUND.antal_riskbransch": u}})
+    return harled_andelar(profil, rb, frozenset({"P-KUND.antal_riskbransch"}))
+
+
+def test_motiveringen_sager_att_faktorn_forekommer_under_gransen(rb_intag, klar):
+    text = _sarbarhetsmotivering(rb_intag, _med_riskbransch(rb_intag, klar, 15), _sarb(rb_intag), (RISKBRANSCH,))
+    assert "Faktorn förekommer: andel kunder i riskbranscher är 15 %, men det ligger under metodens gräns på 20 %" in text
+
+
+def test_falt_utanfor_tillatelselistan_far_ingen_gransmening(rb_intag, klar):
+    text = _sarbarhetsmotivering(rb_intag, _med_riskbransch(rb_intag, klar, 15), _sarb(rb_intag), ())
+    assert "gräns" not in text and "15 %" not in text
+
+
+def test_skyddad_vy_ger_samma_text_for_noll_och_tre_kunder(rb_intag, klar):
+    # 0 och 3 av 100 visas båda som "färre än 5". Texten får inte avslöja vilket det är (granskning 2026-10-12).
+    noll, tre = (_sarbarhetsmotivering(rb_intag, _med_riskbransch(rb_intag, klar, antal), _sarb(rb_intag), (RISKBRANSCH,))
+                 for antal in (0, 3))
+    assert noll == tre
+    assert "gräns" not in tre and "förekommer" not in tre
+
+
+def test_litet_komplement_ger_ingen_gransmening(rb_intag, klar):
+    # 98 av 100 lämnar ett litet komplement som maskas. Gränsen höjs bara i en kopia av regelbasen.
+    villkor = {"falt": RISKBRANSCH, "op": ">=", "varde": 0.99}
+    sarb = rb_intag.sarbarheter[_sarb(rb_intag)].model_copy(update={"villkor": villkor})
+    rb = rb_intag.model_copy(update={"sarbarheter": {**rb_intag.sarbarheter, sarb.id: sarb}})
+    text = _sarbarhetsmotivering(rb, _med_riskbransch(rb_intag, klar, 98), sarb.id, (RISKBRANSCH,))
+    assert "gräns" not in text and "förekommer" not in text and "98 %" not in text
