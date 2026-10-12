@@ -1,5 +1,6 @@
 import re
 
+from riskanalys.dokument.delvalidering import LANGD
 from riskanalys.dokument.promptar import DELAR, bygg_innehall, delmodul, promptsumma, systemprompt
 
 
@@ -40,3 +41,15 @@ def test_sarbarhetsuppgiften_forklarar_alla_fem_kategorier(faktablad_exempel):
     for kod, namn in [('kund', 'kunder'), ('kanal', 'distributionskanaler'), ('geo', 'geografi'),
                       ('tj', 'tjänstespecifika förhållanden'), ('verk', 'verksamhetsspecifika förhållanden')]:
         assert kod + ' = ' + namn in uppgift
+
+
+def test_varje_delmodul_anger_sitt_langdintervall():
+    for d in DELAR:
+        lagst, hogst = LANGD[d]
+        assert f"{lagst}–{hogst} ord" in delmodul(d)
+
+
+def test_uppgiftsblocket_innehaller_langdintervallet(faktablad_exempel):
+    block = bygg_innehall(faktablad_exempel, "hot", (), (), ())
+    lagst, hogst = LANGD["hot"]
+    assert f"{lagst}–{hogst} ord" in next(b["text"] for b in block if b["text"].startswith('<uppgift del="hot">'))

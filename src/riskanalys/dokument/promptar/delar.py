@@ -55,3 +55,10 @@ MODULER = {
         "Programmet har redan skrivit meningen om byråns ansvar och beslut. Skriv inte att kundkännedom kan utelämnas."
     ),
 }
+
+
+def modultext(del_id: str) -> str:
+    """Modulen med delens längdintervall. Gränsen kommer från valideringen så att de inte glider isär."""
+    from riskanalys.dokument.delvalidering import LANGD
+    lagst, hogst = LANGD[del_id]
+    return f"{MODULER[del_id]}\nSkriv {lagst}–{hogst} ord i delen. Längre text underkänns och måste skrivas om."
