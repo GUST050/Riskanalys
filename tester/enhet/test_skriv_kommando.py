@@ -65,3 +65,12 @@ def test_testleverantor_utan_fil_ger_tydligt_fel(byra_med_profil, capsys):
     main(["bedom", "testbyra"])
     assert main(["skriv", "testbyra", "--leverantor", "test"]) == 1
     assert "--testsvar" in capsys.readouterr().err
+
+
+def test_ogiltig_effort_stoppar_fore_skrivning(capsys, tmp_path, monkeypatch):
+    import pytest
+    monkeypatch.setenv('RISKANALYS_DATA', str(tmp_path))
+    with pytest.raises(SystemExit) as fel:
+        main(['skriv', 'testbyra', '--effort', 'turbo'])
+    assert fel.value.code == 2
+    assert 'invalid choice' in capsys.readouterr().err

@@ -24,12 +24,15 @@ def utkastens_oklarheter(byramapp: Path, utkastnamn: str) -> tuple[tuple[str, Ok
     """Oklarheterna i de godkända AI-utkast som granskningen använde."""
     if not utkastnamn:
         return ()
-    return tuple(
-        (post.underlag.avsnitt, oklarhet)
-        for post in las_skrivresultat(byramapp / UTKAST / utkastnamn)
-        if post.godkant_utkast is not None
-        for oklarhet in post.godkant_utkast.oklarheter
-    )
+    from riskanalys.dokument.delskrivning import Tjanstresultat
+    from riskanalys.granskning.korning import oppna_fragor
+    utkast={}
+    for post in las_skrivresultat(byramapp / UTKAST / utkastnamn):
+        if isinstance(post,Tjanstresultat):
+            utkast[post.avsnitt]=post
+        elif post.godkant_utkast:
+            utkast[post.underlag.avsnitt]=post.godkant_utkast
+    return oppna_fragor(utkast)
 
 
 def kor_export_utkast(byramapp: Path, datum: date, *, granskningsmapp: Path | None = None) -> Path:

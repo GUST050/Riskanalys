@@ -1,0 +1,174 @@
+"""Anropsflöde per tjänst: ett anrop per analysdel, kedjat, med omförsök och mallreserv (spec 8.4.3, 8.4.5)."""
+
+from collections.abc import Callable
+from typing import Literal
+from datetime import datetime, timezone
+
+from pydantic import ValidationError
+
+from riskanalys.dokument.aischema import ai_schema, tolka_delsvar
+from riskanalys.dokument.analysunderlag import erfarenhetsstycke, sarbarhetsstycke
+from riskanalys.dokument.delvalidering import validera_del
+from riskanalys.dokument.faktablad import Faktablad, bygg_faktablad
+from riskanalys.dokument.leverantor import Anropsdata, Delanrop, LeverantorFel, Leveranssvar
+from riskanalys.dokument.modeller import AISvar, Last
+from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
+from riskanalys.dokument.promptar import DELAR, bygg_innehall, promptsumma, systemprompt
+from riskanalys.dokument.tjanstavsnitt import kontrollstycken
+from riskanalys.lagring.kontrollsumma import for_text
+
+FORMATVERSION = "D-ARB-tjanst-v3"
+MAX_OMFORSOK = 2
+MAX_TOKENS = 64000
+EFFORTSTEG = {"low": "medium", "medium": "high", "high": "xhigh", "xhigh": "max", "max": "max"}
+ANSVARSMENING = ("Byrån beslutar ansvariga, tidsfrister, faktisk kundkännedom och uppföljningstakt. "
+                 "Texten är ett analysunderlag och intygar inte genomförda åtgärder.")
+
+
+class Delforsok(Last):
+    nummer: int
+    effort: str
+    anrop: Anropsdata
+    text: str
+    svar: AISvar | None
+    fel: tuple[str, ...]
+
+
+class Delresultat(Last):
+    del_id: str
+    forsok: tuple[Delforsok, ...]
+    mall: bool
+
+    @property
+    def godkant_svar(self) -> AISvar | None:
+        if self.mall or not self.forsok or self.forsok[-1].fel:
+            return None
+        return self.forsok[-1].svar
+
+    def kontrollsumma(self) -> str:
+        svar = self.godkant_svar
+        return for_text(svar.model_dump_json() if svar else "mall")
+
+
+class Tjanstresultat(Last):
+    avsnitt: str
+    tjanst: str
+    design: Literal["A", "B"]
+    formatversion: Literal["D-ARB-tjanst-v3"] = FORMATVERSION
+    faktablad: Faktablad
+    delar: tuple[Delresultat, ...]
+
+    def del_(self, del_id: str) -> Delresultat:
+        return next(d for d in self.delar if d.del_id == del_id)
+
+
+def lasta_texter(regelbas, profil, t, del_id: str) -> tuple[str, ...]:
+    """Kodens låsta stycken i delen. De används endast lokalt för validering (spec 8.4.1)."""
+    if del_id == "hot":
+        return (erfarenhetsstycke(regelbas, profil, t).text,)
+    if del_id == "sarbarheter":
+        tj = regelbas.tjanster[t.tjanst]
+        return tuple(sarbarhetsstycke(regelbas, profil, t.tjanst, id).text
+                     for id in tj.sarbarheter if regelbas.sarbarheter[id].omrade == "geo")
+    if del_id == "kontroller":
+        return tuple(s.text for s in kontrollstycken(regelbas, profil, t))
+    if del_id == "risknivaer":
+        return tuple(s.text for s in (*nivastycken(t),*sektorsstycken(regelbas,t)))
+    return (ANSVARSMENING,)
+
+
+
+def skyddade_lasta_texter(fb: Faktablad, t, del_id: str) -> tuple[str, ...]:
+    """AI ser säkra instruktioner, aldrig lokala belägg, namn eller omaskerade antal."""
+    if del_id == "hot":
+        return ("Programmet återger byråns egen rapportering och erfarenhet. Antalen gäller hela byrån; noll rapporter bevisar inte frånvaro av hot.",)
+    if del_id == "sarbarheter":
+        return ("Programmet återger geografins lokala underlag. Fritexten är inte tillgänglig för AI; hänvisa bara till faktabladets strukturerade uppgifter.",)
+    if del_id == "kontroller":
+        return tuple(f"Programmet återger {k.namn}: {k.status}." for k in fb.kontroller)
+    if del_id == "risknivaer":
+        return tuple(s.text for s in nivastycken(t))
+    return (ANSVARSMENING,)
+
+def _tolka(text: str, fb: Faktablad) -> tuple[AISvar | None, tuple[str, ...]]:
+    try:
+        return tolka_delsvar(text,fb.tillatna_id(),fb.uppgift_id()), ()
+    except ValidationError as fel:
+        return None, (f"Svaret följde inte schemat ({fel.error_count()} fel). Svara bara med JSON enligt schemat.",)
+
+
+def skriv_del(leverantor, fb: Faktablad, regelbas, profil, t, del_id: str, validerat: tuple[str, ...], *,
+              effort: str, personnamn: tuple[str, ...], spara: Callable[[str, Delforsok], None]) -> Delresultat:
+    lasta = lasta_texter(regelbas, profil, t, del_id)
+    schema = ai_schema(fb.tillatna_id(), fb.uppgift_id())
+    forsok: tuple[Delforsok, ...] = ()
+    aterkoppling: tuple[str, ...] = ()
+    for nummer in range(1, MAX_OMFORSOK + 2):
+        klippt = any(f.anrop.stop_reason == "max_tokens" for f in forsok)
+        niva = effort if nummer <= MAX_OMFORSOK or klippt else EFFORTSTEG[effort]
+        anrop = Delanrop(del_id=del_id, system=systemprompt(leverantor.modell),
+                         innehall=bygg_innehall(fb, del_id, skyddade_lasta_texter(fb, t, del_id), validerat, aterkoppling), schema=schema,
+                         effort=niva, max_tokens=MAX_TOKENS, promptsumma=promptsumma(leverantor.modell, del_id))
+        try:
+            leverans = leverantor.skriv_del(anrop)
+        except LeverantorFel as fel:
+            if not fel.tillfalligt:
+                raise
+            # Felet och försöket sparas utan att serverns fria feltext förs vidare till nästa AI-anrop.
+            leverans = Leveranssvar(anrop=Anropsdata(
+                leverantor=leverantor.namn, begard_modell=leverantor.modell,
+                svarsmodell="inget_svar", effort=niva, prompt_kontrollsumma=anrop.promptsumma,
+                svar_id=None, stop_reason="leverantorsfel", reservmodell_svarade=False,
+                anvandning=(), tidpunkt=datetime.now(timezone.utc), del_id=del_id),
+                text="", avbrott="Leverantören kunde inte leverera något svar; försök igen eller använd mall.")
+        svar, fel = (None, (leverans.avbrott,)) if leverans.avbrott else _tolka(leverans.text,fb)
+        if svar is not None:
+            fel = tuple(validera_del(del_id, svar, fb, personnamn, lasta))
+        post = Delforsok(nummer=nummer, effort=niva, anrop=leverans.anrop, text=leverans.text, svar=svar, fel=fel)
+        spara(del_id, post)
+        forsok = (*forsok, post)
+        if not fel:
+            return Delresultat(del_id=del_id, forsok=forsok, mall=False)
+        aterkoppling = fel
+    return Delresultat(del_id=del_id, forsok=forsok, mall=True)
+
+
+def skriv_tjanst(leverantor, regelbas, profil, t, avsnitt_id: str, *, design: Literal["A", "B"] = "B", effort: str,
+                 personnamn: tuple[str, ...], spara: Callable[[str, Delforsok], None]) -> Tjanstresultat:
+    if design != "B":
+        raise LeverantorFel("Design A är inte byggd ännu; använd design B.")
+    fb = bygg_faktablad(regelbas, profil, t, avsnitt_id)
+    delar: dict[str, Delresultat] = {}
+
+    def validerad(*ids: str) -> tuple[str, ...]:
+        return tuple(s.text for id in ids if (svar := delar[id].godkant_svar) for s in svar.stycken)
+
+    for del_id in DELAR:
+        underlag = (validerad("hot", "sarbarheter", "kontroller") if del_id == "risknivaer"
+                    else validerad("risknivaer") if del_id == "slutsatser" else ())
+        delar[del_id] = skriv_del(leverantor, fb, regelbas, profil, t, del_id, underlag,
+                                  effort=effort, personnamn=personnamn, spara=spara)
+    return Tjanstresultat(avsnitt=avsnitt_id, tjanst=t.tjanst, design=design, faktablad=fb, delar=tuple(delar.values()))
+
+
+def kontrollera_resultat(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str) -> None:
+    """Kontrollera fryst indata och varje godkänt råsvar på nytt före dokumentbygget."""
+    from riskanalys.fel import RiskanalysFel
+    from riskanalys.profil.hantering import personnamn
+    if (resultat.avsnitt != avsnitt_id or resultat.tjanst != t.tjanst or resultat.design != "B"
+            or tuple(d.del_id for d in resultat.delar) != DELAR
+            or resultat.formatversion != FORMATVERSION):
+        raise RiskanalysFel("Tjänstresultatets identitet eller analysdelar är ogiltiga. Skriv om utkastet.")
+    if resultat.faktablad != bygg_faktablad(rb, p, t, avsnitt_id):
+        raise RiskanalysFel("Skrivningens faktablad avviker från aktuellt underlag. Skriv och sakgranska på nytt.")
+    for d in resultat.delar:
+        if d.mall:
+            continue
+        if not d.godkant_svar:
+            raise RiskanalysFel("En analysdel saknar validerat svar. Skriv om delen.")
+        svar, fel = _tolka(d.forsok[-1].text,resultat.faktablad)
+        if svar != d.godkant_svar or fel:
+            raise RiskanalysFel("Analysdelens råsvar avviker från det sparade svaret. Skriv om delen.")
+        fel = validera_del(d.del_id, svar, resultat.faktablad, personnamn(p, rb), lasta_texter(rb, p, t, d.del_id))
+        if fel:
+            raise RiskanalysFel("Analysdelen klarar inte valideringen. Skriv om delen: " + "; ".join(fel))

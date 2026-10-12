@@ -2,13 +2,16 @@
 
 from collections.abc import Callable
 from functools import partial
+import json
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, ValidationError
 
 from riskanalys.bedomning.korning import BEDOMNINGAR, kontrollera_aktuell, las_bedomning, las_bedomningsprofil
+from riskanalys.dokument.delskrivning import Tjanstresultat, Delforsok, skriv_tjanst, FORMATVERSION, EFFORTSTEG
 from riskanalys.dokument.leverantor import Anropsdata, Leveranssvar, LeverantorFel, Textleverantor
 from riskanalys.dokument.modeller import Avsnittsunderlag, AvsnittsUtkast
+from riskanalys.dokument.aischema import tolka_ai_svar
 from riskanalys.dokument.underlag import bygg_underlag, tjanster_med_avsnitt
 from riskanalys.dokument.validering import validera_utkast
 from riskanalys.lagring.yamlfil import las_modell
@@ -82,7 +85,7 @@ def _bedom_leverans(
     if leverans.avbrott is not None:
         return None, (leverans.avbrott,)
     try:
-        svar = AvsnittsUtkast.model_validate_json(leverans.text)
+        svar = tolka_ai_svar(leverans.text, underlag.avsnitt, underlag.tillatna_id())
     except ValidationError as fel:
         return None, (
             f"Svaret följde inte schemat för AI-utkast ({fel.error_count()} fel). Svara bara med JSON enligt schemat.",
@@ -90,8 +93,11 @@ def _bedom_leverans(
     return svar, tuple(validera_utkast(svar, underlag, personnamn))
 
 
-def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor) -> Path:
+def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor, *, effort: str | None = None) -> Path:
     """Skriver ett riskavsnitt per bedömd tjänst utifrån den senaste bedömningen."""
+    effort = effort if effort is not None else getattr(leverantor, "effort", "high") or "high"
+    if effort not in EFFORTSTEG:
+        raise LeverantorFel("Ogiltig effort. Välj low, medium, high, xhigh eller max.")
     bedomningsmapp = senaste_korning(byramapp, BEDOMNINGAR, f"bedom {byramapp.name}")
     kontrollera_aktuell(byramapp, bedomningsmapp, regelbas)
     bedomning = las_bedomning(bedomningsmapp)
@@ -104,7 +110,12 @@ def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor
             avsnittsmapp = mapp / avsnitt_id
             avsnittsmapp.mkdir()
             (avsnittsmapp / UNDERLAGSFIL).write_text(underlag.model_dump_json(indent=2), encoding="utf-8")
-            resultat = skriv_avsnitt(leverantor, underlag, namn, partial(_spara_forsok, avsnittsmapp))
+            if regelbas.metod.omfattning:
+                resultat = skriv_tjanst(leverantor, regelbas, profil, tjanst, avsnitt_id,
+                    effort=effort, personnamn=namn,
+                    spara=partial(_spara_delforsok, avsnittsmapp))
+            else:
+                resultat = skriv_avsnitt(leverantor, underlag, namn, partial(_spara_forsok, avsnittsmapp))
             (mapp / f"{avsnitt_id}.json").write_text(resultat.model_dump_json(indent=2), encoding="utf-8")
     except LeverantorFel as fel:
         raise LeverantorFel(
@@ -116,6 +127,8 @@ def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor
         "modell": leverantor.modell,
         "bedomning": bedomningsmapp.name,
     }
+    if regelbas.metod.omfattning:
+        metadata.update(dokumentformat=FORMATVERSION, format=FORMATVERSION, design="B", effort=effort)
     skriv_manifest(mapp, metadata)
     return mapp
 
@@ -124,9 +137,20 @@ def _spara_forsok(avsnittsmapp: Path, forsok: Forsok) -> None:
     (avsnittsmapp / f"forsok-{forsok.nummer}.json").write_text(forsok.model_dump_json(indent=2), encoding="utf-8")
 
 
-def las_skrivresultat(mapp: Path) -> list[Skrivresultat]:
-    return [
-        las_modell(sokvag, Skrivresultat, json=True)
-        for sokvag in sorted(mapp.glob("*.json"))
-        if sokvag.name != MANIFESTNAMN
-    ]
+def _spara_delforsok(avsnittsmapp: Path, del_id: str, forsok: Delforsok) -> None:
+    (avsnittsmapp / f"{del_id}-forsok-{forsok.nummer}.json").write_text(forsok.model_dump_json(indent=2), encoding="utf-8")
+
+
+def las_skrivresultat(mapp: Path) -> list[Skrivresultat | Tjanstresultat]:
+    resultat = []
+    for sokvag in sorted(mapp.glob("*.json")):
+        if sokvag.name == MANIFESTNAMN:
+            continue
+        from riskanalys.fel import RiskanalysFel
+        try:
+            data = json.loads(sokvag.read_text(encoding="utf-8"))
+            modell = Tjanstresultat if "formatversion" in data else Skrivresultat
+            resultat.append(modell.model_validate(data))
+        except (ValueError, OSError) as fel:
+            raise RiskanalysFel(f"Skrivresultatet {sokvag} är ogiltigt. Skriv om utkastet.") from fel
+    return resultat

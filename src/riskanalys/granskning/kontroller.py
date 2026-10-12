@@ -31,6 +31,7 @@ def granska(
     historik: Historik,
     granskningsdatum: date,
     oklarheter: tuple[tuple[str, Oklarhet], ...] = (),
+    *, skrivresultat=None,
 ) -> tuple[Fynd, ...]:
     """Fynd för dokumentet. oklarheter är AI-utkastens öppna frågor per avsnitt; var och en blir ett fynd."""
     utkast = [
@@ -43,7 +44,7 @@ def granska(
         *_b12(regelbas, dokument),
         *_b16(regelbas, historik),
         *sektorsfynd(regelbas, bedomning, profil),
-        *analysfynd(regelbas, bedomning, profil, dokument),
+        *analysfynd(regelbas, bedomning, profil, dokument, skrivresultat),
     ]
     return tuple(
         Fynd(id=f"F-{granskningsdatum.isoformat()}-{nummer:03d}", **falt)

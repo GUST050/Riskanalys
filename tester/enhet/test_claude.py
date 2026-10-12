@@ -1,4 +1,6 @@
 from types import SimpleNamespace
+from contextlib import contextmanager
+from riskanalys.dokument.leverantor import Delanrop
 
 import anthropic
 import httpx2
@@ -8,13 +10,13 @@ from riskanalys.dokument.claude import (
     FALLBACK_BETA,
     MAX_TOKENS,
     PROMPT_KONTROLLSUMMA,
-    SCHEMA,
     STANDARDEFFORT,
     STANDARDMODELL,
     ClaudeLeverantor,
 )
 from riskanalys.dokument.leverantor import LeverantorFel
 from riskanalys.dokument.modeller import AvsnittsUtkast
+from riskanalys.dokument.aischema import ai_schema
 
 API_URL = "https://api.anthropic.com/v1/messages"
 
@@ -26,13 +28,20 @@ class FalskKlient:
         self.anrop = []
         self._svar = svar
         self._undantag = undantag
-        self.beta = SimpleNamespace(messages=SimpleNamespace(create=self._skapa))
+        self.stromningar = 0
+        self.beta = SimpleNamespace(messages=SimpleNamespace(create=self._skapa, stream=self._stromma))
 
     def _skapa(self, **kwargs):
         self.anrop.append(kwargs)
         if self._undantag is not None:
             raise self._undantag
         return self._svar
+
+    @contextmanager
+    def _stromma(self, **kw):
+        self.stromningar += 1
+        svar = self._skapa(**kw)
+        yield SimpleNamespace(get_final_message=lambda: svar)
 
 
 def _svar(text, stop_reason="end_turn", modell=STANDARDMODELL, iterationer=None):
@@ -54,7 +63,7 @@ def test_anropet_foljer_installningarna(giltigt_utkast, real_underlag):
     assert anrop["max_tokens"] == MAX_TOKENS
     assert anrop["output_config"] == {
         "effort": STANDARDEFFORT,
-        "format": {"type": "json_schema", "schema": AvsnittsUtkast.model_json_schema()},
+        "format": {"type": "json_schema", "schema": ai_schema(real_underlag.tillatna_id(), frozenset(u.id for u in real_underlag.uppgifter))},
     }
     assert anrop["betas"] == [FALLBACK_BETA]
     assert anrop["fallbacks"] == "default"
@@ -94,9 +103,11 @@ def test_faktisk_svarsmodell_sparas_vid_fallback(giltigt_utkast, real_underlag):
     ]
 
 
-def test_promptens_kontrollsumma_bygger_pa_systemprompt_och_schema():
-    assert PROMPT_KONTROLLSUMMA.startswith("sha256:")
-    assert SCHEMA == AvsnittsUtkast.model_json_schema()
+def test_schemat_begransar_referenser_per_anrop(real_underlag, giltigt_utkast):
+    klient = FalskKlient(_svar(giltigt_utkast.model_dump_json()))
+    ClaudeLeverantor(klient=klient).skriv(real_underlag, [])
+    assert klient.anrop[0]["output_config"]["format"]["schema"] == ai_schema(
+        real_underlag.tillatna_id(), frozenset(u.id for u in real_underlag.uppgifter))
 
 
 def test_aterkopplingen_skickas_med(giltigt_utkast, real_underlag):
@@ -123,3 +134,35 @@ def test_natverksfel_blir_leverantorsfel(real_underlag):
     fel = anthropic.APIConnectionError(request=httpx2.Request("POST", API_URL))
     with pytest.raises(LeverantorFel, match="nätverket"):
         ClaudeLeverantor(klient=FalskKlient(undantag=fel)).skriv(real_underlag, [])
+
+
+def test_skriv_del_strommar_och_sparar_ratt_svar_och_cache():
+    svar = _svar('{"stycken": [], "oklarheter": []}')
+    svar.usage.cache_read_input_tokens = 512
+    svar.usage.cache_creation_input_tokens = 1024
+    klient = FalskKlient(svar)
+    anrop = Delanrop(del_id="hot", system="s", innehall=[{"type":"text", "text":"x"}], schema={"type":"object"}, effort="medium", max_tokens=32000, promptsumma="abc")
+    leverans = ClaudeLeverantor(klient=klient).skriv_del(anrop)
+    assert leverans.text == '{"stycken": [], "oklarheter": []}'
+    assert leverans.anrop.del_id == "hot" and leverans.anrop.effort == "medium"
+    assert leverans.anrop.anvandning[0].cache_lasning_token == 512
+    assert leverans.anrop.anvandning[0].cache_skrivning_token == 1024
+    assert klient.stromningar == 1
+
+
+@pytest.mark.parametrize("stop_reason", ["refusal", "max_tokens"])
+def test_del_avbrott_sparas(stop_reason):
+    klient = FalskKlient(_svar("{}", stop_reason))
+    anrop = Delanrop(del_id="hot", system="s", innehall=[], schema={}, effort="high", max_tokens=16000, promptsumma="abc")
+    leverans = ClaudeLeverantor(klient=klient).skriv_del(anrop)
+    assert leverans.avbrott is not None and leverans.anrop.del_id == "hot"
+    assert leverans.anrop.stop_reason == stop_reason
+
+
+def test_tokenavbrott_i_stromning_anger_delanropets_grans():
+    klient = FalskKlient(_svar('', 'max_tokens'))
+    anrop = Delanrop(del_id='hot', system='s', innehall=[], schema={}, effort='high', max_tokens=64000, promptsumma='abc')
+    leverans = ClaudeLeverantor(klient=klient).skriv_del(anrop)
+    assert klient.stromningar == 1
+    assert '64000 token' in leverans.avbrott
+    assert leverans.anrop.stop_reason == 'max_tokens'

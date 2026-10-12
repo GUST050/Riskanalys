@@ -27,7 +27,8 @@ BENAMNINGAR = {
     "kvarstaende_risk": "den kvarstående risken",
     "kvarstaende_terrorfinansiering_risk": "den kvarstående risken för terrorfinansiering",
 }
-_TAL = re.compile(r"\d+(?:[.,]\d+)?")
+_TAL = re.compile(r"\d{1,3}(?:[ \u00a0\u202f]\d{3})+(?:,\d+)?|\d+(?:[.,]\d+)?")
+_TUSENTAL = str.maketrans("", "", " \u00a0\u202f")
 _VERB = r"\s+(?:är|blir|bedöms(?:\s+\w+)?\s+(?:som|vara))\s+"
 _AMNE = r"(?:\s+för\s+(?P<amne>finansiering\s+av\s+terrorism|terrorfinansiering|penningtvätt|internationella\s+sanktioner|sanktioner))?"
 _FYLLNAD = r"(?:\s+\w+){0,3}?"
@@ -73,12 +74,6 @@ _PASTAENDEN_FORE = (
 )
 _PASTAENDEN = (*_PASTAENDEN, *((storhet, re.compile(monster, re.IGNORECASE)) for storhet, monster in _PASTAENDEN_FORE))
 # Risknivåer som varje riskavsnitt ska ange, med exempel på formulering (spec 7.1 steg 5 och 7).
-KRAVDA_NIVAER = {
-    "terrorfinansiering_risk": "Risken för finansiering av terrorism bedöms som {niva}.",
-    "kvarstaende_risk": "Den kvarstående risken är {niva}.",
-    "sanktioner_risk": "Sanktionsrisken är {niva}.",
-    "kvarstaende_sanktioner_risk": "Den kvarstående sanktionsrisken är {niva}.",
-}
 _BOJDA_NIVAER = {"låga": "låg", "höga": "hög", "måttliga": "måttlig"}
 
 
@@ -90,7 +85,7 @@ def validera_utkast(utkast: AvsnittsUtkast, underlag: Avsnittsunderlag, personna
         for nummer, stycke in enumerate(utkast.stycken, start=1)
         for fel in _stycke(nummer, stycke, underlag, tillatna_tal, personnamn)
     ]
-    return [*_helhet(utkast, underlag), *stycken, *_motiveringar(utkast, underlag), *_kravda_nivaer(utkast, underlag)]
+    return [*_helhet(utkast, underlag), *stycken, *_motiveringar(utkast)]
 
 
 def motivering_har_hot_och_sarbarhet(stycke: Textstycke) -> bool:
@@ -146,15 +141,16 @@ def _helhet(utkast: AvsnittsUtkast, underlag: Avsnittsunderlag) -> list[str]:
     return fel
 
 
-def _nivafel(nummer: int, text: str, nivaer: dict[str, str]) -> list[str]:
-    fel = []
-    for nyckel, niva in nivapastaenden(text):
-        benamning = BENAMNINGAR[nyckel]
-        vantat = nivaer.get(nyckel)
-        if vantat is None:
-            fel.append(f"Stycke {nummer} anger en nivå för {benamning}, men underlaget har ingen sådan nivå.")
-        elif niva != vantat.lower():
-            fel.append(f"Stycke {nummer} anger att {benamning} är {niva}, men riskmotorn anger {vantat}.")
+def _nivafel(nummer: int, text: str) -> list[str]:
+    """AI anger aldrig nivåer, inte heller för delfaktorer; programmet skriver nivåmeningarna (regel 1)."""
+    fel = [
+        f"Stycke {nummer} anger en nivå för {BENAMNINGAR[nyckel]}. Programmet skriver alla nivåmeningar; "
+        "beskriv delfaktorer med andel, antal, period och egenskap i stället."
+        for nyckel in dict.fromkeys(nyckel for nyckel, _ in nivapastaenden(text))
+    ]
+
+    if not fel and har_nivasprak(text):
+        fel.append(f"Stycke {nummer} anger en nivå. Programmet skriver alla nivåmeningar; beskriv faktorerna med belagda fakta.")
     return fel
 
 
@@ -178,7 +174,7 @@ def _stycke(
         f"Stycke {nummer} innehåller talet {tal}, som inte finns i underlaget."
         for tal in sorted(_tal_i(stycke.text) - tillatna_tal)
     ]
-    fel += _nivafel(nummer, stycke.text, underlag.nivaer)
+    fel += _nivafel(nummer, stycke.text)
     beroenden = sorted(set(stycke.referenser) & obekraftade)
     if beroenden and VERIFIERA not in stycke.text:
         fel.append(f"Stycke {nummer} bygger på obekräftade uppgifter ({', '.join(beroenden)}) men saknar {VERIFIERA}.")
@@ -200,29 +196,17 @@ def _stycke(
     return fel
 
 
-def _motiveringar(utkast: AvsnittsUtkast, underlag: Avsnittsunderlag) -> list[str]:
+def _motiveringar(utkast: AvsnittsUtkast) -> list[str]:
     motiveringar = [(nummer, stycke) for nummer, stycke in enumerate(utkast.stycken, start=1) if stycke.typ == "motivering"]
     if not motiveringar:
         return ["Utkastet saknar ett stycke av typen motivering."]
-    fel = [
+    return [
         f"Motiveringen i stycke {nummer} måste hänvisa till minst ett hot (H-) och en sårbarhet (S-) eller uppgift (P-)."
         for nummer, stycke in motiveringar
         if not motivering_har_hot_och_sarbarhet(stycke)
     ]
-    inneboende = underlag.nivaer.get("inneboende_risk", "").lower()
-    if not any(("inneboende_risk", inneboende) in nivapastaenden(stycke.text) for _, stycke in motiveringar):
-        fel.append(f'Ingen motivering anger den inneboende risknivån ({inneboende}), till exempel "Risken är {inneboende}."')
-    return fel
 
 
-def _kravda_nivaer(utkast: AvsnittsUtkast, underlag: Avsnittsunderlag) -> list[str]:
-    """Terrorfinansieringsrisken och den kvarstående risken ska stå i texten. En felaktig nivå rapporteras per stycke."""
-    angivna = {nyckel for stycke in utkast.stycken for nyckel, _ in nivapastaenden(stycke.text)}
-    return [
-        f'Utkastet anger inte {BENAMNINGAR[nyckel]} ({niva}). Skriv till exempel "{exempel.format(niva=niva)}"'
-        for nyckel, exempel in KRAVDA_NIVAER.items()
-        if (niva := underlag.nivaer.get(nyckel, "").lower()) and nyckel not in angivna
-    ]
 
 
 def _tal_i(text: str) -> set[str]:
@@ -230,5 +214,19 @@ def _tal_i(text: str) -> set[str]:
 
 
 def _normalisera(tal: str) -> str:
-    med_punkt = tal.replace(",", ".")
+    med_punkt = tal.translate(_TUSENTAL).replace(",", ".")
     return med_punkt.rstrip("0").rstrip(".") if "." in med_punkt else med_punkt
+
+
+_AI_NIVA = re.compile(
+    r"\b(?:mycket\s+)?(?:låg[at]?|hög[at]?|måttlig[at]?)\s+(?:risk(?:en|er|erna|nivå|nivån)?|sannolikhet(?:en|er|erna)?)\b"
+    r"|\b(?:begränsad[e]?|betydande|allvarlig[at]?)\s+konsekvens(?:en|er|erna)?\b"
+    r"|\b(?:risker(?:na)?|sannolikheter(?:na)?)\s+(?:är|bedöms\s+som|:)\s+(?:mycket\s+)?(?:låga|måttliga|höga)\b"
+    r"|\bkonsekvenser(?:na)?\s+(?:är|bedöms\s+som)\s+(?:begränsade|betydande|allvarliga)\b",
+    re.IGNORECASE,
+)
+
+
+def har_nivasprak(text: str) -> bool:
+    """Även generiska nivåpåståenden är förbjudna i AI-texten."""
+    return bool(nivapastaenden(text) or _AI_NIVA.search(text))

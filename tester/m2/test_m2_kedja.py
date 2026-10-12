@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 import pytest
 import yaml
-from tester.fixturer.m2 import komplett_profil,bygg_testsvar,DAG
+from tester.fixturer.m2 import komplett_profil,bygg_delsvar,DAG
 from riskanalys.profil.lagring import las_profil,spara_profil
 from riskanalys.bedomning.korning import las_bedomning
 from riskanalys.lagring.korningar import senaste_korning
@@ -60,8 +60,8 @@ def kedja(tmp_path,paket,lan,negativ=None):
         d=json.loads((mapp/'bedomning.json').read_text());d.pop('omfattning')
         (mapp/'bedomning.json').write_text(json.dumps(d,ensure_ascii=False))
         skriv_manifest(mapp,las_manifest(mapp).metadata)
-    svar=bygg_testsvar(rb,las_profil(byra),b)
-    if negativ=='fraga':svar[0]['oklarheter']=[{'fraga':'Syntetisk öppen fråga','saknad_uppgift':'P-KUND.antal_aktiva'}]
+    svar=[s.model_dump(mode='json') for s in bygg_delsvar(rb,las_profil(byra),b)]
+    if negativ=='fraga':svar[0]['oklarheter']=[{'fraga':'Syntetisk öppen fråga','uppgift_id':'P-KUND.antal_aktiva'}]
     fil=tmp_path/'testsvar.json';fil.write_text(json.dumps(svar,ensure_ascii=False))
     kor(env,'skriv','testbyra','--leverantor','test','--testsvar',str(fil),*arg)
     kor(env,'utvardera','testbyra','--beskrivning','Syntetisk teknisk prövning','--datum',str(DAG))

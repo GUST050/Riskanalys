@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator, model_serializer
 
 from riskanalys.lagring.kontrollsumma import for_text
 
@@ -107,6 +107,14 @@ class Avsnitt(Last):
     kalla: Literal["regelbas", "ai"]
     stycken: tuple[Textstycke, ...]
     underrubriker: tuple[Underrubrik, ...] = ()
+    formatversion: Literal["D-ARB-tjanst-v3"] | None = None
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        data = handler(self)
+        if self.formatversion is None:
+            data.pop("formatversion", None)
+        return data
 
     @model_validator(mode="after")
     def giltiga_positioner(self):
@@ -127,7 +135,29 @@ class Dokument(Last):
 
     @property
     def formatversion(self) -> str:
+        if any(a.formatversion == "D-ARB-tjanst-v3" for a in self.avsnitt):
+            return "D-ARB-tjanst-v3"
         return "D-ARB-tjanst-v2" if any(a.underrubriker for a in self.avsnitt) else "D-ARB-v1"
 
     def avsnitt_med_id(self) -> dict[str, Avsnitt]:
         return {avsnitt.id: avsnitt for avsnitt in self.avsnitt}
+
+
+class AIStycke(Last):
+    """Ett stycke som AI skriver. Referenserna står före texten så att de väljs först."""
+
+    typ: Literal["analys", "motivering", "scenario"]
+    referenser: list[str]
+    text: str
+
+
+class AIOklarhet(Last):
+    uppgift_id: str
+    fraga: str
+
+
+class AISvar(Last):
+    """Det AI svarar med. Avsnittets ID känner koden redan till och ingår därför inte."""
+
+    stycken: list[AIStycke]
+    oklarheter: list[AIOklarhet]

@@ -29,16 +29,14 @@ NIVANYCKLAR = (
     "kvarstaende_risk",
 )
 INSTRUKTION = (
-    "Skriv avsnittet om risken i tjänsten. Beskriv hur tjänsten kan utnyttjas, analysera hoten och "
-    "sårbarheterna och motivera risknivåerna med uppgifterna i underlaget. Återge nivåerna exakt och "
-    "skriv tydligt vilken nivå som avser vad, till exempel \"Den kvarstående risken är hög.\" eller "
-    "\"Risken för finansiering av terrorism bedöms som måttlig.\" "
-    "Hänvisa till ID:n i underlaget i fältet referenser. Saknas en uppgift, skriv [VERIFIERA] och "
-    "lägg till en oklarhet."
-    " Beakta byråns egna rapporter och misstankebaserade avböjanden som hotunderlag när de finns. "
-    "Antalen är byråövergripande, inte tjänstespecifika riskpoäng; noll rapporter bevisar inte frånvaro av hot. "
-    "Motivera sårbarheternas tillämplighet med det skyddade underlaget."
+    "Skriv en tjänstespecifik analys och motivering av hot och sårbarheter ur underlaget. "
+    "Programmet skriver alla nivåmeningar: ange aldrig nivåer för risk, sannolikhet eller konsekvens, "
+    "inte heller för delfaktorer. Beskriv med antal, andel, period och egenskap. "
+    "Varje stycke ska ha referenser till underlaget. Okända uppgifter kräver [VERIFIERA] och en oklarhet. "
+    "Beakta byråns egna rapporter och misstankebaserade avböjanden som hotunderlag. "
+    "Antalen är byråövergripande, inte tjänstespecifika riskpoäng; noll rapporter bevisar inte frånvaro av hot."
 )
+
 _STATUS = {Sanning.SANT: "ja", Sanning.FALSKT: "nej", Sanning.OKANT: "okänt"}
 
 

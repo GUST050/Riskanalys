@@ -359,9 +359,9 @@ def giltigt_utkast():
                 {
                     "typ": "motivering",
                     "text": (
-                        "Sannolikheten bedöms som hög eftersom 30 % av kunderna finns i riskbranscher och 80 % av "
+                        "30 % av kunderna finns i riskbranscher och 80 % av "
                         "underlaget kommer in digitalt medan bankdata bara finns för 40 % av kunderna. "
-                        "Konsekvensen är betydande. Risken är hög."
+                        "Osanna fakturor kan bokföras utan att flödet kan stämmas av mot banken."
                     ),
                     "referenser": [
                         "H-01",
@@ -376,8 +376,8 @@ def giltigt_utkast():
                 {
                     "typ": "analys",
                     "text": (
-                        "Risken för finansiering av terrorism bedöms som måttlig. Bankavstämningen mot underlag finns "
-                        "i rutinerna men är inte belagd, så den kvarstående risken är hög."
+                        "Bankavstämningen mot underlag finns "
+                        "i rutinerna men är inte belagd; dess effekt behöver prövas."
                     ),
                     "referenser": ["BT-MATRIS-03", "C-07", "BT-KVAR-01"],
                 },

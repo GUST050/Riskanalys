@@ -78,3 +78,20 @@ def test_ogiltig_testsvarsfil_ger_fel(tmp_path):
     fil.write_text('[{"avsnitt": "D-ARB.6.1"}]', encoding="utf-8")
     with pytest.raises(LeverantorFel, match="ogiltig"):
         ladda_testleverantor(fil)
+
+
+from riskanalys.dokument.leverantor import Delanrop, Testleverantor
+from riskanalys.dokument.modeller import AIStycke, AISvar
+
+ANROP = Delanrop(del_id="hot", system="s", innehall=[{"type": "text", "text": "x"}], schema={}, effort="high",
+                 max_tokens=16000, promptsumma="abc")
+
+
+def test_testleverantor_skriver_delar_i_tur_och_ordning():
+    svar = AISvar(stycken=[AIStycke(typ="analys", referenser=["T-RED-01"], text="Text.")], oklarheter=[])
+    lev = Testleverantor([svar, "inte json"])
+    forsta = lev.skriv_del(ANROP)
+    assert forsta.text == svar.model_dump_json()
+    assert (forsta.anrop.del_id, forsta.anrop.prompt_kontrollsumma, forsta.anrop.effort) == ("hot", "abc", "high")
+    assert lev.skriv_del(ANROP).text == "inte json"
+    assert lev.delanrop == [ANROP, ANROP]

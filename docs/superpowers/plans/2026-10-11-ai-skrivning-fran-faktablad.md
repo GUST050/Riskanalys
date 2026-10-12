@@ -85,7 +85,7 @@
 - Consumes: befintliga fixturer `giltigt_utkast`, `real_underlag` i `tester/conftest.py`.
 - Produces: `validera_utkast` godtar "2 300 000", "2 300 000" och "2 300 000" när underlaget har 2300000.
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 Lägg till i `tester/enhet/test_validering_utkast.py`:
 
@@ -114,12 +114,12 @@ def test_fel_belopp_med_tusentalsavgransare_underkanns(giltigt_utkast, real_unde
     assert "Stycke 1 innehåller talet 2400000, som inte finns i underlaget." in fel
 ```
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/enhet/test_validering_utkast.py -k "tusentals" -v`
 Expected: FAIL. "2 300 000" ger fel om talen 300 och 000.
 
-- [ ] **Step 3: Implementera**
+- [x] **Step 3: Implementera**
 
 I `src/riskanalys/dokument/validering.py`, ersätt `_TAL` och `_normalisera`:
 
@@ -134,7 +134,7 @@ def _normalisera(tal: str) -> str:
     return med_punkt.rstrip("0").rstrip(".") if "." in med_punkt else med_punkt
 ```
 
-- [ ] **Step 4: Kör proven och hela valideringssviten**
+- [x] **Step 4: Kör proven och hela valideringssviten**
 
 Run: `.venv/bin/pytest tester/enhet/test_validering_utkast.py -v`
 Expected: PASS, även befintliga prov.
@@ -162,7 +162,7 @@ git commit -m "fix: godta svenska tusentalsavgränsare i AI-valideringen"
   - `AISvar(stycken: list[AIStycke], oklarheter: list[AIOklarhet])`, `AIStycke(typ, referenser, text)`, `AIOklarhet(uppgift_id, fraga)` i `dokument/modeller.py`.
   - `aischema.SCHEMAVERSION: str`, `aischema.INGEN_UPPGIFT: str`, `aischema.ai_schema(tillatna_id: frozenset[str], uppgift_id: frozenset[str]) -> dict`, `aischema.tolka_ai_svar(text: str, avsnitt: str, tillatna_id: frozenset[str]) -> AvsnittsUtkast` (kastar `pydantic.ValidationError` om varken nytt eller äldre format passar).
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 Skapa `tester/enhet/test_aischema.py`:
 
@@ -212,12 +212,12 @@ def test_ogiltigt_svar_kastar_valideringsfel():
         tolka_ai_svar('{"stycken": "fel"}', "D-ARB.6.1", TILLATNA)
 ```
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/enhet/test_aischema.py -v`
 Expected: FAIL med `ModuleNotFoundError: riskanalys.dokument.aischema`.
 
-- [ ] **Step 3: Lägg till modellerna**
+- [x] **Step 3: Lägg till modellerna**
 
 I `src/riskanalys/dokument/modeller.py`, efter `class AvsnittsUtkast`:
 
@@ -242,7 +242,7 @@ class AISvar(Last):
     oklarheter: list[AIOklarhet]
 ```
 
-- [ ] **Step 4: Skapa `aischema.py`**
+- [x] **Step 4: Skapa `aischema.py`**
 
 ```python
 """Schemat som AI svarar i. API:t garanterar formen; valideringen kontrollerar innehållet (spec 8.4.2)."""
@@ -309,7 +309,7 @@ def tolka_ai_svar(text: str, avsnitt: str, tillatna_id: frozenset[str]) -> Avsni
     )
 ```
 
-- [ ] **Step 5: Använd schemat i leverantören och skrivningen**
+- [x] **Step 5: Använd schemat i leverantören och skrivningen**
 
 I `src/riskanalys/dokument/claude.py`: ta bort `SCHEMA = AvsnittsUtkast.model_json_schema()` och ersätt kontrollsumman:
 
@@ -342,7 +342,7 @@ from riskanalys.dokument.aischema import tolka_ai_svar
 
 Run: `grep -n "SCHEMA" tester/enhet/test_claude.py` och uppdatera prov som läser `claude.SCHEMA` så att de i stället kontrollerar att `output_config["format"]["schema"] == ai_schema(underlag.tillatna_id(), frozenset(u.id for u in underlag.uppgifter))` för samma underlag.
 
-- [ ] **Step 6: Kör proven**
+- [x] **Step 6: Kör proven**
 
 Run: `.venv/bin/pytest tester/enhet/test_aischema.py tester/enhet/test_claude.py tester/enhet/test_skrivning.py -v`
 Expected: PASS.
@@ -372,7 +372,7 @@ git commit -m "feat: AI-schema med enum-referenser och utan avsnittsfält"
 - Consumes: `Tjanstbedomning` med `inneboende: Riskdel`, `terrorfinansiering: Riskdel`, `kvarstaende: Risk | None`, `sanktionsrisk: Sanktionsbedomning | None`, `regelspar` (`bedomning/modeller.py`).
 - Produces: `nivatext.nivastycken(t: Tjanstbedomning) -> tuple[Textstycke, ...]`. Del 5 i tjänsteavsnittet är `(*nivastycken(t), *AI-stycken)`. `validera_utkast` underkänner varje nivåpåstående i AI-text.
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 Skapa `tester/intag/test_nivatext.py`:
 
@@ -411,12 +411,12 @@ def test_fixturen_saknar_nivapastaenden(giltigt_utkast):
     assert not [p for s in giltigt_utkast.stycken for p in nivapastaenden(s.text)]
 ```
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/intag/test_nivatext.py tester/enhet/test_validering_utkast.py -k "niva or fixturen" -v`
 Expected: FAIL (`nivatext` saknas; fixturen innehåller nivåmeningar; en nivå som stämmer med motorn godtas i dag).
 
-- [ ] **Step 3: Skapa `nivatext.py`**
+- [x] **Step 3: Skapa `nivatext.py`**
 
 ```python
 """Risknivåmeningar skrivs av programmet, aldrig av AI (spec 8.4.1)."""
@@ -444,7 +444,7 @@ def nivastycken(t: Tjanstbedomning) -> tuple[Textstycke, ...]:
     return tuple(Textstycke(typ="beskrivning", text=rad, referenser=refs) for rad in rader)
 ```
 
-- [ ] **Step 4: Ändra valideringen**
+- [x] **Step 4: Ändra valideringen**
 
 I `src/riskanalys/dokument/validering.py`:
 
@@ -485,7 +485,7 @@ I `_stycke`: ersätt `fel += _nivafel(nummer, stycke.text, underlag.nivaer)` med
 Run: `grep -rn "KRAVDA_NIVAER\|riskmotorn anger\|Utkastet anger inte\|Ingen motivering anger" src tester`
 Ta bort eller skriv om varje prov som väntar sig det gamla beteendet. Ett prov som krävde att en nivå *anges* ska i stället kräva att nivån *underkänns*.
 
-- [ ] **Step 5: Lägg in nivåmeningarna i dokumentet och grinden**
+- [x] **Step 5: Lägg in nivåmeningarna i dokumentet och grinden**
 
 I `src/riskanalys/dokument/tjanstavsnitt.py:66`, ersätt `('Risknivåer och motivering', tuple(utkast.stycken))` med `('Risknivåer och motivering', (*nivastycken(t), *utkast.stycken))` och lägg till `from riskanalys.dokument.nivatext import nivastycken`.
 
@@ -500,7 +500,7 @@ I `src/riskanalys/granskning/analys.py`, `_tjanstanalys_stammer`, ersätt raden 
 
 med `from riskanalys.dokument.nivatext import nivastycken`. Ombyggnaden lägger själv till de låsta nivåmeningarna, så en ändrad nivåmening ger fortfarande en avvikande kontrollsumma.
 
-- [ ] **Step 6: Uppdatera instruktionerna och fixturerna**
+- [x] **Step 6: Uppdatera instruktionerna och fixturerna**
 
 I `src/riskanalys/dokument/underlag.py`, ersätt meningarna i `INSTRUKTION` från "Återge nivåerna exakt" till och med "bedöms som måttlig.\" " med:
 
@@ -536,7 +536,7 @@ I `tester/fixturer/m2.py`, `bygg_testsvar`, ersätt texterna och ta bort variabe
         a=AvsnittsUtkast(avsnitt=id,stycken=[Textstycke(typ='analys',text=text,referenser=list(u.regelspar)),Textstycke(typ='motivering',text="Hoten kan utnyttja sårbarheterna i kundunderlagen, och spårbara kontroller och uppföljning behövs för att motverka dem.",referenser=refs)],oklarheter=[])
 ```
 
-- [ ] **Step 7: Kör de berörda proven och hela sviten**
+- [x] **Step 7: Kör de berörda proven och hela sviten**
 
 Run: `.venv/bin/pytest tester/intag/test_nivatext.py tester/enhet/test_validering_utkast.py tester/enhet/test_skrivning.py tester/regelkontrakt/test_arb_utvidgning.py -v`
 Expected: PASS.
@@ -563,7 +563,7 @@ git commit -m "feat: programmet skriver risknivåmeningarna och AI-text får int
 - Consumes: `Skrivresultat`, `Forsok` i `dokument/skrivning.py`; `Tokenanvandning`, `Anropsdata` i `dokument/leverantor.py`.
 - Produces: `Skrivsammanfattning`, `sammanfatta(resultat: Iterable[Skrivresultat]) -> Skrivsammanfattning`, `felklass(fel: str) -> str`, `kostnad_usd(s: Skrivsammanfattning, indatapris: float, utdatapris: float) -> float`.
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 ```python
 from datetime import datetime, timezone
@@ -599,12 +599,12 @@ def test_felklasser():
     assert felklass("Något annat.") == "ovrigt"
 ```
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/enhet/test_matning.py -v`
 Expected: FAIL (`matning` saknas).
 
-- [ ] **Step 3: Implementera**
+- [x] **Step 3: Implementera**
 
 ```python
 """Mätning av skrivkörningar: förstaförsök, omförsök, felklasser och tokens (spec 8.4.7–8.4.8)."""
@@ -660,7 +660,7 @@ I `src/riskanalys/kommandon/skriv_kommando.py`, efter att `kor_skrivning` return
           f"token in/ut: {s.indata_token}/{s.utdata_token}.")
 ```
 
-- [ ] **Step 4: Kör proven**
+- [x] **Step 4: Kör proven**
 
 Run: `.venv/bin/pytest tester/enhet/test_matning.py tester/enhet/test_skriv_kommando.py -v`
 Expected: PASS.
@@ -692,7 +692,7 @@ git commit -m "feat: sammanfattning av skrivkörningar för förstaförsök och 
   - `Faktapost(id, etikett, visningsvarde, period, kalltyp, status, tal)`; `Faktablad(avsnitt, tjanst_id, tjanst_namn, poster, hot, sarbarheter, kontroller, regelspar)` med `tillatna_id() -> frozenset[str]`, `uppgift_id() -> frozenset[str]`, `numeriska() -> dict[str, str]`.
   - `bygg_faktablad(regelbas, profil, tjanstbedomning, avsnitt_id) -> Faktablad`, `faktablad_json(fb: Faktablad) -> str`, `visa_tal(varde: float) -> str`.
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 ```python
 from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
@@ -735,12 +735,12 @@ def test_svenskt_talformat():
     assert visa_tal(46.5) == "46,5"
 ```
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/intag/test_faktablad.py -v`
 Expected: FAIL (`faktablad` saknas).
 
-- [ ] **Step 3: Implementera**
+- [x] **Step 3: Implementera**
 
 ```python
 """Faktabladet: det enda AI får veta om en tjänst (spec 8.4.2). Byggs ur det tillåtelselistade underlaget."""
@@ -847,7 +847,7 @@ def faktablad_json(fb: Faktablad) -> str:
 
 Läs signaturen för `bygg_underlag` i `src/riskanalys/dokument/underlag.py` och anpassa anropet om den skiljer sig, utan att ändra underlagets innehåll.
 
-- [ ] **Step 4: Kör proven**
+- [x] **Step 4: Kör proven**
 
 Run: `.venv/bin/pytest tester/intag/test_faktablad.py -v`
 Expected: PASS.
@@ -871,7 +871,7 @@ git commit -m "feat: faktablad med sluten källtyp och oförändrat smågruppssk
 - Consumes: `ROLLER` i `dokument/rendering.py`.
 - Produces: `platshallarfel(nummer: int, text: str, referenser: list[str], numeriska: dict[str, str]) -> list[str]`, `faltid_fel(nummer: int, text: str) -> list[str]`, `ersatt_tal(text: str, numeriska: dict[str, str]) -> str` (kastar `RiskanalysFel`).
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 ```python
 import pytest
@@ -913,12 +913,12 @@ def test_ersattning_och_stopp_vid_olost():
         ersatt_tal("{tal:P-GEO.saknas} kunder", NUM)
 ```
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/enhet/test_platshallare.py -v`
 Expected: FAIL (`platshallare` saknas).
 
-- [ ] **Step 3: Implementera**
+- [x] **Step 3: Implementera**
 
 ```python
 """Platshållare i AI-text (spec 8.4.5). Koden ersätter talen; AI skriver aldrig fält-ID i löptext."""
@@ -970,7 +970,7 @@ def ersatt_tal(text: str, numeriska: dict[str, str]) -> str:
     return _TAL.sub(ersatt, text)
 ```
 
-- [ ] **Step 4: Kör proven**
+- [x] **Step 4: Kör proven**
 
 Run: `.venv/bin/pytest tester/enhet/test_platshallare.py -v`
 Expected: PASS.
@@ -998,7 +998,7 @@ git commit -m "feat: platshållare för tal och förbud mot fält-ID i AI-text"
   - `promptar.systemprompt(modell: str) -> str`, `promptar.delmodul(del_id: str) -> str`, `promptar.promptsumma(modell: str, del_id: str) -> str`.
   - `promptar.bygg_innehall(fb: Faktablad, del_id: str, lasta: tuple[str, ...], maskinellt_validerat: tuple[str, ...], aterkoppling: tuple[str, ...]) -> list[dict]`.
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 ```python
 import re
@@ -1052,12 +1052,12 @@ def faktablad_exempel():
                      sarbarheter=(), kontroller=(), regelspar=())
 ```
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/enhet/test_promptar.py -v`
 Expected: FAIL (`promptar` saknas).
 
-- [ ] **Step 3: Systemprompten (`promptar/system.py`)**
+- [x] **Step 3: Systemprompten (`promptar/system.py`)**
 
 ```python
 """Den fasta systemprompten. Identisk i alla anrop för samma modell (spec 8.4.2)."""
@@ -1109,7 +1109,7 @@ def systemprompt(modell: str) -> str:
     return SYSTEMTEXT + ("\n\n" + SONNETRAD if "sonnet" in modell else "")
 ```
 
-- [ ] **Step 4: Delmodulerna (`promptar/delar.py`)**
+- [x] **Step 4: Delmodulerna (`promptar/delar.py`)**
 
 ```python
 """En modul per analysdel: mål, krav med skäl och fällor med skäl (spec 8.4.4)."""
@@ -1169,7 +1169,7 @@ MODULER = {
 }
 ```
 
-- [ ] **Step 5: Meddelandebyggaren och paketet**
+- [x] **Step 5: Meddelandebyggaren och paketet**
 
 `promptar/meddelande.py`:
 
@@ -1222,7 +1222,7 @@ def promptsumma(modell: str, del_id: str) -> str:
 __all__ = ["DELAR", "bygg_innehall", "delmodul", "promptsumma", "systemprompt"]
 ```
 
-- [ ] **Step 6: Kör proven**
+- [x] **Step 6: Kör proven**
 
 Run: `.venv/bin/pytest tester/enhet/test_promptar.py -v`
 Expected: PASS.
@@ -1246,7 +1246,7 @@ git commit -m "feat: gemensam systemprompt med regler och skäl samt delmoduler"
 - Consumes: `platshallarfel`, `faltid_fel` (6); `nivapastaenden`, `FORBJUDNA_FORMULERINGAR`, `VERIFIERA` i `validering.py`; `Faktablad` (5); `AISvar` (2); `kontrollstatus` i `dokument/underlag.py`.
 - Produces: `validera_del(del_id: str, svar: AISvar, fb: Faktablad, personnamn: tuple[str, ...], lasta: tuple[str, ...]) -> list[str]`; `LANGD: dict[str, tuple[int, int]]` (ord per del, metodval).
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 ```python
 from riskanalys.dokument.delvalidering import validera_del
@@ -1295,12 +1295,12 @@ def test_godkand_del_ger_inga_fel(faktablad_exempel):
 
 Lägg dessutom till prov för kontroller (ett stycke med "minskar" utan referens till en kontroll med belagd effekt underkänns) och sårbarheter (ett analysstycke med två `S-`-referenser underkänns, samma stycke som `scenario` godkänns). Bygg dem på en kopia av `faktablad_exempel` med `UnderlagKontroll` och `UnderlagSarbarhet` tillagda.
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/enhet/test_delvalidering.py -v`
 Expected: FAIL (`delvalidering` saknas).
 
-- [ ] **Step 3: Implementera**
+- [x] **Step 3: Implementera**
 
 ```python
 """Kontroller per analysdel (spec 8.4.4–8.4.5). Avgör bara det som kan avgöras maskinellt."""
@@ -1389,7 +1389,7 @@ def validera_del(del_id: str, svar: AISvar, fb: Faktablad, personnamn: tuple[str
 
 Läs `kontrollstatus` i `src/riskanalys/dokument/underlag.py` och sätt `_BELAGD_EFFEKT` till exakt den delsträng som funktionen använder när effekten är belagd. Lägg till ett prov som bygger statusen med `kontrollstatus` för en belagd kontroll, så att konstanten och funktionen inte kan glida isär.
 
-- [ ] **Step 4: Kör proven**
+- [x] **Step 4: Kör proven**
 
 Run: `.venv/bin/pytest tester/enhet/test_delvalidering.py -v`
 Expected: PASS.
@@ -1417,7 +1417,7 @@ git commit -m "feat: maskinella kontroller per analysdel"
   - `Tokenanvandning.cache_lasning_token: int = 0`, `cache_skrivning_token: int = 0`; `Anropsdata.del_id: str | None = None`.
   - `ClaudeLeverantor.skriv_del` strömmar när `max_tokens > 16000`. Stoppskälen `max_tokens` och `refusal` blir `avbrott`; anroparen (uppgift 10) räknar det som misslyckat försök.
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 I `tester/enhet/test_leverantor.py`:
 
@@ -1455,12 +1455,12 @@ def test_max_tokens_blir_avbrott(falsk_klient_max_tokens):
     assert svar.avbrott is not None and svar.anrop.del_id == "hot"
 ```
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/enhet/test_leverantor.py tester/enhet/test_claude.py -v`
 Expected: FAIL (`Delanrop` saknas).
 
-- [ ] **Step 3: Implementera i `leverantor.py`**
+- [x] **Step 3: Implementera i `leverantor.py`**
 
 ```python
 class Tokenanvandning(Last):
@@ -1507,7 +1507,7 @@ I `Testleverantor`: `self.delanrop: list[Delanrop] = []` i `__init__`, typen fö
         )
 ```
 
-- [ ] **Step 4: Implementera i `claude.py`**
+- [x] **Step 4: Implementera i `claude.py`**
 
 ```python
 STROMNINGSGRANS = 16000
@@ -1542,7 +1542,7 @@ I `_anvandning`, lägg till i varje `Tokenanvandning`:
             cache_skrivning_token=getattr(post, "cache_creation_input_tokens", 0) or 0,
 ```
 
-- [ ] **Step 5: Kör proven**
+- [x] **Step 5: Kör proven**
 
 Run: `.venv/bin/pytest tester/enhet/test_leverantor.py tester/enhet/test_claude.py tester/enhet/test_skrivning.py -v`
 Expected: PASS. Sparade körningar utan de nya fälten kan fortfarande läsas, eftersom fälten har standardvärden.
@@ -1571,7 +1571,7 @@ git commit -m "feat: leverantörsanrop per del med strömning och cachefält"
   - `lasta_texter(regelbas, profil, t, del_id) -> tuple[str, ...]`.
   - `skriv_tjanst(leverantor, regelbas, profil, t, avsnitt_id, *, design: Literal["A", "B"] = "B", effort: str, personnamn: tuple[str, ...], spara: Callable[[str, Delforsok], None]) -> Tjanstresultat`.
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 ```python
 import pytest
@@ -1642,12 +1642,12 @@ def test_design_a_ger_tydligt_fel_tills_den_byggts(tmp_path, rb_intag, klar):
 
 Flytta `FYLLNAD`, `tjanst_for_prov` och `godkant_delsvar` till `tester/fixturer/m2.py` om uppgift 11 behöver dem (den gör det), och importera dem därifrån i båda provfilerna.
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/intag/test_delskrivning.py -v`
 Expected: FAIL (`delskrivning` saknas).
 
-- [ ] **Step 3: Implementera `delskrivning.py`**
+- [x] **Step 3: Implementera `delskrivning.py`**
 
 ```python
 """Anropsflöde per tjänst: ett anrop per analysdel, kedjat, med omförsök och mallreserv (spec 8.4.3, 8.4.5)."""
@@ -1777,7 +1777,7 @@ def skriv_tjanst(leverantor, regelbas, profil, t, avsnitt_id: str, *, design: Li
     return Tjanstresultat(avsnitt=avsnitt_id, tjanst=t.tjanst, design=design, faktablad=fb, delar=tuple(delar.values()))
 ```
 
-- [ ] **Step 4: Koppla in flödet i `kor_skrivning`**
+- [x] **Step 4: Koppla in flödet i `kor_skrivning`**
 
 I `src/riskanalys/dokument/skrivning.py`, `kor_skrivning`: när `regelbas.metod.omfattning` är satt (det nya dokumentformatet), skriv varje tjänst med `skriv_tjanst`. Det äldre flödet behålls för regelbaser utan `metod.omfattning`.
 
@@ -1798,7 +1798,7 @@ def _spara_delforsok(avsnittsmapp: Path, del_id: str, forsok) -> None:
 
 Lägg `"format": "D-ARB-tjanst-v3"` och `"design": "B"` i manifestets metadata när det nya flödet används. Låt `las_skrivresultat` läsa en fil som `Tjanstresultat` när den innehåller `"formatversion": "D-ARB-tjanst-v3"` och som `Skrivresultat` annars.
 
-- [ ] **Step 5: Kör proven**
+- [x] **Step 5: Kör proven**
 
 Run: `.venv/bin/pytest tester/intag/test_delskrivning.py tester/enhet/test_skrivning.py -v`
 Expected: PASS.
@@ -1826,7 +1826,7 @@ git commit -m "feat: ett anrop per analysdel med omförsök, effortsteg och mall
 - Consumes: `Tjanstresultat`, `Delresultat`, `ANSVARSMENING` (10); `ersatt_tal` (6); `bygg_faktablad` (5); `nivastycken` (3); befintliga `bygg_tjanstavsnitt`, `erfarenhetsstycke`, `sarbarhetsstycke`, `kontrollstycken`, `slutsatsstycken`.
 - Produces: `bygg_tjanstavsnitt_v3(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str) -> Avsnitt` (kastar `RiskanalysFel` vid olöst platshållare); `analys.mallfynd(resultat: Tjanstresultat) -> list[dict]`.
 
-- [ ] **Step 1: Skriv de fallerande proven**
+- [x] **Step 1: Skriv de fallerande proven**
 
 ```python
 import pytest
@@ -1910,12 +1910,12 @@ def test_mall_del_ger_blockerande_fynd(v3):
 
 Lägg dessutom till ett regressionsprov i `tester/enhet/test_sakgranskning.py`. Ett sakgodkännande som sparats för ett tjänsteavsnitt i v2 ska inte gälla när samma tjänst byggs i v3. Använd filens befintliga hjälpfunktioner för att skapa ett godkännande och kontrollera att det rapporteras som inaktuellt.
 
-- [ ] **Step 2: Kör proven och se dem fallera**
+- [x] **Step 2: Kör proven och se dem fallera**
 
 Run: `.venv/bin/pytest tester/intag/test_v3_grind.py -v`
 Expected: FAIL (`bygg_tjanstavsnitt_v3` saknas).
 
-- [ ] **Step 3: Implementera `bygg_tjanstavsnitt_v3`**
+- [x] **Step 3: Implementera `bygg_tjanstavsnitt_v3`**
 
 I `src/riskanalys/dokument/tjanstavsnitt.py`:
 
@@ -1961,7 +1961,7 @@ def bygg_tjanstavsnitt_v3(rb: Regelbas, p: Profil, t: Tjanstbedomning, resultat,
 
 Befintliga `bygg_tjanstavsnitt` ändras inte; den används bara för beskrivningsdelen.
 
-- [ ] **Step 4: Grinden, granskningen och utkastkedjan**
+- [x] **Step 4: Grinden, granskningen och utkastkedjan**
 
 I `src/riskanalys/granskning/analys.py`:
 
@@ -1991,7 +1991,7 @@ I `src/riskanalys/dokument/arb.py`: när `utkast[id]` är ett `Tjanstresultat`, 
 
 I `src/riskanalys/intag/dokument.py`, `skapa_utkast`: låt kontrollen `if any(not p.godkant_utkast ...)` gälla bara `Skrivresultat` i det äldre formatet. I v3 skapas utkastet även när en del blivit mall; mallfyndet hindrar fastställelse.
 
-- [ ] **Step 5: Kör proven och hela sviten**
+- [x] **Step 5: Kör proven och hela sviten**
 
 Run: `.venv/bin/pytest tester/intag/test_v3_grind.py tester/enhet/test_sakgranskning.py tester/regelkontrakt/test_arb_utvidgning.py tester/intag/test_kedja.py -v`
 Expected: PASS.
@@ -2020,7 +2020,7 @@ git commit -m "feat: tjänsteavsnitt av maskinellt validerade delar med ny grans
 - Consumes: `Tjanstresultat` (10).
 - Produces: `likhet(a: str, b: str) -> float` (Jaccard över ordtrigram), `likhetsfynd(resultat: list[Tjanstresultat], grans: float = 0.6) -> list[dict]`.
 
-- [ ] **Step 1: Skriv det fallerande provet**
+- [x] **Step 1: Skriv det fallerande provet**
 
 ```python
 from riskanalys.dokument.likhet import likhet
@@ -2032,12 +2032,12 @@ def test_lika_texter_far_hog_likhet_och_olika_lag():
     assert likhet(text, "Lönehanteringen kan användas för att betala ut ersättning till personer som inte arbetar.") < 0.2
 ```
 
-- [ ] **Step 2: Kör provet och se det fallera**
+- [x] **Step 2: Kör provet och se det fallera**
 
 Run: `.venv/bin/pytest tester/enhet/test_likhet.py -v`
 Expected: FAIL (`likhet` saknas).
 
-- [ ] **Step 3: Implementera**
+- [x] **Step 3: Implementera**
 
 ```python
 """Signal för text som inte är tjänstespecifik (tillsynsbrist B-04). Ett fynd, inte ett underkännande."""
@@ -2096,11 +2096,11 @@ def test_andra_delanropet_traffar_cachen(tmp_path, rb_intag, klar):
 
 Provsvitens isolering av nyckelfilen (`tester/conftest.py`) gör att testet hoppas över om nyckeln inte är satt i terminalen.
 
-- [ ] **Step 5: Dokumentation**
+- [x] **Step 5: Dokumentation**
 
 Lägg till ett avsnitt i `docs/STATUS.md` med datum, vad som byggts (del A och B), mätningen från uppgift 4 och att design, modell och effort är preliminära tills spec 8.4.8 är genomförd. Komplettera README:s avsnitt om skrivning: AI skriver analysdelarna, programmet skriver tal och nivåer, och en del som inte klarar kontrollerna blir mall med ett fynd som hindrar fastställelse.
 
-- [ ] **Step 6: Kör hela sviten**
+- [x] **Step 6: Kör hela sviten**
 
 Run: `env -u ANTHROPIC_API_KEY -u RISKANALYS_SCB_API_KEY .venv/bin/pytest -q && .venv/bin/riskanalys regelbas validera && git diff --check`
 Expected: allt grönt.
@@ -2120,3 +2120,182 @@ git commit -m "feat: likhetsfynd mellan tjänster, livetest för cachen och doku
 2. **Design A** som separat uppgift, om piloten visar att jämförelsen behövs.
 3. **Uppföljningsplan för de byråövergripande avsnitten** D-ARB.2, 4, 5, 7 och 9: ny tillåtelselista med källor, delmoduler och grind.
 4. **Egen plan för kryssfrågorna** (spec 14.5).
+
+
+## Genomförande 2026-10-11
+
+Del A och B är implementerade i befintlig feature-branch `codex/m0-m1`. Tester skrevs och kördes fallerande före respektive beteendeändring. Ingen commit eller push görs utan användarens uttryckliga begäran.
+
+| Uppgift | Leverans |
+|---|---|
+| 1 | Svenska tusentalsavskiljare och decimalkomma normaliseras i äldre talkontroll. |
+| 2 | Slutet AI-schema med tillåtna ID-listor och skiftlägesnormalisering. |
+| 3 | Programmet skriver motorns nivåmeningar, AI motiverar utan egna nivåbeslut. |
+| 4 | Sammanfattning av alla försök, felklasser och token; uttryckliga priser inklusive cache. |
+| 5 | Stabilt faktablad ur skyddat underlag, sluten källtyp och smågruppsskydd. |
+| 6 | Tal- och rollplatshållare valideras; trasiga eller olösta uttryck stoppar sammanställningen. |
+| 7 | Fast systemprompt och fem delmoduler. |
+| 8 | Validering per del: hot, terrorfinansiering, sårbarhetskategorier, kontroller, motivering, slutsatser och oklarheter. |
+| 9 | Delanrop i test-/Claudeleverantör, strömning över gränsen, cacheförbrukning och stoppskäl. |
+| 10 | Design B med kedjat underlag, begränsade omförsök och direkt sparade försök. |
+| 11 | V3-dokument, råsvar omtolkas och omvalideras, fryst faktablad kontrolleras, reservmall blockerar fastställelse; CLI, granskning och export anpassade. |
+| 12 | Likhetsfynd i granskningen samt separat spärrat livetest för cache. |
+
+### Konkretiseringar av planens kodexempel
+
+- Planens råa låsta stycken kan innehålla personnamn, lokal fritext, källtexter och exakta smågruppstal. De stannar lokalt för validering och dokumentbygge; AI får säkra kodskrivna sammanfattningar. Detta följer AGENTS.md:s integritetsgräns och ändrar inget belägg i dokumentet.
+- Faktabladets numeriska värde hämtas från redan skyddad visning, aldrig tillbaka från råprofilen. Maskerad eller okänd visning ger ingen talplatshållare.
+- V3-grinden litar inte på en sparad tom fellista: råsvar och sparat svar måste stämma, delarna omvalideras och faktabladet jämförs med profil/bedömning. Planexemplet om att ett gammalt svar kan användas med ny profil har ersatts med ett prov som kräver ny skrivning.
+- Metadata om sårbarhetskategori, terrorhot, motorns nivåer och sektorsreferens finns i faktabladet. Koden återger sektorsreferensen på dess egen skala; AI ska inte likställa skalorna.
+- Alla siffror i ny AI-prosa kräver talplatshållare. Planexemplets undantag för godtyckliga årtal och paragrafnummer togs bort eftersom det annars kan släppa igenom uppdiktade uppgifter. Juridiska källhänvisningar skrivs av programmet.
+- Tal ersätts vid sammanställning, före sakgranskning, enligt planens redan dokumenterade avvikelse. Gamla format kan fortfarande läsas; nya körningar med den nuvarande regelbasen ger v3.
+
+### Verifiering och återstående utvärdering
+
+Slutlig fullsvit är grön: **1 183 tester passerar, två livetester bortvalda, 656,80 s**, med `ANTHROPIC_API_KEY` och `RISKANALYS_SCB_API_KEY` borttagna ur körmiljön. En oberoende kodgranskare hittade generiska AI-nivåpåståenden, inklusive pluralformer, och felaktig underkänning av negation om riskminskning. Fynden fick fallerande regressionstester, rättades och återkontrollerades utan kvarstående anmärkningar. Även manifestets format/design och B-04-kopplingen återkontrollerades. Regelbasvalideringen och `git diff --check` är gröna, med oförändrad kontrollsumma och sakkunnigstatus `ej_granskad`.
+
+Livetestet är byggt i `tester/live/test_delcache.py`, men livetestet och piloten har **inte körts**: de kräver ett uttryckligt beslut om riktiga API-anrop och kostnad. Dessa provsteg och alla commitsteg lämnas därför okryssade. Ingen faktisk före-/eftermätning eller sakkunnig bedömning har tillkommit. Design A, parallella delanrop, byråövergripande skrivning och 14.5:s källbaserade kryssalternativ kvarstår som avgränsat efterarbete; de ingår inte i detta bygge.
+
+### Rättelser efter Claudes granskning, 2026-10-12
+
+Fem fynd rättades efter fallerande regressioner: permanenta API-fel och slut på testsvar avbryter skrivningen; en explicit klassning tillåter omförsök för 429, 5xx och nätverksfel. Perioder har den kodersatta platshållaren `{period:ID}`; även ”under statistikperioden” godtas. Kombinationskontrollen skiljer två S-referenser från två gällande/okända sårbarheter och kontrollerar samverkansord. Sårbarhetsmodulen förklarar alla fem kategorikoderna. Bara tjänstresultatets faktabladskopia sparas; grinden bygger fortfarande aktuellt underlag för jämförelse.
+
+Regressionerna omfattar leverantörsgränsen med syntetiska HTTP-fel, begränsade omförsök, uttömda testsvar, periodens referens och ersättning före sakgranskning, negativa/okända sårbarheter, kategorierna i anropsmodulen samt sparande och återläsning med giltigt manifest. Slutlig fullsvit: **1 213 passerar, två livetester bortvalda, 653,71 s**, med båda API-nycklarna borttagna ur körmiljön. Regelbasvalidering och `git diff --check` är gröna. Inga riktiga API-anrop, commits eller pushar har gjorts.
+
+### Pilotens token- och maskningsrättelser, 2026-10-12
+
+Efter användarens rapport om åtta pilotanrop och fyra svar klippta vid 16 000 token höjdes delanropen till 64 000 token med befintlig strömning. Ett `max_tokens`-avbrott bland delens tidigare försök hindrar effort-höjning i sista omförsöket. Avbrottsmeddelandet använder delanropets faktiska gräns. Endast status `okänd` kräver verifieringsmarkering och oklarhet; status `skyddad` är maskerat bekräftat underlag och dess exakta tal lämnas fortsatt utanför talplatshållarna.
+
+CLI-valet `--effort` fanns redan för Claude. Det är nu validerat och överförs uttryckligen till hela v3-körningen, inklusive testleverantören, samt sparas i manifestet. Det gör jämförelse av `medium` och `high` möjlig på samma frysta bedömning. Tio token-/maskningsregressioner och tre CLI-regressioner fallerade före rättningarna; 87 riktade prov passerar. Slutlig fullsvit: **1 226 passerar, två livetester bortvalda, 655,29 s**, med båda API-nycklarna borttagna ur körmiljön. Regelbasvalidering och `git diff --check` är gröna. `LANGD`, regelbasen och sakkunnigstatus är oförändrade. Codex har inte kört någon ny betald pilot, gjort riktiga API-anrop, committat eller pushat.
+
+---
+
+## Del C – Kalibrering efter piloten 2026-10-12
+
+Pilot på en tjänst (löpande bokföring, syntetisk byrå, Sonnet 5.5): effort `medium` 419 s och 0,67 USD, effort `high` 1 081 s och 1,63 USD. Båda gav 4 av 5 delar godkända efter omförsök, 0 av 5 direkt. Alla första försök underkändes för längd (430–900 ord mot gränser på 400–450), eftersom prompten inte angav gränsen. Sårbarhetsdelen blev mall i båda körningarna, eftersom kombinationsregeln slog till på stycken som nämnde två tillämpliga sårbarheter utan att påstå ett samband. AI-texten i godkända delar höll god kvalitet. Effort och modell beslutas av projektägaren (spec 8.4.8).
+
+### Task 13: Längdintervall i delmodulerna
+
+**Files:**
+- Modify: `src/riskanalys/dokument/promptar/delar.py` (ny funktion `modultext`)
+- Modify: `src/riskanalys/dokument/promptar/__init__.py` (`delmodul`, `promptsumma` använder `modultext`)
+- Modify: `src/riskanalys/dokument/promptar/meddelande.py:18` (uppgiftsblocket använder `modultext`)
+- Test: `tester/enhet/test_promptar.py`
+
+**Interfaces:**
+- Consumes: `LANGD` i `dokument/delvalidering.py`.
+- Produces: `promptar.delar.modultext(del_id: str) -> str` = modulen plus raden "Skriv {lägst}–{högst} ord i delen. Längre text underkänns och måste skrivas om." `delmodul` och `promptsumma` använder samma text, så kontrollsumman ändras när gränsen ändras.
+
+- [ ] **Step 1: Skriv de fallerande proven**
+
+```python
+from riskanalys.dokument.delvalidering import LANGD
+
+
+def test_varje_delmodul_anger_sitt_langdintervall():
+    for d in DELAR:
+        lagst, hogst = LANGD[d]
+        assert f"{lagst}–{hogst} ord" in delmodul(d)
+
+
+def test_uppgiftsblocket_innehaller_langdintervallet(faktablad_exempel):
+    block = bygg_innehall(faktablad_exempel, "hot", (), (), ())
+    lagst, hogst = LANGD["hot"]
+    assert f"{lagst}–{hogst} ord" in next(b["text"] for b in block if b["text"].startswith('<uppgift del="hot">'))
+```
+
+- [ ] **Step 2: Kör och se dem fallera**
+
+Run: `.venv/bin/pytest tester/enhet/test_promptar.py -v`
+Expected: FAIL (ingen längdrad i modulerna).
+
+- [ ] **Step 3: Implementera**
+
+I `promptar/delar.py`:
+
+```python
+def modultext(del_id: str) -> str:
+    """Modulen med delens längdintervall. Gränsen kommer från valideringen så att de inte glider isär."""
+    from riskanalys.dokument.delvalidering import LANGD
+    lagst, hogst = LANGD[del_id]
+    return f"{MODULER[del_id]}\nSkriv {lagst}–{hogst} ord i delen. Längre text underkänns och måste skrivas om."
+```
+
+I `promptar/__init__.py`: `delmodul(del_id)` returnerar `modultext(del_id)`, och `promptsumma` använder `modultext(del_id)` i stället för `MODULER[del_id]`. I `promptar/meddelande.py:18`: använd `modultext(del_id)` i uppgiftsblocket.
+
+- [ ] **Step 4: Kör proven och hela promptsviten**
+
+Run: `.venv/bin/pytest tester/enhet/test_promptar.py tester/intag/test_delskrivning.py -v`
+Expected: PASS.
+
+### Task 14: Kombinationsregeln kräver ett påstått samband
+
+**Files:**
+- Modify: `src/riskanalys/dokument/delvalidering.py:73-77`
+- Modify: `src/riskanalys/dokument/promptar/delar.py` (modulen `sarbarheter`)
+- Test: `tester/enhet/test_delvalidering.py`
+
+**Interfaces:**
+- Consumes: `_SAMVERKAN` och `Faktablad.sarbarheter` (med `galler`).
+- Produces: ett analysstycke underkänns som kombination bara när texten innehåller samverkansord **och** stycket refererar minst två sårbarheter som gäller eller är okända.
+
+- [ ] **Step 1: Skriv de fallerande proven**
+
+```python
+from riskanalys.dokument.modeller import UnderlagSarbarhet
+
+
+def _fb_med_sarbarheter(fb):
+    return fb.model_copy(update={
+        "sarbarheter": (UnderlagSarbarhet(id="S-KUND-01", namn="Riskbransch", galler="ja"),
+                        UnderlagSarbarhet(id="S-KUND-02", namn="Kontanter", galler="ja")),
+        "sarbarhetsomraden": {"S-KUND-01": "kund", "S-KUND-02": "kund"}})
+
+
+def _kombinationsfel(fb, text, typ="analys"):
+    svar = _svar((typ, ["T-RED-01", "S-KUND-01", "S-KUND-02"], text + FYLLNAD))
+    return [f for f in validera_del("sarbarheter", svar, fb, (), ()) if "kombination" in f]
+
+
+def test_tva_tillampliga_sarbarheter_utan_sambandsord_godtas(faktablad_exempel):
+    assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel), "Både riskbranscher och kontanthantering förekommer bland kunderna.") == []
+
+
+def test_pastatt_samband_utan_overlapp_maste_vara_scenario(faktablad_exempel):
+    fb = _fb_med_sarbarheter(faktablad_exempel)
+    assert _kombinationsfel(fb, "Riskbranscher och kontanthantering samverkar och ökar risken.")
+    assert _kombinationsfel(fb, "Riskbranscher och kontanthantering samverkar och ökar risken.", typ="scenario") == []
+
+
+def test_sambandsord_med_en_sarbarhet_godtas(faktablad_exempel):
+    fb = _fb_med_sarbarheter(faktablad_exempel)
+    svar = _svar(("analys", ["T-RED-01", "S-KUND-01"], "Riskbranscher förekommer tillsammans med många små kunder." + FYLLNAD))
+    assert not [f for f in validera_del("sarbarheter", svar, fb, (), ()) if "kombination" in f]
+```
+
+- [ ] **Step 2: Kör och se dem fallera**
+
+Run: `.venv/bin/pytest tester/enhet/test_delvalidering.py -k "sarbarhet or samband" -v`
+Expected: FAIL (två tillämpliga sårbarheter utan sambandsord underkänns i dag, och sambandsord med en sårbarhet underkänns också).
+
+- [ ] **Step 3: Implementera**
+
+I `delvalidering.py`, ersätt villkoret i kombinationsregeln:
+
+```python
+                if s.typ == "analys" and _SAMVERKAN.search(s.text) and
+                    len({r.id for r in fb.sarbarheter if r.id in s.referenser and r.galler != "nej"}) >= 2]
+```
+
+Lägg till sist i modulen `sarbarheter` i `promptar/delar.py`:
+
+```python
+        "\nBehandla gärna varje sårbarhet i ett eget stycke. Ord som samverkar, tillsammans, kombination eller "
+        "förstärker betyder att du påstår ett samband; använd då stycketypen scenario om faktabladet inte visar "
+        "att samma kunder berörs."
+```
+
+- [ ] **Step 4: Kör proven och hela sviten**
+
+Run: `env -u ANTHROPIC_API_KEY -u RISKANALYS_SCB_API_KEY .venv/bin/pytest -q`
+Expected: allt grönt.

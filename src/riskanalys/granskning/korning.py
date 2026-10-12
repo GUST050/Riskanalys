@@ -6,6 +6,7 @@ from pathlib import Path
 from pydantic import TypeAdapter
 
 from riskanalys.bedomning.korning import BEDOMNINGAR, kontrollera_aktuell, las_bedomning, las_bedomningsprofil
+from riskanalys.dokument.delskrivning import Tjanstresultat
 from riskanalys.dokument.arb import bygg_arb
 from riskanalys.dokument.modeller import AvsnittsUtkast, Dokument, Oklarhet
 from riskanalys.dokument.skrivning import UTKAST, las_skrivresultat
@@ -51,17 +52,25 @@ def godkanda_utkast(byramapp: Path, bedomningsmapp: Path, *, utkastmapp: Path | 
         return {}, None
     fel = verifiera_manifest(mapp)
     if fel:raise RiskanalysFel(f"Utkastet {mapp} är ändrat. Återställ eller kör skriv igen: {'; '.join(fel)}")
-    utkast = {
-        post.underlag.avsnitt: post.godkant_utkast
-        for post in las_skrivresultat(mapp)
-        if post.godkant_utkast is not None
-    }
+    utkast = {}
+    for post in las_skrivresultat(mapp):
+        if isinstance(post,Tjanstresultat):
+            utkast[post.avsnitt] = post
+        elif post.godkant_utkast is not None:
+            utkast[post.underlag.avsnitt] = post.godkant_utkast
     return utkast, mapp
 
 
 def oppna_fragor(utkast: dict[str, AvsnittsUtkast]) -> tuple[tuple[str, Oklarhet], ...]:
     """AI-utkastens öppna frågor (oklarheter) per avsnitt, i avsnittens ordning."""
-    return tuple((avsnitt_id, oklarhet) for avsnitt_id, post in utkast.items() for oklarhet in post.oklarheter)
+    fragor=[]
+    for id,post in utkast.items():
+        if isinstance(post,Tjanstresultat):
+            fragor.extend((id,Oklarhet(fraga=o.fraga,saknad_uppgift=o.uppgift_id))
+                for d in post.delar if d.godkant_svar for o in d.godkant_svar.oklarheter)
+        else:
+            fragor.extend((id,o) for o in post.oklarheter)
+    return tuple(fragor)
 
 
 def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *, bedomningsmapp: Path | None = None, utkastmapp: Path | None = None) -> Path:
@@ -73,7 +82,7 @@ def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *
     utkast, utkastmapp = godkanda_utkast(byramapp, bedomningsmapp, utkastmapp=utkastmapp)
     historik = las_historik(byramapp)
     dokument = bygg_arb(regelbas, profil, bedomning, utkast, historik)
-    fynd = granska(regelbas, urval, profil, bedomning, dokument, historik, granskningsdatum, oppna_fragor(utkast))
+    fynd = granska(regelbas, urval, profil, bedomning, dokument, historik, granskningsdatum, oppna_fragor(utkast), skrivresultat=utkast)
     mapp = ny_korningsmapp(byramapp, GRANSKNING)
     (mapp / DOKUMENTFIL).write_text(dokument.model_dump_json(indent=2), encoding="utf-8")
     (mapp / FYNDFIL).write_text(_FYNDLISTA.dump_json(fynd, indent=2).decode("utf-8"), encoding="utf-8")

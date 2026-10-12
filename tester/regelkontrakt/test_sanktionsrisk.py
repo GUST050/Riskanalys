@@ -27,4 +27,4 @@ def test_ai_far_inte_andra_sanktionsniva(giltigt_utkast,real_underlag,text):
  from riskanalys.dokument.validering import validera_utkast
  underlag=real_underlag.model_copy(update={"nivaer":{**real_underlag.nivaer,"sanktioner_risk":"hög","kvarstaende_sanktioner_risk":"hög"}})
  u=giltigt_utkast.model_copy(update={"stycken":[*giltigt_utkast.stycken,Textstycke(typ="analys",text=text,referenser=["H-01"])]})
- assert any("sanktion" in f.lower() and "riskmotorn" in f for f in validera_utkast(u,underlag,()))
+ assert any("sanktion" in f.lower() and "Programmet skriver alla nivåmeningar" in f for f in validera_utkast(u,underlag,()))

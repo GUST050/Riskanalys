@@ -29,7 +29,9 @@ def test_avsnitten_kommer_i_ordning(regelbas, profil_fabrik, real_varden, giltig
     ]
     riskavsnitt = dokument.avsnitt_med_id()["D-ARB.6.1"]
     assert riskavsnitt.kalla == "ai"
-    assert list(riskavsnitt.stycken) == giltigt_utkast.stycken
+    assert list(riskavsnitt.stycken[-len(giltigt_utkast.stycken):]) == giltigt_utkast.stycken
+    assert riskavsnitt.stycken[0].typ == "beskrivning"
+    assert "Den inneboende risken är" in riskavsnitt.stycken[0].text
 
 
 def test_personer_skrivs_som_roll(regelbas, profil_fabrik, real_varden, giltigt_utkast):

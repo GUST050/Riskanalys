@@ -68,6 +68,7 @@ Webbläsaren öppnas med ett formulär på den egna datorn. Börja med län, fil
 - **Rätta:** översikten visar sparade svar. Ändrade grunduppgifter gör berörda följdsvar inaktuella; en äldre flik kan inte skriva över nya svar.
 - **Underlag:** för enkla verksamhetsfakta kan du välja *Egen kännedom om verksamheten*. Relevanta tidigare underlag kan väljas igen; statistikperiod föreslås från aktuell kundbas respektive omsättning. Statistik och kontrollgenomförande behöver fortsatt ett konkret underlag. Kontrollera alltid att det valda underlaget gäller det nya svaret.
 - **Skriv:** när underlaget räcker blir *Skapa allmän riskbedömning som Word-utkast* tillgängligt. Knappen kör bedömning, skrivning, granskning och Word-export. Utkastet omfattar verksamhet, risker per tjänst, kontroller och åtgärder; en granskningsbilaga följer med vid öppna fynd. Separata rutindokument och individuella kundriskbedömningar skapas inte av detta intag. AI-nyckeln `ANTHROPIC_API_KEY` behövs endast för detta steg. Anrop kan kosta pengar.
+- **AI-skrivning:** fem analysdelar skrivs per tjänst från ett skyddat faktablad. Programmet skriver tal, nivåmeningar och låsta stycken; AI skriver analys och motivering. En underkänd del körs om högst två gånger. Därefter används en mall och ett fynd som blockerar fastställelse, medan Word-utkastet fortfarande kan granskas. Ändrad text, underlag eller dokumentformat kräver ny granskning. CLI-kommandot `skriv` redovisar anrop och token inklusive cache; modell och design är preliminära inför sakkunnig utvärdering.
 - **Datagräns:** namn och beskrivande fritext sätts in lokalt och skickas inte till AI. AI skriver utifrån tillåtna strukturerade uppgifter och kataloger; den analyserar inte fritexten. Andra riskförhållanden utanför modellen måste hanteras innan ett helt utkast kan skapas.
 - **Uppföljning:** en faktisk utvärdering registreras uttryckligen med datum och beskrivning. Det räknas inte automatiskt som genomfört när formuläret fylls i. Befintligt utkast kan då omexporteras utan ett nytt AI-anrop.
 
@@ -81,6 +82,15 @@ Intaget stöder nu regelbasens elva redovisnings-, skatte- och bolagstjänster. 
 ```
 
 ### Efter utkastet
+
+För att jämföra effort i AI-piloten, kör mot samma oförändrade bedömning av den syntetiska byrån (här med ID `syntetisk`):
+
+```bash
+.venv/bin/riskanalys skriv syntetisk --modell claude-sonnet-5-5 --effort medium
+.venv/bin/riskanalys skriv syntetisk --modell claude-sonnet-5-5 --effort high
+```
+
+Varje körning sparas separat med vald effort i manifestet och faktisk effort, stoppskäl och token per försök. Delanrop använder 64 000 token och strömning. Ett tokenavbrott hindrar höjning av effort i delens sista omförsök. Längdgränserna ändras först när pilotens jämförelse ger underlag för det.
 
 Programmet skriver dokumentet. Byrån bekräftar fakta, sakgranskar texten och beslutar om fastställelse. Öppna AI-frågor, saknade belägg och ogrundade avvikelser från sektorns risk hindrar fastställelse. Befintlig lokal sakkunnigmotivering kan läggas in frivilligt inför utkastet; detta undantar inte den senare sakgranskningen.
 

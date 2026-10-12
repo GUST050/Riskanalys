@@ -1,5 +1,6 @@
 """Sex sammanhängande analysdelar per tjänst; AI skriver endast riskmotiveringen."""
 from riskanalys.dokument.modeller import Avsnitt, Textstycke, Underrubrik
+from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
 from riskanalys.dokument.analysunderlag import _belagg, erfarenhetsstycke, sarbarhetsstycke
 from collections.abc import Iterable
 from riskanalys.bedomning.modeller import Tjanstbedomning
@@ -63,10 +64,50 @@ def bygg_tjanstavsnitt(rb: Regelbas, p: Profil, t: Tjanstbedomning, utkast: Avsn
         if id in rb.falt:
             refs.append(id)
             text += label + ': ' + _belagg(rb, p, id) + ' '
-    delar = [('Beskrivning och omfattning', (stycke(text, refs, typ='beskrivning'),)), ('Hot och egna erfarenheter', tuple((stycke(f'{rb.hot[id].namn}: {rb.hot[id].beskrivning}', [t.tjanst, id, *rb.hot[id].kallor]) for id in t.hot)) + (erfarenhetsstycke(rb, p, t),)), ('Sårbarheter och motivering', tuple((sarbarhetsstycke(rb, p, t.tjanst, id) for id in tj.sarbarheter)) + (scenarier(rb, t) if utokad else ())), ('Kontroller och effekt', kontrollstycken(rb, p, t)), ('Risknivåer och motivering', tuple(utkast.stycken)), ('Slutsatser', slutsatsstycken(rb, t))]
+    delar = [('Beskrivning och omfattning', (stycke(text, refs, typ='beskrivning'),)), ('Hot och egna erfarenheter', tuple((stycke(f'{rb.hot[id].namn}: {rb.hot[id].beskrivning}', [t.tjanst, id, *rb.hot[id].kallor]) for id in t.hot)) + (erfarenhetsstycke(rb, p, t),)), ('Sårbarheter och motivering', tuple((sarbarhetsstycke(rb, p, t.tjanst, id) for id in tj.sarbarheter)) + (scenarier(rb, t) if utokad else ())), ('Kontroller och effekt', kontrollstycken(rb, p, t)), ('Risknivåer och motivering', (*nivastycken(t), *utkast.stycken)), ('Slutsatser', slutsatsstycken(rb, t))]
     stycken = []
     rubriker = []
     for rubrik, texter in delar:
         rubriker.append(Underrubrik(fore_stycke=len(stycken), rubrik=rubrik))
         stycken.extend(texter)
     return Avsnitt(id=avsnitt_id, rubrik=f'Analys av {tj.namn.lower()}', kalla='ai', stycken=tuple(stycken), underrubriker=tuple(rubriker))
+
+
+def _ai_stycken(svar, numeriska: dict[str, str], perioder: dict[str, str]) -> tuple[Textstycke, ...]:
+    from riskanalys.dokument.platshallare import ersatt_tal
+    return tuple(stycke(ersatt_tal(s.text, numeriska, perioder), s.referenser, typ=s.typ) for s in svar.stycken)
+
+
+def bygg_tjanstavsnitt_v3(rb: Regelbas, p: Profil, t: Tjanstbedomning, resultat, avsnitt_id: str) -> Avsnitt:
+    """Låsta stycken byggs om ur profil och bedömning; AI-stycken kommer från maskinellt validerade delar (spec 8.4.6)."""
+    from riskanalys.dokument.delskrivning import ANSVARSMENING
+    from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
+    from riskanalys.dokument.delskrivning import kontrollera_resultat
+    kontrollera_resultat(rb, p, t, resultat, avsnitt_id)
+    tj = rb.tjanster[t.tjanst]
+    fb = resultat.faktablad  # grinden har jämfört denna frysta kopia med aktuellt underlag
+
+    def ai(del_id: str, mall: tuple[Textstycke, ...]) -> tuple[Textstycke, ...]:
+        svar = resultat.del_(del_id).godkant_svar
+        return _ai_stycken(svar, fb.numeriska(), fb.perioder()) if svar else mall
+
+    gammal = bygg_tjanstavsnitt(rb, p, t, AvsnittsUtkast(avsnitt=avsnitt_id, stycken=[], oklarheter=[]), avsnitt_id)
+    beskrivning = gammal.stycken[:gammal.underrubriker[1].fore_stycke]
+    hotmall = tuple(stycke(f'{rb.hot[id].namn}: {rb.hot[id].beskrivning}', [t.tjanst, id, *rb.hot[id].kallor]) for id in t.hot)
+    geo = tuple(sarbarhetsstycke(rb, p, t.tjanst, id) for id in tj.sarbarheter if rb.sarbarheter[id].omrade == "geo")
+    sarmall = tuple(sarbarhetsstycke(rb, p, t.tjanst, id) for id in tj.sarbarheter if rb.sarbarheter[id].omrade != "geo")
+    mallmotivering = (stycke("Motiveringen kunde inte skrivas maskinellt och behöver kompletteras i sakgranskningen. [VERIFIERA]",
+                             [t.tjanst], typ="motivering"),)
+    delar = [
+        ("Beskrivning och omfattning", tuple(beskrivning)),
+        ("Hot och egna erfarenheter", (*ai("hot", hotmall), erfarenhetsstycke(rb, p, t))),
+        ("Sårbarheter och motivering", (*geo, *ai("sarbarheter", sarmall))),
+        ("Kontroller och effekt", (*kontrollstycken(rb, p, t), *ai("kontroller", ()))),
+        ("Risknivåer och motivering", (*nivastycken(t), *sektorsstycken(rb,t), *ai("risknivaer", mallmotivering))),
+        ("Slutsatser", (*ai("slutsatser", slutsatsstycken(rb, t)), stycke(ANSVARSMENING, [t.tjanst], typ="beskrivning"))),
+    ]
+    stycken, rubriker = [], []
+    for rubrik, texter in delar:
+        rubriker.append(Underrubrik(fore_stycke=len(stycken), rubrik=rubrik))
+        stycken.extend(texter)
+    return Avsnitt(id=avsnitt_id, rubrik=f'Analys av {tj.namn.lower()}', kalla='ai', stycken=tuple(stycken), underrubriker=tuple(rubriker), formatversion="D-ARB-tjanst-v3")

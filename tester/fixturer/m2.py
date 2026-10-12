@@ -31,10 +31,55 @@ def komplett_profil(rb,p):
 def bygg_testsvar(rb,p,b):
     svar=[]
     for id,t in tjanster_med_avsnitt(b):
-        u=bygg_underlag(rb,p,t,id);n=u.nivaer
-        text=f"Den inneboende risken är {n['inneboende_risk']}. Risken för finansiering av terrorism bedöms som {n['terrorfinansiering_risk']}. Den kvarstående risken är {n['kvarstaende_risk']}. Sanktionsrisken är {n['sanktioner_risk']}. Den kvarstående sanktionsrisken är {n['kvarstaende_sanktioner_risk']}."
+        u=bygg_underlag(rb,p,t,id)
+        text="Tjänstens ekonomiska flöden kan utnyttjas för att föra in osanna underlag och ge brottsvinster ett legalt utseende."
         refs=[u.hot[0].id,u.sarbarheter[0].id]
-        a=AvsnittsUtkast(avsnitt=id,stycken=[Textstycke(typ='analys',text=text,referenser=list(u.regelspar)),Textstycke(typ='motivering',text=f"Tjänstens ekonomiska flöden kan utnyttjas. Sårbarheter i kundunderlagen kräver spårbara kontroller och uppföljning. Risken är {n['inneboende_risk']}.",referenser=refs)],oklarheter=[])
+        a=AvsnittsUtkast(avsnitt=id,stycken=[Textstycke(typ='analys',text=text,referenser=list(u.regelspar)),Textstycke(typ='motivering',text="Tjänstens ekonomiska flöden kan utnyttjas. Sårbarheter i kundunderlagen kräver spårbara kontroller och uppföljning.",referenser=refs)],oklarheter=[])
         assert not validera_utkast(a,u,()),validera_utkast(a,u,())
         svar.append(a.model_dump(mode='json'))
     return svar
+
+
+from riskanalys.dokument.modeller import AISvar, AIStycke
+from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
+from riskanalys.profil.lagring import spara_profil
+
+FYLLNAD = " Byrån konterar kundernas underlag och stämmer av dem mot bankens uppgifter varje månad." * 10
+
+
+def tjanst_for_prov(mapp, rb, profil):
+    spara_profil(mapp, profil)
+    b = las_bedomning(kor_bedomning(mapp, rb))
+    return tjanster_med_avsnitt(b)[0]
+
+
+def godkant_delsvar(del_id, t):
+    rb=_regelbas_for_delsvar()
+    fyll={
+        'T-RED-01':' Bokföraren konterar fakturor och granskar verifikationernas affärshändelser innan periodens bokslut stäms av.',
+        'T-SKATT-01':' Skatterådgivaren prövar deklarationsunderlag och skatteupplägg genom att kontrollera transaktionernas skattemässiga syften och konsekvenser.',
+        'T-BOLAG-01':' Bolagskonsulten utreder bolagsbildning och ägarbyten genom prövning av aktietecknare, kapitaltillskott samt företrädarnas mandat.',
+    }.get(t.tjanst,' '+rb.tjanster[t.tjanst].namn+' analyseras genom prövning av uppdragets särskilda underlag och kundens verksamhet.')*10
+    hot=list(t.hot)
+    tj=rb.tjanster[t.tjanst]
+    sar=list(tj.sarbarheter[:1])
+    refs={"hot":[t.tjanst,*hot],"kontroller":[t.tjanst],"risknivaer":[t.tjanst,hot[0],*sar],"slutsatser":[t.tjanst,hot[0]]}
+    if del_id=="sarbarheter":
+        omraden={}
+        for id in tj.sarbarheter:
+            omraden.setdefault(rb.sarbarheter[id].omrade,id)
+        return AISvar(stycken=[AIStycke(typ="analys",referenser=[t.tjanst,id],text="Underlaget för faktorn ska prövas för denna tjänst."+fyll[:600]) for id in omraden.values()],oklarheter=[])
+    extra=" Kundkännedom, övervakning och utbildning anpassas efter hoten." if del_id=="slutsatser" else ""
+    return AISvar(stycken=[AIStycke(typ="motivering" if del_id=="risknivaer" else "analys",referenser=refs[del_id],text="Tjänstens flöden kan utnyttjas."+fyll+extra)],oklarheter=[])
+
+from functools import lru_cache
+
+@lru_cache(maxsize=1)
+def _regelbas_for_delsvar():
+    from riskanalys.regelverk.laddning import ladda_regelbas
+    return ladda_regelbas()
+
+
+def bygg_delsvar(rb, profil, bedomning):
+    from riskanalys.dokument.promptar import DELAR
+    return [godkant_delsvar(d,t) for _,t in tjanster_med_avsnitt(bedomning) for d in DELAR]

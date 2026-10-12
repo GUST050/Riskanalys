@@ -3,6 +3,7 @@ from riskanalys.bedomning.erfarenheter import ERFARENHETSFALT
 from riskanalys.dokument.analysunderlag import erfarenhetsstycke, sarbarhetsstycke
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
 from riskanalys.dokument.modeller import AvsnittsUtkast
+from riskanalys.dokument.nivatext import nivastycken
 from riskanalys.dokument.tjanstavsnitt import bygg_tjanstavsnitt
 
 
@@ -13,17 +14,24 @@ def _tjanstanalys_stammer(regelbas, profil, bedomning, tjanst, avsnitt):
     start, slut = (r.fore_stycke for r in avsnitt.underrubriker[4:])
     if not 0 <= start < slut < len(avsnitt.stycken):
         return False
-    utkast = AvsnittsUtkast(avsnitt=avsnitt.id, stycken=list(avsnitt.stycken[start:slut]), oklarheter=[])
+    lasta = nivastycken(tjanst)
+    utkast = AvsnittsUtkast(avsnitt=avsnitt.id, stycken=list(avsnitt.stycken[start + len(lasta):slut]), oklarheter=[])
     expected = bygg_tjanstavsnitt(regelbas, profil, tjanst, utkast, avsnitt.id,
                                  utokad=bedomning.proportionalitet.niva == "utökad")
     return avsnitt.kontrollsumma() == expected.kontrollsumma()
 
 
-def analysfynd(regelbas, bedomning, profil, dokument):
+def analysfynd(regelbas, bedomning, profil, dokument, utkast=None):
+    from riskanalys.dokument.delskrivning import Tjanstresultat
+    utkast = utkast or {}
     avsnitt = dokument.avsnitt_med_id()
     hot = avsnitt.get("D-ARB.4")
     sarbarheter = avsnitt.get("D-ARB.5")
-    resultat = []
+    from riskanalys.dokument.likhet import likhetsfynd
+    v3=[r for r in utkast.values() if isinstance(r,Tjanstresultat)]
+    resultat = likhetsfynd(v3) if v3 and len(v3)==len(utkast) else []
+    if "B-04" in regelbas.bristmonster:
+        resultat=[{**f,"typ":"bristmonster","regel":"B-04"} for f in resultat]
     tjanstavsnitt = {t.tjanst: id for id, t in tjanster_med_avsnitt(bedomning)}
     nytt_format = bool(regelbas.metod.omfattning)
     if nytt_format and "D-ARB.B1" not in avsnitt:
@@ -47,7 +55,13 @@ def analysfynd(regelbas, bedomning, profil, dokument):
         sarb_id = tjanstavsnitt[t.tjanst] if nytt_format else "D-ARB.5"
         hot = avsnitt.get(hot_id)
         sarbarheter = avsnitt.get(sarb_id)
-        if nytt_format and not _tjanstanalys_stammer(regelbas, profil, bedomning, t, hot):
+        post = utkast.get(hot_id)
+        if isinstance(post, Tjanstresultat):
+            resultat.extend(mallfynd(post))
+            stammer = _tjanstanalys_v3_stammer(regelbas, profil, t, hot, post) if hot else False
+        else:
+            stammer = _tjanstanalys_stammer(regelbas, profil, bedomning, t, hot)
+        if nytt_format and not stammer:
             resultat.append(dict(typ="tackning", allvar="blockerande", grund="metodval", avsnitt=hot_id,
                                   beskrivning=f"{t.tjanst}: tjänstens sex analysdelar avviker från det belagda underlaget.",
                                   atgard="Återskapa tjänstanalysen från aktuell profil, bedömning och validerat AI-utkast. Sakgranska på nytt."))
@@ -67,3 +81,20 @@ def analysfynd(regelbas, bedomning, profil, dokument):
                 fynd("B-10", sarb_id, f"{t.tjanst}/{id}: den geografiska sårbarheten saknar spårbar underlagsmotivering.",
                      "Återskapa sårbarhetsanalysen med villkor, bekräftade värden, perioder och källor. Sakgranska slutsatsen.")
     return resultat
+
+
+def mallfynd(resultat) -> list[dict]:
+    """En del som skrivits av mallen är inget analysutkast; den ska skrivas om före fastställelse (spec 8.4.5)."""
+    return [dict(typ="tackning", allvar="blockerande", grund="metodval", avsnitt=resultat.avsnitt,
+                 beskrivning=f"{resultat.tjanst}: delen {d.del_id} kunde inte skrivas maskinellt och består av programmets mall.",
+                 atgard="Komplettera underlaget eller skriv om delen och sakgranska den.")
+            for d in resultat.delar if d.mall]
+
+
+def _tjanstanalys_v3_stammer(regelbas, profil, tjanst, avsnitt, resultat) -> bool:
+    from riskanalys.dokument.tjanstavsnitt import bygg_tjanstavsnitt_v3
+    from riskanalys.fel import RiskanalysFel
+    try:
+        return avsnitt.kontrollsumma() == bygg_tjanstavsnitt_v3(regelbas, profil, tjanst, resultat, avsnitt.id).kontrollsumma()
+    except RiskanalysFel:
+        return False

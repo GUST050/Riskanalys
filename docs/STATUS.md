@@ -1,6 +1,32 @@
 # Status och framsteg
 
-Senast uppdaterad 2026-10-11.
+Senast uppdaterad 2026-10-12.
+
+## Rättelser efter avbruten pilot, 2026-10-12
+
+Användaren rapporterade att piloten på en syntetisk byrå med Sonnet 5.5 och effort `high` stoppades efter åtta anrop, varav fyra klipptes vid 16 000 utdatatoken. Delanropens gräns är nu 64 000 token och anropen använder den befintliga strömningen. Ett tidigare `max_tokens`-avbrott i samma del hindrar höjning av effort i sista omförsöket, även om ett senare försök underkänns av ett annat skäl. Avbrottsmeddelandet anger anropets faktiska tokengräns.
+
+Endast faktapoststatus `okänd` kräver `[VERIFIERA]` och oklarhet. Bekräftade maskerade värden med status `skyddad` får refereras utan dessa krav; deras exakta tal är fortfarande otillåtna som talplatshållare. `riskanalys skriv --effort` valideras och styr hela v3-körningen även med testleverantören. Valet sparas i manifestet och faktisk effort sparas per försök. Piloten kan därför jämföra `medium` med `high` på samma bedömning. Längdgränserna i `LANGD` är oförändrade.
+
+Verifiering: tio regressioner fallerade för token/skydd och tre för körningens effort före rättningarna. Riktad svit: 87 passerar. Slutlig fullsvit: **1 226 passerar, två livetester bortvalda** (655,29 s), med båda API-nycklarna borttagna ur körmiljön. Regelbasvalidering och `git diff --check` är gröna. Ingen ny pilot eller riktiga API-anrop har körts av Codex. Inga commits eller pushar har gjorts.
+
+## Rättelser efter granskning av AI-skrivningen, 2026-10-12
+
+Claudes fem fynd är kontrollerade mot implementationen och rättade med fallerande regressionstester före respektive ändring. Permanenta leverantörsfel stoppar skrivningen direkt: 400, 401 och 403 ger ett meddelande med orsak och åtgärd. Endast 429, 5xx och nätverksfel får bli misslyckade försök. Slut på förberedda testsvar ger åter ett fel. Serverns fria feltext skickas inte tillbaka till AI.
+
+AI kan ange `{period:ID}` med samma faktareferens eller skriva ”under statistikperioden”. Perioden sätts in från faktabladet före sakgranskning; fria datum, saknad period och trasiga platshållare underkänns. Kombinationskontrollen kräver scenario när minst två refererade sårbarheter gäller eller är okända, eller när analysen använder samverkansord. Sårbarhetsmodulen anger alla fem kategorierna `kund`, `kanal`, `geo`, `tj` och `verk`. Faktabladet sparas i tjänstresultatet; den separata dubbleringen `faktablad.json` är borttagen.
+
+Verifiering: slutlig fullsvit är grön, **1 213 tester passerar och två livetester är bortvalda** (653,71 s), med båda API-nycklarna borttagna ur körmiljön. Regelbasvalidering och `git diff --check` är gröna. Regelbasens kontrollsumma och sakkunnigstatus är oförändrade. Inga riktiga API-anrop, commits eller pushar har gjorts. Den tidigare verifieringen nedan gäller implementationen före dessa rättelser.
+
+## AI-skrivning från faktablad, 2026-10-11
+
+[Planen](superpowers/plans/2026-10-11-ai-skrivning-fran-faktablad.md#genomförande-2026-10-11) är implementerad i del A och B. Programmet skriver tal, risknivåmeningar, sektorsreferens och låsta stycken. Fem AI-delar per tjänst körs i följd med separat schema, validering och högst två omförsök. Alla försök sparas direkt. Vid fortsatt fel används en reservmall som ger ett blockerande granskningsfynd. Dokumentformatet är `D-ARB-tjanst-v3`; grinden omtolkar råsvaren, omvaliderar dem och jämför fryst faktablad och dokument. Ändrad text eller format kräver ny sakgranskning.
+
+AI får skyddade faktablad och säkra sammanfattningar av låsta stycken. Lokala källtexter, personnamn, fritext och omaskerade smågruppstal skickas aldrig med de låsta styckena. Regelbas `1.2.0` och dess sakkunnigstatus är oförändrade.
+
+Mätningen i uppgift 4 är byggd: sammanställning per körning redovisar förstaförsök, samtliga anrop, felklasser och in-/ut-/cachetoken; kostnadsfunktionen tar uttryckliga priser. Ingen betald pilot är genomförd, så hypotesen att fyra av fem underkännanden försvinner är **inte uppmätt**. Design B, befintlig standardmodell och effort är preliminära tills utvärderingen i spec 8.4.8 är genomförd. Design A, byråövergripande AI-avsnitt och kryssfrågorna i 14.5 återstår enligt planens avgränsning.
+
+Verifiering: slutlig fullsvit med syntetiska data är grön, **1 183 tester passerar och två livetester är bortvalda** (656,80 s), utan API-nycklar. Regelbasvalideringen är grön och kontrollsumman oförändrad. Den oberoende kodgranskningens fynd har fått regressionstester, rättats och återkontrollerats utan kvarstående anmärkningar. Inga riktiga API-anrop har gjorts. Inget är committat eller pushat i detta genomförande.
 
 ## Läge
 

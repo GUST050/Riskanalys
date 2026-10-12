@@ -74,7 +74,7 @@ def test_tom_profil_genom_hela_formularet_till_word(webb,lan,filial,paket,rb_int
     from riskanalys.profil.modeller import Byra
     from riskanalys.profil.hantering import skapa_profil, visa_varde
     from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
-    from tester.fixturer.m2 import komplett_profil,bygg_testsvar
+    from tester.fixturer.m2 import komplett_profil,bygg_delsvar
     from riskanalys.dokument.modeller import AvsnittsUtkast
     from riskanalys.dokument.leverantor import Testleverantor
     from io import BytesIO
@@ -99,12 +99,12 @@ def test_tom_profil_genom_hela_formularet_till_word(webb,lan,filial,paket,rb_int
     assert t.profil().byra.regelpaket==paket
     assert antal>50
     b=las_bedomning(kor_bedomning(t.mapp,rb_intag))
-    s.leverantor=Testleverantor([AvsnittsUtkast.model_validate(a) for a in bygg_testsvar(rb_intag,t.profil(),b)])
+    s.leverantor=Testleverantor(bygg_delsvar(rb_intag,t.profil(),b))
     skrivdata=dict(csrf=s.csrf,revision=profilrevision(t.profil()),skrivtoken=s.skrivtoken(profilrevision(t.profil())))
     assert anrop(s,'skriv',skrivdata)[0]==200
-    ai_anrop=len(s.leverantor.anrop)
+    ai_anrop=len(s.leverantor.delanrop)
     assert anrop(s,'skriv',skrivdata)[0]==409
-    assert len(s.leverantor.anrop)==ai_anrop
+    assert len(s.leverantor.delanrop)==ai_anrop
     with urlopen(s.url+'word',timeout=5) as r:
         doc=Document(BytesIO(r.read()))
     assert 'UTKAST' in '\n'.join(p.text for p in doc.paragraphs)
@@ -156,11 +156,11 @@ def test_andrad_historik_i_annan_session_stoppar_word(webb,klar,rb_intag):
     from riskanalys.bedomning.korning import kor_bedomning,las_bedomning
     from riskanalys.dokument.leverantor import Testleverantor
     from riskanalys.dokument.modeller import AvsnittsUtkast
-    from tester.fixturer.m2 import bygg_testsvar
+    from tester.fixturer.m2 import bygg_delsvar
     s,t=webb
     spara_profil(t.mapp,klar)
     b=las_bedomning(kor_bedomning(t.mapp,rb_intag))
-    provider=Testleverantor([AvsnittsUtkast.model_validate(a) for a in bygg_testsvar(rb_intag,klar,b)])
+    provider=Testleverantor(bygg_delsvar(rb_intag,klar,b))
     s.utkast=skapa_utkast(t.mapp,rb_intag,provider)
     s.utkastrevision=profilrevision(t.profil())
     registrera_utvardering(Intagstjanst('syntetisk',rb_intag),DAG,'Syntetisk extern utvärdering',s.utkastrevision)
@@ -173,17 +173,17 @@ def test_utvardering_uppdaterar_word_utan_nytt_ai_anrop(webb,klar,rb_intag):
     from riskanalys.bedomning.korning import kor_bedomning,las_bedomning
     from riskanalys.dokument.leverantor import Testleverantor
     from riskanalys.dokument.modeller import AvsnittsUtkast
-    from tester.fixturer.m2 import bygg_testsvar
+    from tester.fixturer.m2 import bygg_delsvar
     from docx import Document
     from io import BytesIO
     s,t=webb;spara_profil(t.mapp,klar)
     b=las_bedomning(kor_bedomning(t.mapp,rb_intag))
-    provider=Testleverantor([AvsnittsUtkast.model_validate(a) for a in bygg_testsvar(rb_intag,klar,b)])
+    provider=Testleverantor(bygg_delsvar(rb_intag,klar,b))
     s.utkast=skapa_utkast(t.mapp,rb_intag,provider);s.utkastrevision=profilrevision(t.profil())
-    gammal=s.utkast;antal=len(provider.anrop)
+    gammal=s.utkast;antal=len(provider.delanrop)
     d=dict(csrf=s.csrf,revision=s.utkastrevision,datum=str(DAG),beskrivning='Syntetisk faktisk utvärdering')
     assert anrop(s,'utvardera',d)[0]==200
-    assert s.utkast != gammal and len(provider.anrop)==antal
+    assert s.utkast != gammal and len(provider.delanrop)==antal
     with urlopen(s.url+'word',timeout=5) as r:
         doc=Document(BytesIO(r.read()))
     text='\n'.join(p.text for p in doc.paragraphs)

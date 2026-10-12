@@ -84,3 +84,12 @@ def test_sakgranskningar_sparas_och_lases(datamapp, profil):
     poster = registrera_sakgranskning((), _dokument(), profil, "D-ARB.3", True, "FfR", "Testa Testsson", DAG)
     spara_sakgranskningar(mapp, poster)
     assert las_sakgranskningar(mapp) == poster
+
+
+def test_v2_godkannande_galler_inte_ny_formatversion(profil):
+    from riskanalys.dokument.modeller import Underrubrik
+    a=_dokument().avsnitt[0].model_copy(update={"underrubriker":(Underrubrik(fore_stycke=0,rubrik="Analys"),)})
+    doc=_dokument().model_copy(update={"avsnitt":(a,)})
+    poster=registrera_sakgranskning((),doc,profil,a.id,True,"FfR","Testa Testsson",DAG)
+    nytt=a.model_copy(update={"formatversion":"D-ARB-tjanst-v3"})
+    assert galler_sakgranskning(poster,nytt,profil) is None

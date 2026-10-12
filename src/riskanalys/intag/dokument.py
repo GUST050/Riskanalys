@@ -3,7 +3,7 @@ from datetime import date
 from pathlib import Path
 from riskanalys.bedomning.korning import kor_bedomning, BEDOMNINGAR, kontrollera_aktuell
 from riskanalys.dokument.export import kor_export_utkast, UTKASTFIL
-from riskanalys.dokument.skrivning import kor_skrivning, las_skrivresultat, UTKAST
+from riskanalys.dokument.skrivning import kor_skrivning, las_skrivresultat, Skrivresultat, UTKAST
 from riskanalys.granskning.korning import kor_granskning, GRANSKNING, granskningens_metadata, kontrollera_kallor
 from riskanalys.drift.historik import historikens_kontrollsumma
 from riskanalys.lagring.manifest import manifestets_metadata, verifiera_manifest
@@ -22,7 +22,7 @@ def skapa_utkast(byramapp: Path, rb, leverantor) -> Path:
     historik = historikens_kontrollsumma(byramapp)
     kor_bedomning(byramapp,rb)
     mapp=kor_skrivning(byramapp,rb,leverantor)
-    if any(not p.godkant_utkast for p in las_skrivresultat(mapp)):
+    if any(isinstance(p,Skrivresultat) and not p.godkant_utkast for p in las_skrivresultat(mapp)):
         raise RiskanalysFel('AI-texten underkändes. Se de sparade skrivförsöken och rätta underlaget före ett nytt försök.')
     bedomningsnamn = manifestets_metadata(mapp, 'bedomning')['bedomning']
     granskning = kor_granskning(byramapp,rb,date.today(),

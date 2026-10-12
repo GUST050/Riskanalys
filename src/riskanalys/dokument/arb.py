@@ -2,6 +2,7 @@
 
 from riskanalys.bedomning.modeller import Bedomning, Tjanstbedomning
 from riskanalys.dokument.modeller import Avsnitt, AvsnittsUtkast, Dokument, Textstycke
+from riskanalys.dokument.nivatext import nivastycken
 from riskanalys.dokument.underlag import sarbarhet_status, tjanster_med_avsnitt
 from riskanalys.dokument.validering import VERIFIERA
 from riskanalys.drift.historik import Historik
@@ -53,7 +54,8 @@ def bygg_arb(
 
 
 def _bygg_tjanstvis(rb, profil, bedomning, utkast, historik):
-    from riskanalys.dokument.tjanstavsnitt import bygg_tjanstavsnitt, kontrollstycken, slutsatsstycken
+    from riskanalys.dokument.delskrivning import Tjanstresultat
+    from riskanalys.dokument.tjanstavsnitt import bygg_tjanstavsnitt_v3, bygg_tjanstavsnitt, kontrollstycken, slutsatsstycken
     from riskanalys.dokument.uppfoljning import omfattningsstycke, bevakningsavsnitt, uppfoljningsstycken
     from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
     erbjudna = [t for t in bedomning.tjanster if t.inneboende]
@@ -67,7 +69,7 @@ def _bygg_tjanstvis(rb, profil, bedomning, utkast, historik):
         _stycke('analys','Kundförhållanden, leveranssätt, geografi och organisation prövas och motiveras per tjänst nedan. Byråövergripande indikatorer fördelas konservativt enligt ogranskad metod; de visar inte att varje kund i tjänsten har förhållandet. Ett nej till ett enskilt villkor utesluter inte andra risker. Okända uppgifter ska kompletteras.',[]),))
     kontroller = Avsnitt(id='D-ARB.7',rubrik='Kontroller, utfall och bedömd effekt',kalla='regelbas',
                         stycken=tuple(s for t in erbjudna for s in kontrollstycken(rb,profil,t)))
-    risk = tuple(bygg_tjanstavsnitt(rb,profil,t,utkast[id],id,utokad=bedomning.proportionalitet.niva=='utökad')
+    risk = tuple(bygg_tjanstavsnitt_v3(rb,profil,t,utkast[id],id) if isinstance(utkast[id],Tjanstresultat) else bygg_tjanstavsnitt(rb,profil,t,utkast[id],id,utokad=bedomning.proportionalitet.niva=='utökad')
                  for id,t in tjanster_med_avsnitt(bedomning) if id in utkast)
     samman = Avsnitt(id='D-ARB.8',rubrik='Tjänstevis risksammanställning',kalla='regelbas',stycken=tuple(
         _stycke('beskrivning',f'{rb.tjanster[t.tjanst].namn}: inneboende penningtvättsrisk {t.inneboende.risk}, kvarstående {t.kvarstaende}; terrorfinansiering {t.terrorfinansiering.risk}. Riskerna redovisas per tjänst; ingen sammanvägd byrånivå beräknas.',[t.tjanst,*t.regelspar]) for t in erbjudna))
@@ -185,7 +187,7 @@ def _riskavsnitt(regelbas: Regelbas, bedomning: Bedomning, utkast: dict[str, Avs
             id=avsnitt_id,
             rubrik=f"Risk i {regelbas.tjanster[tjanst.tjanst].namn.lower()}",
             kalla="ai",
-            stycken=tuple(utkast[avsnitt_id].stycken),
+            stycken=(*nivastycken(tjanst), *utkast[avsnitt_id].stycken),
         )
         for avsnitt_id, tjanst in tjanster_med_avsnitt(bedomning)
         if avsnitt_id in utkast
