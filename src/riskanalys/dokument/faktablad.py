@@ -7,6 +7,7 @@ from pydantic import Field
 from riskanalys.dokument.modeller import Last, UnderlagHot, UnderlagKontroll, UnderlagSarbarhet
 from riskanalys.dokument.underlag import bygg_underlag
 from riskanalys.profil.modeller import Profil, Uppgift
+from riskanalys.profil.omfattning import HARLEDNING
 from riskanalys.regelverk.modeller import Falt, Regelbas, Sektorsreferens
 
 Kalltyp = Literal["register", "intern_statistik", "egen_kannedom", "dokument", "harledning"]
@@ -69,7 +70,7 @@ def kalltyp(uppgift: Uppgift, falt: Falt) -> Kalltyp | None:
         return None
     if kalla == EGEN_KANNEDOM:
         return "egen_kannedom"
-    if kalla.startswith("Härledning:"):
+    if kalla.startswith(HARLEDNING):
         return "harledning"
     if kalla.startswith(("SCB AFR API", "Lokalt importerat SCB")):
         return "register"

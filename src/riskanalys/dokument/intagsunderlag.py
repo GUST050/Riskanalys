@@ -40,14 +40,15 @@ def med_intagsunderlag(dokument: Dokument, rb, profil, bedomning) -> Dokument:
 
 def bygg_underlagsbilaga(rb, profil):
     """Alla lokala intagsbelägg granskas i samma dokument; inga råsvar till AI."""
-    from riskanalys.dokument.klartext import uppgiftstext
+    from riskanalys.dokument.klartext import faltnamn, uppgiftstext
     stycken=[]
     for f in rb.falt.values():
-        if not f.intag or f.alias_for or not aktivt(f,profil,rb):
+        harledd=bool(f.antalfalt and f.basfalt)
+        if not (f.intag or harledd) or f.alias_for or not aktivt(f,profil,rb):
             continue
         # Personnamn återges via lokala rollplatshållare i huvudtexten.
         if f.personuppgift:
-            text=f'{f.id}: personuppgift hanteras lokalt i ansvarsfördelningen; källa och datum finns i profilen.'
+            text=f'{faltnamn(rb,f.id)} ({f.id}): personuppgift hanteras lokalt i ansvarsfördelningen; källa och datum finns i profilen.'
         else:
             text=uppgiftstext(rb,profil,f.id,med_id=True)
         stycken.append(Textstycke(typ='beskrivning',text=text,referenser=[f.id]))

@@ -6,6 +6,7 @@ from riskanalys.profil.modeller import Profil, Uppgift
 from riskanalys.regelverk.modeller import Falt, Regelbas
 from riskanalys.regelverk.villkor import Sanning, tolka_villkor, utvardera
 
+HARLEDNING = "Härledning: "
 
 def aktivt(falt: Falt, profil: Profil, regelbas: Regelbas) -> bool:
     """Okänd aktivering kräver uppgifter; bara uttryckligen falskt är inaktivt."""
@@ -50,7 +51,7 @@ def harled_andelar(profil: Profil, regelbas: Regelbas, andrade_falt: frozenset[s
             antal, bas = par
             uppgifter[falt.id] = Uppgift(
                 varde=antal.varde / bas.varde, status='bekräftad',
-                kalla=f'Härledning: {falt.antalfalt}/{falt.basfalt}', datum=max(antal.datum, bas.datum),
+                kalla=f'{HARLEDNING}{falt.antalfalt}/{falt.basfalt}', datum=max(antal.datum, bas.datum),
                 bekraftad_av='system:harledning', period=antal.period, harledd=True,
             )
     return profil.model_copy(update={'uppgifter': uppgifter})
