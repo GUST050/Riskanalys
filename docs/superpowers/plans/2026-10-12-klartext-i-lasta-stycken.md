@@ -23,6 +23,12 @@ Granskarens preciseringar 2026-10-12, som planen genomför:
 2. **15 % riskbranscher:** texten ska säga att faktorn förekommer men ligger under metodens gräns på 20 % för automatiskt riskpåslag. Tröskeln ändras inte.
 3. **Godkännanden:** övergången till v4 kräver ny sakgranskning av den ändrade texten. Tidigare fastställda paket bevaras oförändrade.
 
+Planens andra granskning 2026-10-12, inarbetad:
+1. **Gränsmeningen får inte läcka förekomst.** 0 och 3 kunder visas båda som ”färre än 5” i faktabladet. Gränsmeningen till AI byggs därför bara från den skyddade vyn: när värdet är skyddat skrivs ingen gränsmening alls (uppgift 6).
+2. **Kortnamnet får inte ändra historiska attestsummor.** Saknat kortnamn utelämnas vid serialisering och testas mot frysta summor (uppgift 3).
+3. **Slutkontrollen jämför mot planens start-SHA, inte `main`** (”Före uppgift 1” och uppgift 7).
+4. **Återanvändning av v3-utkast är utredd** i avsnittet ”Återanvändning av v3-utkast” före självgranskningen.
+
 ## Global Constraints
 
 - AGENTS.md regel 1: ”AI fattar inga beslut.” Motorns utfall (`galler`), nivåer och poäng ändras inte; bara texten.
@@ -38,7 +44,7 @@ Granskarens preciseringar 2026-10-12, som planen genomför:
 
 ## Review Focus
 
-1. **Skyddat smågruppsvärde i gränsmeningen till AI.** Faktabladet får varken visa talet eller säga att faktorn förekommer, eftersom det avslöjar 1–4 kunder. Test i uppgift 6.
+1. **Skyddat smågruppsvärde i gränsmeningen till AI.** Gränsmeningen byggs bara från den skyddade vyn. 0 och 3 kunder ger samma faktabladstext, och ett litet komplement ger ingen gränsmening. Tester i uppgift 6.
 2. **Fält utanför tillåtelselistan.** Ingen gränsmening om fältet får nå AI. Test i uppgift 6.
 3. **Okänt, föreslaget eller noll-värde.** Ingen gränsmening, och `[VERIFIERA]` står kvar när underlag saknas. Tester i uppgift 3 och uppgift 4.
 4. **Förkortningar mitt i en mening** (PEP, EU-högrisktredjeland) behåller versalerna. Test i uppgift 3.
@@ -58,6 +64,12 @@ Medvetet utanför planen: om AI ändå skriver att en sårbarhet under gränsen 
 | `src/riskanalys/dokument/nivatext.py`, `tjanstavsnitt.py` | Sektorsreferens och tjänstebeskrivning | 5 |
 | `src/riskanalys/dokument/underlag.py`, `faktablad.py`, `promptar/delar.py` | Faktabladet och prompten | 6 |
 | `docs/STATUS.md` | Status | 7 |
+
+---
+
+### Före uppgift 1: Spara start-SHA
+
+- [ ] Kör `git rev-parse HEAD` innan något ändras och skriv resultatet på raden `START=` under rubriken ”Genomförandelogg” sist i denna plan, till exempel `START=13cf075…`. Uppgift 1 committar planen med raden. Slutkontrollen i uppgift 7 jämför mot detta SHA, inte mot `main`, eftersom `main` saknar grenens tidigare katalog- och teständringar.
 
 ---
 
@@ -81,7 +93,7 @@ Låsta stycken skrivs för läsaren, inte för programmet:
 
 1. Löptexten innehåller inga fält-ID, villkorsuttryck eller katalogkoder. En uppgift skrivs med fältets kortnamn, värde, period, källa och datum. Kortnamnet (`etikett`) är visningstext i regelbasen och ändrar ingen regel. Tjänste- och kontrollfält får namn efter tjänstens och kontrollens namn.
 2. Villkor skrivs i ord, till exempel ”Sårbarheten gäller om andel kunder i riskbranscher är minst 20 %”.
-3. När en jämförelse med en gräns inte är uppfylld men det bekräftade värdet är större än noll, skriver programmet att faktorn förekommer men ligger under metodens gräns för automatiskt riskpåslag. Motorns utfall och gränsen ändras inte. I faktabladet gäller tillåtelselistan och smågruppsskyddet: ett skyddat värde redovisas utan tal och utan att faktorn sägs förekomma.
+3. När en jämförelse med en gräns inte är uppfylld men det bekräftade värdet är större än noll, skriver programmet att faktorn förekommer men ligger under metodens gräns för automatiskt riskpåslag. Motorns utfall och gränsen ändras inte. I faktabladet gäller tillåtelselistan och smågruppsskyddet. När värdet är skyddat eller inte får nå AI skriver faktabladet ingen gränsmening, så att texten blir densamma oavsett det skyddade värdet.
 4. Sektorsreferensen anges med källans titel, nivå, skala och sida.
 5. Spårbarheten finns kvar. Varje stycke behåller sina referenser, och bilagan `D-ARB.B1` anger kortnamn och fält-ID för varje uppgift.
 6. Övergången till v4 ändrar texten i låsta stycken och upphäver därför tidigare sakgodkännanden enligt 8.4.6 punkt 5. Utkast i v3 skrivs om. Fastställda paket byggs aldrig om och förblir oförändrade.
@@ -96,7 +108,7 @@ Låsta stycken skrivs för läsaren, inte för programmet:
 - [ ] **Steg 4: Commit**
 
 ```bash
-git add docs/superpowers/specs/2026-10-08-riskanalys-design.md
+git add docs/superpowers/specs/2026-10-08-riskanalys-design.md docs/superpowers/plans/2026-10-12-klartext-i-lasta-stycken.md
 git commit -m "docs: spec revision 18, klartext i låsta stycken"
 ```
 
@@ -243,7 +255,7 @@ git commit -m "feat: dokumentformat D-ARB-tjanst-v4"
   - `UnderGrans`, en frusen dataklass med fälten `falt_id: str` och `grans: float`
   - `under_grans(profil: Profil, data: dict) -> tuple[UnderGrans, ...]`
   - `gransmening(regelbas, profil, g: UnderGrans) -> str`
-- Produces, i regelbasen: `Falt.etikett: str | None`
+- Produces, i regelbasen: `Falt.etikett: str | None`. Den utelämnas vid serialisering när den saknas, så att `kravets_innehallssumma`, `paketets_innehallssumma` och kundmodellens `c_innehallssumma` blir oförändrade för regelbaser utan kortnamn.
 
 - [ ] **Steg 1: Skriv de fallerande testerna**
 
@@ -366,20 +378,60 @@ def test_etiketter_ar_korta_och_utan_falt_id():
     for f in rb.falt.values():
         if f.etikett:
             assert len(f.etikett) <= 80 and not re.search(r"\b[PSHCT]-[A-Z]", f.etikett), f.id
+
+
+# Summor räknade på oförändrade regelbaser före kortnamnen (2026-10-12). En sakkunnigattest gäller exakt dessa.
+V0 = Path(__file__).resolve().parents[1] / "fixturer" / "regelbas_v0"
+V0_PAKET = "sha256:55d2dc582f5e7fa6cb31a9c7976e335a766d7ce153607efb613a8e2e40a784ef"
+KRV_PTL_2_9 = "sha256:590224c27d2076d8d9c7680af66535110c621238cf9a35e36ad879434663fb0e"
+
+
+def test_saknat_kortnamn_andrar_inte_historiska_attestsummor():
+    assert ladda_regelbas(V0).paketets_innehallssumma("RP-RED-VG") == V0_PAKET
+
+
+def test_kravattest_bestar_nar_kravets_falt_saknar_kortnamn():
+    rb = ladda_regelbas()
+    assert rb.kravets_innehallssumma("KRV-PTL-2-9") == KRV_PTL_2_9
+
+
+def test_saknat_kortnamn_serialiseras_inte():
+    f = Falt(id="P-X", typ="bool", fraga="Fråga?", varfor="Test")
+    assert "etikett" not in f.model_dump(mode="json")
+    assert Falt(id="P-X", typ="bool", fraga="Fråga?", varfor="Test", etikett="Namn").model_dump()["etikett"] == "Namn"
 ```
+
+Lägg till `from pathlib import Path` och `from riskanalys.regelverk.modeller import Falt` bland importerna i filen. `KRV-PTL-2-9` villkoras inte av något fält som får kortnamn, så summan ska bestå även i 1.3.0. Paketsummorna för 1.3.0 ändras däremot, eftersom kortnamnen är nytt innehåll i regelbasen. Ingen verklig attest finns, och testerna signerar kopior med summor de räknar själva.
 
 - [ ] **Steg 2: Kör testerna och se dem fallera**
 
 Kör: `.venv/bin/pytest tester/intag/test_klartext.py tester/regelkontrakt/test_etiketter.py -q`
 Förväntat: FAIL med `ModuleNotFoundError: riskanalys.dokument.klartext`.
 
-- [ ] **Steg 3: Lägg till `etikett` i `Falt`**
+- [ ] **Steg 3: Lägg till `etikett` i `Falt`, först utan serialiserare**
 
 I `regelverk/modeller.py`, klassen `Falt`, efter `enhet: str | None = None`:
 
 ```python
     etikett: str | None = None  # Kortnamn i löptext; visningstext som inte ändrar någon regel (spec 8.4.9).
 ```
+
+Kör: `.venv/bin/pytest tester/regelkontrakt/test_etiketter.py -q -k "attest or serialiseras"`
+Förväntat: FAIL. Summorna ändras, eftersom `"etikett": null` kommer med i serialiseringen. Det är felet som granskningen reproducerade.
+
+Lägg sedan till serialiseraren i samma klass och importera `model_serializer` från `pydantic` på rad 7:
+
+```python
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Utelämna saknat kortnamn, så att historiska innehålls- och attestsummor består."""
+        data = handler(self)
+        if self.etikett is None:
+            data.pop("etikett", None)
+        return data
+```
+
+Kör samma kommando igen. Förväntat: PASS.
 
 - [ ] **Steg 4: Skriv kortnamnen i `regelbas/falt.yaml`**
 
@@ -831,19 +883,24 @@ def test_falt_utanfor_tillatelselistan_far_ingen_gransmening(rb_intag, klar):
     assert "gräns" not in text and "15 %" not in text
 
 
-@pytest.mark.parametrize("antal", [3, 98])
-def test_skyddat_varde_redovisas_utan_tal_och_utan_forekomst(rb_intag, klar, antal):
-    # 3 av 100 är en liten grupp; 98 av 100 lämnar ett litet komplement. Båda maskas i faktabladet.
-    profil = _med_riskbransch(rb_intag, klar, antal)
+def test_skyddad_vy_ger_samma_text_for_noll_och_tre_kunder(rb_intag, klar):
+    # 0 och 3 av 100 visas båda som "färre än 5". Texten får inte avslöja vilket det är (granskning 2026-10-12).
+    noll, tre = (_sarbarhetsmotivering(rb_intag, _med_riskbransch(rb_intag, klar, antal), _sarb(rb_intag), (RISKBRANSCH,))
+                 for antal in (0, 3))
+    assert noll == tre
+    assert "gräns" not in tre and "förekommer" not in tre
+
+
+def test_litet_komplement_ger_ingen_gransmening(rb_intag, klar):
+    # 98 av 100 lämnar ett litet komplement som maskas. Gränsen höjs bara i en kopia av regelbasen.
     villkor = {"falt": RISKBRANSCH, "op": ">=", "varde": 0.99}
     sarb = rb_intag.sarbarheter[_sarb(rb_intag)].model_copy(update={"villkor": villkor})
     rb = rb_intag.model_copy(update={"sarbarheter": {**rb_intag.sarbarheter, sarb.id: sarb}})
-    text = _sarbarhetsmotivering(rb, profil, sarb.id, (RISKBRANSCH,))
-    assert "under metodens gräns på 99 %" in text
-    assert "förekommer" not in text and f"{antal} %" not in text
+    text = _sarbarhetsmotivering(rb, _med_riskbransch(rb_intag, klar, 98), sarb.id, (RISKBRANSCH,))
+    assert "gräns" not in text and "förekommer" not in text and "98 %" not in text
 ```
 
-Testet ändrar gränsen bara i en kopia av regelbasen, så att båda skyddsfallen ligger under gränsen. Repots regelbas ändras inte. Det visar att ett maskat värde aldrig ger ”förekommer” eller talet.
+Repots regelbas ändras inte. Testerna visar att ett maskat värde aldrig ger en gränsmening, och att 0 och 3 kunder ger identisk text.
 
 Lägg till i `tester/enhet/test_promptar.py`:
 
@@ -855,7 +912,7 @@ def test_sarbarhetsmodulen_styr_formuleringen_under_gransen():
 - [ ] **Steg 2: Kör testerna och se dem fallera**
 
 Kör: `.venv/bin/pytest tester/intag/test_faktablad.py tester/enhet/test_promptar.py -q`
-Förväntat: FAIL. Motiveringen innehåller i dag bara ”P-KUND.andel_riskbransch: 15 %.”.
+Förväntat: FAIL för gränsmeningen och promptinstruktionen. Motiveringen innehåller i dag bara ”P-KUND.andel_riskbransch: 15 %.”. De två skyddstesterna passerar redan, eftersom dagens kod saknar gränsmening. De ska fortsätta passera efter steg 3 och skyddar mot att den nya meningen läcker.
 
 - [ ] **Steg 3: Implementera `_sarbarhetsmotivering`**
 
@@ -879,13 +936,12 @@ def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna:
         if g.falt_id not in tillatna:
             continue
         visning = _uppgift(regelbas, profil, g.falt_id).varde
-        grans = visa_varde(regelbas.falt[g.falt_id], g.grans)
+        # Bara den skyddade vyn styr: ett maskat värde ger ingen mening alls, så att 0 och 3 kunder ser likadana ut.
         if visning.startswith(SKYDDADE_VISNINGAR) or visning == "okänt":
-            rader.append(f"{faltnamn(regelbas, g.falt_id)} ligger under metodens gräns på {grans} för automatiskt "
-                         "riskpåslag; antalet är skyddat.")
-        else:
-            rader.append(f"Faktorn förekommer: {gemen(faltnamn(regelbas, g.falt_id))} är {visning}, men det ligger "
-                         f"under metodens gräns på {grans} för automatiskt riskpåslag.")
+            continue
+        grans = visa_varde(regelbas.falt[g.falt_id], g.grans)
+        rader.append(f"Faktorn förekommer: {gemen(faltnamn(regelbas, g.falt_id))} är {visning}, men det ligger "
+                     f"under metodens gräns på {grans} för automatiskt riskpåslag.")
     return f"Det registrerade villkorets utfall är {status}. " + " ".join(rader)
 ```
 
@@ -935,10 +991,11 @@ Förväntat: alla gröna, två livetester bortvalda.
 Kör: `.venv/bin/riskanalys regelbas validera && git diff --check`
 Förväntat: grönt, regelbas 1.3.0, sakkunnigstatus `ej_granskad`.
 
-Kör: `git diff main...HEAD -- regelbas/kataloger/sarbarheter.yaml`
-Förväntat: ingen diff (gränserna är oförändrade).
+Kör: `START=$(grep -m1 '^START=' docs/superpowers/plans/2026-10-12-klartext-i-lasta-stycken.md | cut -d= -f2)`
+Kör: `git diff "$START"..HEAD -- regelbas/kataloger/sarbarheter.yaml regelbas/kundfalt.yaml`
+Förväntat: ingen diff. Gränserna och kundmodellens fält är oförändrade.
 
-Kör: `git diff main...HEAD --stat -- tester/enhet/test_faststall.py tester/enhet/test_manifest.py tester/typfall/`
+Kör: `git diff "$START"..HEAD --stat -- tester/enhet/test_faststall.py tester/enhet/test_manifest.py tester/typfall/ tester/fixturer/regelbas_v0/`
 Förväntat: ingen diff.
 
 - [ ] **Steg 2: Uppdatera `docs/STATUS.md`**
@@ -960,6 +1017,37 @@ git commit -m "docs: status för klartext i låsta stycken"
 
 ---
 
+## Återanvändning av v3-utkast (utredning)
+
+Frågan är om redan skrivna AI-delar kan föras över till v4 med lokal omvalidering och ny sakgranskning, i stället för att skrivas om mot betalt API.
+
+**Vad som hindrar direkt återanvändning:**
+- Ett v3-resultat bär sitt frysta faktablad.
+- v4 ändrar faktabladets motiveringar och etiketter, så `kontrollera_resultat` underkänner v3-resultatet mot aktuellt underlag.
+- Formatversionen skiljer sig också.
+
+**Vad som talar för att det går:**
+- AI-delarna refererar samma ID:n som i v4 och använder platshållare som fortfarande går att ersätta.
+- Råsvaret för varje godkänd del kan tolkas och valideras om lokalt mot v4-faktabladet, med samma `_tolka` och `validera_del` som grinden använder. Det kostar inga API-anrop.
+
+**Vad som talar emot:**
+- Texten skrevs från v3-faktabladet. Den kan säga att en faktor under gränsen ”inte gäller”, vilket v4 ska rätta.
+- Delar med interna AI-kommentarer underkänns nu av valideringen och skulle bli reservmall.
+- Sakgranskning krävs ändå för v4-texten.
+
+**Kostnad att skriva om:** i piloten kostade `medium` 0,23–0,31 USD per tjänst och `high` 0,49–0,62 USD. En byrå med fem tjänster kostar alltså omkring 1,50 USD med `medium`. Inga verkliga v3-utkast är kända. Piloterna har körts på den syntetiska byrån.
+
+**Rekommendation:** bygg inte återanvändningen i denna plan. Skriv om v3-utkast med `medium` när det behövs. Om en byrå har v3-utkast under pågående sakgranskning kan en egen liten plan bygga det enligt skissen nedan.
+
+**Skiss, om den behövs:** `uppgradera_resultat(rb, p, t, gammal, avsnitt_id) -> Tjanstresultat`
+- **Formatkrav:** kräver `gammal.formatversion == "D-ARB-tjanst-v3"`.
+- **Nytt faktablad:** bygger v4-faktabladet.
+- **Delar som var mall** förblir mall.
+- **Godkända delar:** varje godkänd del tolkas och valideras om mot v4-faktabladet. En del som klarar det behåller sina försök och märks `omvaliderad=True`, ett fält som bara serialiseras när det är sant. En del som inte klarar det blir mall med blockerande fynd.
+- **Spårbarhet:** manifestet anger `uppgraderad_fran`.
+- **Granskningsfynd:** granskningen lägger ett fynd på omvaliderade delar, så att sakgranskaren prövar faktorer under metodens gräns särskilt.
+- **Tester:** inga leverantörsanrop sker (en `Testleverantor` utan svar), en omvaliderad del klarar `kontrollera_resultat`, och en del med en intern AI-kommentar blir mall.
+
 ## Självgranskning
 
 - **Täckning:**
@@ -967,4 +1055,13 @@ git commit -m "docs: status för klartext i låsta stycken"
   - Uppföljningsavsnitten får klartext via `_belagg` (uppgift 4) och kortnamn för sina fält (uppgift 3).
   - Spårbarheten täcks av referenserna och B1 (uppgift 4).
 - **Fastställda paket:** de läses men byggs aldrig om. Testerna för paket och manifest körs oförändrade i uppgift 2 och 7.
+- **Andra granskningen:**
+  - Läckaget via gränsmeningen stängs i uppgift 6, med testet för 0 mot 3 kunder.
+  - Historiska attestsummor skyddas i uppgift 3, med frysta summor för v0-basen och `KRV-PTL-2-9`.
+  - Slutkontrollen använder start-SHA.
+  - Återanvändningen av v3-utkast är utredd med en rekommendation.
 - **Typkonsekvens:** `under_grans(profil, data)` tar ingen regelbas; `gransmening(regelbas, profil, g)` gör det. `uppgiftstext(..., namn=, med_id=)` används med samma nyckelord i uppgift 4, 5 och 6.
+
+## Genomförandelogg
+
+START=
