@@ -1,6 +1,6 @@
 # Riskanalys – designspecifikation
 
-**Status:** Förslag, revision 17 (2026-10-11). Ligger till grund för M0–M1 och [implementeringsplanen för M2](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md). Juridiskt godkännande återstår.
+**Status:** Förslag, revision 18 (2026-10-12). Ligger till grund för M0–M1 och [implementeringsplanen för M2](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md). Juridiskt godkännande återstår.
 **Underlag:** [researchsammanställningen](../../research/README.md).
 **Ändringar:** se [ändringsloggen](#22-ändringslogg) sist i dokumentet.
 **Nästa steg:** verklig sakkunniggranskning av M2:s tekniska underlag och sedan M3:s metod-/granskningsutvärdering. M0–M1 och M2:s tekniska implementation är införda; M2 är ännu inte juridiskt godkänd. Se [status](../../STATUS.md) och [M2-planens genomförandelogg](../plans/2026-10-10-m2-regelbas-v1-och-juridisk-granskning.md#genomförande-2026-10-10) för kontrakt, verifiering och kvarstående arbete.
@@ -569,6 +569,17 @@ För varje anrop sparas en kontrollsumma över systemprompt, delmodul och schema
 
 Batch-API får användas för syntetiska profiler, som saknar personuppgifter, och batcherna raderas efter att resultatet hämtats. Uppskattad API-kostnad för hela utvärderingen är några hundra dollar; den sakkunniges tid är den verkliga gränsen.
 
+#### 8.4.9 Klartext i låsta stycken (format `D-ARB-tjanst-v4`)
+
+Låsta stycken skrivs för läsaren, inte för programmet:
+
+1. Löptexten innehåller inga fält-ID, villkorsuttryck eller katalogkoder. En uppgift skrivs med fältets kortnamn, värde, period, källa och datum. Kortnamnet (`etikett`) är visningstext i regelbasen och ändrar ingen regel. Tjänste- och kontrollfält får namn efter tjänstens och kontrollens namn.
+2. Villkor skrivs i ord, till exempel ”Sårbarheten gäller om andel kunder i riskbranscher är minst 20 %”.
+3. När en jämförelse med en gräns inte är uppfylld men det bekräftade värdet är större än noll, skriver programmet att faktorn förekommer men ligger under metodens gräns för automatiskt riskpåslag. Motorns utfall och gränsen ändras inte. I faktabladet gäller tillåtelselistan och smågruppsskyddet. När värdet är skyddat eller inte får nå AI skriver faktabladet ingen gränsmening, så att texten blir densamma oavsett det skyddade värdet.
+4. Sektorsreferensen anges med källans titel, nivå, skala och sida.
+5. Spårbarheten finns kvar. Varje stycke behåller sina referenser, och bilagan `D-ARB.B1` anger kortnamn och fält-ID för varje uppgift.
+6. Övergången till v4 ändrar texten i låsta stycken och upphäver därför tidigare sakgodkännanden enligt 8.4.6 punkt 5. Utkast i v3 skrivs om. Fastställda paket byggs aldrig om och förblir oförändrade.
+
 ## 9 Granskning (maskinell)
 
 | Nivå | Kontroll | Typ |
@@ -968,6 +979,7 @@ M1 bevisar att arkitekturen håller innan arbetet läggs på hela regelbasen. M2
 | 15 | 2026-10-11 | Samlat källbundet registergodkännande och tjänsteutbud, obligatoriskt fälturval och atomiska batchar, redigerbara rollförslag, sessionsnyckel, SCB-status som versionshanterad bakgrund och request-lokal rendering. Ny källkontroll i research 10 §14.3. Exportpilot för pilotbyrån krävs fortfarande före ny CSV/XLSX-import. |
 | 16 | 2026-10-11 | Avgränsat val av egen kännedom och aktuella tidigare underlag med kategori-/periodkontroll, föreslagen statistikperiod, tydlig faktisk Word-leverans och SCB-schema 3 med villkorat koncernförslag för kod 41. Fler källor och ännu ej integrerade riskrapporter inventeras i research 10 §14.4; inga nya externa anslutningar eller juridiska attester. |
 | 17 | 2026-10-11 | Efter Claudes provkörning med riktig AI och researchrapporten om promptdesign: AI skriver den analyserande texten i alla analysdelar från ett faktablad, medan koden äger tal, nivåer, obligatoriska meningar, låsta stycken, datum och format (8.4). Gemensam systemprompt med regler och skäl, preliminärt ett anrop per analysdel med ett anrop per tjänst som jämförelse, schema med `enum`-referenser, platshållare med stoppregler, högst två omförsök följt av mall och fynd, gräns mellan maskinell validering och sakgranskning, faktablad med sluten källtyp och oförändrat smågruppsskydd, ersättningskontrakt för granskningsgrinden och utvärdering i tre lager före val av modell och design. Kryssfrågor med frivillig lokal komplettering ersätter merparten av fritexten i intaget, utan att tjänstefakta ärvs från byrån (14.5). AMLR märkt som framtida regelverk. Ingen juridisk attest och ingen ändring av riskmetoden. |
+| 18 | 2026-10-12 | Efter pilot på tre tjänster: låsta stycken i klartext med kortnamn i regelbasen, villkor i ord, faktorer under metodens gräns beskrivs som förekommande, sektorsreferens med källans titel och spårbarhet via referenser och bilaga B1. Format `D-ARB-tjanst-v4` med ny sakgranskning; fastställda paket oförändrade (8.4.9). Inga ändrade regler, gränser eller nivåer. |
 
 ### D-ARB-format efter källkontroll 2026-10-11
 
