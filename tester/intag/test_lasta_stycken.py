@@ -1,6 +1,6 @@
 from riskanalys.bedomning.motor import bedom
 from riskanalys.dokument.analysunderlag import sarbarhetsstycke
-from riskanalys.dokument.arb import _metod, bygg_arb
+from riskanalys.dokument.arb import bygg_arb
 from riskanalys.dokument.delskrivning import skriv_tjanst
 from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
 from riskanalys.dokument.klartext import faltnamn
@@ -131,6 +131,7 @@ def test_inga_falt_id_i_tjanstavsnittets_lasta_stycken(tmp_path, rb_intag, klar)
     assert [x for n, x in enumerate(texter, 1) if faltid_fel(n, x)] == []
     assert not [x for x in texter if "SEKTOR-" in x or " >= " in x or " == " in x]
     assert texter[0].count("Antal kunder i tjänsten") == 1
+    assert ": Antal " not in texter[0] and ": Andel " not in texter[0]
 
 
 def _metodavsnitt(rb, profil):
@@ -138,17 +139,60 @@ def _metodavsnitt(rb, profil):
     return b, bygg_arb(rb, profil, b, {}, Historik()).avsnitt_med_id()["D-ARB.2"]
 
 
+def _andrat(profil, falt, **uppdatering):
+    u = profil.uppgifter[falt].model_copy(update=uppdatering)
+    return profil.model_copy(update={"uppgifter": {**profil.uppgifter, falt: u}})
+
+
+def _tjanststycke(avsnitt, t):
+    return next(s for s in avsnitt.stycken if s.referenser[:1] == [t.tjanst])
+
+
 def test_metodavsnittet_har_tjanstens_namn_och_sektorsmening_utan_koder(rb_intag, klar):
     b, avsnitt = _metodavsnitt(rb_intag, klar)
     texter = [s.text for s in avsnitt.stycken]
     assert [x for n, x in enumerate(texter, 1) if faltid_fel(n, x)] == []
     assert not [x for x in texter if "SEKTOR-" in x or "SRC-" in x or "version " in x]
-    for t in (t for t in b.tjanster if t.inneboende is not None):
-        stycke = next(s for s in avsnitt.stycken if s.referenser == [t.tjanst])
+    erbjudna = [t for t in b.tjanster if t.inneboende is not None]
+    assert erbjudna
+    for t in erbjudna:
+        stycke = _tjanststycke(avsnitt, t)
         ref = rb_intag.sektorsreferenser[rb_intag.tjanster[t.tjanst].sektorreferens]
         assert stycke.text.startswith(f"{rb_intag.tjanster[t.tjanst].namn}: penningtvätt {t.inneboende.risk}")
-        assert not stycke.text.startswith(t.tjanst)
         assert sektorsmening(rb_intag, ref) in stycke.text
+        assert stycke.referenser == [t.tjanst, ref.id, ref.kalla]
+
+
+def test_metodavsnittets_forsta_stycke_skriver_punkterna_i_ord(rb_intag, klar):
+    _, avsnitt = _metodavsnitt(rb_intag, klar)
+    forsta = avsnitt.stycken[0].text
+    assert "Rättslig omfattning: punkterna 19 och 20; status slutlig." in forsta
+    assert "(" not in forsta.split("Rättslig omfattning")[1]
+
+
+def test_metodavsnittet_skriver_en_enda_punkt_i_ord(rb_intag, klar):
+    profil = _andrat(klar, "P-VERK.bokforing", status="saknas")
+    b, avsnitt = _metodavsnitt(rb_intag, profil)
+    assert b.omfattning.punkter == (20,)
+    assert "Rättslig omfattning: punkt 20; status preliminär." in avsnitt.stycken[0].text
+
+
+def test_metodavsnittets_hinder_saknar_falt_id_nar_sateslan_ar_okant(rb_intag, klar):
+    _, avsnitt = _metodavsnitt(rb_intag, _andrat(klar, "P-ORG.sateslan", status="saknas"))
+    texter = [s.text for s in avsnitt.stycken]
+    assert "Bekräfta " in texter[0] and "P-ORG.sateslan" not in texter[0]
+    assert faltnamn(rb_intag, "P-ORG.sateslan") in texter[0]
+    assert [x for n, x in enumerate(texter, 1) if faltid_fel(n, x)] == []
+
+
+def test_metodavsnittets_hinder_saknar_id_for_tjanst_roll_och_tillamplighetsrad(rb_intag, klar):
+    profil = _andrat(klar, "P-VERK.bokforing", status="saknas")
+    b, avsnitt = _metodavsnitt(rb_intag, profil)
+    assert any(h.startswith("T-RED-01:") for h in b.omfattning.hinder)
+    assert any("BT-TILL-" in h for h in b.omfattning.hinder)
+    texter = [s.text for s in avsnitt.stycken]
+    assert [x for n, x in enumerate(texter, 1) if faltid_fel(n, x)] == []
+    assert f"{rb_intag.tjanster['T-RED-01'].namn}: faktiskt erbjuden tjänst kräver" in texter[0]
 
 
 def test_sektorsmeningen_delas_av_sektorsstycket_och_metodavsnittet(tmp_path, rb_intag, klar):
@@ -159,16 +203,3 @@ def test_sektorsmeningen_delas_av_sektorsstycket_och_metodavsnittet(tmp_path, rb
     assert f"sida {ref.sida}." in mening and "SEKTOR-" not in mening and "SRC-" not in mening
     (s,) = sektorsstycken(rb_intag, t)
     assert s.text == f"{mening} Motiveringen ska pröva tjänstens egna förhållanden mot denna sektorsreferens."
-
-
-def test_frysta_m1_kedjan_behaller_metodavsnittets_gamla_text(rb_intag, klar):
-    gammal = rb_intag.model_copy(update={"version": "0.9.0"})
-    assert not gammal.utokade_krav
-    b = bedom(gammal, valj(gammal, klar.byra.regelpaket, DAG, klar.byra.lan), klar)
-    t = next(t for t in b.tjanster if t.inneboende is not None)
-    ref = gammal.sektorsreferenser[gammal.tjanster[t.tjanst].sektorreferens]
-    stycke = next(s for s in _metod(gammal, b).stycken if s.referenser == [t.tjanst])
-    assert stycke.text.startswith(f"{t.tjanst}: penningtvätt {t.inneboende.risk}, kvarstående {t.kvarstaende}; ")
-    assert stycke.text.endswith(
-        f"Sektorsreferens {ref.id}: {ref.niva} på källans skala {ref.skala}, {ref.kalla}, sida {ref.sida}, "
-        f"version {ref.referensversion}. Källans skala är separat från byråns motor.")

@@ -2,7 +2,8 @@ from datetime import date
 
 import pytest
 
-from riskanalys.dokument.klartext import faltnamn, gemen, gransmening, under_grans, uppgiftstext, villkorstext
+from riskanalys.dokument.klartext import (faltnamn, gemen, gransmening, id_till_namn, punkttext, under_grans,
+                                          uppgiftstext, villkorstext)
 from riskanalys.profil.modeller import Byra, Period, Profil, Uppgift
 
 PER = Period(fran=date(2025, 1, 1), till=date(2025, 12, 31))
@@ -99,3 +100,33 @@ def test_samma_falt_tva_ganger_ger_en_gransmening(rb_intag):
     p = _profil({"P-KUND.andel_riskbransch": _u(0.15)})
     assert len(under_grans(p, {"alla": [GRANS, GRANS]})) == 1
     assert under_grans(p, {"nagon": [GRANS, {"alla": [GRANS]}]}) == under_grans(p, GRANS)
+
+
+def test_id_till_namn_byter_kanda_id_mot_namn(rb_intag):
+    text = id_till_namn(rb_intag, "Bekräfta P-KUND.andel_riskbransch; T-RED-01: erbjuds.")
+    assert text == (f"Bekräfta {faltnamn(rb_intag, 'P-KUND.andel_riskbransch')}; "
+                    f"{rb_intag.tjanster['T-RED-01'].namn}: erbjuds.")
+
+
+def test_id_till_namn_byter_sarbarhet_hot_och_kontroll(rb_intag):
+    sarbarhet, hot, kontroll = (next(iter(k)) for k in (rb_intag.sarbarheter, rb_intag.hot, rb_intag.kontroller))
+    text = id_till_namn(rb_intag, f"{sarbarhet} och {hot} samt {kontroll}.")
+    assert text == (f"{rb_intag.sarbarheter[sarbarhet].namn} och {rb_intag.hot[hot].namn} "
+                    f"samt {rb_intag.kontroller[kontroll].namn}.")
+
+
+def test_id_till_namn_byter_tillamplighetsrad_mot_punkt(rb_intag):
+    rad = rb_intag.tillamplighet["BT-TILL-19"]
+    assert id_till_namn(rb_intag, "prövningen BT-TILL-19.") == f"prövningen punkt {rad.punkt}."
+
+
+def test_id_till_namn_lamnar_okanda_id_och_regelpaket_oforandrade(rb_intag):
+    text = "Okänt P-FINNS.inte, T-OKAND-99 och paketet RP-RED-VG."
+    assert id_till_namn(rb_intag, text) == text
+
+
+def test_punkttext_skriver_punkterna_i_ord():
+    assert punkttext(()) == "ingen punkt är bekräftad"
+    assert punkttext((19,)) == "punkt 19"
+    assert punkttext((19, 20)) == "punkterna 19 och 20"
+    assert punkttext((19, 20, 21)) == "punkterna 19, 20 och 21"

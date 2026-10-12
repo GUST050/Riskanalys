@@ -1,8 +1,10 @@
 """Svensk klartext för låsta stycken: fältnamn, uppgifter och villkor utan fält-ID (spec 8.4.9)."""
 
 from dataclasses import dataclass
+from re import Match
 
 from riskanalys.bedomning.erfarenheter import belagd_uppgift
+from riskanalys.dokument.platshallare import _FALTID
 from riskanalys.profil.hantering import visa_varde
 from riskanalys.profil.modeller import Profil
 from riskanalys.profil.omfattning import HARLEDNING
@@ -136,3 +138,27 @@ def gransmening(regelbas: Regelbas, profil: Profil, g: UnderGrans) -> str:
     return (f"Faktorn förekommer: {gemen(faltnamn(regelbas, g.falt_id))} är "
             f"{visa_varde(falt, profil.uppgifter[g.falt_id].varde)}, men det ligger under metodens gräns på "
             f"{visa_varde(falt, g.grans)} för automatiskt riskpåslag.")
+
+
+def id_till_namn(regelbas: Regelbas, text: str) -> str:
+    """Byter kända ID i en text mot namn: fält, tjänst, sårbarhet, hot, kontroll och tillämplighetsprövning. Okända ID står kvar."""
+    def namn(traff: Match[str]) -> str:
+        id_ = traff.group(0)
+        if id_ in regelbas.falt:
+            return faltnamn(regelbas, id_)
+        if id_ in regelbas.tillamplighet:
+            return f"punkt {regelbas.tillamplighet[id_].punkt}"
+        katalog = next((k for k in (regelbas.tjanster, regelbas.sarbarheter, regelbas.hot, regelbas.kontroller)
+                        if id_ in k), None)
+        return katalog[id_].namn if katalog else id_
+
+    return _FALTID.sub(namn, text)
+
+
+def punkttext(punkter: tuple[int, ...]) -> str:
+    """Rättsliga punkter i ord: 'punkt 19', 'punkterna 19 och 20', 'punkterna 19, 20 och 21'."""
+    if not punkter:
+        return "ingen punkt är bekräftad"
+    if len(punkter) == 1:
+        return f"punkt {punkter[0]}"
+    return f"punkterna {', '.join(map(str, punkter[:-1]))} och {punkter[-1]}"

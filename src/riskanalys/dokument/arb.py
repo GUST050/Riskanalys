@@ -1,6 +1,7 @@
 """Sammanställer den allmänna riskbedömningen (spec 11). Bara riskavsnitten är skrivna av AI."""
 
 from riskanalys.bedomning.modeller import Bedomning, Tjanstbedomning
+from riskanalys.dokument.klartext import id_till_namn, punkttext
 from riskanalys.dokument.modeller import Avsnitt, AvsnittsUtkast, Dokument, Textstycke
 from riskanalys.dokument.nivatext import nivastycken, sektorsmening
 from riskanalys.dokument.underlag import sarbarhet_status, tjanster_med_avsnitt
@@ -8,7 +9,7 @@ from riskanalys.dokument.validering import VERIFIERA
 from riskanalys.drift.historik import Historik
 from riskanalys.profil.hantering import visa_varde
 from riskanalys.profil.modeller import Profil
-from riskanalys.regelverk.modeller import Regelbas
+from riskanalys.regelverk.modeller import Regelbas, Sektorsreferens
 from riskanalys.regelverk.villkor import falt_i, tolka_villkor
 
 DOKUMENT_ID = "D-ARB"
@@ -215,25 +216,20 @@ def _utvardering(historik: Historik) -> Avsnitt:
 def _metod(regelbas: Regelbas, bedomning: Bedomning) -> Avsnitt:
     text = "Metoden skiljer inneboende risk före åtgärder från kvarstående risk efter belagda kontroller. Penningtvätt, terrorfinansiering och sanktionsrisk beräknas separat. Grundnivåer, kombinationer och skalor är metodval som kräver sakkunniggranskning. "
     if bedomning.omfattning:
-        text += f"Rättslig omfattning: punkter {bedomning.omfattning.punkter}; status {bedomning.omfattning.status}. "
-        text += " ".join(bedomning.omfattning.hinder)
+        text += f"Rättslig omfattning: {punkttext(bedomning.omfattning.punkter)}; status {bedomning.omfattning.status}. "
+        text += id_till_namn(regelbas, " ".join(bedomning.omfattning.hinder))
     stycken = [_stycke("beskrivning", text, [])]
     for t in bedomning.tjanster:
         if t.inneboende is None:
             continue
         ref = regelbas.sektorsreferenser.get(regelbas.tjanster[t.tjanst].sektorreferens)
-        stycken.append(_stycke("beskrivning", _tjanstens_metodtext(regelbas, t, ref), [t.tjanst]))
+        refs = [t.tjanst, ref.id, ref.kalla] if ref else [t.tjanst]
+        stycken.append(_stycke("beskrivning", _tjanstens_metodtext(regelbas, t, ref), refs))
     return Avsnitt(id="D-ARB.2", rubrik="Metod, omfattning och referensrisk", kalla="regelbas", stycken=tuple(stycken))
 
 
-def _tjanstens_metodtext(regelbas: Regelbas, t: Tjanstbedomning, ref) -> str:
-    # Den frysta M1-kedjan behåller sitt historiska dokumentformat; klartext gäller från utökade krav (spec 8.4.9).
-    namn = regelbas.tjanster[t.tjanst].namn if regelbas.utokade_krav else t.tjanst
-    text = f"{namn}: penningtvätt {t.inneboende.risk}, kvarstående {t.kvarstaende}; terrorfinansiering {t.terrorfinansiering.risk}. "
+def _tjanstens_metodtext(regelbas: Regelbas, t: Tjanstbedomning, ref: Sektorsreferens | None) -> str:
+    text = f"{regelbas.tjanster[t.tjanst].namn}: penningtvätt {t.inneboende.risk}, kvarstående {t.kvarstaende}; terrorfinansiering {t.terrorfinansiering.risk}. "
     if t.sanktionsrisk and t.sanktionsrisk.inneboende:
         text += f"Sanktionsrisk {t.sanktionsrisk.inneboende.risk}, kvarstående {t.sanktionsrisk.kvarstaende}. "
-    if not ref:
-        return text
-    if regelbas.utokade_krav:
-        return text + sektorsmening(regelbas, ref)
-    return text + f"Sektorsreferens {ref.id}: {ref.niva} på källans skala {ref.skala}, {ref.kalla}, sida {ref.sida}, version {ref.referensversion}. Källans skala är separat från byråns motor."
+    return (text + sektorsmening(regelbas, ref)) if ref else text
