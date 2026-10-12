@@ -92,7 +92,8 @@ def omfattningsbrister(profil: Profil, regelbas: Regelbas) -> list[str]:
     bas = profil.uppgifter.get('P-VERK.omsattning', Uppgift())
     intakter = [
         profil.uppgifter.get(falt.id, Uppgift()) for falt in regelbas.falt.values()
-        if falt.id.startswith('P-TJ.') and falt.id.endswith('_omsattning') and aktivt(falt, profil, regelbas)
+        if falt.id.startswith('P-TJ.') and falt.id.endswith('_omsattning') and falt.typ != 'andel'
+        and aktivt(falt, profil, regelbas)
     ]
     kanda = [u for u in intakter if u.status == 'bekräftad' and type(u.varde) in (int, float)]
     if bas.status == 'bekräftad' and type(bas.varde) in (int, float):

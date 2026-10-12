@@ -74,10 +74,12 @@ def _per_del(del_id: str, svar: AISvar, fb: Faktablad) -> list[str]:
     if del_id == "sarbarheter":
         kategorier={fb.sarbarhetsomraden[r] for r in refs if r in fb.sarbarhetsomraden}
         fel.extend(f"Sårbarheterna saknar en referens i kategori {k}." for k in sorted(set(fb.sarbarhetsomraden.values())-kategorier))
+        # Faktorer är sårbarheter och faktauppgifter; ingen faktarad belägger att två faktorer avser samma kunder.
+        faktorer = {r.id for r in fb.sarbarheter} | fb.uppgift_id()
         fel += [f"Stycke {n} beskriver en kombination utan belagt överlapp. Använd stycketypen scenario."
                 for n, s in enumerate(svar.stycken, 1)
                 if s.typ == "analys" and _SAMVERKAN.search(_INGEN_BELAGD.sub("", s.text)) and
-                    len({r.id for r in fb.sarbarheter if r.id in s.referenser}) >= 2]
+                    len(set(s.referenser) & faktorer) >= 2]
     if del_id == "kontroller":
         belagda = {k.id for k in fb.kontroller if _BELAGD_EFFEKT in k.status}
         fel += [f"Stycke {n} säger att risken minskar utan hänvisning till en kontroll med belagd effekt."

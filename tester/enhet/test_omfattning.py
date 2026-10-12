@@ -55,6 +55,26 @@ def test_tre_av_hundra_ar_exakt_003_och_tampering_stoppas(minimal_regelbas):
         hand=ny.model_copy(update={"uppgifter":{**ny.uppgifter,"ANDEL":ersatt}})
         assert omfattningsbrister(hand,rb)
 
+def _intaktsbas(minimal_regelbas, tjanster):
+    f=lambda id,typ,**kw:Falt(id=id,typ=typ,fraga="Syntetisk fråga",varfor="Test",periodkrav=True,**kw)
+    falt={"P-VERK.omsattning":f("P-VERK.omsattning","tal")}
+    for t in tjanster:
+        falt[f"P-TJ.{t}_omsattning"]=f(f"P-TJ.{t}_omsattning","tal")
+        falt[f"P-TJ.{t}_andel_omsattning"]=f(f"P-TJ.{t}_andel_omsattning","andel",
+            antalfalt=f"P-TJ.{t}_omsattning",basfalt="P-VERK.omsattning")
+    return minimal_regelbas.model_copy(update={"falt":{**minimal_regelbas.falt,**falt}})
+
+@pytest.mark.parametrize("belopp,godtas",[(3000,True),(3001,False)])
+def test_tjanstintakter_jamfors_i_kronor_utan_harledda_andelar(minimal_regelbas,belopp,godtas):
+    from riskanalys.profil.modeller import Period
+    from riskanalys.profil.omfattning import harled_andelar, omfattningsbrister
+    per=Period(fran=date(2026,1,1),till=date(2026,9,30));tjanster=("a01","a02","a03")
+    rb=_intaktsbas(minimal_regelbas,tjanster)
+    v={"P-VERK.omsattning":u(9000,per),**{f"P-TJ.{t}_omsattning":u(belopp,per) for t in tjanster}}
+    ny=harled_andelar(p(v),rb)
+    assert ny.ar_bekraftad("P-TJ.a01_andel_omsattning")
+    assert (omfattningsbrister(ny,rb)==[])==godtas
+
 def test_andelen_ett_kraver_tydligt_format():
     f=Falt(id="P-A",typ="andel",fraga="Andel?",varfor="Test")
     with pytest.raises(ProfilFel,match="1 %"):

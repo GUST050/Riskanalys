@@ -202,6 +202,14 @@ def test_ingen_belagd_kombination_godtas_som_analys(text, faktablad_exempel):
     assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel), text) == []
 
 
+def test_pastatt_samband_mellan_sarbarhet_och_uppgift_maste_vara_scenario(faktablad_exempel):
+    fb = _fb_med_sarbarheter(faktablad_exempel)
+    text = "Riskbranscher och avsaknad av bankdata samverkar hos samma kunder." + FYLLNAD
+    for typ, underkanns in (("analys", True), ("scenario", False)):
+        svar = _svar((typ, ["T-RED-01", "S-KUND-01", "P-KUND.antal_aktiva"], text))
+        assert bool([f for f in validera_del("sarbarheter", svar, fb, (), ()) if "kombination" in f]) == underkanns
+
+
 def test_pastatt_samband_bredvid_undantaget_underkanns(faktablad_exempel):
     assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel),
         "Ingen belagd kombination finns, men riskbranscher och kontanthantering samverkar.")

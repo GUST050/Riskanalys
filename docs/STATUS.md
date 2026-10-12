@@ -2,6 +2,18 @@
 
 Senast uppdaterad 2026-10-12.
 
+## Kalibrering efter piloten (planens del C), 2026-10-12
+
+Piloten med Claude på den syntetiska byrån (en tjänst, Sonnet 5.5, effort `medium` och `high`) visade två systematiska fel. Prompten angav inga ordgränser, så alla första försök blev för långa. Kombinationsregeln underkände varje sårbarhetsstycke som nämnde två tillämpliga sårbarheter, så delen sårbarheter föll tillbaka till reservmallen.
+
+- Varje delmodul anger nu delens ordintervall ur `LANGD`. Prompt och validering har samma källa, och promptens kontrollsumma följer gränserna.
+- Kombinationsregeln ersätter regeln i avsnittet om granskningsrättelser nedan. Ett analysstycke underkänns när det påstår ett samband (samverkar, tillsammans, kombination, förstärker) och refererar minst två faktorer, alltså sårbarheter eller faktauppgifter. Att två faktorer gäller utan påstått samband godtas. Formuleringen ”ingen belagd kombination” godtas i analys enligt spec 8.4.4, liksom ”inga belagda kombinationer” och ”ingen kombination är belagd”. Systemprompten och sårbarhetsmodulen föreslår den formuleringen, ber om ett stycke per kategori och förbjuder sambandsord i analysstycken.
+- Omsättningskontrollen räknade härledda andelar (0–1) som kronor i summan av tjänsternas intäkter. När hela omsättningen fördelades på tjänsterna underkändes därför underlaget. Andelsfälten räknas inte längre.
+
+Verifiering: varje ändring har ett regressionstest som fallerade före rättningen, bland annat tre tjänster på 3 000 kr mot en omsättning på 9 000 kr och ett påstått samband mellan en sårbarhet och en faktauppgift. Fullsvit: **1 240 passerar, två livetester bortvalda** (695,91 s), utan API-nycklar i körmiljön. Regelbasvalidering och `git diff --check` är gröna; kontrollsumma och sakkunnigstatus är oförändrade. Inga riktiga API-anrop har gjorts under denna rättningsomgång. Del C:s tre ändringar är committade lokalt (e10d2d4, c4fa39f, a6d4ce9), och rättelserna efter granskningen är committade i en egen commit efter dem. Inget är pushat.
+
+Kvar: en ny betald pilot ska mäta förstaförsök och mallfall efter kalibreringen. I den första piloten gav `medium` ungefär samma kvalitet som `high` till omkring 40 % av kostnaden, men en tjänst räcker inte för ett modellval; det prövas vidare enligt spec 8.4.8. De låsta styckena visar fortfarande fält-ID för läsaren, och ett förslag om klartext återstår.
+
 ## Rättelser efter avbruten pilot, 2026-10-12
 
 Användaren rapporterade att piloten på en syntetisk byrå med Sonnet 5.5 och effort `high` stoppades efter åtta anrop, varav fyra klipptes vid 16 000 utdatatoken. Delanropens gräns är nu 64 000 token och anropen använder den befintliga strömningen. Ett tidigare `max_tokens`-avbrott i samma del hindrar höjning av effort i sista omförsöket, även om ett senare försök underkänns av ett annat skäl. Avbrottsmeddelandet anger anropets faktiska tokengräns.
