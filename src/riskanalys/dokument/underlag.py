@@ -131,7 +131,7 @@ def bygg_underlag(
 
 
 def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna: tuple[str, ...]) -> str:
-    from riskanalys.dokument.klartext import faltnamn, gemen, under_grans
+    from riskanalys.dokument.klartext import faltnamn, gemen, gransmening_text, under_grans
     from riskanalys.profil.omfattning import kompatibilitetsvy
     from riskanalys.regelverk.villkor import falt_i
     s = regelbas.sarbarheter[id]
@@ -153,8 +153,7 @@ def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna:
         if visning.startswith(SKYDDADE_VISNINGAR) or visning == "okänt":
             continue
         grans = visa_varde(regelbas.falt[g.falt_id], g.grans)
-        rader.append(f"Faktorn förekommer: {gemen(faltnamn(regelbas, g.falt_id))} är {visning}, men det ligger "
-                     f"under metodens gräns på {grans} för automatiskt riskpåslag.")
+        rader.append(gransmening_text(gemen(faltnamn(regelbas, g.falt_id)), visning, grans))
     return f"Det registrerade villkorets utfall är {status}. " + " ".join(rader)
 
 

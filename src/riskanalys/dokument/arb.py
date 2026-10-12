@@ -1,7 +1,7 @@
 """Sammanställer den allmänna riskbedömningen (spec 11). Bara riskavsnitten är skrivna av AI."""
 
 from riskanalys.bedomning.modeller import Bedomning, Tjanstbedomning
-from riskanalys.dokument.klartext import id_till_namn, punkttext
+from riskanalys.dokument.klartext import id_till_namn, kanda_id, punkttext
 from riskanalys.dokument.modeller import Avsnitt, AvsnittsUtkast, Dokument, Textstycke
 from riskanalys.dokument.nivatext import nivastycken, sektorsmening
 from riskanalys.dokument.underlag import sarbarhet_status, tjanster_med_avsnitt
@@ -215,10 +215,13 @@ def _utvardering(historik: Historik) -> Avsnitt:
 
 def _metod(regelbas: Regelbas, bedomning: Bedomning) -> Avsnitt:
     text = "Metoden skiljer inneboende risk före åtgärder från kvarstående risk efter belagda kontroller. Penningtvätt, terrorfinansiering och sanktionsrisk beräknas separat. Grundnivåer, kombinationer och skalor är metodval som kräver sakkunniggranskning. "
+    referenser: tuple[str, ...] = ()
     if bedomning.omfattning:
+        hinder = " ".join(bedomning.omfattning.hinder)
         text += f"Rättslig omfattning: {punkttext(bedomning.omfattning.punkter)}; status {bedomning.omfattning.status}. "
-        text += id_till_namn(regelbas, " ".join(bedomning.omfattning.hinder))
-    stycken = [_stycke("beskrivning", text, [])]
+        text += id_till_namn(regelbas, hinder)
+        referenser = kanda_id(regelbas, hinder)
+    stycken = [_stycke("beskrivning", text, list(referenser))]
     for t in bedomning.tjanster:
         if t.inneboende is None:
             continue

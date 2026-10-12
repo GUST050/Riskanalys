@@ -255,6 +255,7 @@
   typ: val
   fraga: I vilket län har företaget sitt säte, eller är du folkbokförd om verksamheten drivs som fysisk
     person?
+  etikett: Län där byrån har sitt säte eller ägaren är folkbokförd
   varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
     tjänst ska anges, inte bara yrkestitel.
   kritisk: true
@@ -298,6 +299,7 @@
 - id: P-ORG.utlandsk_filial
   typ: bool
   fraga: Drivs verksamheten genom en svensk filial till en utländsk verksamhetsutövare?
+  etikett: Verksamhet genom svensk filial till utländsk verksamhetsutövare
   varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
     tjänst ska anges, inte bara yrkestitel.
   kritisk: true
@@ -319,6 +321,7 @@
 - id: P-VERK.auktoriserad_revision
   typ: bool
   fraga: Driver ni verksamhet som auktoriserad eller godkänd revisor eller registrerat revisionsbolag?
+  etikett: Verksamhet som auktoriserad eller godkänd revisor
   varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
     tjänst ska anges, inte bara yrkestitel.
   kritisk: true
@@ -338,6 +341,7 @@
 - id: P-VERK.bokforing
   typ: bool
   fraga: Utför ni yrkesmässigt bokföring eller revision som inte är auktoriserad/godkänd revision?
+  etikett: Yrkesmässig bokföring eller icke auktoriserad revision
   varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
     tjänst ska anges, inte bara yrkestitel.
   kritisk: true
@@ -357,6 +361,7 @@
 - id: P-VERK.skatteradgivning
   typ: bool
   fraga: Ger ni yrkesmässiga råd om skatteupplägg eller andra skatter och avgifter utöver deklarationsarbete?
+  etikett: Yrkesmässig skatterådgivning utöver deklarationsarbete
   varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
     tjänst ska anges, inte bara yrkestitel.
   kritisk: true
@@ -415,6 +420,7 @@
   typ: bool
   fraga: Hjälper ni med bolagsstart/förmedling, adress, styrelseuppdrag eller andra tjänster i PTL 1 kap.
     4 § andra stycket?
+  etikett: Bolagsbildning, adress, styrelseuppdrag eller andra bolagstjänster
   varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
     tjänst ska anges, inte bara yrkestitel.
   kritisk: true
@@ -434,6 +440,7 @@
 - id: P-VERK.trust
   typ: bool
   fraga: Förvaltar ni truster eller liknande juridiska konstruktioner?
+  etikett: Förvaltning av truster eller liknande konstruktioner
   varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
     tjänst ska anges, inte bara yrkestitel.
   kritisk: true
@@ -453,6 +460,7 @@
 - id: P-VERK.nominell_aktieagare
   typ: bool
   fraga: Agerar ni som nominell aktieägare för någon annan eller arrangerar sådana uppdrag?
+  etikett: Uppdrag som nominell aktieägare
   varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
     tjänst ska anges, inte bara yrkestitel.
   kritisk: true

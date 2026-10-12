@@ -4,7 +4,7 @@ from riskanalys.bedomning.modeller import Bedomning
 from riskanalys.profil.modeller import Profil
 from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.dokument.analysunderlag import _belagg
-from riskanalys.dokument.klartext import faltnamn
+from riskanalys.dokument.klartext import faltnamn, uppgiftstext
 from riskanalys.dokument.tjanstavsnitt import stycke
 import re
 
@@ -15,7 +15,7 @@ def omfattningsstycke(rb: Regelbas, p: Profil, b: Bedomning) -> Textstycke:
     text += f'Vald omfattning (vald omfattning enligt metod): {prop.niva}; {prop.status}. ' + rb.metod.omfattning.forklaring + ' '
     if prop.okanda_uppgifter:
         text += 'Uppgifter saknas: ' + ', '.join(faltnamn(rb, id) for id in prop.okanda_uppgifter) + '. [VERIFIERA] '
-    text += 'Byråns motivering: ' + _belagg(rb, p, 'P-OMFATTNING.motivering')
+    text += uppgiftstext(rb, p, 'P-OMFATTNING.motivering', namn='Byråns motivering')
     return stycke(text, [*prop.regelspar, 'P-ORG.antal_anstallda', 'P-ORG.verksamhetsstallen', 'P-VERK.omsattning', 'P-OMFATTNING.motivering', *rb.metod.omfattning.kallor], typ='motivering')
 
 def bevakningsavsnitt(rb: Regelbas, p: Profil) -> Avsnitt:

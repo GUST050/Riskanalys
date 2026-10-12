@@ -68,3 +68,5 @@ def test_systemprompten_ber_om_lokal_granskning_i_stallet_for_kommentarer_om_und
 
 def test_sarbarhetsmodulen_styr_formuleringen_under_gransen():
     assert "förekommer men ligger under metodens gräns" in delmodul("sarbarheter")
+    assert "utan att ange gränsens värde" in delmodul("sarbarheter")
+    assert "andelen skrivs som {tal:ID}" in delmodul("sarbarheter")

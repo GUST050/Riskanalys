@@ -2,6 +2,7 @@ from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
 from riskanalys.dokument.faktablad import bygg_faktablad, faktablad_json, visa_tal
 from riskanalys.dokument.underlag import _sarbarhetsmotivering, tjanster_med_avsnitt
 from riskanalys.profil.lagring import spara_profil
+from riskanalys.profil.modeller import Uppgift
 from riskanalys.profil.omfattning import harled_andelar
 
 
@@ -67,6 +68,15 @@ def test_motiveringen_sager_att_faktorn_forekommer_under_gransen(rb_intag, klar)
     assert "Faktorn förekommer: andel kunder i riskbranscher är 15 %, men det ligger under metodens gräns på 20 %" in text
 
 
+def test_motiveringen_for_litet_positivt_antal_skriver_mindre_an_en_procent(rb_intag, klar):
+    # 8 av 2 000 är 0,4 % och visas som "0 %" i faktabladet; meningen skriver "mindre än 1 %" i stället.
+    aktiva = klar.uppgifter["P-KUND.antal_aktiva"].model_copy(update={"varde": 2000})
+    profil = klar.model_copy(update={"uppgifter": {**klar.uppgifter, "P-KUND.antal_aktiva": aktiva}})
+    profil = harled_andelar(_med_riskbransch(rb_intag, profil, 8), rb_intag, frozenset({"P-KUND.antal_aktiva"}))
+    text = _sarbarhetsmotivering(rb_intag, profil, _sarb(rb_intag), (RISKBRANSCH,))
+    assert "Faktorn förekommer: andel kunder i riskbranscher är mindre än 1 %, men det ligger under metodens gräns på 20 %" in text
+
+
 def test_falt_utanfor_tillatelselistan_far_ingen_gransmening(rb_intag, klar):
     text = _sarbarhetsmotivering(rb_intag, _med_riskbransch(rb_intag, klar, 15), _sarb(rb_intag), ())
     assert "gräns" not in text and "15 %" not in text
@@ -87,3 +97,16 @@ def test_litet_komplement_ger_ingen_gransmening(rb_intag, klar):
     rb = rb_intag.model_copy(update={"sarbarheter": {**rb_intag.sarbarheter, sarb.id: sarb}})
     text = _sarbarhetsmotivering(rb, _med_riskbransch(rb_intag, klar, 98), sarb.id, (RISKBRANSCH,))
     assert "gräns" not in text and "förekommer" not in text and "98 %" not in text
+
+
+def test_okant_antal_ger_samma_motivering_for_noll_och_tre_procent(rb_intag, klar):
+    # Utan bekräftat antal kan smågruppsskyddet inte pröva andelen. Visningen blir "okänt", så ingen gränsmening skrivs
+    # och 0 % ser likadant ut som 3 %.
+    def motivering(andel):
+        andelsuppgift = klar.uppgifter[RISKBRANSCH].model_copy(update={"varde": andel})
+        uppgifter = {**klar.uppgifter, "P-KUND.antal_riskbransch": Uppgift(), RISKBRANSCH: andelsuppgift}
+        return _sarbarhetsmotivering(rb_intag, klar.model_copy(update={"uppgifter": uppgifter}), _sarb(rb_intag),
+                                     (RISKBRANSCH,))
+    noll, tre = motivering(0.0), motivering(0.03)
+    assert noll == tre
+    assert "okänt" in tre and "gräns" not in tre and "förekommer" not in tre and "3 %" not in tre

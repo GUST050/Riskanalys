@@ -2,8 +2,8 @@ from datetime import date
 
 import pytest
 
-from riskanalys.dokument.klartext import (faltnamn, gemen, gransmening, id_till_namn, punkttext, under_grans,
-                                          uppgiftstext, villkorstext)
+from riskanalys.dokument.klartext import (faltnamn, gemen, gransmening, gransmening_text, id_till_namn, kanda_id,
+                                          punkttext, under_grans, uppgiftstext, villkorstext)
 from riskanalys.profil.modeller import Byra, Period, Profil, Uppgift
 
 PER = Period(fran=date(2025, 1, 1), till=date(2025, 12, 31))
@@ -65,6 +65,24 @@ def test_faktor_under_gransen_beskrivs_som_forekommande(rb_intag):
         "på 20 % för automatiskt riskpåslag.")
 
 
+def test_gransmeningens_mall_ar_gemensam():
+    assert gransmening_text("andel kunder i riskbranscher", "15 %", "20 %") == (
+        "Faktorn förekommer: andel kunder i riskbranscher är 15 %, men det ligger under metodens gräns "
+        "på 20 % för automatiskt riskpåslag.")
+
+
+def test_gransmeningen_skriver_mindre_an_en_procent_i_stallet_for_noll_procent():
+    # En andel som avrundas till 0 % men är över noll får inte se ut som noll.
+    text = gransmening_text("andel kunder i riskbranscher", "0 %", "20 %")
+    assert "är mindre än 1 %, men det ligger under" in text and "är 0 %" not in text
+
+
+def test_gransmeningen_for_en_andel_som_avrundas_till_noll(rb_intag):
+    p = _profil({"P-KUND.andel_riskbransch": _u(0.004)})
+    (g,) = under_grans(p, GRANS)
+    assert gransmening(rb_intag, p, g).startswith("Faktorn förekommer: andel kunder i riskbranscher är mindre än 1 %,")
+
+
 @pytest.mark.parametrize("uppgift", [None, _u(0), _u(0.25), _u(0.15, status="föreslagen")])
 def test_ingen_gransmening_utan_bekraftad_forekomst_under_gransen(uppgift):
     p = _profil({"P-KUND.andel_riskbransch": uppgift} if uppgift else {})
@@ -104,15 +122,40 @@ def test_samma_falt_tva_ganger_ger_en_gransmening(rb_intag):
 
 def test_id_till_namn_byter_kanda_id_mot_namn(rb_intag):
     text = id_till_namn(rb_intag, "Bekräfta P-KUND.andel_riskbransch; T-RED-01: erbjuds.")
-    assert text == (f"Bekräfta {faltnamn(rb_intag, 'P-KUND.andel_riskbransch')}; "
-                    f"{rb_intag.tjanster['T-RED-01'].namn}: erbjuds.")
+    assert text == (f"Bekräfta {gemen(faltnamn(rb_intag, 'P-KUND.andel_riskbransch'))}; "
+                    f"{gemen(rb_intag.tjanster['T-RED-01'].namn)}: erbjuds.")
+
+
+def test_id_till_namn_skriver_namn_mitt_i_meningen_med_liten_bokstav(rb_intag):
+    text = id_till_namn(rb_intag, "Bekräfta P-ORG.sateslan; rättslig omfattning kan inte avgöras.")
+    assert text == ("Bekräfta län där byrån har sitt säte eller ägaren är folkbokförd; "
+                    "rättslig omfattning kan inte avgöras.")
+
+
+def test_id_till_namn_behaller_stor_bokstav_forst_och_efter_punkt(rb_intag):
+    forst = id_till_namn(rb_intag, "P-ORG.sateslan saknas. BT-TILL-19: saknar lydelse. T-RED-01: erbjuds.")
+    assert forst == ("Län där byrån har sitt säte eller ägaren är folkbokförd saknas. "
+                     f"Punkt {rb_intag.tillamplighet['BT-TILL-19'].punkt}: saknar lydelse. "
+                     f"{rb_intag.tjanster['T-RED-01'].namn}: erbjuds.")
+
+
+def test_id_till_namn_behaller_forkortningar_mitt_i_meningen(rb_intag):
+    pep = next(s.id for s in rb_intag.sarbarheter.values() if s.namn.startswith("PEP"))
+    assert id_till_namn(rb_intag, f"Granska {pep}.") == f"Granska {rb_intag.sarbarheter[pep].namn}."
+
+
+def test_kanda_id_ger_unika_kanda_id_i_ordning(rb_intag):
+    text = ("Bekräfta P-ORG.sateslan; T-RED-01: x. Okänt P-FINNS.inte och T-OKAND-99, "
+            "P-ORG.sateslan igen, BT-TILL-19 och paketet RP-RED-VG.")
+    assert kanda_id(rb_intag, text) == ("P-ORG.sateslan", "T-RED-01", "BT-TILL-19")
+    assert kanda_id(rb_intag, "Inga ID här.") == ()
 
 
 def test_id_till_namn_byter_sarbarhet_hot_och_kontroll(rb_intag):
     sarbarhet, hot, kontroll = (next(iter(k)) for k in (rb_intag.sarbarheter, rb_intag.hot, rb_intag.kontroller))
     text = id_till_namn(rb_intag, f"{sarbarhet} och {hot} samt {kontroll}.")
-    assert text == (f"{rb_intag.sarbarheter[sarbarhet].namn} och {rb_intag.hot[hot].namn} "
-                    f"samt {rb_intag.kontroller[kontroll].namn}.")
+    assert text == (f"{rb_intag.sarbarheter[sarbarhet].namn} och {gemen(rb_intag.hot[hot].namn)} "
+                    f"samt {gemen(rb_intag.kontroller[kontroll].namn)}.")
 
 
 def test_id_till_namn_byter_tillamplighetsrad_mot_punkt(rb_intag):

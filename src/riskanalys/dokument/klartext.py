@@ -133,24 +133,48 @@ def under_grans(profil: Profil, data: dict) -> tuple[UnderGrans, ...]:
     return tuple(dict.fromkeys(g for d in data.get("alla", data.get("nagon", [])) for g in under_grans(profil, d)))
 
 
+def gransmening_text(namn: str, visning: str, grans: str) -> str:
+    """Den enda mallen för gränsmeningen. En andel som visas som '0 %' men är över noll skrivs 'mindre än 1 %'."""
+    visat = "mindre än 1 %" if visning == "0 %" else visning
+    return (f"Faktorn förekommer: {namn} är {visat}, men det ligger under metodens gräns på {grans} "
+            "för automatiskt riskpåslag.")
+
+
 def gransmening(regelbas: Regelbas, profil: Profil, g: UnderGrans) -> str:
     falt = regelbas.falt[g.falt_id]
-    return (f"Faktorn förekommer: {gemen(faltnamn(regelbas, g.falt_id))} är "
-            f"{visa_varde(falt, profil.uppgifter[g.falt_id].varde)}, men det ligger under metodens gräns på "
-            f"{visa_varde(falt, g.grans)} för automatiskt riskpåslag.")
+    return gransmening_text(gemen(faltnamn(regelbas, g.falt_id)), visa_varde(falt, profil.uppgifter[g.falt_id].varde),
+                            visa_varde(falt, g.grans))
+
+
+def _idnamn(regelbas: Regelbas, id_: str) -> str | None:
+    """Namnet på ett ID som regelbasen känner igen (fält, tillämplighetsprövning, tjänst, sårbarhet, hot, kontroll)."""
+    if id_ in regelbas.falt:
+        return faltnamn(regelbas, id_)
+    if id_ in regelbas.tillamplighet:
+        return f"punkt {regelbas.tillamplighet[id_].punkt}"
+    katalog = next((k for k in (regelbas.tjanster, regelbas.sarbarheter, regelbas.hot, regelbas.kontroller)
+                    if id_ in k), None)
+    return katalog[id_].namn if katalog else None
+
+
+def kanda_id(regelbas: Regelbas, text: str) -> tuple[str, ...]:
+    """De ID i en text som id_till_namn byter mot namn, unika och i den ordning de förekommer."""
+    return tuple(dict.fromkeys(id_ for id_ in _FALTID.findall(text) if _idnamn(regelbas, id_)))
 
 
 def id_till_namn(regelbas: Regelbas, text: str) -> str:
-    """Byter kända ID i en text mot namn: fält, tjänst, sårbarhet, hot, kontroll och tillämplighetsprövning. Okända ID står kvar."""
+    """Byter kända ID i en text mot namn. Okända ID står kvar.
+
+    Ett namn mitt i en mening skrivs med liten begynnelsebokstav; först i texten och efter '. ' behålls stor.
+    """
     def namn(traff: Match[str]) -> str:
         id_ = traff.group(0)
-        if id_ in regelbas.falt:
-            return faltnamn(regelbas, id_)
-        if id_ in regelbas.tillamplighet:
-            return f"punkt {regelbas.tillamplighet[id_].punkt}"
-        katalog = next((k for k in (regelbas.tjanster, regelbas.sarbarheter, regelbas.hot, regelbas.kontroller)
-                        if id_ in k), None)
-        return katalog[id_].namn if katalog else id_
+        klartext = _idnamn(regelbas, id_)
+        if klartext is None:
+            return id_
+        if traff.start() == 0 or text.endswith(". ", 0, traff.start()):
+            return klartext[:1].upper() + klartext[1:]
+        return gemen(klartext)
 
     return _FALTID.sub(namn, text)
 

@@ -1,9 +1,11 @@
+from datetime import date
+
 from riskanalys.bedomning.motor import bedom
 from riskanalys.dokument.analysunderlag import sarbarhetsstycke
 from riskanalys.dokument.arb import bygg_arb
 from riskanalys.dokument.delskrivning import skriv_tjanst
 from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
-from riskanalys.dokument.klartext import faltnamn
+from riskanalys.dokument.klartext import faltnamn, gemen
 from riskanalys.dokument.leverantor import Testleverantor
 from riskanalys.dokument.nivatext import sektorsmening, sektorsstycken
 from riskanalys.dokument.platshallare import faltid_fel
@@ -11,6 +13,7 @@ from riskanalys.dokument.promptar import DELAR
 from riskanalys.dokument.tjanstavsnitt import bygg_tjanstavsnitt_v3
 from riskanalys.dokument.uppfoljning import omfattningsstycke
 from riskanalys.drift.historik import Historik
+from riskanalys.profil.modeller import Period
 from riskanalys.profil.omfattning import harled_andelar
 from riskanalys.regelverk.urval import valj
 from tester.fixturer.m2 import DAG, godkant_delsvar, tjanst_for_prov
@@ -54,6 +57,17 @@ def test_faktor_under_gransen_i_lasta_stycket(rb_intag, klar):
     assert "Faktorn förekommer: andel kunder i riskbranscher är 15 %, men det ligger under metodens gräns på 20 %" in s.text
 
 
+def test_litet_men_positivt_antal_i_riskbranscher_skrivs_som_mindre_an_en_procent(rb_intag, klar):
+    # 8 av 2 000 är 0,4 %, som visas som "0 %". Det får inte se ut som att faktorn saknas.
+    aktiva = klar.uppgifter["P-KUND.antal_aktiva"].model_copy(update={"varde": 2000})
+    profil = klar.model_copy(update={"uppgifter": {**klar.uppgifter, "P-KUND.antal_aktiva": aktiva}})
+    profil = harled_andelar(_med_riskbransch(rb_intag, profil, 8), rb_intag, frozenset({"P-KUND.antal_aktiva"}))
+    id = _id_for(rb_intag, "P-KUND.andel_riskbransch")
+    text = sarbarhetsstycke(rb_intag, profil, "T-RED-01", id).text
+    assert "Faktorn förekommer: andel kunder i riskbranscher är mindre än 1 %, men det ligger under" in text
+    assert "är 0 %, men" not in text
+
+
 def test_saknat_geografiunderlag_ger_fortfarande_verifiera(rb_intag, klar):
     utan = klar.model_copy(update={"uppgifter": {k: v for k, v in klar.uppgifter.items() if k != "P-BESK.geografi"}})
     geo = next(id for id in rb_intag.tjanster["T-RED-01"].sarbarheter if rb_intag.sarbarheter[id].omrade == "geo")
@@ -61,7 +75,7 @@ def test_saknat_geografiunderlag_ger_fortfarande_verifiera(rb_intag, klar):
 
 
 def test_bilagan_visar_kortnamn_och_falt_id(rb_intag, klar):
-    # Andelsfälten härleds och har inget intag; antalsfältet och kortnamnen finns i bilagan.
+    # Raden för ett intagsfält visar kortnamn och fält-ID, utan råsvarets form. Härledda andelar har egna rader, se nedan.
     bilaga = bygg_underlagsbilaga(rb_intag, klar)
     rad = next(s.text for s in bilaga.stycken if s.referenser == ["P-ORG.antal_anstallda"])
     assert rad.startswith("Antal personer som arbetar på byrån (P-ORG.antal_anstallda): ")
@@ -73,6 +87,27 @@ def test_bilagan_har_rad_for_harledd_andel_med_oforandrad_kalla(rb_intag, klar):
     rad = next(s.text for s in bilaga.stycken if s.referenser == ["P-KUND.andel_riskbransch"])
     assert rad.startswith("Andel kunder i riskbranscher (P-KUND.andel_riskbransch): ")
     assert "Härledning: P-KUND.antal_riskbransch/P-KUND.antal_aktiva" in rad
+
+
+def test_bilagan_forklarar_varfor_en_andel_inte_kan_harledas(rb_intag, klar):
+    # Antalet nya kunder avser en annan period än de aktiva kunderna, så andelen går inte att härleda.
+    annan = Period(fran=date(2024, 1, 1), till=date(2024, 12, 31))
+    antal = klar.uppgifter["P-KUND.antal_nya"].model_copy(update={"period": annan})
+    profil = klar.model_copy(update={"uppgifter": {**klar.uppgifter, "P-KUND.antal_nya": antal}})
+    profil = harled_andelar(profil, rb_intag, frozenset({"P-KUND.antal_nya"}))
+    rad = next(s.text for s in bygg_underlagsbilaga(rb_intag, profil).stycken if s.referenser == ["P-KUND.andel_nya"])
+    assert rad == (
+        f"{faltnamn(rb_intag, 'P-KUND.andel_nya')} (P-KUND.andel_nya): kan inte härledas; bekräfta "
+        f"{gemen(faltnamn(rb_intag, 'P-KUND.antal_nya'))} och {gemen(faltnamn(rb_intag, 'P-KUND.antal_aktiva'))} "
+        "för samma period. [VERIFIERA]")
+
+
+def test_bilagan_behaller_den_vanliga_raden_for_ett_saknat_intagsfalt(rb_intag, klar):
+    saknas = klar.uppgifter["P-ORG.antal_anstallda"].model_copy(update={"status": "saknas"})
+    profil = klar.model_copy(update={"uppgifter": {**klar.uppgifter, "P-ORG.antal_anstallda": saknas}})
+    rad = next(s.text for s in bygg_underlagsbilaga(rb_intag, profil).stycken if s.referenser == ["P-ORG.antal_anstallda"])
+    assert rad == (f"{faltnamn(rb_intag, 'P-ORG.antal_anstallda')} (P-ORG.antal_anstallda): "
+                   "aktuellt bekräftat underlag saknas. [VERIFIERA]")
 
 
 def test_bilagans_rader_har_kortnamn_och_falt_id_i_borjan(rb_intag, klar):
@@ -112,6 +147,22 @@ def test_omfattningsstycket_namnger_saknade_uppgifter_utan_falt_id(rb_intag, kla
     assert faltid_fel(1, s.text) == [] and "[VERIFIERA]" in s.text
     assert "Uppgifter saknas: " in s.text and faltnamn(rb_intag, "P-ORG.antal_anstallda") in s.text
     assert saknas <= set(s.referenser)
+
+
+def test_omfattningsstycket_upprepar_inte_motiveringens_etikett(rb_intag, klar):
+    b = bedom(rb_intag, valj(rb_intag, klar.byra.regelpaket, DAG, klar.byra.lan), klar)
+    text = omfattningsstycke(rb_intag, klar, b).text
+    assert "Byråns motivering: " in text
+    assert faltnamn(rb_intag, "P-OMFATTNING.motivering") not in text
+    assert "Motivering av vald analysomfattning" not in text
+    assert "Byråns motivering: Syntetisk" in text
+
+
+def test_omfattningsstycket_saknad_motivering_behaller_verifiera(rb_intag, klar):
+    profil = _andrat(klar, "P-OMFATTNING.motivering", status="saknas")
+    b = bedom(rb_intag, valj(rb_intag, profil.byra.regelpaket, DAG, profil.byra.lan), profil)
+    text = omfattningsstycke(rb_intag, profil, b).text
+    assert "Byråns motivering: aktuellt bekräftat underlag saknas. [VERIFIERA]" in text
 
 
 def test_sektorsreferensen_anges_med_kallans_titel(tmp_path, rb_intag, klar):
@@ -181,8 +232,21 @@ def test_metodavsnittets_hinder_saknar_falt_id_nar_sateslan_ar_okant(rb_intag, k
     _, avsnitt = _metodavsnitt(rb_intag, _andrat(klar, "P-ORG.sateslan", status="saknas"))
     texter = [s.text for s in avsnitt.stycken]
     assert "Bekräfta " in texter[0] and "P-ORG.sateslan" not in texter[0]
-    assert faltnamn(rb_intag, "P-ORG.sateslan") in texter[0]
+    assert f"Bekräfta {gemen(faltnamn(rb_intag, 'P-ORG.sateslan'))}; " in texter[0]
     assert [x for n, x in enumerate(texter, 1) if faltid_fel(n, x)] == []
+
+
+def test_metodavsnittets_forsta_stycke_har_de_namngivna_idn_som_referenser(rb_intag, klar):
+    _, avsnitt = _metodavsnitt(rb_intag, _andrat(klar, "P-ORG.sateslan", status="saknas"))
+    referenser = avsnitt.stycken[0].referenser
+    assert "P-ORG.sateslan" in referenser
+    assert len(referenser) == len(set(referenser))
+    assert set(referenser) <= rb_intag.alla_id()
+
+
+def test_metodavsnittets_forsta_stycke_saknar_referenser_utan_namngivna_id(rb_intag, klar):
+    _, avsnitt = _metodavsnitt(rb_intag, klar)
+    assert avsnitt.stycken[0].referenser == []
 
 
 def test_metodavsnittets_hinder_saknar_id_for_tjanst_roll_och_tillamplighetsrad(rb_intag, klar):
@@ -193,6 +257,8 @@ def test_metodavsnittets_hinder_saknar_id_for_tjanst_roll_och_tillamplighetsrad(
     texter = [s.text for s in avsnitt.stycken]
     assert [x for n, x in enumerate(texter, 1) if faltid_fel(n, x)] == []
     assert f"{rb_intag.tjanster['T-RED-01'].namn}: faktiskt erbjuden tjänst kräver" in texter[0]
+    assert {"T-RED-01", "P-VERK.bokforing"} <= set(avsnitt.stycken[0].referenser)
+    assert any(r.startswith("BT-TILL-") for r in avsnitt.stycken[0].referenser)
 
 
 def test_sektorsmeningen_delas_av_sektorsstycket_och_metodavsnittet(tmp_path, rb_intag, klar):
