@@ -12,9 +12,12 @@ LANGD = {"hot": (80, 450), "sarbarheter": (100, 600), "kontroller": (60, 400), "
 _NOLL_RAPPORTER = re.compile(r"\b(?:inga|få|noll)\s+(?:misstanke)?rapporter\b[^.]*\b(?:visar|därför|innebär|tyder)\b", re.IGNORECASE)
 _MINSKNING = re.compile(r"\b(?:minskar|begränsar|reducerar|sänker)\b", re.IGNORECASE)
 _SAMVERKAN = re.compile(r"\b(?:samverk\w*|kombination\w*|tillsammans|förstärk\w*)\b", re.IGNORECASE)
-_INGEN_BELAGD = re.compile(r"\bingen belagd kombination\b", re.IGNORECASE)
+# Spec 8.4.4 tillåter att analysen konstaterar att ingen belagd kombination finns.
+_INGEN_BELAGD = re.compile(
+    r"\b(?:ingen\s+belagd\s+kombination|inga\s+belagda\s+kombinationer|ingen\s+kombination\s+är\s+belagd)\b",
+    re.IGNORECASE)
 _TILLATNA_SIFFROR = re.compile(r"\{[^{}]*\}|\[VERIFIERA\]")
-_BELAGD_EFFEKT = "belagd riskreducerande verkan enligt metodvillkor"  # ändra till den text som kontrollstatus() använder för belagd effekt
+_BELAGD_EFFEKT = "belagd riskreducerande verkan enligt metodvillkor"
 
 
 def _stycke(n: int, s, fb: Faktablad, numeriska: dict[str, str], okanda: set[str], personnamn, lasta) -> list[str]:

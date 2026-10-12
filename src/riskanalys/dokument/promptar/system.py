@@ -21,7 +21,7 @@ Ange i varje stycke vilka faktarader det bygger på genom deras ID i fältet ref
 
 Om en uppgift du behöver saknas eller inte är bekräftad: skriv [VERIFIERA] i stycket och lägg till en oklarhet med faktaradens ID. Ett utkast med luckor får inte se färdigt ut, och att skriva att underlag saknas är ett korrekt svar.
 
-Beskriv ett samband mellan två faktorer som belagt bara när faktabladet visar att de avser samma kunder. Annars skriver du sambandet som ett villkorligt scenario med stycketypen scenario, eller konstaterar att ingen kombination är belagd. Två uppgifter om hela kundbasen visar inte att samma kunder berörs.
+Beskriv ett samband mellan två faktorer som belagt bara när faktabladet visar att de avser samma kunder. Annars skriver du sambandet som ett villkorligt scenario med stycketypen scenario, eller skriver att ingen belagd kombination finns. Två uppgifter om hela kundbasen visar inte att samma kunder berörs.
 
 Skriv personer som {roll:FfR}, eftersom underlaget är avidentifierat och programmet sätter in namnen lokalt.
 

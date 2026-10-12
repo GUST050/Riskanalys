@@ -118,7 +118,7 @@ def test_statistikperiod_kan_beskrivas_utan_fria_datum(periodtext, faktablad_exe
     (('nej', 'ja'), 'Kontanthantering förekommer, men inga riskbranscher förekommer.'),
     (('nej', 'okänt'), 'Kontanthantering är okänd, men inga riskbranscher förekommer.'),
 ])
-def test_tva_s_referenser_ar_inte_kombination_nar_hogst_en_galler(galler, text, faktablad_exempel):
+def test_tva_s_referenser_utan_sambandsord_ar_inte_kombination(galler, text, faktablad_exempel):
     ids = ['S-KUND-01', 'S-KUND-02']
     fb = faktablad_exempel.model_copy(update={'sarbarheter': tuple(
         UnderlagSarbarhet(id=id, namn=id, galler=g) for id, g in zip(ids, galler))})
@@ -192,5 +192,16 @@ def test_sambandsord_med_en_sarbarhet_godtas(faktablad_exempel):
     assert not [f for f in validera_del("sarbarheter", svar, fb, (), ()) if "kombination" in f]
 
 
-def test_ingen_belagd_kombination_godtas_som_analys(faktablad_exempel):
-    assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel), "Det finns ingen belagd kombination av riskbranscher och kontanthantering.") == []
+@pytest.mark.parametrize("text", [
+    "Det finns ingen belagd kombination av riskbranscher och kontanthantering.",
+    "Ingen belagd kombination finns mellan riskbranscher och kontanthantering.",
+    "Det finns inga belagda kombinationer av riskbranscher och kontanthantering.",
+    "Ingen kombination är belagd mellan riskbranscher och kontanthantering.",
+])
+def test_ingen_belagd_kombination_godtas_som_analys(text, faktablad_exempel):
+    assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel), text) == []
+
+
+def test_pastatt_samband_bredvid_undantaget_underkanns(faktablad_exempel):
+    assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel),
+        "Ingen belagd kombination finns, men riskbranscher och kontanthantering samverkar.")

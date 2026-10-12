@@ -1,5 +1,7 @@
 """En modul per analysdel: mål, krav med skäl och fällor med skäl (spec 8.4.4)."""
 
+from riskanalys.dokument.delvalidering import LANGD
+
 DELAR = ("hot", "sarbarheter", "kontroller", "risknivaer", "slutsatser")
 
 MODULER = {
@@ -27,10 +29,11 @@ MODULER = {
         "kan minska vaksamheten.\n"
         "Beskriv samverkan mellan faktorer som belagd bara när faktabladet visar att de gäller samma kunder; annars "
         "skriver du ett villkorligt scenario med stycketypen scenario.\n"
+        "Behandla gärna varje kategori i ett eget stycke. I stycken av typen analys använder du inte orden samverkar, "
+        "tillsammans, kombination eller förstärker, eftersom de påstår ett samband som faktabladet inte kan belägga. "
+        "Ett möjligt samband skriver du som ett stycke av typen scenario. Saknas belagt samband skriver du att ingen "
+        "belagd kombination finns.\n"
         "Programmet har redan skrivit underlagsstycket för geografin. Bygg vidare på det."
-        "\nBehandla gärna varje sårbarhet i ett eget stycke. Ord som samverkar, tillsammans, kombination eller "
-        "förstärker betyder att du påstår ett samband; använd då stycketypen scenario om faktabladet inte visar "
-        "att samma kunder berörs."
     ),
     "kontroller": (
         "Skriv delen Kontroller och effekt för tjänsten. Programmet har redan skrivit varje kontrolls status och belägg. "
@@ -62,6 +65,5 @@ MODULER = {
 
 def modultext(del_id: str) -> str:
     """Modulen med delens längdintervall. Gränsen kommer från valideringen så att de inte glider isär."""
-    from riskanalys.dokument.delvalidering import LANGD
     lagst, hogst = LANGD[del_id]
-    return f"{MODULER[del_id]}\nSkriv {lagst}–{hogst} ord i delen. Längre text underkänns och måste skrivas om."
+    return f"{MODULER[del_id]}\nSkriv {lagst}–{hogst} ord i delen. Text utanför intervallet underkänns och måste skrivas om."

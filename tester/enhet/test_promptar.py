@@ -53,3 +53,10 @@ def test_uppgiftsblocket_innehaller_langdintervallet(faktablad_exempel):
     block = bygg_innehall(faktablad_exempel, "hot", (), (), ())
     lagst, hogst = LANGD["hot"]
     assert f"{lagst}–{hogst} ord" in next(b["text"] for b in block if b["text"].startswith('<uppgift del="hot">'))
+
+
+def test_promptarna_foreslar_formuleringen_som_valideringen_godtar():
+    assert "ingen belagd kombination finns" in systemprompt("claude-opus-5-5")
+    assert "ingen belagd kombination finns" in delmodul("sarbarheter")
+    assert "varje sårbarhet i ett eget stycke" not in delmodul("sarbarheter")
+    assert "varje kategori i ett eget stycke" in delmodul("sarbarheter")
