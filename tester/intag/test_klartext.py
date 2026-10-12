@@ -27,6 +27,12 @@ def test_faltnamn_anvander_etikett_och_monster(rb_intag):
     assert faltnamn(rb_intag, "P-KONTROLL.C-07.effekt") == "Dokumenterad verkan av kontrollen bankavstämning mot underlag"
 
 
+def test_kontrollnamn_som_borjar_med_kontroll_upprepar_inte_ordet(rb_intag):
+    assert faltnamn(rb_intag, "P-KONTROLL.C-TJ-01.effekt") == "Dokumenterad verkan av kontroll av löpande bokföring"
+    assert faltnamn(rb_intag, "P-KONTROLL.C-TJ-01.utfall") == "Prov och utfall för kontroll av löpande bokföring"
+    assert faltnamn(rb_intag, "P-KONTROLL.C-07.utfall") == "Prov och utfall för kontrollen bankavstämning mot underlag"
+
+
 def test_gemen_behaller_forkortningar():
     assert gemen("Andel kunder i riskbranscher") == "andel kunder i riskbranscher"
     assert gemen("PEP, familjemedlem eller känd medarbetare") == "PEP, familjemedlem eller känd medarbetare"
@@ -40,7 +46,9 @@ def test_gemen_behaller_forkortningar():
     ({"falt": "P-KANAL.bankdata_andel", "op": "<", "varde": 0.5},
      "andel kunder där byrån har tillgång till bankdata är mindre än 50 %"),
     ({"falt": "P-RISK.korruption", "op": "==", "varde": True},
-     "anknytning till land eller område med korruption förekommer"),
+     "uppgiften ”Anknytning till land eller område med korruption” är ja"),
+    ({"falt": "P-RISK.korruption", "op": "!=", "varde": True},
+     "uppgiften ”Anknytning till land eller område med korruption” är nej"),
     ({"alla": [GRANS, {"falt": "P-KANAL.bankdata_andel", "op": "<", "varde": 0.5}]},
      "andel kunder i riskbranscher är minst 20 % och andel kunder där byrån har tillgång till bankdata är mindre än 50 %"),
 ])
@@ -74,3 +82,20 @@ def test_uppgiftstext_utan_falt_id_och_med_id_i_bilagan(rb_intag):
 def test_saknat_underlag_behaller_verifiera(rb_intag):
     assert uppgiftstext(rb_intag, _profil({}), "P-KUND.andel_riskbransch") == (
         "Andel kunder i riskbranscher: aktuellt bekräftat underlag saknas. [VERIFIERA]")
+
+
+def test_varje_sarbarhetsvillkor_skrivs_utan_att_forekomma_ihop_med_ja_nej_falt(rb_intag):
+    texter = {id_: villkorstext(sarbarhet.villkor, rb_intag) for id_, sarbarhet in rb_intag.sarbarheter.items()}
+    assert texter
+    assert [id_ for id_, text in texter.items() if "förekommer" in text] == []
+
+
+def test_tjanstesarbarhet_skrivs_som_ja_nej_uppgift(rb_intag):
+    assert villkorstext(rb_intag.sarbarheter["S-TJ-01"].villkor, rb_intag) == (
+        "uppgiften ”Betalningar och attest i kundens namn erbjuds” är ja")
+
+
+def test_samma_falt_tva_ganger_ger_en_gransmening(rb_intag):
+    p = _profil({"P-KUND.andel_riskbransch": _u(0.15)})
+    assert len(under_grans(p, {"alla": [GRANS, GRANS]})) == 1
+    assert under_grans(p, {"nagon": [GRANS, {"alla": [GRANS]}]}) == under_grans(p, GRANS)

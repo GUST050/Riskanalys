@@ -20,8 +20,8 @@ _TJANSTFALT = {
     "_ovriga_risker": "Övriga riskförhållanden i {liten}",
 }
 _KONTROLLFALT = {
-    "effekt": "Dokumenterad verkan av kontrollen {liten}",
-    "utfall": "Prov och utfall för kontrollen {liten}",
+    "effekt": "Dokumenterad verkan av",
+    "utfall": "Prov och utfall för",
 }
 _JAMFORELSE = {">=": "är minst", ">": "är större än", "<": "är mindre än", "<=": "är högst", "==": "är", "!=": "inte är"}
 
@@ -49,8 +49,14 @@ def _monsternamn(regelbas: Regelbas, falt_id: str) -> str | None:
             return mall.format(namn=tjanst.namn, liten=gemen(tjanst.namn))
     delar = falt_id.split(".")
     if len(delar) == 3 and delar[0] == "P-KONTROLL" and delar[1] in regelbas.kontroller and delar[2] in _KONTROLLFALT:
-        return _KONTROLLFALT[delar[2]].format(liten=gemen(regelbas.kontroller[delar[1]].namn))
+        return f"{_KONTROLLFALT[delar[2]]} {_kontrollbeteckning(regelbas.kontroller[delar[1]].namn)}"
     return None
+
+
+def _kontrollbeteckning(namn: str) -> str:
+    """'kontroll av bokföring' när namnet redan börjar med Kontroll, annars 'kontrollen bankavstämning'."""
+    liten = gemen(namn)
+    return liten if liten.startswith("kontroll") else f"kontrollen {liten}"
 
 
 def har_eget_namn(regelbas: Regelbas, falt_id: str) -> bool:
@@ -87,8 +93,8 @@ def _jamforelsetext(data: dict, regelbas: Regelbas) -> str:
     if op == "saknas":
         return f"{namn} saknas"
     if falt.typ == "bool" and op in ("==", "!="):
-        forekommer = (data["varde"] in (True, "ja")) == (op == "==")
-        return f"{namn} förekommer" if forekommer else f"{namn} inte förekommer"
+        ja = (data["varde"] in (True, "ja")) == (op == "==")
+        return f"uppgiften ”{faltnamn(regelbas, falt.id)}” är {'ja' if ja else 'nej'}"
     if op == "i":
         return f"{namn} är något av {', '.join(str(visa_varde(falt, v)) for v in data['varde'])}"
     return f"{namn} {_JAMFORELSE[op]} {visa_varde(falt, data['varde'])}"
@@ -116,7 +122,7 @@ def under_grans(profil: Profil, data: dict) -> tuple[UnderGrans, ...]:
         return (UnderGrans(data["falt"], data["varde"]),) if 0 < u.varde and not uppfyllt else ()
     if "inte" in data:
         return ()
-    return tuple(g for d in data.get("alla", data.get("nagon", [])) for g in under_grans(profil, d))
+    return tuple(dict.fromkeys(g for d in data.get("alla", data.get("nagon", [])) for g in under_grans(profil, d)))
 
 
 def gransmening(regelbas: Regelbas, profil: Profil, g: UnderGrans) -> str:
