@@ -2,6 +2,7 @@ from datetime import date
 from docx import Document
 import pytest
 from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
+from riskanalys.dokument.delskrivning import FORMATVERSION
 from riskanalys.dokument.leverantor import Testleverantor
 from riskanalys.dokument.modeller import AvsnittsUtkast
 from riskanalys.profil.lagring import spara_profil
@@ -72,7 +73,7 @@ def test_reservmall_exporteras_som_utkast_och_blockerar_grinden(tmp_path,rb_inta
     assert fil.is_file()
     meta=manifestets_metadata(fil.parent,'granskning')
     doc,fynd=las_granskning(tmp_path/'granskning'/meta['granskning'])
-    assert doc.formatversion=='D-ARB-tjanst-v3'
+    assert doc.formatversion==FORMATVERSION
     assert any(f.allvar=='blockerande' and 'mall' in f.beskrivning for f in fynd)
     assert not (tmp_path/'faststallda').exists()
 
@@ -84,7 +85,7 @@ def test_skrivmanifest_redovisar_design_och_format(tmp_path,rb_intag,klar):
     b=las_bedomning(kor_bedomning(tmp_path,rb_intag))
     mapp=kor_skrivning(tmp_path,rb_intag,Testleverantor(bygg_delsvar(rb_intag,klar,b)))
     metadata=las_manifest(mapp).metadata
-    assert metadata['format']=='D-ARB-tjanst-v3' and metadata['design']=='B'
+    assert metadata['format']==FORMATVERSION and metadata['design']=='B'
 
 
 def test_skrivkorning_sparar_en_faktabladskopia_per_tjanst(tmp_path, rb_intag, klar):

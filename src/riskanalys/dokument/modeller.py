@@ -107,7 +107,7 @@ class Avsnitt(Last):
     kalla: Literal["regelbas", "ai"]
     stycken: tuple[Textstycke, ...]
     underrubriker: tuple[Underrubrik, ...] = ()
-    formatversion: Literal["D-ARB-tjanst-v3"] | None = None
+    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4"] | None = None
 
     @model_serializer(mode="wrap")
     def serialisera(self, handler):
@@ -135,8 +135,9 @@ class Dokument(Last):
 
     @property
     def formatversion(self) -> str:
-        if any(a.formatversion == "D-ARB-tjanst-v3" for a in self.avsnitt):
-            return "D-ARB-tjanst-v3"
+        for version in ("D-ARB-tjanst-v4", "D-ARB-tjanst-v3"):
+            if any(a.formatversion == version for a in self.avsnitt):
+                return version
         return "D-ARB-tjanst-v2" if any(a.underrubriker for a in self.avsnitt) else "D-ARB-v1"
 
     def avsnitt_med_id(self) -> dict[str, Avsnitt]:

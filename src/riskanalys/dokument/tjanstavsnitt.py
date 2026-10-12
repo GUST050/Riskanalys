@@ -80,7 +80,7 @@ def _ai_stycken(svar, numeriska: dict[str, str], perioder: dict[str, str]) -> tu
 
 def bygg_tjanstavsnitt_v3(rb: Regelbas, p: Profil, t: Tjanstbedomning, resultat, avsnitt_id: str) -> Avsnitt:
     """Låsta stycken byggs om ur profil och bedömning; AI-stycken kommer från maskinellt validerade delar (spec 8.4.6)."""
-    from riskanalys.dokument.delskrivning import ANSVARSMENING
+    from riskanalys.dokument.delskrivning import ANSVARSMENING, FORMATVERSION
     from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
     from riskanalys.dokument.delskrivning import kontrollera_resultat
     kontrollera_resultat(rb, p, t, resultat, avsnitt_id)
@@ -110,4 +110,4 @@ def bygg_tjanstavsnitt_v3(rb: Regelbas, p: Profil, t: Tjanstbedomning, resultat,
     for rubrik, texter in delar:
         rubriker.append(Underrubrik(fore_stycke=len(stycken), rubrik=rubrik))
         stycken.extend(texter)
-    return Avsnitt(id=avsnitt_id, rubrik=f'Analys av {tj.namn.lower()}', kalla='ai', stycken=tuple(stycken), underrubriker=tuple(rubriker), formatversion="D-ARB-tjanst-v3")
+    return Avsnitt(id=avsnitt_id, rubrik=f'Analys av {tj.namn.lower()}', kalla='ai', stycken=tuple(stycken), underrubriker=tuple(rubriker), formatversion=FORMATVERSION)

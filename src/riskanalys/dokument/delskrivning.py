@@ -17,7 +17,7 @@ from riskanalys.dokument.promptar import DELAR, bygg_innehall, promptsumma, syst
 from riskanalys.dokument.tjanstavsnitt import kontrollstycken
 from riskanalys.lagring.kontrollsumma import for_text
 
-FORMATVERSION = "D-ARB-tjanst-v3"
+FORMATVERSION = "D-ARB-tjanst-v4"
 MAX_OMFORSOK = 2
 MAX_TOKENS = 64000
 EFFORTSTEG = {"low": "medium", "medium": "high", "high": "xhigh", "xhigh": "max", "max": "max"}
@@ -54,7 +54,7 @@ class Tjanstresultat(Last):
     avsnitt: str
     tjanst: str
     design: Literal["A", "B"]
-    formatversion: Literal["D-ARB-tjanst-v3"] = FORMATVERSION
+    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4"] = FORMATVERSION
     faktablad: Faktablad
     delar: tuple[Delresultat, ...]
 

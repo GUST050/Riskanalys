@@ -1,6 +1,6 @@
 import pytest
 
-from riskanalys.dokument.delskrivning import skriv_tjanst
+from riskanalys.dokument.delskrivning import FORMATVERSION, skriv_tjanst
 from riskanalys.dokument.leverantor import Testleverantor
 from riskanalys.dokument.modeller import AIStycke
 from riskanalys.dokument.promptar import DELAR
@@ -60,12 +60,12 @@ def test_ny_profil_efter_skrivning_stoppar_sammanstallningen(v3):
         bygg_tjanstavsnitt_v3(rb, andrad, t, res, avsnitt_id)
 
 
-def test_v3_formatet_sparas_och_skild_fran_v2(v3):
+def test_aktuellt_format_sparas_och_skild_fran_v2(v3):
     from riskanalys.dokument.modeller import Avsnitt, Dokument
     rb, p, t, res, avsnitt_id = v3
     a = bygg_tjanstavsnitt_v3(rb, p, t, res, avsnitt_id)
-    assert Dokument(id="D-ARB", titel="Prov", avsnitt=(a,)).formatversion == "D-ARB-tjanst-v3"
-    assert Avsnitt.model_validate_json(a.model_dump_json()).formatversion == "D-ARB-tjanst-v3"
+    assert Dokument(id="D-ARB", titel="Prov", avsnitt=(a,)).formatversion == FORMATVERSION
+    assert Avsnitt.model_validate_json(a.model_dump_json()).formatversion == FORMATVERSION
 
 
 def test_felmarkering_far_inte_ersatta_omvalidering(v3):

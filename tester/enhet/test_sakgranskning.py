@@ -93,3 +93,11 @@ def test_v2_godkannande_galler_inte_ny_formatversion(profil):
     poster=registrera_sakgranskning((),doc,profil,a.id,True,"FfR","Testa Testsson",DAG)
     nytt=a.model_copy(update={"formatversion":"D-ARB-tjanst-v3"})
     assert galler_sakgranskning(poster,nytt,profil) is None
+
+
+def test_v3_godkannande_galler_inte_v4(profil):
+    a = _dokument().avsnitt[0].model_copy(update={"formatversion": "D-ARB-tjanst-v3"})
+    doc = _dokument().model_copy(update={"avsnitt": (a,)})
+    poster = registrera_sakgranskning((), doc, profil, a.id, True, "FfR", "Testa Testsson", DAG)
+    assert galler_sakgranskning(poster, a, profil) is not None
+    assert galler_sakgranskning(poster, a.model_copy(update={"formatversion": "D-ARB-tjanst-v4"}), profil) is None
