@@ -2,6 +2,33 @@
 
 Senast uppdaterad 2026-10-12.
 
+## Klartext i låsta stycken (format v4), 2026-10-12
+
+De låsta styckena i tjänsteavsnitten skrivs nu i klartext. Motorns utfall och gränserna är oförändrade; det som ändras är hur utfallet beskrivs.
+
+- Kortnamn används i stället för fält-ID.
+- Villkor skrivs i ord, till exempel ”Sårbarheten gäller om andel kunder i riskbranscher är minst 20 %”.
+- Ja/nej-uppgifter skrivs som ”uppgiften ”<kortnamn>” är ja”.
+- När en faktor förekommer men ligger under metodens gräns anger en gränsmening det: ”Faktorn förekommer: andel kunder i riskbranscher är 15 %, men det ligger under metodens gräns på 20 % för automatiskt riskpåslag.”
+- Sektorsreferensen anges med källans titel, nivå, skala och sida, både i tjänsteavsnitten och i metodavsnittet D-ARB.2 (gemensam mening).
+- D-ARB.2 skriver tjänstens namn, punkterna i ord och hindertexter med namn i stället för ID. Uppföljningsavsnittet namnger saknade uppgifter med kortnamn. Tjänstebeskrivningen dubblerar inte längre etiketterna.
+
+Spårbarhet: varje stycke behåller sina referenser, och D-ARB.2:s tjänstestycken har nu även sektorsreferensens ID och källa. Bilagan D-ARB.B1 visar kortnamn och fält-ID för varje uppgift och listar nu även härledda andelar med källan ”Härledning: antal/bas”. I löptexten står ”härledd ur bekräftade uppgifter”.
+
+Faktabladet till AI använder kortnamnen och skriver gränsmeningen bara när det visade värdet inte är skyddat; 0 och 3 kunder ger samma text. Sårbarhetsmodulen ber AI skriva att faktorn förekommer men ligger under gränsen.
+
+Regelbasen är 1.3.0 med 48 kortnamn (43 fält i låsta stycken och 5 härledda andelar). Inga regler, gränser, källor eller sakkunnigstatus är ändrade; status är fortsatt `ej_granskad`. Ett saknat kortnamn serialiseras inte, så historiska attestsummor är oförändrade (prov mot frysta summor).
+
+Formatet är `D-ARB-tjanst-v4`. Utkast i v3 måste skrivas om och sakgranskas på nytt. Regelbashöjningen gör också tidigare bedömningar inaktuella, så en v3-granskning kan inte fastställas. Fastställda paket byggs aldrig om och är oförändrade.
+
+Verifiering: slutlig fullsvit är grön, **1 309 tester passerar och två livetester är bortvalda** (653,23 s), med båda API-nycklarna borttagna ur körmiljön. Regelbasvalideringen (regelbas 1.3.0, 107 krav, 11 tjänster) och `git diff --check` är gröna. Diffen mot utgångsläget är tom för `regelbas/kataloger/sarbarheter.yaml`, `regelbas/kundfalt.yaml`, `tester/enhet/test_faststall.py`, `tester/enhet/test_manifest.py`, `tester/typfall/` och `tester/fixturer/regelbas_v0/`.
+
+Kvar:
+
+- Nästa pilot ska kontrollera att AI inte skriver att en sårbarhet under gränsen ”inte gäller”.
+- Ett beslut återstår om sårbarhetens utfall (ja/nej) för villkor ”> 0” på smågruppsandelar. Det skiljer 0 från 1–4 kunder i faktabladet och fanns före denna ändring.
+- Återanvändning av v3-utkast byggs inte (beslut 2026-10-12).
+
 ## Pilot efter kalibreringen, 2026-10-12
 
 Claude Sonnet 5.5 skrev tre tjänster åt den syntetiska byrån: löpande bokföring (T-RED-01), deklarationer (T-RED-03) och betalningar och attest i kundens namn (T-RED-05). Varje tjänst skrevs med effort `medium` och `high` på samma bedömning. Kostnadstaket var 10 USD; körningen kostade 2,42 USD.
