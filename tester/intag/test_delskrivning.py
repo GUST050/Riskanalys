@@ -147,3 +147,12 @@ def test_tokenavbrott_ger_inte_hogre_effort_i_sista_omforsoket(tmp_path, rb_inta
     res = _skriv(lev, rb_intag, klar, t, id, effort=effort)
     assert [f.effort for f in res.del_('hot').forsok] == [effort] * 3
     assert res.del_('hot').godkant_svar is not None
+
+
+def test_inget_anrop_kommenterar_vad_ai_far_se(tmp_path, rb_intag, klar):
+    import re
+    avsnitt_id, t = tjanst_for_prov(tmp_path, rb_intag, klar)
+    lev = Testleverantor([godkant_delsvar(d, t) for d in DELAR])
+    _skriv(lev, rb_intag, klar, t, avsnitt_id)
+    texter = [a.system for a in lev.delanrop] + [b["text"] for a in lev.delanrop for b in a.innehall]
+    assert not [x for x in texter if re.search(r"\b(?:till|för|åt)\s+AI\b", x)]

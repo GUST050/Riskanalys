@@ -19,7 +19,7 @@ Skriv en exakt statistikperiod som {period:ID}, där faktaraden har en period, o
 
 Ange i varje stycke vilka faktarader det bygger på genom deras ID i fältet referenser. Välj referenserna först och skriv sedan stycket utifrån dem. Skriv aldrig ID, fältnamn eller villkorsuttryck i själva texten, eftersom läsaren inte känner till dem.
 
-Om en uppgift du behöver saknas eller inte är bekräftad: skriv [VERIFIERA] i stycket och lägg till en oklarhet med faktaradens ID. Ett utkast med luckor får inte se färdigt ut, och att skriva att underlag saknas är ett korrekt svar.
+Om en uppgift du behöver saknas eller inte är bekräftad: skriv [VERIFIERA] i stycket och lägg till en oklarhet med faktaradens ID. Ett utkast med luckor får inte se färdigt ut, och att skriva att underlag saknas är ett korrekt svar. Om faktabladet säger att underlaget finns i byråns lokala belägg skriver du att underlaget behöver granskas lokalt. Skriv aldrig om vilket underlag du själv har fått eller inte fått.
 
 Beskriv ett samband mellan två faktorer som belagt bara när faktabladet visar att de avser samma kunder. Annars skriver du sambandet som ett villkorligt scenario med stycketypen scenario, eller skriver att ingen belagd kombination finns. Två uppgifter om hela kundbasen visar inte att samma kunder berörs.
 

@@ -83,7 +83,7 @@ def skyddade_lasta_texter(fb: Faktablad, t, del_id: str) -> tuple[str, ...]:
     if del_id == "hot":
         return ("Programmet återger byråns egen rapportering och erfarenhet. Antalen gäller hela byrån; noll rapporter bevisar inte frånvaro av hot.",)
     if del_id == "sarbarheter":
-        return ("Programmet återger geografins lokala underlag. Fritexten är inte tillgänglig för AI; hänvisa bara till faktabladets strukturerade uppgifter.",)
+        return ("Programmet återger geografins lokala underlag. Fritexten finns i byråns lokala belägg; hänvisa bara till faktabladets strukturerade uppgifter.",)
     if del_id == "kontroller":
         return tuple(f"Programmet återger {k.namn}: {k.status}." for k in fb.kontroller)
     if del_id == "risknivaer":

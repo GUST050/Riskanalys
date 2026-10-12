@@ -213,3 +213,28 @@ def test_pastatt_samband_mellan_sarbarhet_och_uppgift_maste_vara_scenario(faktab
 def test_pastatt_samband_bredvid_undantaget_underkanns(faktablad_exempel):
     assert _kombinationsfel(_fb_med_sarbarheter(faktablad_exempel),
         "Ingen belagd kombination finns, men riskbranscher och kontanthantering samverkar.")
+
+
+def _ai_kommentarfel(fb, text):
+    svar = _svar(("analys", ["T-RED-01"], text + FYLLNAD))
+    return [f for f in validera_del("hot", svar, fb, (), ()) if "underlag AI" in f]
+
+
+@pytest.mark.parametrize("text", [
+    "Underlaget om andelen kunder lämnas inte till AI.",
+    "Hur stor andel som berörs framgår inte av underlaget till AI.",
+    "Fritexten är inte tillgänglig för AI.",
+    "Skälen granskas lokalt eftersom underlaget inte lämnats till AI.",
+])
+def test_interna_kommentarer_om_ai_underkanns(text, faktablad_exempel):
+    assert _ai_kommentarfel(faktablad_exempel, text)
+
+
+@pytest.mark.parametrize("text", [
+    "Byrån använder AI-verktyg för att tolka kundernas fakturor.",
+    "Flera kunder säljer tjänster för AI-utveckling.",
+    "Byrån har investerat i AI för att läsa kvitton automatiskt.",
+    "Fakturor som tolkas av AI stäms av mot bankens uppgifter.",
+])
+def test_beskrivning_av_teknik_med_ai_godtas(text, faktablad_exempel):
+    assert _ai_kommentarfel(faktablad_exempel, text) == []

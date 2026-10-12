@@ -136,7 +136,7 @@ def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna:
     rader = []
     for ref in falt:
         if ref not in tillatna:
-            rader.append(f"{ref}: underlag lämnas inte till AI; motiveringen behöver granskas lokalt.")
+            rader.append(f"{ref}: underlaget finns i byråns lokala belägg; motiveringen behöver granskas lokalt.")
             continue
         u = _uppgift(regelbas, profil, ref)
         period = f" Period: {'–'.join(u.period)}." if u.period else ""

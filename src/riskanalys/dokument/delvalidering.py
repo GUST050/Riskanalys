@@ -17,6 +17,8 @@ _INGEN_BELAGD = re.compile(
     r"\b(?:ingen\s+belagd\s+kombination|inga\s+belagda\s+kombinationer|ingen\s+kombination\s+är\s+belagd)\b",
     re.IGNORECASE)
 _TILLATNA_SIFFROR = re.compile(r"\{[^{}]*\}|\[VERIFIERA\]")
+# Kommentarer om vad AI har fått se hör inte hemma i riskbedömningen; "AI-verktyg" och "tolkas av AI" godtas.
+_AI_KOMMENTAR = re.compile(r"\b(?i:till|för|åt)\s+AI\b(?![-–])")
 _BELAGD_EFFEKT = "belagd riskreducerande verkan enligt metodvillkor"
 
 
@@ -26,6 +28,8 @@ def _stycke(n: int, s, fb: Faktablad, numeriska: dict[str, str], okanda: set[str
     fel += [f"Stycke {n} hänvisar till {r}, som inte finns i faktabladet." for r in s.referenser if r not in fb.tillatna_id()]
     fel += platshallarfel(n, s.text, s.referenser, numeriska, fb.perioder())
     fel += faltid_fel(n, s.text)
+    if _AI_KOMMENTAR.search(s.text):
+        fel.append(f"Stycke {n} kommenterar vilket underlag AI har fått. Skriv i stället att underlaget behöver granskas lokalt.")
     if har_nivasprak(s.text):
         fel.append(f"Stycke {n} anger en nivå. Programmet skriver alla nivåmeningar; beskriv faktorer med andel, antal, period och egenskap.")
     if re.search(r"\d", _TILLATNA_SIFFROR.sub("", s.text)):

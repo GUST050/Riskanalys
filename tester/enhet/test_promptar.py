@@ -60,3 +60,7 @@ def test_promptarna_foreslar_formuleringen_som_valideringen_godtar():
     assert "ingen belagd kombination finns" in delmodul("sarbarheter")
     assert "varje sårbarhet i ett eget stycke" not in delmodul("sarbarheter")
     assert "varje kategori i ett eget stycke" in delmodul("sarbarheter")
+
+
+def test_systemprompten_ber_om_lokal_granskning_i_stallet_for_kommentarer_om_underlaget():
+    assert "underlaget behöver granskas lokalt" in systemprompt("claude-opus-5-5")
