@@ -1,0 +1,6008 @@
+- id: P-ORG.namn
+  typ: text
+  fraga: Vad heter byrån?
+  varfor: Dokumentet måste avse den egna verksamheten.
+  kritisk: true
+  intag:
+    grupp: P-ORG
+    ordning: 1
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    - KRV-LSF-2-02
+    - KRV-LSF-005
+    - KRV-PTL-2-2
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-ORG.antal_anstallda
+  typ: heltal
+  kritisk: true
+  smagrupp: true
+  fraga: Hur många personer arbetar på byrån, inklusive ägare?
+  varfor: Storleken påverkar hur omfattande riskbedömningen och rutinerna ska vara.
+  intag:
+    grupp: P-ORG
+    ordning: 2
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-ORG.verksamhetsstallen
+  typ: heltal
+  kritisk: true
+  fraga: På hur många orter eller kontor bedriver byrån verksamhet?
+  varfor: Fler verksamhetsställen ger fler kanaler och kräver tydligare ansvarsfördelning.
+  intag:
+    grupp: P-ORG
+    ordning: 3
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-ROLL.ffr_namn
+  typ: text
+  personuppgift: true
+  kritisk: true
+  fraga: Vem utövar funktionen för regelefterlevnad?
+  varfor: Ansvaret ska framgå av dokumentationen. Namnet skickas aldrig till AI.
+  kritisk_om:
+    falt: P-ORG.sarskilda_funktioner
+    op: ==
+    varde: false
+  intag:
+    grupp: P-ROLL
+    ordning: 23
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-ORG.sarskilda_funktioner
+    grund: metodval
+- id: P-TJ.T-RED-01.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds löpande bokföring?'
+  varfor: Samma tjänst som P-TJ.red01_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red01_erbjuds
+- id: P-KUND.andel_riskbransch
+  typ: andel
+  fraga: Hur många aktiva kunder har verksamhet i riskbranscher? (beräknad andel)
+  varfor: Härleds ur P-KUND.antal_riskbransch/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KUND.antal_riskbransch
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-KUND.andel_kontant
+  typ: andel
+  fraga: Hur många aktiva kunder har betydande kontanthantering? (beräknad andel)
+  varfor: Härleds ur P-KUND.antal_kontant/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KUND.antal_kontant
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-KANAL.andel_digitalt_underlag
+  typ: andel
+  fraga: Hur många aktiva kunder lämnar digitalt underlag? (beräknad andel)
+  varfor: Härleds ur P-KANAL.antal_digitalt_underlag/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KANAL.antal_digitalt_underlag
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-KANAL.bankdata_andel
+  typ: andel
+  fraga: För hur många aktiva kunder finns tillgång till bankdata? (beräknad andel)
+  varfor: Härleds ur P-KANAL.antal_bankdata/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KANAL.antal_bankdata
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-VERK.juniora_konsulter
+  typ: bool
+  fraga: Arbetar konsulter med mindre än två års erfarenhet självständigt mot kunder?
+  varfor: Verksamhetsspecifika omständigheter ska beaktas (14FS 2024:11 2 kap. 2 §).
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-KONTROLL.C-07.utformning
+  typ: val
+  val:
+  - finns
+  - saknas
+  fraga: Finns bankavstämning mot underlag beskriven i byråns rutiner?
+  varfor: En kontroll sänker bara risken om den finns i rutinerna.
+  intag:
+    grupp: P-KONTROLL
+    ordning: 30
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.bolag01_erbjuds
+    - P-TJ.bolag02_erbjuds
+    - P-TJ.bolag03_erbjuds
+    - P-TJ.red01_erbjuds
+    - P-TJ.red02_erbjuds
+    - P-TJ.red03_erbjuds
+    - P-TJ.red04_erbjuds
+    - P-TJ.red05_erbjuds
+    - P-TJ.red06_erbjuds
+    - P-TJ.red07_erbjuds
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+  kritisk_om: &id001
+    nagon:
+    - falt: P-TJ.red01_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.red02_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.red03_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.red04_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.red05_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.red06_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.red07_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.skatt01_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.bolag01_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.bolag02_erbjuds
+      op: ==
+      varde: true
+    - falt: P-TJ.bolag03_erbjuds
+      op: ==
+      varde: true
+- id: P-KONTROLL.C-07.genomforande
+  typ: val
+  val:
+  - belagt
+  - ej_belagt
+  fraga: Kan byrån belägga att bankavstämningen görs, till exempel med signerade avstämningar?
+  varfor: En kontroll sänker bara risken om det går att visa att den genomförs.
+  intag:
+    grupp: P-KONTROLL
+    ordning: 31
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-07.utformning
+    - P-TJ.bolag01_erbjuds
+    - P-TJ.bolag02_erbjuds
+    - P-TJ.bolag03_erbjuds
+    - P-TJ.red01_erbjuds
+    - P-TJ.red02_erbjuds
+    - P-TJ.red03_erbjuds
+    - P-TJ.red04_erbjuds
+    - P-TJ.red05_erbjuds
+    - P-TJ.red06_erbjuds
+    - P-TJ.red07_erbjuds
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+  kritisk_om: *id001
+  periodkrav: true
+- id: P-ORG.sateslan
+  typ: val
+  fraga: I vilket län har företaget sitt säte, eller är du folkbokförd om verksamheten drivs som fysisk
+    person?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  val:
+  - Dalarna
+  - Gävleborg
+  - Halland
+  - Värmland
+  - Västra Götaland
+  - Örebro
+  - Skåne
+  - Blekinge
+  - Kronoberg
+  - Jönköping
+  - Kalmar
+  - Östergötland
+  - Stockholm
+  - Södermanland
+  - Gotland
+  - Västmanland
+  - Uppsala
+  - Jämtland
+  - Västernorrland
+  - Västerbotten
+  - Norrbotten
+  intag:
+    grupp: P-ORG
+    ordning: 0
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    - SRC-PTF
+    beroenden: []
+    grund: metodval
+- id: P-ORG.utlandsk_filial
+  typ: bool
+  fraga: Drivs verksamheten genom en svensk filial till en utländsk verksamhetsutövare?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-ORG
+    ordning: 0
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    - SRC-PTF
+    beroenden: []
+    grund: metodval
+- id: P-VERK.auktoriserad_revision
+  typ: bool
+  fraga: Driver ni verksamhet som auktoriserad eller godkänd revisor eller registrerat revisionsbolag?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.bokforing
+  typ: bool
+  fraga: Utför ni yrkesmässigt bokföring eller revision som inte är auktoriserad/godkänd revision?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.skatteradgivning
+  typ: bool
+  fraga: Ger ni yrkesmässiga råd om skatteupplägg eller andra skatter och avgifter utöver deklarationsarbete?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.advokat
+  typ: bool
+  fraga: Utförs uppdrag av advokat eller advokatbolag enligt PTL 1 kap. 4 § första stycket?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.oberoende_jurist
+  typ: bool
+  fraga: Utförs uppdrag av annan oberoende jurist enligt PTL 1 kap. 4 § första stycket?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.bolagstjanster
+  typ: bool
+  fraga: Hjälper ni med bolagsstart/förmedling, adress, styrelseuppdrag eller andra tjänster i PTL 1 kap.
+    4 § andra stycket?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.trust
+  typ: bool
+  fraga: Förvaltar ni truster eller liknande juridiska konstruktioner?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.nominell_aktieagare
+  typ: bool
+  fraga: Agerar ni som nominell aktieägare för någon annan eller arrangerar sådana uppdrag?
+  varfor: Rättslig verksamhetskategori enligt PTL 1 kap. 2 och 4 §§ och tillsyn enligt PTF 16 §; faktisk
+    tjänst ska anges, inte bara yrkestitel.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 5
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-ORG.koncernmoder
+  typ: bool
+  fraga: Är byrån yttersta moderföretag i en koncern?
+  varfor: 'PTL 2 kap. 9–12 §§: koncerngemensamma rutiner prövas endast för moderföretaget.'
+  kritisk: true
+  intag:
+    grupp: P-ORG
+    ordning: 42
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-KUND.antal_aktiva
+  typ: heltal
+  fraga: Hur många aktiva kunder finns under redovisningsperioden?
+  varfor: Nämnare för kund-, kanal- och tjänsteandelar; varje kund räknas en gång i basen.
+  periodkrav: true
+  kritisk: true
+  enhet: kunder
+  intag:
+    grupp: P-KUND
+    ordning: 43
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.omsattning
+  typ: tal
+  fraga: Vilken är byråns omsättning i SEK under samma period?
+  varfor: Bas för tjänsteintäkter utan dubbelräkning; tjänsteintäkter kan vara mindre än totalen.
+  periodkrav: true
+  kritisk: true
+  enhet: SEK
+  intag:
+    grupp: P-VERK
+    ordning: 44
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-KUND.antal_riskbransch
+  typ: heltal
+  fraga: Hur många aktiva kunder har verksamhet i riskbranscher?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 45
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-KUND.antal_kontant
+  typ: heltal
+  fraga: Hur många aktiva kunder har betydande kontanthantering?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 46
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-KANAL.antal_digitalt_underlag
+  typ: heltal
+  fraga: Hur många aktiva kunder lämnar digitalt underlag?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KANAL
+    ordning: 47
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-KANAL.antal_bankdata
+  typ: heltal
+  fraga: För hur många aktiva kunder finns tillgång till bankdata?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KANAL
+    ordning: 48
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-KUND.antal_nya
+  typ: heltal
+  fraga: Hur många av de aktiva kunderna är nya under perioden?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 49
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-KUND.andel_nya
+  typ: andel
+  fraga: Hur många av de aktiva kunderna är nya under perioden? (beräknad andel)
+  varfor: Härleds ur P-KUND.antal_nya/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KUND.antal_nya
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-KUND.antal_juridisk
+  typ: heltal
+  fraga: Hur många aktiva kunder är juridiska personer?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 51
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-KUND.andel_juridisk
+  typ: andel
+  fraga: Hur många aktiva kunder är juridiska personer? (beräknad andel)
+  varfor: Härleds ur P-KUND.antal_juridisk/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-KUND.antal_juridisk
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-GEO.antal_utland_agare
+  typ: heltal
+  fraga: Hur många aktiva kunder har ägaranknytning utanför Sverige?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-GEO
+    ordning: 53
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-GEO.andel_utland_agare
+  typ: andel
+  fraga: Hur många aktiva kunder har ägaranknytning utanför Sverige? (beräknad andel)
+  varfor: Härleds ur P-GEO.antal_utland_agare/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-GEO.antal_utland_agare
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-GEO.antal_utland_transaktion
+  typ: heltal
+  fraga: Hur många aktiva kunder har transaktioner utanför Sverige?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-GEO
+    ordning: 55
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-GEO.andel_utland_transaktion
+  typ: andel
+  fraga: Hur många aktiva kunder har transaktioner utanför Sverige? (beräknad andel)
+  varfor: Härleds ur P-GEO.antal_utland_transaktion/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-GEO.antal_utland_transaktion
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-VERK.antal_rapporter
+  typ: heltal
+  fraga: Hur många egna misstankerapporter har lämnats under perioden?
+  varfor: Egna observationer ska beaktas enligt PTL 2:1 och LSF 2:2; rapportantal är inte en riskpoäng.
+  periodkrav: true
+  kritisk: true
+  smagrupp: true
+  intag:
+    grupp: P-VERK
+    ordning: 57
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.antal_avbojanden
+  typ: heltal
+  fraga: Hur många kundrelationer eller transaktioner har avböjts på grund av misstanke?
+  varfor: Egna observationer ska beaktas enligt PTL 2:1 och LSF 2:2; rapportantal är inte en riskpoäng.
+  periodkrav: true
+  kritisk: true
+  smagrupp: true
+  intag:
+    grupp: P-VERK
+    ordning: 58
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-GEO.sanktionsanknytning
+  typ: bool
+  fraga: Finns kund-, ägar- eller transaktionsanknytning som behöver prövas mot internationella sanktioner?
+  varfor: Riskindikator, inte bekräftad listträff. Inga kundidentiteter eller listintegration i M2.
+  kritisk: true
+  intag:
+    grupp: P-GEO
+    ordning: 59
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-ORG.sarskilda_funktioner
+  typ: bool
+  fraga: Har byrån separata utsedda funktioner för regelefterlevnad och oberoende granskning?
+  varfor: Beskriv den faktiska ansvarsfördelningen. Vilka särskilda funktioner PTL 6 kap. 2 § kräver beror
+    på verksamhetens storlek och art och behöver prövas separat.
+  kritisk: true
+  intag:
+    grupp: P-ORG
+    ordning: 20
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-ROLL.ansvarsfunktion
+  typ: text
+  fraga: Vilken funktion ansvarar när särskilda funktioner har utsetts?
+  varfor: Dokumentera ansvar och beslut; lokalt fält, skickas inte till AI.
+  kritisk: true
+  personuppgift: true
+  kritisk_om:
+    falt: P-ORG.sarskilda_funktioner
+    op: ==
+    varde: true
+  intag:
+    grupp: P-ROLL
+    ordning: 61
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-ORG.sarskilda_funktioner
+    grund: metodval
+- id: P-TJ.red01_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån löpande bokföring?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.red01_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder löpande bokföring?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id002
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 63
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-TJ.red01_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder löpande bokföring? (beräknad andel)
+  varfor: Härleds ur P-TJ.red01_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red01_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id002
+- id: P-TJ.red01_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från löpande bokföring?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id002
+  smagruppsantal: P-TJ.red01_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 65
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red01_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red01_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från löpande bokföring? (beräknad andel)
+  varfor: Härleds ur P-TJ.red01_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red01_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id002
+  smagruppsantal: P-TJ.red01_antal_kunder
+- id: P-TJ.red01_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id002
+  intag:
+    grupp: P-TJ
+    ordning: 67
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red01_arbetssatt
+    - P-TJ.red01_erbjuds
+    - P-TJ.red01_geografi
+    - P-TJ.red01_kanaler
+    - P-TJ.red01_kundtyper
+    - P-TJ.red01_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-01.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av löpande bokföring?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id002
+  intag:
+    grupp: P-KONTROLL
+    ordning: 68
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red01_arbetssatt
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-01.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av löpande bokföring?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id002
+  intag:
+    grupp: P-KONTROLL
+    ordning: 69
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-01.utformning
+    - P-TJ.red01_arbetssatt
+    - P-TJ.red01_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.red02_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån bokslut och årsredovisning?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-RED-02.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds bokslut och årsredovisning?'
+  varfor: Samma tjänst som P-TJ.red02_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red02_erbjuds
+- id: P-TJ.red02_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder bokslut och årsredovisning?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id003
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 72
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-TJ.red02_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder bokslut och årsredovisning? (beräknad andel)
+  varfor: Härleds ur P-TJ.red02_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red02_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id003
+- id: P-TJ.red02_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från bokslut och årsredovisning?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id003
+  smagruppsantal: P-TJ.red02_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 74
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red02_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red02_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från bokslut och årsredovisning? (beräknad andel)
+  varfor: Härleds ur P-TJ.red02_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red02_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id003
+  smagruppsantal: P-TJ.red02_antal_kunder
+- id: P-TJ.red02_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id003
+  intag:
+    grupp: P-TJ
+    ordning: 76
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red02_arbetssatt
+    - P-TJ.red02_erbjuds
+    - P-TJ.red02_geografi
+    - P-TJ.red02_kanaler
+    - P-TJ.red02_kundtyper
+    - P-TJ.red02_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-02.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av bokslut och årsredovisning?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id003
+  intag:
+    grupp: P-KONTROLL
+    ordning: 77
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red02_arbetssatt
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-02.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av bokslut och årsredovisning?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id003
+  intag:
+    grupp: P-KONTROLL
+    ordning: 78
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-02.utformning
+    - P-TJ.red02_arbetssatt
+    - P-TJ.red02_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.red03_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån deklarationer och deklarationsombud?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-RED-03.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds deklarationer och deklarationsombud?'
+  varfor: Samma tjänst som P-TJ.red03_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red03_erbjuds
+- id: P-TJ.red03_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder deklarationer och deklarationsombud?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id004
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 81
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-TJ.red03_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder deklarationer och deklarationsombud? (beräknad andel)
+  varfor: Härleds ur P-TJ.red03_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red03_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id004
+- id: P-TJ.red03_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från deklarationer och deklarationsombud?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id004
+  smagruppsantal: P-TJ.red03_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 83
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red03_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red03_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från deklarationer och deklarationsombud? (beräknad andel)
+  varfor: Härleds ur P-TJ.red03_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red03_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id004
+  smagruppsantal: P-TJ.red03_antal_kunder
+- id: P-TJ.red03_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id004
+  intag:
+    grupp: P-TJ
+    ordning: 85
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red03_arbetssatt
+    - P-TJ.red03_erbjuds
+    - P-TJ.red03_geografi
+    - P-TJ.red03_kanaler
+    - P-TJ.red03_kundtyper
+    - P-TJ.red03_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-03.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av deklarationer och deklarationsombud?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id004
+  intag:
+    grupp: P-KONTROLL
+    ordning: 86
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red03_arbetssatt
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-03.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av deklarationer och deklarationsombud?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id004
+  intag:
+    grupp: P-KONTROLL
+    ordning: 87
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-03.utformning
+    - P-TJ.red03_arbetssatt
+    - P-TJ.red03_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.red04_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån lönehantering?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-RED-04.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds lönehantering?'
+  varfor: Samma tjänst som P-TJ.red04_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red04_erbjuds
+- id: P-TJ.red04_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder lönehantering?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id005
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 90
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-TJ.red04_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder lönehantering? (beräknad andel)
+  varfor: Härleds ur P-TJ.red04_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red04_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id005
+- id: P-TJ.red04_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från lönehantering?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id005
+  smagruppsantal: P-TJ.red04_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 92
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red04_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red04_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från lönehantering? (beräknad andel)
+  varfor: Härleds ur P-TJ.red04_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red04_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id005
+  smagruppsantal: P-TJ.red04_antal_kunder
+- id: P-TJ.red04_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id005
+  intag:
+    grupp: P-TJ
+    ordning: 94
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red04_arbetssatt
+    - P-TJ.red04_erbjuds
+    - P-TJ.red04_geografi
+    - P-TJ.red04_kanaler
+    - P-TJ.red04_kundtyper
+    - P-TJ.red04_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-04.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av lönehantering?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id005
+  intag:
+    grupp: P-KONTROLL
+    ordning: 95
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red04_arbetssatt
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-04.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av lönehantering?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id005
+  intag:
+    grupp: P-KONTROLL
+    ordning: 96
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-04.utformning
+    - P-TJ.red04_arbetssatt
+    - P-TJ.red04_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.red05_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån betalningar och attest i kundens namn?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-RED-05.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds betalningar och attest i kundens namn?'
+  varfor: Samma tjänst som P-TJ.red05_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red05_erbjuds
+- id: P-TJ.red05_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder betalningar och attest i kundens namn?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id006
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 99
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-TJ.red05_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder betalningar och attest i kundens namn? (beräknad andel)
+  varfor: Härleds ur P-TJ.red05_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red05_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id006
+- id: P-TJ.red05_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från betalningar och attest i kundens namn?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id006
+  smagruppsantal: P-TJ.red05_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 101
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red05_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red05_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från betalningar och attest i kundens namn? (beräknad andel)
+  varfor: Härleds ur P-TJ.red05_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red05_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id006
+  smagruppsantal: P-TJ.red05_antal_kunder
+- id: P-TJ.red05_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id006
+  intag:
+    grupp: P-TJ
+    ordning: 103
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red05_arbetssatt
+    - P-TJ.red05_erbjuds
+    - P-TJ.red05_geografi
+    - P-TJ.red05_kanaler
+    - P-TJ.red05_kundtyper
+    - P-TJ.red05_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-05.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av betalningar och attest i kundens namn?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id006
+  intag:
+    grupp: P-KONTROLL
+    ordning: 104
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red05_arbetssatt
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-05.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av betalningar och attest i kundens namn?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id006
+  intag:
+    grupp: P-KONTROLL
+    ordning: 105
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-05.utformning
+    - P-TJ.red05_arbetssatt
+    - P-TJ.red05_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.red06_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån klientmedelskonto?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-RED-06.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds klientmedelskonto?'
+  varfor: Samma tjänst som P-TJ.red06_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red06_erbjuds
+- id: P-TJ.red06_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder klientmedelskonto?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id007
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 108
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-TJ.red06_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder klientmedelskonto? (beräknad andel)
+  varfor: Härleds ur P-TJ.red06_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red06_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id007
+- id: P-TJ.red06_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från klientmedelskonto?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id007
+  smagruppsantal: P-TJ.red06_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 110
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red06_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red06_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från klientmedelskonto? (beräknad andel)
+  varfor: Härleds ur P-TJ.red06_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red06_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id007
+  smagruppsantal: P-TJ.red06_antal_kunder
+- id: P-TJ.red06_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id007
+  intag:
+    grupp: P-TJ
+    ordning: 112
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red06_arbetssatt
+    - P-TJ.red06_erbjuds
+    - P-TJ.red06_geografi
+    - P-TJ.red06_kanaler
+    - P-TJ.red06_kundtyper
+    - P-TJ.red06_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-06.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av klientmedelskonto?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id007
+  intag:
+    grupp: P-KONTROLL
+    ordning: 113
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red06_arbetssatt
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-06.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av klientmedelskonto?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id007
+  intag:
+    grupp: P-KONTROLL
+    ordning: 114
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-06.utformning
+    - P-TJ.red06_arbetssatt
+    - P-TJ.red06_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.red07_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-RED-07.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds ekonomisk rådgivning och ekonomichefstjänster?'
+  varfor: Samma tjänst som P-TJ.red07_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.red07_erbjuds
+- id: P-TJ.red07_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id008
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 117
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-TJ.red07_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder ekonomisk rådgivning och ekonomichefstjänster? (beräknad andel)
+  varfor: Härleds ur P-TJ.red07_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red07_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id008
+- id: P-TJ.red07_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id008
+  smagruppsantal: P-TJ.red07_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 119
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red07_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red07_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från ekonomisk rådgivning och ekonomichefstjänster? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.red07_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red07_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id008
+  smagruppsantal: P-TJ.red07_antal_kunder
+- id: P-TJ.red07_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id008
+  intag:
+    grupp: P-TJ
+    ordning: 121
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red07_arbetssatt
+    - P-TJ.red07_erbjuds
+    - P-TJ.red07_geografi
+    - P-TJ.red07_kanaler
+    - P-TJ.red07_kundtyper
+    - P-TJ.red07_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-07.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id008
+  intag:
+    grupp: P-KONTROLL
+    ordning: 122
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red07_arbetssatt
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-07.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av ekonomisk rådgivning och ekonomichefstjänster?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id008
+  intag:
+    grupp: P-KONTROLL
+    ordning: 123
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-07.utformning
+    - P-TJ.red07_arbetssatt
+    - P-TJ.red07_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.skatt01_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån skatterådgivning utöver deklarationer?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-SKATT-01.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds skatterådgivning utöver deklarationer?'
+  varfor: Samma tjänst som P-TJ.skatt01_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.skatt01_erbjuds
+- id: P-TJ.skatt01_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder skatterådgivning utöver deklarationer?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id009
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 126
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-TJ.skatt01_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder skatterådgivning utöver deklarationer? (beräknad andel)
+  varfor: Härleds ur P-TJ.skatt01_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.skatt01_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id009
+- id: P-TJ.skatt01_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från skatterådgivning utöver deklarationer?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id009
+  smagruppsantal: P-TJ.skatt01_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 128
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.skatt01_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från skatterådgivning utöver deklarationer? (beräknad andel)
+  varfor: Härleds ur P-TJ.skatt01_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.skatt01_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id009
+  smagruppsantal: P-TJ.skatt01_antal_kunder
+- id: P-TJ.skatt01_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id009
+  intag:
+    grupp: P-TJ
+    ordning: 130
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.skatt01_arbetssatt
+    - P-TJ.skatt01_erbjuds
+    - P-TJ.skatt01_geografi
+    - P-TJ.skatt01_kanaler
+    - P-TJ.skatt01_kundtyper
+    - P-TJ.skatt01_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-08.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av skatterådgivning utöver deklarationer?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id009
+  intag:
+    grupp: P-KONTROLL
+    ordning: 131
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.skatt01_arbetssatt
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-08.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av skatterådgivning utöver deklarationer?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id009
+  intag:
+    grupp: P-KONTROLL
+    ordning: 132
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-08.utformning
+    - P-TJ.skatt01_arbetssatt
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.bolag01_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-BOLAG-01.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds bolagsbildning, lagerbolag och bolagsförmedling?'
+  varfor: Samma tjänst som P-TJ.bolag01_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.bolag01_erbjuds
+- id: P-TJ.bolag01_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id010
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 135
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag01_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder bolagsbildning, lagerbolag och bolagsförmedling? (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag01_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag01_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id010
+- id: P-TJ.bolag01_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id010
+  smagruppsantal: P-TJ.bolag01_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 137
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.bolag01_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från bolagsbildning, lagerbolag och bolagsförmedling? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.bolag01_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag01_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id010
+  smagruppsantal: P-TJ.bolag01_antal_kunder
+- id: P-TJ.bolag01_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id010
+  intag:
+    grupp: P-TJ
+    ordning: 139
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.bolag01_arbetssatt
+    - P-TJ.bolag01_erbjuds
+    - P-TJ.bolag01_geografi
+    - P-TJ.bolag01_kanaler
+    - P-TJ.bolag01_kundtyper
+    - P-TJ.bolag01_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-09.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id010
+  intag:
+    grupp: P-KONTROLL
+    ordning: 140
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.bolag01_arbetssatt
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-09.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av bolagsbildning, lagerbolag och bolagsförmedling?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id010
+  intag:
+    grupp: P-KONTROLL
+    ordning: 141
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-09.utformning
+    - P-TJ.bolag01_arbetssatt
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.bolag02_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån registrerad adress eller postadress?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-BOLAG-02.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds registrerad adress eller postadress?'
+  varfor: Samma tjänst som P-TJ.bolag02_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.bolag02_erbjuds
+- id: P-TJ.bolag02_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder registrerad adress eller postadress?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id011
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 144
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-TJ.bolag02_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder registrerad adress eller postadress? (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag02_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag02_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id011
+- id: P-TJ.bolag02_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från registrerad adress eller postadress?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id011
+  smagruppsantal: P-TJ.bolag02_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 146
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.bolag02_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från registrerad adress eller postadress? (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag02_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag02_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id011
+  smagruppsantal: P-TJ.bolag02_antal_kunder
+- id: P-TJ.bolag02_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id011
+  intag:
+    grupp: P-TJ
+    ordning: 148
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.bolag02_arbetssatt
+    - P-TJ.bolag02_erbjuds
+    - P-TJ.bolag02_geografi
+    - P-TJ.bolag02_kanaler
+    - P-TJ.bolag02_kundtyper
+    - P-TJ.bolag02_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-10.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av registrerad adress eller postadress?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id011
+  intag:
+    grupp: P-KONTROLL
+    ordning: 149
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.bolag02_arbetssatt
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-10.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av registrerad adress eller postadress?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id011
+  intag:
+    grupp: P-KONTROLL
+    ordning: 150
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-10.utformning
+    - P-TJ.bolag02_arbetssatt
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.bolag03_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån styrelseuppdrag eller bolagsrättsligt ansvar?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 10
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.T-BOLAG-03.erbjuds
+  typ: bool
+  fraga: 'Kompatibilitetsfält: erbjuds styrelseuppdrag eller bolagsrättsligt ansvar?'
+  varfor: Samma tjänst som P-TJ.bolag03_erbjuds. Konflikter stoppas.
+  alias_for: P-TJ.bolag03_erbjuds
+- id: P-TJ.bolag03_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder styrelseuppdrag eller bolagsrättsligt ansvar?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om: &id012
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 153
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+- id: P-TJ.bolag03_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder styrelseuppdrag eller bolagsrättsligt ansvar? (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag03_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag03_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id012
+- id: P-TJ.bolag03_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från styrelseuppdrag eller bolagsrättsligt ansvar?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om: *id012
+  smagruppsantal: P-TJ.bolag03_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 155
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.bolag03_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från styrelseuppdrag eller bolagsrättsligt ansvar? (beräknad andel)
+  varfor: Härleds ur P-TJ.bolag03_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.bolag03_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om: *id012
+  smagruppsantal: P-TJ.bolag03_antal_kunder
+- id: P-TJ.bolag03_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om: *id012
+  intag:
+    grupp: P-TJ
+    ordning: 157
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.bolag03_arbetssatt
+    - P-TJ.bolag03_erbjuds
+    - P-TJ.bolag03_geografi
+    - P-TJ.bolag03_kanaler
+    - P-TJ.bolag03_kundtyper
+    - P-TJ.bolag03_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-11.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av styrelseuppdrag eller bolagsrättsligt ansvar?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om: *id012
+  intag:
+    grupp: P-KONTROLL
+    ordning: 158
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.bolag03_arbetssatt
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-11.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av styrelseuppdrag eller bolagsrättsligt ansvar?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om: *id012
+  intag:
+    grupp: P-KONTROLL
+    ordning: 159
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-11.utformning
+    - P-TJ.bolag03_arbetssatt
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-KONTROLL.C-SANK.utformning
+  typ: val
+  val:
+  - finns
+  - saknas
+  fraga: Hur dokumenteras sanktionskontrollens utformning?
+  varfor: Separat metodförslag; en obelagd kontroll sänker inte risken.
+  intag:
+    grupp: P-KONTROLL
+    ordning: 160
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.bolag01_erbjuds
+    - P-TJ.bolag02_erbjuds
+    - P-TJ.bolag03_erbjuds
+    - P-TJ.red01_erbjuds
+    - P-TJ.red02_erbjuds
+    - P-TJ.red03_erbjuds
+    - P-TJ.red04_erbjuds
+    - P-TJ.red05_erbjuds
+    - P-TJ.red06_erbjuds
+    - P-TJ.red07_erbjuds
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+  kritisk_om: *id001
+- id: P-KONTROLL.C-SANK.genomforande
+  typ: val
+  val:
+  - belagt
+  - ej_belagt
+  fraga: Hur dokumenteras sanktionskontrollens genomforande?
+  varfor: Separat metodförslag; en obelagd kontroll sänker inte risken.
+  intag:
+    grupp: P-KONTROLL
+    ordning: 161
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-SANK.utformning
+    - P-TJ.bolag01_erbjuds
+    - P-TJ.bolag02_erbjuds
+    - P-TJ.bolag03_erbjuds
+    - P-TJ.red01_erbjuds
+    - P-TJ.red02_erbjuds
+    - P-TJ.red03_erbjuds
+    - P-TJ.red04_erbjuds
+    - P-TJ.red05_erbjuds
+    - P-TJ.red06_erbjuds
+    - P-TJ.red07_erbjuds
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+  kritisk_om: *id001
+  periodkrav: true
+- id: P-BESK.verksamhet
+  typ: text
+  fraga: Beskriv byråns organisation, uppdrag och arbetssätt.
+  varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
+    Texten stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BESK
+    ordning: 162
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.1
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-BESK.kundtyper
+  typ: text
+  fraga: Vilka kundtyper, branscher och ägarstrukturer har byrån?
+  varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
+    Texten stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BESK
+    ordning: 163
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-BESK.kanaler
+  typ: text
+  fraga: Hur får ni kunder och hur sker identifiering, kontakt och leverans av underlag?
+  varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
+    Texten stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BESK
+    ordning: 164
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-BESK.geografi
+  typ: text
+  fraga: I vilka länder och områden finns kunder, ägare, verksamheter och betalningsflöden?
+  varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
+    Texten stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BESK
+    ordning: 165
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-BESK.erfarenheter
+  typ: text
+  fraga: Vilka egna erfarenheter finns av misstankar, avböjda uppdrag och avvikande beteenden? Beskriv
+    även om inga sådana erfarenheter finns.
+  varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
+    Texten stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BESK
+    ordning: 166
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-BESK.rutiner
+  typ: text
+  fraga: Beskriv ansvar, rutiner, utbildning och hur kontroller följs upp i praktiken.
+  varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
+    Texten stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BESK
+    ordning: 167
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-BESK.uppdatering
+  typ: text
+  fraga: Hur upptäcks förändringar och vem ansvarar för att ompröva riskbedömningen?
+  varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
+    Texten stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BESK
+    ordning: 168
+    krav:
+    - KRV-LSF-2-03
+    - KRV-LSF-006
+    avsnitt:
+    - D-ARB.10
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-BESK.ovriga_forhallanden
+  typ: bool
+  fraga: Finns andra riskförhållanden som de tidigare frågorna inte fångar?
+  varfor: En sluten katalog kan inte täcka alla verksamheter. Ja kräver kompletterad modell före dokumentgenerering.
+  kritisk: true
+  intag:
+    grupp: P-BESK
+    ordning: 169
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-BESK.ovrigt
+  typ: text
+  fraga: Beskriv de ytterligare riskförhållandena.
+  varfor: Underlag för komplettering av riskmodellen; uppgiften analyseras inte automatiskt.
+  kritisk: true
+  kritisk_om:
+    falt: P-BESK.ovriga_forhallanden
+    op: ==
+    varde: true
+  intag:
+    grupp: P-BESK
+    ordning: 170
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.ovriga_forhallanden
+    grund: metodval
+- id: P-TJ.red01_arbetssatt
+  typ: text
+  fraga: 'Löpande bokföring: Hur utför ni tjänsten, vilka moment och befogenheter ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 171
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-TJ.red01_kundtyper
+  typ: text
+  fraga: 'Löpande bokföring: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 172
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-TJ.red01_kanaler
+  typ: text
+  fraga: 'Löpande bokföring: Vilka kontaktvägar, identifieringssätt och underlagskanaler används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 173
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-TJ.red01_geografi
+  typ: text
+  fraga: 'Löpande bokföring: Vilka länder, ägarförbindelser och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 174
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-TJ.red01_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 175
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-TJ.red02_arbetssatt
+  typ: text
+  fraga: 'Bokslut och årsredovisning: Hur utför ni tjänsten, vilka moment och befogenheter ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 176
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-TJ.red02_kundtyper
+  typ: text
+  fraga: 'Bokslut och årsredovisning: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 177
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-TJ.red02_kanaler
+  typ: text
+  fraga: 'Bokslut och årsredovisning: Vilka kontaktvägar, identifieringssätt och underlagskanaler används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 178
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-TJ.red02_geografi
+  typ: text
+  fraga: 'Bokslut och årsredovisning: Vilka länder, ägarförbindelser och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 179
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-TJ.red02_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 180
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-TJ.red03_arbetssatt
+  typ: text
+  fraga: 'Deklarationer och deklarationsombud: Hur utför ni tjänsten, vilka moment och befogenheter ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 181
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-TJ.red03_kundtyper
+  typ: text
+  fraga: 'Deklarationer och deklarationsombud: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 182
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-TJ.red03_kanaler
+  typ: text
+  fraga: 'Deklarationer och deklarationsombud: Vilka kontaktvägar, identifieringssätt och underlagskanaler
+    används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 183
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-TJ.red03_geografi
+  typ: text
+  fraga: 'Deklarationer och deklarationsombud: Vilka länder, ägarförbindelser och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 184
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-TJ.red03_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 185
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-TJ.red04_arbetssatt
+  typ: text
+  fraga: 'Lönehantering: Hur utför ni tjänsten, vilka moment och befogenheter ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 186
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-TJ.red04_kundtyper
+  typ: text
+  fraga: 'Lönehantering: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 187
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-TJ.red04_kanaler
+  typ: text
+  fraga: 'Lönehantering: Vilka kontaktvägar, identifieringssätt och underlagskanaler används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 188
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-TJ.red04_geografi
+  typ: text
+  fraga: 'Lönehantering: Vilka länder, ägarförbindelser och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 189
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-TJ.red04_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 190
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-TJ.red05_arbetssatt
+  typ: text
+  fraga: 'Betalningar och attest i kundens namn: Hur utför ni tjänsten, vilka moment och befogenheter
+    ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 191
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-TJ.red05_kundtyper
+  typ: text
+  fraga: 'Betalningar och attest i kundens namn: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 192
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-TJ.red05_kanaler
+  typ: text
+  fraga: 'Betalningar och attest i kundens namn: Vilka kontaktvägar, identifieringssätt och underlagskanaler
+    används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 193
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-TJ.red05_geografi
+  typ: text
+  fraga: 'Betalningar och attest i kundens namn: Vilka länder, ägarförbindelser och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 194
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-TJ.red05_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 195
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-TJ.red06_arbetssatt
+  typ: text
+  fraga: 'Klientmedelskonto: Hur utför ni tjänsten, vilka moment och befogenheter ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 196
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-TJ.red06_kundtyper
+  typ: text
+  fraga: 'Klientmedelskonto: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 197
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-TJ.red06_kanaler
+  typ: text
+  fraga: 'Klientmedelskonto: Vilka kontaktvägar, identifieringssätt och underlagskanaler används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 198
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-TJ.red06_geografi
+  typ: text
+  fraga: 'Klientmedelskonto: Vilka länder, ägarförbindelser och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 199
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-TJ.red06_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 200
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-TJ.red07_arbetssatt
+  typ: text
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Hur utför ni tjänsten, vilka moment och befogenheter
+    ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 201
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-TJ.red07_kundtyper
+  typ: text
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 202
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-TJ.red07_kanaler
+  typ: text
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Vilka kontaktvägar, identifieringssätt och underlagskanaler
+    används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 203
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-TJ.red07_geografi
+  typ: text
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Vilka länder, ägarförbindelser och betalningsflöden
+    berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 204
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-TJ.red07_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 205
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-TJ.skatt01_arbetssatt
+  typ: text
+  fraga: 'Skatterådgivning utöver deklarationer: Hur utför ni tjänsten, vilka moment och befogenheter
+    ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 206
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-TJ.skatt01_kundtyper
+  typ: text
+  fraga: 'Skatterådgivning utöver deklarationer: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 207
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-TJ.skatt01_kanaler
+  typ: text
+  fraga: 'Skatterådgivning utöver deklarationer: Vilka kontaktvägar, identifieringssätt och underlagskanaler
+    används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 208
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-TJ.skatt01_geografi
+  typ: text
+  fraga: 'Skatterådgivning utöver deklarationer: Vilka länder, ägarförbindelser och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 209
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-TJ.skatt01_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 210
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag01_arbetssatt
+  typ: text
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Hur utför ni tjänsten, vilka moment och befogenheter
+    ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 211
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag01_kundtyper
+  typ: text
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 212
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag01_kanaler
+  typ: text
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Vilka kontaktvägar, identifieringssätt och
+    underlagskanaler används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 213
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag01_geografi
+  typ: text
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Vilka länder, ägarförbindelser och betalningsflöden
+    berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 214
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag01_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 215
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag02_arbetssatt
+  typ: text
+  fraga: 'Registrerad adress eller postadress: Hur utför ni tjänsten, vilka moment och befogenheter ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 216
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-TJ.bolag02_kundtyper
+  typ: text
+  fraga: 'Registrerad adress eller postadress: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 217
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-TJ.bolag02_kanaler
+  typ: text
+  fraga: 'Registrerad adress eller postadress: Vilka kontaktvägar, identifieringssätt och underlagskanaler
+    används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 218
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-TJ.bolag02_geografi
+  typ: text
+  fraga: 'Registrerad adress eller postadress: Vilka länder, ägarförbindelser och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 219
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-TJ.bolag02_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 220
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-TJ.bolag03_arbetssatt
+  typ: text
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Hur utför ni tjänsten, vilka moment och befogenheter
+    ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 221
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+- id: P-TJ.bolag03_kundtyper
+  typ: text
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Vilka kundtyper och branscher använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 222
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+- id: P-TJ.bolag03_kanaler
+  typ: text
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Vilka kontaktvägar, identifieringssätt och underlagskanaler
+    används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 223
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+- id: P-TJ.bolag03_geografi
+  typ: text
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Vilka länder, ägarförbindelser och betalningsflöden
+    berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 224
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+- id: P-TJ.bolag03_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 225
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-07.belagg
+  typ: text
+  fraga: 'Bankavstämning mot underlag: vilka daterade dokument, loggar eller stickprov visar att kontrollen
+    faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id001
+    - falt: P-KONTROLL.C-07.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 226
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-07.genomforande
+    - P-TJ.bolag01_erbjuds
+    - P-TJ.bolag02_erbjuds
+    - P-TJ.bolag03_erbjuds
+    - P-TJ.red01_erbjuds
+    - P-TJ.red02_erbjuds
+    - P-TJ.red03_erbjuds
+    - P-TJ.red04_erbjuds
+    - P-TJ.red05_erbjuds
+    - P-TJ.red06_erbjuds
+    - P-TJ.red07_erbjuds
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-01.belagg
+  typ: text
+  fraga: 'Kontroll av löpande bokföring: vilka daterade dokument, loggar eller stickprov visar att kontrollen
+    faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id002
+    - falt: P-KONTROLL.C-TJ-01.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 227
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-01.genomforande
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-02.belagg
+  typ: text
+  fraga: 'Kontroll av bokslut och årsredovisning: vilka daterade dokument, loggar eller stickprov visar
+    att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id003
+    - falt: P-KONTROLL.C-TJ-02.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 228
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-02.genomforande
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-03.belagg
+  typ: text
+  fraga: 'Kontroll av deklarationer och deklarationsombud: vilka daterade dokument, loggar eller stickprov
+    visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id004
+    - falt: P-KONTROLL.C-TJ-03.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 229
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-03.genomforande
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-04.belagg
+  typ: text
+  fraga: 'Kontroll av lönehantering: vilka daterade dokument, loggar eller stickprov visar att kontrollen
+    faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id005
+    - falt: P-KONTROLL.C-TJ-04.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 230
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-04.genomforande
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-05.belagg
+  typ: text
+  fraga: 'Kontroll av betalningar och attest i kundens namn: vilka daterade dokument, loggar eller stickprov
+    visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id006
+    - falt: P-KONTROLL.C-TJ-05.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 231
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-05.genomforande
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-06.belagg
+  typ: text
+  fraga: 'Kontroll av klientmedelskonto: vilka daterade dokument, loggar eller stickprov visar att kontrollen
+    faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id007
+    - falt: P-KONTROLL.C-TJ-06.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 232
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-06.genomforande
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-07.belagg
+  typ: text
+  fraga: 'Kontroll av ekonomisk rådgivning och ekonomichefstjänster: vilka daterade dokument, loggar eller
+    stickprov visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id008
+    - falt: P-KONTROLL.C-TJ-07.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 233
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-07.genomforande
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-08.belagg
+  typ: text
+  fraga: 'Kontroll av skatterådgivning utöver deklarationer: vilka daterade dokument, loggar eller stickprov
+    visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id009
+    - falt: P-KONTROLL.C-TJ-08.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 234
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-08.genomforande
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-09.belagg
+  typ: text
+  fraga: 'Kontroll av bolagsbildning, lagerbolag och bolagsförmedling: vilka daterade dokument, loggar
+    eller stickprov visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id010
+    - falt: P-KONTROLL.C-TJ-09.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 235
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-09.genomforande
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-10.belagg
+  typ: text
+  fraga: 'Kontroll av registrerad adress eller postadress: vilka daterade dokument, loggar eller stickprov
+    visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id011
+    - falt: P-KONTROLL.C-TJ-10.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 236
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-10.genomforande
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-11.belagg
+  typ: text
+  fraga: 'Kontroll av styrelseuppdrag eller bolagsrättsligt ansvar: vilka daterade dokument, loggar eller
+    stickprov visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id012
+    - falt: P-KONTROLL.C-TJ-11.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 237
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-11.genomforande
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-SANK.belagg
+  typ: text
+  fraga: 'Kontroll av sanktionsanknytning: vilka daterade dokument, loggar eller stickprov visar att kontrollen
+    faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - *id001
+    - falt: P-KONTROLL.C-SANK.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 238
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-SANK.genomforande
+    - P-TJ.bolag01_erbjuds
+    - P-TJ.bolag02_erbjuds
+    - P-TJ.bolag03_erbjuds
+    - P-TJ.red01_erbjuds
+    - P-TJ.red02_erbjuds
+    - P-TJ.red03_erbjuds
+    - P-TJ.red04_erbjuds
+    - P-TJ.red05_erbjuds
+    - P-TJ.red06_erbjuds
+    - P-TJ.red07_erbjuds
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-RISK.nara_relation
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Nära kundrelation kan försvaga oberoende
+    granskning?'
+  varfor: En nära relation kan göra att avvikelser förbises eller att kundkännedomen blir otillräcklig.
+    Bekräfta även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 501
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.pep
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: PEP, familjemedlem eller känd medarbetare
+    bland kunder eller huvudmän?'
+  varfor: PEP-anknytning kräver särskild prövning; den är ingen uppgift om brott. Bekräfta även ett nej
+    från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 502
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-RISK.komplex_agare
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Komplex eller svårförklarad ägarstruktur?'
+  varfor: Komplexitet kan försvåra identifiering av verklig huvudman och transaktionernas syfte. Bekräfta
+    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 503
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-RISK.utlandsk_agare
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Utländsk ägarstruktur med behov av ytterligare
+    verifiering?'
+  varfor: Begränsad insyn i utländska konstruktioner kan försvåra verifiering; utländskt ägande är inte
+    i sig brottsligt. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 504
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-RISK.ideell
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Ideella föreningar eller liknande organisationsformer?'
+  varfor: Insamling och vidareförmedling av medel kan missbrukas för terrorfinansiering; organisationsformen
+    är inte ensam bevis för missbruk. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas
+    per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 505
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-FIPO-TF-2025
+    beroenden: []
+    grund: metodval
+- id: P-RISK.kortlivad
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Företrädare med återkommande kortlivade
+    bolag?'
+  varfor: Återkommande kortlivade bolag kan dölja ett brottsupplägg och försvåra uppföljning. Bekräfta
+    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 506
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-RISK.overtagen
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Övertagna bolag eller täta byten av företrädare?'
+  varfor: Övertagna bolags registreringar och konton kan användas i nya upplägg utan att förändringen
+    upptäcks. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 507
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-FIPO-FORETAG-2026
+    beroenden: []
+    grund: metodval
+- id: P-RISK.utan_mote
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Kundrelation etablerad utan fysiskt möte?'
+  varfor: Distanskontakt kan försvåra identitetsverifiering och förståelse av verksamheten. Bekräfta även
+    ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 508
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-RISK.ombud
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Ombud eller tredje part i kundkontakt eller
+    leverans?'
+  varfor: Mellanhänder kan begränsa insynen i den verkliga kunden och hur tjänsten används. Bekräfta även
+    ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 509
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.extern_kyc
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Extern leverantör för kundkännedom eller
+    AML?'
+  varfor: Extern teknik eller leverantör ersätter inte personalens vaksamhet eller byråns ansvar. Bekräfta
+    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 510
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.hogrisktredjeland
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till EU-högrisktredjeland?'
+  varfor: Aktuell EU-lista och anknytning måste kontrolleras; programmet innehåller ingen automatisk landlista.
+    Bekräfta även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 511
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.korruption
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till land eller område
+    med korruption?'
+  varfor: Korruption kan försämra tillförlitligheten i identitets-, ägar- och transaktionsunderlag. Bekräfta
+    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 512
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.svagt_aml
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till land med svagt
+    AML-regelverk?'
+  varfor: Ett ineffektivt regelverk kan begränsa kontroller och spårbarhet i betalningskedjan. Bekräfta
+    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 513
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.utsatt_omrade
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till utsatt område
+    i Sverige?'
+  varfor: Lokala riskförhållanden ska analyseras tillsammans med tjänstens funktion; adressen innebär
+    inte att en kund är kriminell. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas
+    per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 514
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.utan_utbildning
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Personal eller uppdragstagare saknar relevant
+    aktuell utbildning?'
+  varfor: Bristande utbildning kan leda till att avvikande underlag och flöden inte upptäcks. Bekräfta
+    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 515
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.ensam_roller
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: En person utför uppdrag, kontroll och alla
+    ansvarsfunktioner?'
+  varfor: Avsaknad av oberoende kontroll är här en metodtolkning av organisation och ansvar; ensam verksamhet
+    är inte ett generellt lagbrott. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas
+    per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 516
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.kundberoende
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Ekonomiskt beroende av en eller få kunder
+    påverkar kontrollen?'
+  varfor: Ekonomiskt beroende kan försvaga möjligheten att ifrågasätta kunden; indikatorn är ett metodval
+    för verksamhetsspecifika omständigheter. Bekräfta även ett nej från undersökt underlag. Förhållandet
+    prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 517
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-RISK.utkontraktering
+  typ: bool
+  fraga: 'Förekommer följande förhållande i byråns verksamhet: Utkontrakterade delar av uppdrag eller
+    AML-arbete?'
+  varfor: Utkontraktering kan begränsa överblick och ansvarsfördelning; byråns ansvar kvarstår. Bekräfta
+    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-RISK
+    ordning: 518
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-KUND.antal_utan_mote
+  typ: heltal
+  fraga: Hur många aktiva kunder är kunder antagna utan fysiskt möte?
+  varfor: Antalet gäller samma period som aktiva kunder; kategorier kan överlappa. En hänvisning ersätter
+    inte kundkännedom eller sänker risk.
+  kritisk: true
+  smagrupp: true
+  periodkrav: true
+  intag:
+    grupp: P-KUND
+    ordning: 532
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-KUND.andel_utan_mote
+  typ: andel
+  fraga: Andel kunder antagna utan fysiskt möte
+  varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
+  antalfalt: P-KUND.antal_utan_mote
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-KANAL.antal_hanvisade
+  typ: heltal
+  fraga: Hur många aktiva kunder är kunder hänvisade av annan rådgivare?
+  varfor: Antalet gäller samma period som aktiva kunder; kategorier kan överlappa. En hänvisning ersätter
+    inte kundkännedom eller sänker risk.
+  kritisk: true
+  smagrupp: true
+  periodkrav: true
+  intag:
+    grupp: P-KANAL
+    ordning: 533
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-KANAL.andel_hanvisade
+  typ: andel
+  fraga: Andel kunder hänvisade av annan rådgivare
+  varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
+  antalfalt: P-KANAL.antal_hanvisade
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-GEO.antal_agare_utanfor_ees
+  typ: heltal
+  fraga: Hur många aktiva kunder är kunder med ägare utanför EES?
+  varfor: Antalet gäller samma period som aktiva kunder; kategorier kan överlappa. En hänvisning ersätter
+    inte kundkännedom eller sänker risk.
+  kritisk: true
+  smagrupp: true
+  periodkrav: true
+  intag:
+    grupp: P-GEO
+    ordning: 534
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-GEO.andel_agare_utanfor_ees
+  typ: andel
+  fraga: Andel kunder med ägare utanför EES
+  varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
+  antalfalt: P-GEO.antal_agare_utanfor_ees
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-GEO.antal_transaktion_utanfor_ees
+  typ: heltal
+  fraga: Hur många aktiva kunder är kunder med transaktioner utanför EES?
+  varfor: Antalet gäller samma period som aktiva kunder; kategorier kan överlappa. En hänvisning ersätter
+    inte kundkännedom eller sänker risk.
+  kritisk: true
+  smagrupp: true
+  periodkrav: true
+  intag:
+    grupp: P-GEO
+    ordning: 535
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-GEO.andel_transaktion_utanfor_ees
+  typ: andel
+  fraga: Andel kunder med transaktioner utanför EES
+  varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
+  antalfalt: P-GEO.antal_transaktion_utanfor_ees
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-GEO.antal_hogrisktredjeland
+  typ: heltal
+  fraga: Hur många aktiva kunder är kunder etablerade i EU-högrisktredjeland?
+  varfor: Antalet gäller samma period som aktiva kunder; kategorier kan överlappa. En hänvisning ersätter
+    inte kundkännedom eller sänker risk.
+  kritisk: true
+  smagrupp: true
+  periodkrav: true
+  intag:
+    grupp: P-GEO
+    ordning: 536
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-GEO.andel_hogrisktredjeland
+  typ: andel
+  fraga: Andel kunder etablerade i EU-högrisktredjeland
+  varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
+  antalfalt: P-GEO.antal_hogrisktredjeland
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-GEO.antal_utsatt_omrade
+  typ: heltal
+  fraga: Hur många aktiva kunder är kunder med relevant anknytning till utsatt område?
+  varfor: Antalet gäller samma period som aktiva kunder; kategorier kan överlappa. En hänvisning ersätter
+    inte kundkännedom eller sänker risk.
+  kritisk: true
+  smagrupp: true
+  periodkrav: true
+  intag:
+    grupp: P-GEO
+    ordning: 537
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-TS-2026-14
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+- id: P-GEO.andel_utsatt_omrade
+  typ: andel
+  fraga: Andel kunder med relevant anknytning till utsatt område
+  varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
+  antalfalt: P-GEO.antal_utsatt_omrade
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+- id: P-KONTROLL.C-07.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Bankavstämning mot underlag haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 550
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id001
+- id: P-KONTROLL.C-07.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Bankavstämning
+    mot underlag'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 551
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id001
+- id: P-KONTROLL.C-TJ-01.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av löpande bokföring haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 552
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id002
+- id: P-KONTROLL.C-TJ-01.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av löpande
+    bokföring'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 553
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id002
+- id: P-KONTROLL.C-TJ-02.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av bokslut och årsredovisning haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 554
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id003
+- id: P-KONTROLL.C-TJ-02.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av bokslut
+    och årsredovisning'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 555
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id003
+- id: P-KONTROLL.C-TJ-03.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av deklarationer och deklarationsombud haft
+    under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 556
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id004
+- id: P-KONTROLL.C-TJ-03.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av deklarationer
+    och deklarationsombud'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 557
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id004
+- id: P-KONTROLL.C-TJ-04.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av lönehantering haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 558
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id005
+- id: P-KONTROLL.C-TJ-04.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av lönehantering'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 559
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id005
+- id: P-KONTROLL.C-TJ-05.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av betalningar och attest i kundens namn haft
+    under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 560
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id006
+- id: P-KONTROLL.C-TJ-05.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av betalningar
+    och attest i kundens namn'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 561
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id006
+- id: P-KONTROLL.C-TJ-06.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av klientmedelskonto haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 562
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id007
+- id: P-KONTROLL.C-TJ-06.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av klientmedelskonto'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 563
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id007
+- id: P-KONTROLL.C-TJ-07.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av ekonomisk rådgivning och ekonomichefstjänster
+    haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 564
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id008
+- id: P-KONTROLL.C-TJ-07.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av ekonomisk
+    rådgivning och ekonomichefstjänster'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 565
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id008
+- id: P-KONTROLL.C-TJ-08.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av skatterådgivning utöver deklarationer haft
+    under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 566
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id009
+- id: P-KONTROLL.C-TJ-08.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av skatterådgivning
+    utöver deklarationer'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 567
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id009
+- id: P-KONTROLL.C-TJ-09.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av bolagsbildning, lagerbolag och bolagsförmedling
+    haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 568
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id010
+- id: P-KONTROLL.C-TJ-09.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av bolagsbildning,
+    lagerbolag och bolagsförmedling'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 569
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id010
+- id: P-KONTROLL.C-TJ-10.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av registrerad adress eller postadress haft
+    under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 570
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id011
+- id: P-KONTROLL.C-TJ-10.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av registrerad
+    adress eller postadress'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 571
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id011
+- id: P-KONTROLL.C-TJ-11.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av styrelseuppdrag eller bolagsrättsligt ansvar
+    haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 572
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id012
+- id: P-KONTROLL.C-TJ-11.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av styrelseuppdrag
+    eller bolagsrättsligt ansvar'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 573
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id012
+- id: P-KONTROLL.C-SANK.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av sanktionsanknytning haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 574
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om: *id001
+- id: P-KONTROLL.C-SANK.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av sanktionsanknytning'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 575
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om: *id001
+- id: P-OMFATTNING.motivering
+  typ: text
+  fraga: Motivera vald analysomfattning utifrån verksamhetens storlek, art och risker.
+  varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
+    fritext stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-OMFATTNING
+    ordning: 600
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.2
+    kallor:
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+- id: P-BEVAKNING.kallor
+  typ: text
+  fraga: Ange de källor byrån faktiskt har läst, med käll-ID, version eller kontrollsumma.
+  varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
+    fritext stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BEVAKNING
+    ordning: 601
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.11
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-BEVAKNING.datum
+  typ: datum
+  fraga: När läste och utvärderade byrån källorna?
+  varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
+    fritext stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BEVAKNING
+    ordning: 602
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.11
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-BEVAKNING.ansvarig
+  typ: text
+  fraga: Vilken ansvarsfunktion utför omvärldsbevakningen? Ange roll, inte personnamn.
+  varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
+    fritext stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BEVAKNING
+    ordning: 603
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.11
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-BEVAKNING.relevans
+  typ: text
+  fraga: Hur påverkar lästa källor varje tjänsts hot, sårbarheter och fortsatta åtgärder?
+  varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
+    fritext stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-BEVAKNING
+    ordning: 604
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.11
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval
+- id: P-VERK.spridning
+  typ: text
+  fraga: Hur har riskbedömningen spridits till berörda roller och använts i utbildning?
+  varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
+    fritext stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 605
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.10
+    kallor:
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-VERK.goaml
+  typ: text
+  fraga: Hur säkerställs aktuell goAML-registrering, behörighet och rapporteringsförmåga?
+  varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
+    fritext stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 606
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.10
+    kallor:
+    - SRC-FIPO-AR-2025
+    beroenden: []
+    grund: metodval
+- id: P-VERK.tidigare_tillsyn
+  typ: text
+  fraga: Vilken tidigare tillsyn och vilka beslut finns, och hur följs åtgärdade eller kvarstående brister
+    upp? Ange även om ingen tillsyn förekommit.
+  varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
+    fritext stannar lokalt.
+  kritisk: true
+  intag:
+    grupp: P-VERK
+    ordning: 607
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.10
+    kallor:
+    - SRC-TS-2026-14
+    beroenden: []
+    grund: metodval

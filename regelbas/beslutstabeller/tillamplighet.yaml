@@ -1,0 +1,82 @@
+- id: BT-TILL-18
+  punkt: 18
+  villkor:
+    falt: P-VERK.auktoriserad_revision
+    op: ==
+    varde: true
+  grund: ska_krav
+  lydelser: &id001
+  - LYD-PTL-1-2-2025-07-01
+  - LYD-PTL-1-2-2026-11-20
+  forklaring: Verksamhetsutövare enligt PTL 1 kap. 2 § punkt 18. Punkt 23 gäller bara
+    personer som inte omfattas av 18–22; punkt 19 avser tjänster utanför 18.
+- id: BT-TILL-19
+  punkt: 19
+  villkor:
+    alla:
+    - falt: P-VERK.bokforing
+      op: ==
+      varde: true
+    - falt: P-VERK.auktoriserad_revision
+      op: ==
+      varde: false
+  grund: ska_krav
+  lydelser: *id001
+  forklaring: Verksamhetsutövare enligt PTL 1 kap. 2 § punkt 19. Punkt 23 gäller bara
+    personer som inte omfattas av 18–22; punkt 19 avser tjänster utanför 18.
+- id: BT-TILL-20
+  punkt: 20
+  villkor:
+    falt: P-VERK.skatteradgivning
+    op: ==
+    varde: true
+  grund: ska_krav
+  lydelser: *id001
+  forklaring: Verksamhetsutövare enligt PTL 1 kap. 2 § punkt 20. Punkt 23 gäller bara
+    personer som inte omfattas av 18–22; punkt 19 avser tjänster utanför 18.
+- id: BT-TILL-21
+  punkt: 21
+  villkor:
+    falt: P-VERK.advokat
+    op: ==
+    varde: true
+  grund: ska_krav
+  lydelser: *id001
+  forklaring: Verksamhetsutövare enligt PTL 1 kap. 2 § punkt 21. Punkt 23 gäller bara
+    personer som inte omfattas av 18–22; punkt 19 avser tjänster utanför 18.
+- id: BT-TILL-22
+  punkt: 22
+  villkor:
+    falt: P-VERK.oberoende_jurist
+    op: ==
+    varde: true
+  grund: ska_krav
+  lydelser: *id001
+  forklaring: Verksamhetsutövare enligt PTL 1 kap. 2 § punkt 22. Punkt 23 gäller bara
+    personer som inte omfattas av 18–22; punkt 19 avser tjänster utanför 18.
+- id: BT-TILL-23
+  punkt: 23
+  villkor:
+    alla:
+    - falt: P-VERK.bolagstjanster
+      op: ==
+      varde: true
+    - falt: P-VERK.auktoriserad_revision
+      op: ==
+      varde: false
+    - falt: P-VERK.bokforing
+      op: ==
+      varde: false
+    - falt: P-VERK.skatteradgivning
+      op: ==
+      varde: false
+    - falt: P-VERK.advokat
+      op: ==
+      varde: false
+    - falt: P-VERK.oberoende_jurist
+      op: ==
+      varde: false
+  grund: ska_krav
+  lydelser: *id001
+  forklaring: Verksamhetsutövare enligt PTL 1 kap. 2 § punkt 23. Punkt 23 gäller bara
+    personer som inte omfattas av 18–22; punkt 19 avser tjänster utanför 18.

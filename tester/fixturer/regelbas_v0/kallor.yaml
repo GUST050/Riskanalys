@@ -1,0 +1,85 @@
+- id: SRC-PTL
+  titel: Lag (2017:630) om åtgärder mot penningtvätt och finansiering av terrorism
+  typ: lag
+  utgivare: Riksdagen
+  url: https://rkrattsbaser.gov.se/sfst?bet=2017:630
+  hamtad: 2026-10-08
+  konsoliderad_tom: SFS 2026:1075
+- id: SRC-14FS-2024-11
+  titel: Länsstyrelsen i Västra Götalands läns föreskrifter och allmänna råd om åtgärder mot penningtvätt och finansiering av terrorism (14FS 2024:11)
+  typ: föreskrift
+  utgivare: Länsstyrelsen i Västra Götalands län
+  url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
+  hamtad: 2026-10-06
+  beslutad: 2024-05-20
+  geografi: [Dalarna, Gävleborg, Halland, Värmland, Västra Götaland, Örebro]
+  paragrafer:
+    - 1 kap. 1 §
+    - 1 kap. 2 §
+    - 2 kap. 1 §
+    - 2 kap. 2 §
+    - 2 kap. 3 §
+    - 2 kap. 4 §
+    - 2 kap. 5 §
+    - 2 kap. 6 §
+    - 2 kap. 7 §
+    - 2 kap. 8 §
+    - 2 kap. 9 §
+    - 2 kap. 10 §
+    - 2 kap. 11 §
+    - 2 kap. 12 §
+    - 3 kap. 1 §
+    - 3 kap. 2 §
+    - 3 kap. 3 §
+    - 3 kap. 4 §
+    - 3 kap. 5 §
+    - 3 kap. 6 §
+    - 3 kap. 7 §
+    - 4 kap. 1 §
+    - 5 kap. 1 §
+    - 5 kap. 2 §
+    - 6 kap. 1 §
+    - 6 kap. 2 §
+    - 6 kap. 3 §
+    - 6 kap. 4 §
+    - 7 kap. 1 §
+    - 7 kap. 2 §
+    - 7 kap. 3 §
+- id: SRC-TS-2026-14
+  titel: Erfarenheter från länsstyrelsernas penningtvättstillsyn – fokus den allmänna riskbedömningen, rapport 2026:14
+  typ: tillsynsrapport
+  utgivare: Länsstyrelserna i Skåne, Stockholms och Västra Götalands län
+  url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
+  hamtad: 2026-10-06
+- id: SRC-VAGL-2025-03
+  titel: Information till redovisningskonsulter och skatterådgivare om penningtvätt och finansiering av terrorism (mars 2025)
+  typ: vägledning
+  utgivare: Samordningsfunktionen mot penningtvätt och finansiering av terrorism
+  url: https://polisen.se
+  hamtad: 2026-10-06
+- id: SRC-NRA-2024-25
+  titel: Nationell riskbedömning av penningtvätt och finansiering av terrorism i Sverige 2024/2025
+  typ: riskbedömning
+  utgivare: Samordningsfunktionen mot penningtvätt och finansiering av terrorism
+  url: https://polisen.se/0c34c8d8c94e1a371d8cca457b84fb0a/siteassets/dokument/om-polisen/penningtvatt/nationell-riskbedomning-av-penningtvatt-och-finansiering-av-terrorism-i-sverige-2024_2025.pdf
+  hamtad: 2026-10-08
+- id: SRC-LST-INGRIPANDEN
+  titel: Ingripanden och sanktioner penningtvätt
+  typ: beslut
+  utgivare: Länsstyrelsen i Stockholms län och Länsstyrelsen i Västra Götalands län
+  url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
+  hamtad: 2026-09-29
+- id: SRC-LST-VG-6045-2026
+  titel: Beslut om sanktionsavgift, diarienummer 6045-2026 (redovisningsbyrå, se docs/research/09-tillsynsbeslut-2026.md)
+  typ: beslut
+  utgivare: Länsstyrelsen i Västra Götalands län
+  url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
+  hamtad: 2026-10-09
+  beslutad: 2026-05-26
+- id: SRC-LST-VG-6572-2026
+  titel: Beslut om sanktionsavgift, diarienummer 6572-2026 (redovisningsbyrå, se docs/research/09-tillsynsbeslut-2026.md)
+  typ: beslut
+  utgivare: Länsstyrelsen i Västra Götalands län
+  url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
+  hamtad: 2026-10-09
+  beslutad: 2026-09-10

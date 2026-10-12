@@ -1,0 +1,72 @@
+- id: KA-SANK-UTRED
+  spar: A
+  villkor:
+    alla:
+    - falt: K-SANK.mojlig_traff
+      op: ==
+      varde: true
+    - nagon:
+      - falt: K-SANK.identitet_faststalld
+        op: ==
+        varde: false
+      - falt: K-SANK.utrett_agande_kontroll
+        op: ==
+        varde: false
+      - falt: K-SANK.forbud_tillampligt
+        op: ==
+        varde: false
+      - falt: K-SANK.primarkalla
+        op: '!='
+        varde: EU-269-2014-art2
+  utfall:
+    beslut: preliminart
+  grund: metodval
+  lydelser: []
+  forklaring: Tillfälligt metodiskt utredningshinder. Möjlig namnträff bevisar inget
+    rättsligt förbud.
+- id: KA-SANK-STOPP
+  spar: A
+  villkor:
+    alla:
+    - falt: K-SANK.mojlig_traff
+      op: ==
+      varde: true
+    - falt: K-SANK.identitet_faststalld
+      op: ==
+      varde: true
+    - falt: K-SANK.utrett_agande_kontroll
+      op: ==
+      varde: true
+    - falt: K-SANK.forbud_tillampligt
+      op: ==
+      varde: true
+    - falt: K-SANK.tillstand
+      op: ==
+      varde: false
+    - falt: K-SANK.primarkalla
+      op: ==
+      varde: EU-269-2014-art2
+  utfall:
+    beslut: stopp
+  grund: ska_krav
+  lydelser:
+  - LYD-EU269-ART2-2025-10-23
+  forklaring: Mänskligt bekräftat tillämpligt frys-/tillgängliggörandeförbud i artikel
+    2, med identitet/ägande/kontroll och frånvaro av tillämpligt undantag/tillstånd.
+    Ingen automatisk rättslig klassificering.
+- id: KA-SANK-TILLSTAND
+  spar: A
+  villkor:
+    alla:
+    - falt: K-SANK.mojlig_traff
+      op: ==
+      varde: true
+    - falt: K-SANK.tillstand
+      op: ==
+      varde: true
+  utfall:
+    beslut: preliminart
+  grund: metodval
+  lydelser: []
+  forklaring: Tillståndets och undantagets exakta räckvidd måste prövas individuellt;
+    ingen generell frikänning.

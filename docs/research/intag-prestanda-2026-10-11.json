@@ -1,0 +1,70 @@
+{
+  "datum": "2026-10-11",
+  "miljo": "lokal loopback HTTP, riktig YAML-lagring, syntetiska profiler, 3 uppvärmningar och 100 mätningar per fall, inga externa API/AI-anrop",
+  "begransning": "Tom betyder inga bekräftade grunduppgifter; delvis är 20 fixturuppgifter; komplett är komplett syntetisk profil. En användare/sekventiella HTTP-anrop. Mätningen gäller lokal rendering, inte SCB-nätverk eller pilotens användartid. Annan testaktivitet förekom under delar av mätningarna.",
+  "fore": {
+    "tom_fraga": {
+      "n": 100,
+      "median_ms": 148.43356251367368,
+      "p95_ms": 167.93841699836776
+    },
+    "tom_oversikt": {
+      "n": 100,
+      "median_ms": 148.2146875350736,
+      "p95_ms": 167.86137502640486
+    },
+    "delvis_fraga": {
+      "n": 100,
+      "median_ms": 43.387854006141424,
+      "p95_ms": 45.28850002679974
+    },
+    "delvis_oversikt": {
+      "n": 100,
+      "median_ms": 44.053750520106405,
+      "p95_ms": 44.76049996446818
+    },
+    "komplett_fraga": {
+      "n": 100,
+      "median_ms": 245.8494165330194,
+      "p95_ms": 264.6954589872621
+    },
+    "komplett_oversikt": {
+      "n": 100,
+      "median_ms": 179.71131252124906,
+      "p95_ms": 198.31716699991375
+    }
+  },
+  "efter": {
+    "tom_fraga": {
+      "n": 100,
+      "median_ms": 103.96402049809694,
+      "p95_ms": 109.73954200744629
+    },
+    "tom_oversikt": {
+      "n": 100,
+      "median_ms": 102.64424997149035,
+      "p95_ms": 105.39745795540512
+    },
+    "delvis_fraga": {
+      "n": 100,
+      "median_ms": 39.93656250531785,
+      "p95_ms": 40.45295901596546
+    },
+    "delvis_oversikt": {
+      "n": 100,
+      "median_ms": 39.9822915205732,
+      "p95_ms": 40.53120798198506
+    },
+    "komplett_fraga": {
+      "n": 100,
+      "median_ms": 129.91322949528694,
+      "p95_ms": 132.6218749745749
+    },
+    "komplett_oversikt": {
+      "n": 100,
+      "median_ms": 130.62852100119926,
+      "p95_ms": 148.01400003489107
+    }
+  },
+  "skript": "import os,sys,json,tempfile,threading,time,statistics,hashlib\nfrom pathlib import Path\nfrom urllib.request import urlopen\nfrom riskanalys.regelverk.laddning import ladda_regelbas\nfrom riskanalys.intag.tjanst import Intagstjanst\nfrom riskanalys.intag.webb import skapa_server\nfrom riskanalys.profil.hantering import skapa_profil\nfrom riskanalys.profil.modeller import Byra\nfrom riskanalys.profil.lagring import spara_profil\nfrom tester.fixturer.m2 import DAG,komplett_profil\nrb=ladda_regelbas();result={}\nwith tempfile.TemporaryDirectory(prefix='riskanalys-benchmark-') as root:\n os.environ['RISKANALYS_DATA']=root\n for case in ['tom','delvis','komplett']:\n  t=Intagstjanst(case,rb)\n  p=skapa_profil(rb,Byra(id=case,lan='Västra Götaland',regelpaket='RP-RED-VG',datum=DAG))\n  if case!='tom':\n   p=komplett_profil(rb,p)\n   if case=='delvis':p=p.model_copy(update={'uppgifter':dict(list(p.uppgifter.items())[:20])})\n  t.mapp.mkdir(parents=True);spara_profil(t.mapp,p,revision='')\n  s=skapa_server(t);thread=threading.Thread(target=s.serve_forever,daemon=True);thread.start()\n  for path,label in [('', 'fraga'),('?oversikt=1','oversikt')]:\n   timings=[]\n   for i in range(103):\n    start=time.perf_counter()\n    with urlopen(s.url+path,timeout=10) as response:\n     body=response.read();assert response.status==200\n    elapsed=(time.perf_counter()-start)*1000\n    if i>=3:timings.append(elapsed)\n   result[case+'_'+label]={'n':len(timings),'median_ms':statistics.median(timings),'p95_ms':sorted(timings)[94]}\n  s.shutdown();s.server_close();thread.join()\nPath(sys.argv[1]).write_text(json.dumps(result,indent=2)+'\\n');print(json.dumps(result,indent=2))\n"
+}

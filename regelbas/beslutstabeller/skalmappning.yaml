@@ -1,0 +1,11 @@
+id: BT-SEKTOR-01
+grund: metodval
+mappning:
+  låg: låg
+  medel: måttlig
+  betydande: hög
+  hög: mycket hög
+forklaring: OGRANSKAT förslag till ordningsmappning; sektorsrisk och en tjänsts inneboende
+  risk har olika omfattning. Mänsklig motivering krävs tills jämförbarheten har fastställts.
+sakkunnig:
+  status: ej_granskad

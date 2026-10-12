@@ -1,0 +1,136 @@
+- typ: dokument
+  id: D-ARB.1
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.2
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.3
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.4
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.5
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.6
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.7
+  etapp: M2
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.8
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.9
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-ARB.10
+  etapp: M1
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.1
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.2
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.3
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.4
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.5
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.6
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.7
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.8
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.9
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: dokument
+  id: D-RR.10
+  etapp: M6
+  beskrivning: Dokumentavsnitt för krav och belägg.
+- typ: kundmall
+  id: KM-A
+  etapp: M2
+  beskrivning: Generisk kundmall; inga faktiska kunduppgifter i M2.
+- typ: kundmall
+  id: KM-B
+  etapp: M2
+  beskrivning: Generisk kundmall; inga faktiska kunduppgifter i M2.
+- typ: kundmall
+  id: KM-C
+  etapp: M2
+  beskrivning: Generisk kundmall; inga faktiska kunduppgifter i M2.
+- typ: kundmall
+  id: KM-D
+  etapp: M2
+  beskrivning: Generisk kundmall; inga faktiska kunduppgifter i M2.
+- typ: drift
+  id: DRIFT-REGISTRERING
+  etapp: M4
+  beskrivning: Operativ status och belägg; levereras i M4.
+- typ: drift
+  id: DRIFT-UTVARDERING
+  etapp: M4
+  beskrivning: Operativ status och belägg; levereras i M4.
+- typ: drift
+  id: DRIFT-ORGANISATION
+  etapp: M4
+  beskrivning: Operativ status och belägg; levereras i M4.
+- typ: drift
+  id: DRIFT-FEMARSREGISTER
+  etapp: M4
+  beskrivning: Operativ status och belägg; levereras i M4.
+- typ: drift
+  id: DRIFT-BEVARANDE
+  etapp: M4
+  beskrivning: Operativ status och belägg; levereras i M4.
+- typ: drift
+  id: DRIFT-INTERN-KONTROLL
+  etapp: M4
+  beskrivning: Operativ status och belägg; levereras i M4.
+- typ: drift
+  id: DRIFT-TILLSYNSUPPGIFTER
+  etapp: M4
+  beskrivning: Operativ status och belägg; levereras i M4.
+- typ: drift
+  id: DRIFT-MISSTANKE
+  etapp: M4
+  beskrivning: Operativ status och belägg; levereras i M4.
+- typ: dokument
+  id: D-ARB.11
+  etapp: M2
+  beskrivning: Utförd omvärldsbevakning med relevansbedömning, datum och ansvar.
+- typ: dokument
+  id: D-ARB.B1
+  etapp: M2
+  beskrivning: Underlagsbilaga som ingår i sakgranskning och innehållssumma.

@@ -1,0 +1,593 @@
+- id: S-KUND-01
+  namn: Kunder i branscher med förhöjd risk
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-KUND.andel_riskbransch
+    op: '>='
+    varde: 0.2
+  effekt:
+    sannolikhet: 1
+  kallor:
+  - SRC-NRA-2024-25
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+- id: S-KUND-02
+  namn: Kunder med betydande kontanthantering
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-KUND.andel_kontant
+    op: '>='
+    varde: 0.1
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-PTL
+  - SRC-VAGL-2025-03
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+- id: S-KANAL-01
+  namn: Digitalt underlag utan tillgång till bankdata
+  omrade: kanal
+  grund: metodval
+  villkor:
+    alla:
+    - falt: P-KANAL.andel_digitalt_underlag
+      op: '>='
+      varde: 0.5
+    - falt: P-KANAL.bankdata_andel
+      op: <
+      varde: 0.5
+  effekt:
+    sannolikhet: 1
+  kallor:
+  - SRC-TS-2026-14
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+- id: S-VERK-01
+  namn: Juniora konsulter arbetar självständigt
+  omrade: verk
+  grund: metodval
+  villkor:
+    falt: P-VERK.juniora_konsulter
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  kallor:
+  - SRC-TS-2026-14
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+- id: S-GEO-01
+  namn: Transaktioner med utlandsanknytning
+  omrade: geo
+  grund: metodval
+  villkor:
+    falt: P-GEO.andel_utland_transaktion
+    op: '>'
+    varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-KOMB-01
+  namn: Riskbransch kombinerad med svagt bankunderlag
+  omrade: kanal
+  grund: metodval
+  villkor:
+    alla:
+    - falt: P-KUND.andel_riskbransch
+      op: '>='
+      varde: 0.2
+    - falt: P-KANAL.bankdata_andel
+      op: <
+      varde: 0.5
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter:
+  - S-KUND-01
+  - S-KANAL-01
+- id: S-TJ-01
+  namn: 'Transaktionsnära uppdrag: red05'
+  omrade: tj
+  grund: metodval
+  villkor:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-TJ-02
+  namn: 'Transaktionsnära uppdrag: red06'
+  omrade: tj
+  grund: metodval
+  villkor:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-TJ-03
+  namn: 'Transaktionsnära uppdrag: bolag01'
+  omrade: tj
+  grund: metodval
+  villkor:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-TJ-04
+  namn: 'Transaktionsnära uppdrag: bolag03'
+  omrade: tj
+  grund: metodval
+  villkor:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: penningtvatt
+  kallor:
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 123
+  ersatter: []
+- id: S-ARB-01
+  namn: Nära kundrelation kan försvaga oberoende granskning
+  beskrivning: En nära relation kan göra att avvikelser förbises eller att kundkännedomen blir otillräcklig.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-RISK.nara_relation
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 8
+- id: S-ARB-02
+  namn: PEP, familjemedlem eller känd medarbetare bland kunder eller huvudmän
+  beskrivning: PEP-anknytning kräver särskild prövning; den är ingen uppgift om brott.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-RISK.pep
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-VAGL-2025-03
+  kallhanvisningar:
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 18
+- id: S-ARB-03
+  namn: Komplex eller svårförklarad ägarstruktur
+  beskrivning: Komplexitet kan försvåra identifiering av verklig huvudman och transaktionernas syfte.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-RISK.komplex_agare
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-VAGL-2025-03
+  kallhanvisningar:
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 21
+- id: S-ARB-04
+  namn: Utländsk ägarstruktur med behov av ytterligare verifiering
+  beskrivning: Begränsad insyn i utländska konstruktioner kan försvåra verifiering; utländskt ägande är
+    inte i sig brottsligt.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
+    nej i indikatorfältet kan inte utesluta den exponeringen.
+  omrade: kund
+  grund: metodval
+  villkor:
+    nagon:
+    - falt: P-RISK.utlandsk_agare
+      op: ==
+      varde: true
+    - falt: P-GEO.andel_agare_utanfor_ees
+      op: '>'
+      varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-VAGL-2025-03
+  kallhanvisningar:
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 20
+- id: S-ARB-05
+  namn: Ideella föreningar eller liknande organisationsformer
+  beskrivning: Insamling och vidareförmedling av medel kan missbrukas för terrorfinansiering; organisationsformen
+    är inte ensam bevis för missbruk.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-RISK.ideell
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-FIPO-TF-2025
+  kallhanvisningar:
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 2
+- id: S-ARB-06
+  namn: Företrädare med återkommande kortlivade bolag
+  beskrivning: Återkommande kortlivade bolag kan dölja ett brottsupplägg och försvåra uppföljning.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-RISK.kortlivad
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-VAGL-2025-03
+  kallhanvisningar:
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 18
+- id: S-ARB-07
+  namn: Övertagna bolag eller täta byten av företrädare
+  beskrivning: Övertagna bolags registreringar och konton kan användas i nya upplägg utan att förändringen
+    upptäcks.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-RISK.overtagen
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-FIPO-FORETAG-2026
+  kallhanvisningar:
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 4
+- id: S-ARB-08
+  namn: Kundrelation etablerad utan fysiskt möte
+  beskrivning: Distanskontakt kan försvåra identitetsverifiering och förståelse av verksamheten.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
+    nej i indikatorfältet kan inte utesluta den exponeringen.
+  omrade: kanal
+  grund: metodval
+  villkor:
+    nagon:
+    - falt: P-RISK.utan_mote
+      op: ==
+      varde: true
+    - falt: P-KUND.andel_utan_mote
+      op: '>'
+      varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-VAGL-2025-03
+  kallhanvisningar:
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 18
+- id: S-ARB-09
+  namn: Ombud eller tredje part i kundkontakt eller leverans
+  beskrivning: Mellanhänder kan begränsa insynen i den verkliga kunden och hur tjänsten används.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: kanal
+  grund: metodval
+  villkor:
+    falt: P-RISK.ombud
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 8
+- id: S-ARB-10
+  namn: Extern leverantör för kundkännedom eller AML
+  beskrivning: Extern teknik eller leverantör ersätter inte personalens vaksamhet eller byråns ansvar.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: kanal
+  grund: metodval
+  villkor:
+    falt: P-RISK.extern_kyc
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 8
+- id: S-ARB-11
+  namn: Relevant anknytning till EU-högrisktredjeland
+  beskrivning: Aktuell EU-lista och anknytning måste kontrolleras; programmet innehåller ingen automatisk
+    landlista.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
+    nej i indikatorfältet kan inte utesluta den exponeringen.
+  omrade: geo
+  grund: metodval
+  villkor:
+    nagon:
+    - falt: P-RISK.hogrisktredjeland
+      op: ==
+      varde: true
+    - falt: P-GEO.andel_hogrisktredjeland
+      op: '>'
+      varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 9
+- id: S-ARB-12
+  namn: Relevant anknytning till land eller område med korruption
+  beskrivning: Korruption kan försämra tillförlitligheten i identitets-, ägar- och transaktionsunderlag.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: geo
+  grund: metodval
+  villkor:
+    falt: P-RISK.korruption
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 9
+- id: S-ARB-13
+  namn: Relevant anknytning till land med svagt AML-regelverk
+  beskrivning: Ett ineffektivt regelverk kan begränsa kontroller och spårbarhet i betalningskedjan.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: geo
+  grund: metodval
+  villkor:
+    falt: P-RISK.svagt_aml
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 9
+- id: S-ARB-14
+  namn: Relevant anknytning till utsatt område i Sverige
+  beskrivning: Lokala riskförhållanden ska analyseras tillsammans med tjänstens funktion; adressen innebär
+    inte att en kund är kriminell.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
+    nej i indikatorfältet kan inte utesluta den exponeringen.
+  omrade: geo
+  grund: metodval
+  villkor:
+    nagon:
+    - falt: P-RISK.utsatt_omrade
+      op: ==
+      varde: true
+    - falt: P-GEO.andel_utsatt_omrade
+      op: '>'
+      varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 9
+- id: S-ARB-15
+  namn: Personal eller uppdragstagare saknar relevant aktuell utbildning
+  beskrivning: Bristande utbildning kan leda till att avvikande underlag och flöden inte upptäcks.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: verk
+  grund: metodval
+  villkor:
+    falt: P-RISK.utan_utbildning
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 10
+- id: S-ARB-16
+  namn: En person utför uppdrag, kontroll och alla ansvarsfunktioner
+  beskrivning: Avsaknad av oberoende kontroll är här en metodtolkning av organisation och ansvar; ensam
+    verksamhet är inte ett generellt lagbrott.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: verk
+  grund: metodval
+  villkor:
+    falt: P-RISK.ensam_roller
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 10
+- id: S-ARB-17
+  namn: Ekonomiskt beroende av en eller få kunder påverkar kontrollen
+  beskrivning: Ekonomiskt beroende kan försvaga möjligheten att ifrågasätta kunden; indikatorn är ett
+    metodval för verksamhetsspecifika omständigheter.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: verk
+  grund: metodval
+  villkor:
+    falt: P-RISK.kundberoende
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 10
+- id: S-ARB-18
+  namn: Utkontrakterade delar av uppdrag eller AML-arbete
+  beskrivning: Utkontraktering kan begränsa överblick och ansvarsfördelning; byråns ansvar kvarstår.
+  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
+    relevans ska sakgranskas och kalibreras.
+  omrade: verk
+  grund: metodval
+  villkor:
+    falt: P-RISK.utkontraktering
+    op: ==
+    varde: true
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-TS-2026-14
+  kallhanvisningar:
+  - kalla: SRC-TS-2026-14
+    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    sida: 8

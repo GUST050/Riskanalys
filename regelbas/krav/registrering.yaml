@@ -1,0 +1,69 @@
+- id: KRV-PTF-2
+  kalla: SRC-PTF
+  lagrum: 2 §
+  lydelser:
+  - LYD-PTF-2-2017-08-01
+  grund: ska_krav
+  text: En anmälan om registrering enligt 7 kap. 3 § lagen (2017:630) om åtgärder
+    mot penningtvätt och finansiering av terrorism ska göras skriftligen hos Bolagsverket.
+    Om en utländsk verksamhetsutövare bedriver anmälningspliktig verksamhet i Sverige
+    genom filial, ska anmälan om registrering göras av filialen. En anmälan om registrering
+    får överföras elektroniskt till Bolagsverket. En sådan anmälan ska vara undertecknad
+    med en elektronisk underskrift.
+  galler_om:
+    alla: []
+  belagg:
+  - register
+  - datum
+  uppfylls_i: []
+  mal:
+  - typ: drift
+    id: DRIFT-REGISTRERING
+    etapp: M4
+- id: KRV-PTF-3
+  kalla: SRC-PTF
+  lagrum: 3 §
+  lydelser:
+  - LYD-PTF-3-2019-01-01
+  grund: ska_krav
+  text: En anmälan enligt 2 § ska för fysiska personer innehålla uppgift om för- och
+    efternamn, personnummer eller samordningsnummer, folkbokföringsadress och anmälningspliktig
+    verksamhet. Om folkbokföringsadress i Sverige saknas, ska anmälan innehålla adress
+    i Sverige där den anmälningspliktiga verksamheten huvudsakligen ska bedrivas.
+    För juridiska personer och filialer ska en sådan anmälan innehålla uppgift om
+    företagsnamn, organisationsnummer och anmälningspliktig verksamhet. Anmälan ska
+    för fysiska personer undertecknas av den som ska bedriva den anmälda verksamheten
+    och för juridiska personer av en styrelseledamot, verkställande direktör eller
+    bolagsman. För filialer ska en anmälan undertecknas av verkställande direktör
+    i filialen.
+  galler_om:
+    alla: []
+  belagg:
+  - register
+  - datum
+  uppfylls_i: []
+  mal:
+  - typ: drift
+    id: DRIFT-REGISTRERING
+    etapp: M4
+- id: KRV-PTF-12a
+  kalla: SRC-PTF
+  lagrum: 12 a §
+  lydelser:
+  - LYD-PTF-12a-2025-06-19
+  grund: ska_krav
+  text: I ärenden som rör anmälan för registrering enligt denna förordning ska avgift
+    betalas för ärendets handläggning, prövning och registrering, med 1 300 kronor.
+    Avgift ska inte betalas för anmälan om att verksamheten upphört. Avgift ska betalas
+    när anmälan för registrering lämnas in. Avgiften återbetalas inte om handläggningen
+    av ett ärende har påbörjats.
+  galler_om:
+    alla: []
+  belagg:
+  - register
+  - datum
+  uppfylls_i: []
+  mal:
+  - typ: drift
+    id: DRIFT-REGISTRERING
+    etapp: M4

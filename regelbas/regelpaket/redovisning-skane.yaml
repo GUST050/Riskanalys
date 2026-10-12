@@ -1,0 +1,1010 @@
+id: RP-RED-SKANE
+namn: 'Bokföring, skatterådgivning och bolagstjänster: RP-RED-SKANE'
+sektor: redovisning
+lan:
+- Skåne
+- Blekinge
+- Kronoberg
+- Jönköping
+- Kalmar
+- Östergötland
+kallor:
+- SRC-PTL
+- SRC-PTF
+- SRC-12FS-2024-8
+- SRC-TS-2026-14
+- SRC-VAGL-2025-03
+- SRC-NRA-2024-25
+krav:
+- KRV-PTL-1-2
+- KRV-PTL-1-4
+- KRV-PTL-1-6
+- KRV-PTL-1-7
+- KRV-PTL-1-8
+- KRV-PTL-1-9
+- KRV-PTL-1-10
+- KRV-PTL-2-1
+- KRV-PTL-2-2
+- KRV-PTL-2-3
+- KRV-PTL-2-4
+- KRV-PTL-2-5
+- KRV-PTL-2-8
+- KRV-PTL-2-9
+- KRV-PTL-2-10
+- KRV-PTL-2-11
+- KRV-PTL-2-12
+- KRV-PTL-2-13
+- KRV-PTL-2-14
+- KRV-PTL-2-15
+- KRV-PTL-2-16
+- KRV-PTL-3-1
+- KRV-PTL-3-2
+- KRV-PTL-3-3
+- KRV-PTL-3-4
+- KRV-PTL-3-7
+- KRV-PTL-3-8
+- KRV-PTL-3-8a
+- KRV-PTL-3-9
+- KRV-PTL-3-10
+- KRV-PTL-3-11
+- KRV-PTL-3-12
+- KRV-PTL-3-13
+- KRV-PTL-3-14
+- KRV-PTL-3-15
+- KRV-PTL-3-16
+- KRV-PTL-3-17
+- KRV-PTL-3-19
+- KRV-PTL-3-20
+- KRV-PTL-3-21
+- KRV-PTL-3-22
+- KRV-PTL-3-23
+- KRV-PTL-3-24
+- KRV-PTL-3-29
+- KRV-PTL-3-30
+- KRV-PTL-4-1
+- KRV-PTL-4-2
+- KRV-PTL-4-3
+- KRV-PTL-4-6
+- KRV-PTL-4-7
+- KRV-PTL-4-8
+- KRV-PTL-4-9
+- KRV-PTL-4-10
+- KRV-PTL-5-1
+- KRV-PTL-5-2
+- KRV-PTL-5-3
+- KRV-PTL-5-4
+- KRV-PTL-5-5
+- KRV-PTL-5-6
+- KRV-PTL-5-7
+- KRV-PTL-5-8
+- KRV-PTL-5-11
+- KRV-PTL-6-1
+- KRV-PTL-6-2
+- KRV-PTL-6-4
+- KRV-PTL-6-4a
+- KRV-PTL-6-5
+- KRV-PTL-7-3
+- KRV-PTL-7-6
+- KRV-PTF-2
+- KRV-PTF-3
+- KRV-PTF-12a
+- KRV-LSF-2-01
+- KRV-LSF-001
+- KRV-LSF-2-02
+- KRV-LSF-002
+- KRV-LSF-003
+- KRV-LSF-004
+- KRV-LSF-005
+- KRV-LSF-2-03
+- KRV-LSF-006
+- KRV-LSF-2-04
+- KRV-LSF-2-05
+- KRV-LSF-2-06
+- KRV-LSF-2-07
+- KRV-LSF-2-08
+- KRV-LSF-2-09
+- KRV-LSF-2-10
+- KRV-LSF-2-11
+- KRV-LSF-2-12
+- KRV-LSF-3-01
+- KRV-LSF-3-02
+- KRV-LSF-3-03
+- KRV-LSF-3-04
+- KRV-LSF-3-05
+- KRV-LSF-3-06
+- KRV-LSF-3-07
+- KRV-LSF-4-01
+- KRV-LSF-5-01
+- KRV-LSF-5-02
+- KRV-LSF-6-01
+- KRV-LSF-6-02
+- KRV-LSF-6-03
+- KRV-LSF-6-04
+- KRV-LSF-7-01
+- KRV-LSF-7-02
+- KRV-LSF-7-03
+tjanster:
+- T-RED-01
+- T-RED-02
+- T-RED-03
+- T-RED-04
+- T-RED-05
+- T-RED-06
+- T-RED-07
+- T-SKATT-01
+- T-BOLAG-01
+- T-BOLAG-02
+- T-BOLAG-03
+paragrafkarta:
+  giltig_fran: '2026-10-10'
+  omfattning:
+  - kalla: SRC-PTL
+    kapitel:
+    - 1 kap.
+    - 2 kap.
+    - 3 kap.
+    - 4 kap.
+    - 4 a kap.
+    - 5 kap.
+    - 6 kap.
+    - 6 a kap.
+    - 7 kap.
+    - 7 a kap.
+    - 8 kap.
+  - kalla: SRC-PTF
+    kapitel:
+    - ''
+  - kalla: SRC-12FS-2024-8
+    kapitel:
+    - 1 kap.
+    - 2 kap.
+    - 3 kap.
+    - 4 kap.
+    - 5 kap.
+    - 6 kap.
+    - 7 kap.
+  rader:
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 1 §
+    hantering: Syftesbestämmelse; används som tolkningsram för samtliga krav, ingen
+      fristående dokumentleverans.
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 2 §
+    krav:
+    - KRV-PTL-1-2
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 3 §
+    ej_tillamplig: Avser filialer inom 1 kap. 2 § punkterna 1–12; detta paket avser
+      19, 20, 23. Utländsk filial prövas separat enligt PTF 16 §.
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 4 §
+    krav:
+    - KRV-PTL-1-4
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 5 §
+    ej_tillamplig: Avser auktionsplattform för utsläppsrätter; paketet avser bokföring,
+      skatterådgivning och bolagstjänster.
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 6 §
+    krav:
+    - KRV-PTL-1-6
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 7 §
+    krav:
+    - KRV-PTL-1-7
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 8 §
+    krav:
+    - KRV-PTL-1-8
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 9 §
+    krav:
+    - KRV-PTL-1-9
+  - kalla: SRC-PTL
+    lagrum: 1 kap. 10 §
+    krav:
+    - KRV-PTL-1-10
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 1 §
+    krav:
+    - KRV-PTL-2-1
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 2 §
+    krav:
+    - KRV-PTL-2-2
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 3 §
+    krav:
+    - KRV-PTL-2-3
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 4 §
+    krav:
+    - KRV-PTL-2-4
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 5 §
+    krav:
+    - KRV-PTL-2-5
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 6 §
+    ej_tillamplig: Förbudet avser punkterna 1–13, inte de omfattade punkterna 19,
+      20, 23.
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 7 §
+    ej_tillamplig: Korrespondentförbindelser för punkterna 1–13; sådana tjänster ingår
+      inte i paketet.
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 8 §
+    krav:
+    - KRV-PTL-2-8
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 9 §
+    krav:
+    - KRV-PTL-2-9
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 10 §
+    krav:
+    - KRV-PTL-2-10
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 11 §
+    krav:
+    - KRV-PTL-2-11
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 12 §
+    krav:
+    - KRV-PTL-2-12
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 13 §
+    krav:
+    - KRV-PTL-2-13
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 14 §
+    krav:
+    - KRV-PTL-2-14
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 15 §
+    krav:
+    - KRV-PTL-2-15
+  - kalla: SRC-PTL
+    lagrum: 2 kap. 16 §
+    krav:
+    - KRV-PTL-2-16
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 1 §
+    krav:
+    - KRV-PTL-3-1
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 2 §
+    krav:
+    - KRV-PTL-3-2
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 3 §
+    krav:
+    - KRV-PTL-3-3
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 4 §
+    krav:
+    - KRV-PTL-3-4
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 5 §
+    ej_tillamplig: Särregler för speltjänster (punkt 15), utanför paketets sektorer.
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 6 §
+    ej_tillamplig: Särregler för varuhandel med kontantbetalning (punkt 16), utanför
+      paketets sektorer.
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 7 §
+    krav:
+    - KRV-PTL-3-7
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 8 §
+    krav:
+    - KRV-PTL-3-8
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 8 a §
+    krav:
+    - KRV-PTL-3-8a
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 9 §
+    krav:
+    - KRV-PTL-3-9
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 10 §
+    krav:
+    - KRV-PTL-3-10
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 11 §
+    krav:
+    - KRV-PTL-3-11
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 12 §
+    krav:
+    - KRV-PTL-3-12
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 13 §
+    krav:
+    - KRV-PTL-3-13
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 14 §
+    krav:
+    - KRV-PTL-3-14
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 15 §
+    krav:
+    - KRV-PTL-3-15
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 16 §
+    krav:
+    - KRV-PTL-3-16
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 17 §
+    krav:
+    - KRV-PTL-3-17
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 18 §
+    ej_tillamplig: Särregler för finansiella korrespondentförbindelser (punkterna
+      1–13).
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 18 a §
+    ej_tillamplig: Särregler för leverantörer av kryptotillgångstjänster; ingår inte
+      i paketet.
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 19 §
+    krav:
+    - KRV-PTL-3-19
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 20 §
+    krav:
+    - KRV-PTL-3-20
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 21 §
+    krav:
+    - KRV-PTL-3-21
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 22 §
+    krav:
+    - KRV-PTL-3-22
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 23 §
+    krav:
+    - KRV-PTL-3-23
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 24 §
+    krav:
+    - KRV-PTL-3-24
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 25 §
+    ej_tillamplig: Särregler för tillhandahållande av konton; paketet ger inte tillstånd
+      att bedriva finansiell kontoverksamhet.
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 26 §
+    ej_tillamplig: Särregler för livförsäkring/investeringsrelaterad försäkring; ingår
+      inte i paketet.
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 27 §
+    ej_tillamplig: Särregler för försäkringsförmånstagare enligt 26 §; ingår inte
+      i paketet.
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 28 §
+    ej_tillamplig: Omfattning för försäkringskontroller enligt 26–27 §§; ingår inte
+      i paketet.
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 29 §
+    krav:
+    - KRV-PTL-3-29
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 30 §
+    krav:
+    - KRV-PTL-3-30
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 31 §
+    ej_tillamplig: Undantag för elektroniska pengar; paketet omfattar inte utgivning
+      av elektroniska pengar.
+  - kalla: SRC-PTL
+    lagrum: 3 kap. 32 §
+    ej_tillamplig: Anonyma betalningsinstrument för punkterna 1–13; ingår inte i paketet.
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 1 §
+    krav:
+    - KRV-PTL-4-1
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 2 §
+    krav:
+    - KRV-PTL-4-2
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 3 §
+    krav:
+    - KRV-PTL-4-3
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 3 a §
+    ej_tillamplig: Avser clearingbolags egen clearingverksamhet; ingår inte i paketet.
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 3 b §
+    hantering: Polismyndighetens återkopplingsskyldighet; återkoppling används vid
+      byråns utvärdering enligt 2 kap. 1 §.
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 4 §
+    hantering: Tillsynsmyndighetens rapporteringsskyldighet; ändrar inte byråns egen
+      rapporteringsprövning enligt 4 kap. 2–3 §§.
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 5 §
+    hantering: Polismyndighetens tillgång till uppgifter; byråns uppgiftslämning och
+      system hanteras i krav för 4 kap. 6–7 §§.
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 6 §
+    krav:
+    - KRV-PTL-4-6
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 7 §
+    krav:
+    - KRV-PTL-4-7
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 8 §
+    krav:
+    - KRV-PTL-4-8
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 9 §
+    krav:
+    - KRV-PTL-4-9
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 9 a §
+    ej_tillamplig: Avser clearingbolag och tillhandahållare av finansiell infrastruktur
+      för omedelbara betalningar.
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 10 §
+    krav:
+    - KRV-PTL-4-10
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 11 §
+    hantering: Behörighet att besluta dispositionsförbud; byrån ska följa myndighetsbeslut,
+      kan inte själv fatta sådant beslut.
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 12 §
+    hantering: Åklagarens prövning och tidsfrist för dispositionsförbud; återger myndighetsförfarande.
+  - kalla: SRC-PTL
+    lagrum: 4 kap. 13 §
+    hantering: Avgränsning av egendom som dispositionsförbud får avse; inget eget
+      automatiskt förbudsbeslut från riskmotorn.
+  - kalla: SRC-PTL
+    lagrum: 4 a kap. 1 §
+    ej_tillamplig: Samverkanskapitlet avser deltagande verksamheter enligt 1 kap.
+      2 § punkterna 1 och 2; paketet avser 19, 20, 23.
+  - kalla: SRC-PTL
+    lagrum: 4 a kap. 2 §
+    ej_tillamplig: Samverkanskapitlet avser deltagande verksamheter enligt 1 kap.
+      2 § punkterna 1 och 2; paketet avser 19, 20, 23.
+  - kalla: SRC-PTL
+    lagrum: 4 a kap. 3 §
+    ej_tillamplig: Samverkanskapitlet avser deltagande verksamheter enligt 1 kap.
+      2 § punkterna 1 och 2; paketet avser 19, 20, 23.
+  - kalla: SRC-PTL
+    lagrum: 4 a kap. 4 §
+    ej_tillamplig: Samverkanskapitlet avser deltagande verksamheter enligt 1 kap.
+      2 § punkterna 1 och 2; paketet avser 19, 20, 23.
+  - kalla: SRC-PTL
+    lagrum: 4 a kap. 5 §
+    ej_tillamplig: Samverkanskapitlet avser deltagande verksamheter enligt 1 kap.
+      2 § punkterna 1 och 2; paketet avser 19, 20, 23.
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 1 §
+    krav:
+    - KRV-PTL-5-1
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 2 §
+    krav:
+    - KRV-PTL-5-2
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 3 §
+    krav:
+    - KRV-PTL-5-3
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 4 §
+    krav:
+    - KRV-PTL-5-4
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 5 §
+    krav:
+    - KRV-PTL-5-5
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 6 §
+    krav:
+    - KRV-PTL-5-6
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 7 §
+    krav:
+    - KRV-PTL-5-7
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 8 §
+    krav:
+    - KRV-PTL-5-8
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 9 §
+    ej_tillamplig: Undantag från samkörningsförbud för finansiella verksamheter (punkterna
+      1–13); paketet omfattas inte.
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 10 §
+    hantering: Upphävd bestämmelse enligt den frysta primärkällan. Ingen gällande
+      skyldighet skapas från upphävningsnotisen.
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 11 §
+    krav:
+    - KRV-PTL-5-11
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 12 §
+    ej_tillamplig: Avser personuppgifter hos clearingbolag eller tillhandahållare
+      av finansiell infrastruktur.
+  - kalla: SRC-PTL
+    lagrum: 5 kap. 13 §
+    ej_tillamplig: Avser clearingbolag eller tillhandahållare av finansiell infrastruktur.
+  - kalla: SRC-PTL
+    lagrum: 6 kap. 1 §
+    krav:
+    - KRV-PTL-6-1
+  - kalla: SRC-PTL
+    lagrum: 6 kap. 2 §
+    krav:
+    - KRV-PTL-6-2
+  - kalla: SRC-PTL
+    lagrum: 6 kap. 3 §
+    ej_tillamplig: Central kontaktpunkt för finansiella tjänster enligt punkterna
+      6, 8, 13 b; utanför paketet.
+  - kalla: SRC-PTL
+    lagrum: 6 kap. 4 §
+    krav:
+    - KRV-PTL-6-4
+  - kalla: SRC-PTL
+    lagrum: 6 kap. 4 a §
+    krav:
+    - KRV-PTL-6-4a
+  - kalla: SRC-PTL
+    lagrum: 6 kap. 5 §
+    krav:
+    - KRV-PTL-6-5
+  - kalla: SRC-PTL
+    lagrum: 6 a kap. 1 §
+    hantering: Skadestånd, bevisbörda eller process vid repressalier. Skyddsrutiner
+      omfattas av kraven för 2 kap. 15 § och 6 kap. 4 a §; rättsligt förfarande kräver
+      separat mänsklig handläggning.
+  - kalla: SRC-PTL
+    lagrum: 6 a kap. 2 §
+    hantering: Skadestånd, bevisbörda eller process vid repressalier. Skyddsrutiner
+      omfattas av kraven för 2 kap. 15 § och 6 kap. 4 a §; rättsligt förfarande kräver
+      separat mänsklig handläggning.
+  - kalla: SRC-PTL
+    lagrum: 6 a kap. 3 §
+    hantering: Skadestånd, bevisbörda eller process vid repressalier. Skyddsrutiner
+      omfattas av kraven för 2 kap. 15 § och 6 kap. 4 a §; rättsligt förfarande kräver
+      separat mänsklig handläggning.
+  - kalla: SRC-PTL
+    lagrum: 6 a kap. 4 §
+    hantering: Skadestånd, bevisbörda eller process vid repressalier. Skyddsrutiner
+      omfattas av kraven för 2 kap. 15 § och 6 kap. 4 a §; rättsligt förfarande kräver
+      separat mänsklig handläggning.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 1 §
+    hantering: Tillsynens sektorsavgränsning; rättslig omfattning styrs av BT-TILL
+      och PTF 16 §.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 2 §
+    hantering: Tillsynens syfte; paragrafkartan används som underlag för kontroll.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 3 §
+    krav:
+    - KRV-PTL-7-3
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 4 §
+    hantering: Myndighetens föreläggande om registrering eller upplysningar; byråns
+      registrering hanteras genom krav för 7 kap. 3 §.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 5 §
+    hantering: Myndighetens tillsynsbefogenheter; begärda uppgifter ska hanteras operativt
+      i M4.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 6 §
+    krav:
+    - KRV-PTL-7-6
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 7 §
+    hantering: Upphävd bestämmelse enligt den frysta primärkällan. Ingen gällande
+      skyldighet skapas från upphävningsnotisen.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 8 §
+    hantering: Myndighetens möjlighet att förelägga om upphörande; inget eget automatiskt
+      myndighetsbeslut.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 9 §
+    hantering: Myndighetens föreläggande efter lämplighetsförbud; byråns skyldigheter
+      följer kravet för 7 kap. 6 §.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 10 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 11 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 12 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 13 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 14 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 15 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 16 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 17 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 18 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 19 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 20 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 21 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 22 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 23 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 24 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 kap. 25 §
+    hantering: Tillsynsmyndighetens ingripande, sanktion eller överklagandeförfarande.
+      Den fulla paragraftexten finns i granskningspaketet; ger inte motorn befogenhet
+      att besluta sanktioner.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 1 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 2 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 3 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 4 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 5 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 6 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 7 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 8 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 9 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 10 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 7 a kap. 11 §
+    ej_tillamplig: Tillsyn över advokater och advokatbolag; paketet omfattar inte
+      advokatverksamhet. Punkt 21 stoppar omfattningsprövningen.
+  - kalla: SRC-PTL
+    lagrum: 8 kap. 1 §
+    hantering: Bemyndigande att meddela föreskrifter; föreskrifternas egna krav redovisas
+      i länets FS-karta.
+  - kalla: SRC-PTF
+    lagrum: 1 §
+    hantering: Tillämpnings- och definitionsregel; lagens termer används också i beslutstabellerna.
+  - kalla: SRC-PTF
+    lagrum: 2 §
+    krav:
+    - KRV-PTF-2
+  - kalla: SRC-PTF
+    lagrum: 3 §
+    krav:
+    - KRV-PTF-3
+  - kalla: SRC-PTF
+    lagrum: 4 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 5 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 6 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 7 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 8 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 9 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 10 §
+    hantering: Upphävd paragraf; notisen dokumenteras i inventariet och skapar ingen
+      gällande skyldighet.
+  - kalla: SRC-PTF
+    lagrum: 11 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 12 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 12 a §
+    krav:
+    - KRV-PTF-12a
+  - kalla: SRC-PTF
+    lagrum: 13 §
+    hantering: Upphävd paragraf; notisen dokumenteras i inventariet och skapar ingen
+      gällande skyldighet.
+  - kalla: SRC-PTF
+    lagrum: 14 §
+    hantering: Upphävd paragraf; notisen dokumenteras i inventariet och skapar ingen
+      gällande skyldighet.
+  - kalla: SRC-PTF
+    lagrum: 15 §
+    hantering: Upphävd paragraf; notisen dokumenteras i inventariet och skapar ingen
+      gällande skyldighet.
+  - kalla: SRC-PTF
+    lagrum: 15 a §
+    hantering: Upphävd paragraf; notisen dokumenteras i inventariet och skapar ingen
+      gällande skyldighet.
+  - kalla: SRC-PTF
+    lagrum: 15 b §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 15 c §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 16 §
+    hantering: Tillsynsområden, sätes-/folkbokföringslän och utländska filialer omsätts
+      i tillsynsomrade(); prövas före bedömning och fastställelse.
+  - kalla: SRC-PTF
+    lagrum: 17 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 17 a §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 17 b §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 17 c §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 17 d §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 17 e §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 18 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 19 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-PTF
+    lagrum: 20 §
+    hantering: Bestämmelse om Bolagsverkets register, myndigheternas uppgifter eller
+      bemyndigande. Full paragraftext bevaras; registreringskrav för byrån finns i
+      PTL 7:3/6 och PTF 2/3/12 a §§.
+  - kalla: SRC-12FS-2024-8
+    lagrum: 1 kap. 1 §
+    hantering: Föreskriftens tillämpningsområde eller definitionshänvisning; omfattningen
+      prövas enligt PTL 1:2/4 och PTF 16 §.
+  - kalla: SRC-12FS-2024-8
+    lagrum: 1 kap. 2 §
+    hantering: Föreskriftens tillämpningsområde eller definitionshänvisning; omfattningen
+      prövas enligt PTL 1:2/4 och PTF 16 §.
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 1 §
+    krav:
+    - KRV-LSF-2-01
+    - KRV-LSF-001
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 2 §
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    - KRV-LSF-003
+    - KRV-LSF-004
+    - KRV-LSF-005
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 3 §
+    krav:
+    - KRV-LSF-2-03
+    - KRV-LSF-006
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 4 §
+    krav:
+    - KRV-LSF-2-04
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 5 §
+    krav:
+    - KRV-LSF-2-05
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 6 §
+    krav:
+    - KRV-LSF-2-06
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 7 §
+    krav:
+    - KRV-LSF-2-07
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 8 §
+    krav:
+    - KRV-LSF-2-08
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 9 §
+    krav:
+    - KRV-LSF-2-09
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 10 §
+    krav:
+    - KRV-LSF-2-10
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 11 §
+    krav:
+    - KRV-LSF-2-11
+  - kalla: SRC-12FS-2024-8
+    lagrum: 2 kap. 12 §
+    krav:
+    - KRV-LSF-2-12
+  - kalla: SRC-12FS-2024-8
+    lagrum: 3 kap. 1 §
+    krav:
+    - KRV-LSF-3-01
+  - kalla: SRC-12FS-2024-8
+    lagrum: 3 kap. 2 §
+    krav:
+    - KRV-LSF-3-02
+  - kalla: SRC-12FS-2024-8
+    lagrum: 3 kap. 3 §
+    krav:
+    - KRV-LSF-3-03
+  - kalla: SRC-12FS-2024-8
+    lagrum: 3 kap. 4 §
+    krav:
+    - KRV-LSF-3-04
+  - kalla: SRC-12FS-2024-8
+    lagrum: 3 kap. 5 §
+    krav:
+    - KRV-LSF-3-05
+  - kalla: SRC-12FS-2024-8
+    lagrum: 3 kap. 6 §
+    krav:
+    - KRV-LSF-3-06
+  - kalla: SRC-12FS-2024-8
+    lagrum: 3 kap. 7 §
+    krav:
+    - KRV-LSF-3-07
+  - kalla: SRC-12FS-2024-8
+    lagrum: 4 kap. 1 §
+    krav:
+    - KRV-LSF-4-01
+  - kalla: SRC-12FS-2024-8
+    lagrum: 5 kap. 1 §
+    krav:
+    - KRV-LSF-5-01
+  - kalla: SRC-12FS-2024-8
+    lagrum: 5 kap. 2 §
+    krav:
+    - KRV-LSF-5-02
+  - kalla: SRC-12FS-2024-8
+    lagrum: 6 kap. 1 §
+    krav:
+    - KRV-LSF-6-01
+  - kalla: SRC-12FS-2024-8
+    lagrum: 6 kap. 2 §
+    krav:
+    - KRV-LSF-6-02
+  - kalla: SRC-12FS-2024-8
+    lagrum: 6 kap. 3 §
+    krav:
+    - KRV-LSF-6-03
+  - kalla: SRC-12FS-2024-8
+    lagrum: 6 kap. 4 §
+    krav:
+    - KRV-LSF-6-04
+  - kalla: SRC-12FS-2024-8
+    lagrum: 7 kap. 1 §
+    krav:
+    - KRV-LSF-7-01
+  - kalla: SRC-12FS-2024-8
+    lagrum: 7 kap. 2 §
+    krav:
+    - KRV-LSF-7-02
+  - kalla: SRC-12FS-2024-8
+    lagrum: 7 kap. 3 §
+    krav:
+    - KRV-LSF-7-03
+  sakkunnig:
+    status: ej_granskad

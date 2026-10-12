@@ -1,0 +1,13 @@
+- id: KC-METOD-PEP
+  spar: C
+  villkor:
+    falt: K-PEP.atgarder_kravs
+    op: ==
+    varde: true
+  utfall:
+    risk: hög
+  grund: metodval
+  lydelser:
+  - LYD-PTL-3-19-2017-08-01
+  forklaring: 'OGRANSKAT B→C-metodförslag: PEP-åtgärder föreslås indikera hög kundrisk.
+    Övrig produktionsformel saknas.'

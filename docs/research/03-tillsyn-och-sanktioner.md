@@ -66,6 +66,18 @@ Ytterligare mönster ur sanktionsbeslut och branschlitteratur:
 | B-21 | Hänvisning till branschstandard (REX, Reko) i stället för egna rutiner |
 | B-22 | Påstående om ansvarig för regelefterlevnad utan rutin för hur ansvaret utövas |
 
+Mönster ur två fullständiga beslut från Länsstyrelsen Västra Götaland 2026 (ärende 6045-2026 och 6572-2026), se [09](09-tillsynsbeslut-2026.md):
+
+| ID | Bristmönster |
+|---|---|
+| B-23 | Riskbedömningen är upprättad efter den period den ska gälla, eller tidigare versioner har skrivits över |
+| B-24 | Det framgår inte i vilken utsträckning tjänster, kundtyper, kanaler och riskfaktorer förekommer |
+| B-25 | Riskfaktorer bedöms var för sig. Samverkan bedöms inte för de kombinationer som faktiskt förekommer. |
+| B-26 | Tjänster med hög risk enligt den nationella riskbedömningen, till exempel bolagsbildning och skatterådgivning, känns inte igen |
+| B-27 | Risken sänks med hänvisning till att någon annan gjort kundkännedom, utan stöd i 3 kap. 21–24 §§ PTL |
+| B-28 | Rutinen medger att kundkännedomsåtgärder helt utelämnas när risken är låg |
+| B-29 | Bedömningen av politiskt utsatt ställning görs bara för den verkliga huvudmannen |
+
 ## Sanktionsstatistik
 
 **Underlag:** Länsstyrelsen Stockholms och Länsstyrelsen Västra Götalands sidor om ingripanden, sparade i september och oktober 2026. Sammanställt med [verktyg/sanktionsstatistik.py](verktyg/sanktionsstatistik.py).

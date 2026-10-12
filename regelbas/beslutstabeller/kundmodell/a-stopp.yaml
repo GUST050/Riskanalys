@@ -1,0 +1,160 @@
+- id: KA-1-STOPP
+  spar: A
+  villkor:
+    alla:
+    - falt: K-KK.tillracklig
+      op: ==
+      varde: false
+    - inte: &id001
+        alla:
+        - nagon:
+          - falt: K-ROLL.skatteradgivare
+            op: ==
+            varde: true
+          - falt: K-ROLL.advokat
+            op: ==
+            varde: true
+          - falt: K-ROLL.jurist
+            op: ==
+            varde: true
+          - falt: K-ROLL.auktoriserad_revisor
+            op: ==
+            varde: true
+        - falt: K-UPPDRAG.rattsligt
+          op: ==
+          varde: true
+  utfall:
+    beslut: stopp
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-1-2019-11-01
+  forklaring: Kundkännedomsstopp utan bekräftat rättsligt undantag.
+- id: KA-1-UNDANTAG
+  spar: A
+  villkor:
+    alla:
+    - nagon:
+      - falt: K-KK.tillracklig
+        op: ==
+        varde: false
+      - falt: K-A.risk_hanterbar
+        op: ==
+        varde: false
+    - *id001
+  utfall:
+    beslut: undantag
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-1-2019-11-01
+  forklaring: Undantaget enligt 3:1 andra stycket avser hela första stycket, inklusive
+    riskhanteringsledet. Självständiga stopp enligt 3:2–3 och sanktioner prövas separat.
+    Kandidattolkning för sakkunnig.
+- id: KA-2-STOPP
+  spar: A
+  villkor:
+    falt: K-A.etableringsmisstanke
+    op: ==
+    varde: true
+  utfall:
+    beslut: stopp
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-2-2017-08-01
+  forklaring: Självständigt etableringsförbud; inget ärvt skatteundantag.
+- id: KA-3-STOPP
+  spar: A
+  villkor:
+    alla:
+    - falt: K-A.transaktionsmisstanke
+      op: ==
+      varde: true
+    - inte: &id002
+        nagon:
+        - falt: K-A.omojligt_avsta
+          op: ==
+          varde: true
+        - falt: K-A.avstaende_forsvarar_utredning
+          op: ==
+          varde: true
+  utfall:
+    beslut: stopp
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-3-2017-08-01
+  forklaring: Självständigt transaktionsförbud.
+- id: KA-3-UNDANTAG
+  spar: A
+  villkor:
+    alla:
+    - falt: K-A.transaktionsmisstanke
+      op: ==
+      varde: true
+    - *id002
+  utfall:
+    beslut: undantag
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-3-2017-08-01
+  forklaring: Undantag vid omöjligt avstående eller sannolikt försvårad utredning;
+    D prövas ändå.
+- id: KA-RISK-STOPP
+  spar: A
+  villkor:
+    alla:
+    - falt: K-A.risk_hanterbar
+      op: ==
+      varde: false
+    - inte: *id001
+  utfall:
+    beslut: stopp
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-1-2019-11-01
+  forklaring: 'Otillräcklig förmåga att hantera risken stoppar även om ett allmänt
+    kundkännedomsfält är ifyllt. Undantaget enligt 3:1 andra stycket prövas för hela
+    första stycket. Grund: sparad LYD-PTL-3-1-2019-11-01, kontrollerad mot officiell
+    PTL 2026-10-10; ej sakkunniggranskat.'
+- id: KA-C-HOG
+  spar: A
+  villkor:
+    alla:
+    - alla:
+      - falt: K-C.hog
+        op: ==
+        varde: true
+      - falt: K-A.risk_hanterbar
+        op: ==
+        varde: false
+    - inte: *id001
+  utfall:
+    beslut: stopp
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-1-2019-11-01
+  forklaring: 'Uttryckligt C→A-beroende: hög risk kräver tillräcklig riskhantering;
+    hög C ensam är inte förbud. Undantaget enligt 3:1 andra stycket prövas för hela
+    första stycket. Grund: sparad LYD-PTL-3-1-2019-11-01, kontrollerad mot officiell
+    PTL 2026-10-10; ej sakkunniggranskat.'
+- id: KA-TILLATET
+  spar: A
+  villkor:
+    alla:
+    - falt: K-KK.tillracklig
+      op: ==
+      varde: true
+    - falt: K-A.risk_hanterbar
+      op: ==
+      varde: true
+    - falt: K-A.etableringsmisstanke
+      op: ==
+      varde: false
+    - falt: K-A.transaktionsmisstanke
+      op: ==
+      varde: false
+  utfall:
+    beslut: tillatet
+  grund: ska_krav
+  lydelser:
+  - LYD-PTL-3-1-2019-11-01
+  forklaring: Inget stopp enligt denna avgränsade PTL-prövning; sanktionsspåret kan
+    ändå stoppa.

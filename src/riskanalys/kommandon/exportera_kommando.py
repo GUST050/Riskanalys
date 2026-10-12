@@ -1,0 +1,28 @@
+"""riskanalys exportera"""
+
+import argparse
+from datetime import date
+from typing import Any
+
+from riskanalys.dokument.export import UTKASTFIL, kor_export_utkast
+from riskanalys.fel import RiskanalysFel
+from riskanalys.kommandon import datumargument
+from riskanalys.lagring.datamapp import befintlig_byramapp
+
+
+def lagg_till(underparsers: Any) -> None:
+    parser = underparsers.add_parser("exportera", help="Skapa ett Word-dokument av den senaste granskningen.")
+    parser.add_argument("byra")
+    parser.add_argument("--utkast", action="store_true", help="Exportera som utkast med åtgärdslista.")
+    parser.add_argument("--datum", type=datumargument, default=None, help="Datum i statusraden. Standard är i dag.")
+    parser.set_defaults(kor=kor_exportera)
+
+
+def kor_exportera(args: argparse.Namespace) -> int:
+    if not args.utkast:
+        raise RiskanalysFel("En fastställd version skapas med 'riskanalys faststall'. Använd --utkast för ett utkast.")
+    mapp = kor_export_utkast(befintlig_byramapp(args.byra), args.datum or date.today())
+    print(f"Utkastet är sparat i {mapp / UTKASTFIL}.")
+    print("Varje sida är märkt UTKAST. Öppna fynd och oklarheter står i åtgärdslistan sist i dokumentet.")
+    print(f"Nästa steg: sakgranska avsnitten med 'riskanalys sakgranska {args.byra}'.")
+    return 0

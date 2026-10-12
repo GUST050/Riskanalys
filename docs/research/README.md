@@ -14,6 +14,11 @@ Underlag för [designspecifikationen](../superpowers/specs/2026-10-08-riskanalys
 | [06-ai-och-teknik.md](06-ai-och-teknik.md) | Claude-API, Python-verktyg och datahantering |
 | [07-referensdata-och-integrationer.md](07-referensdata-och-integrationer.md) | Listor, register och datakällor som behöver hållas aktuella |
 | [08-lardomar-fran-ai-utkast.md](08-lardomar-fran-ai-utkast.md) | Vad ett tidigare AI-genererat dokumentpaket visar |
+| [09-tillsynsbeslut-2026.md](09-tillsynsbeslut-2026.md) | Två fullständiga sanktionsbeslut från 2026: vad Länsstyrelsen underkänner, nya bristmönster B-23–B-29 |
+| [10-kallkontroll-och-gapinventering-m2.md](10-kallkontroll-och-gapinventering-m2.md) | Primärkällor, datumlydelser, tre länsföreskrifter och rättad gapinventering inför M2 |
+| [11-kallkontroll-allman-riskbedomning.md](11-kallkontroll-allman-riskbedomning.md) | Den allmänna riskbedömningen jämförd med användarens källor 2026-10-11: vad som uppfylls och tio luckor |
+| [12-promptdesign-ai-skrivning.md](12-promptdesign-ai-skrivning.md) | Promptdesign när AI skriver riskbedömningens delar från faktablad: arbetsfördelning kod/AI, anropsflöde, regelkrav per del, validering och utvärdering (2026-10-11) |
+| [typfall/tillsyn-2026.json](typfall/tillsyn-2026.json) | Två syntetiska granskningsfall, 17 förväntade fynd och fem kontrollvarianter med sidhänvisningar. Facitutkast för M2–M5 och M7. |
 | [kallor.md](kallor.md) | Källförteckning med länkar |
 | [verktyg/](verktyg/) | Skript som användes för att extrahera text och sammanställa statistik |
 
@@ -23,6 +28,7 @@ Underlag för [designspecifikationen](../superpowers/specs/2026-10-08-riskanalys
 2. Föreskrifterna från Länsstyrelsen i Stockholm och Västra Götaland jämfördes ord för ord.
 3. Sanktionsbesluten på Länsstyrelsens webbsidor sammanställdes med [verktyg/sanktionsstatistik.py](verktyg/sanktionsstatistik.py).
 4. Kompletterande webbresearch om EU-regelverket, metodstandarder och teknik. Källor i [kallor.md](kallor.md).
+5. Användarens 79 fotograferade tillsynssidor importerades 2026-10-09 till ett lokalt arkiv utanför repot, med SHA-256, OCR och sidkarta. Användning och verifieringskommando finns i [09](09-tillsynsbeslut-2026.md#bevarat-underlag-och-återanvändbara-granskningsfall). Testindata är nyskrivna syntetiska omskrivningar.
 
 Upphovsrättsskyddat material återges inte. Interna dokument från en referensbyrå och kunduppgifter har inte publicerats. De beskrivs bara på ett anonymiserat och övergripande sätt.
 
@@ -32,5 +38,5 @@ Upphovsrättsskyddat material återges inte. Interna dokument från en referensb
 2. **Den allmänna riskbedömningen fäller flest.** Omkring 72 % av 185 publicerade ingripanden i Stockholm och Västra Götaland gäller den allmänna riskbedömningen, ensam eller tillsammans med rutinerna. Medianen för sanktionsavgifterna är 245 000 kr.
 3. **Tillsynen är förutsägbar.** Länsstyrelsens standardföreläggande har 15 punkter som i praktiken är en kravspecifikation för programmet.
 4. **Samma metod gäller före och efter 2027.** Svenska föreskrifter, FATF och AMLA:s utkast beskriver samma kedja: verksamhetsöversikt, inneboende risk, kontrollernas kvalitet, kvarstående risk och åtgärder.
-5. **Regelverket ändras snart.** AMLR gäller från 2027-07-10, AMLA:s riktlinjer väntas under fjärde kvartalet 2026, och ny svensk penningtvättslag är på remiss. Regelbasen måste därför versionshanteras.
+5. **Regelverket ändras snart.** AMLR tillämpas från 2027-07-10, och ny svensk penningtvättslag är på remiss. AMLA:s konsultation är stängd; slutliga riktlinjer har inte hittats på den kontrollerade konsultationssidan 2026-10-10. Regelbasen behöver både versionshantering och en spärr mot operativt bruk av utkast. Se [källkontrollen](10-kallkontroll-och-gapinventering-m2.md).
 6. **AI ska skriva, inte besluta.** Ett tidigare AI-genererat dokumentpaket blev metodiskt bra men krävde många versioner, hade 79 öppna verifieringspunkter och gick inte att bevisa fullständigt. Strukturen i specen löser det med regelbas, deterministisk motor och validerad AI-text.

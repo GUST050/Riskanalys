@@ -1,6 +1,12 @@
 # Byråmappar innehåller verksamhetsuppgifter och ska aldrig in i git
 byraer/
 
+# Lokalt källmaterial ska ligga utanför repot; extra skydd vid felaktig kopiering
+underlag/
+*.HEIC
+*.heic
+Riskanalys-20261009T160232Z-1-001.zip
+
 # Python
 __pycache__/
 *.py[cod]
@@ -16,6 +22,10 @@ build/
 # Miljö och hemligheter
 .env
 .env.*
+
+# Lokala sakkunnigbeslut innehåller granskarens identitet och kompetens
+/regelbas/granskning.yaml
+/regelbas/facitgranskning.yaml
 
 # Genererade dokument
 *.docx

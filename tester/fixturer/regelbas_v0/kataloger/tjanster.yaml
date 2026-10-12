@@ -1,0 +1,12 @@
+- id: T-RED-01
+  namn: Löpande bokföring
+  sektor: redovisning
+  beskrivning: Kontering av verifikationer, kund- och leverantörsreskontra, bankavstämning och periodrapporter.
+  erbjuds_falt: P-TJ.T-RED-01.erbjuds
+  hot: [H-01, H-02, H-03]
+  sarbarheter: [S-KUND-01, S-KUND-02, S-KANAL-01, S-VERK-01]
+  kontroller: [C-07]
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor: [SRC-VAGL-2025-03, SRC-NRA-2024-25]

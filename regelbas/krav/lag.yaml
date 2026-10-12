@@ -1,0 +1,1889 @@
+- id: KRV-PTL-1-2
+  kalla: SRC-PTL
+  lagrum: 1 kap. 2 §
+  lydelser:
+  - LYD-PTL-1-2-2025-07-01
+  - LYD-PTL-1-2-2026-11-20
+  grund: ska_krav
+  text: Denna lag gäller för fysiska och juridiska personer som driver 1. bank- eller
+    finansieringsrörelse enligt lagen (2004:297) om bank- och finansieringsrörelse,
+    2. livförsäkringsrörelse, dock inte a) sådan som drivs av försäkringsföreningar
+    som har beviljats undantag enligt 1 kap. 19 d § försäkringsrörelselagen (2010:2043),
+    eller b) tjänstepensionsverksamhet enligt lagen (2019:742) om tjänstepensionsföretag,
+    3. värdepappersrörelse enligt 2 kap. 1 § lagen (2007:528) om värdepappersmarknaden,
+    4. verksamhet enligt lagen (1996:1006) om viss finansiell verksamhet, 5. försäkringsdistribution
+    enligt lagen (2018:1219) om försäkringsdistribution, i fråga om sådan verksamhet
+    rörande livförsäkring, bedriven av sådana försäkringsförmedlare som har tillstånd
+    enligt 2 kap. 1 § den lagen eller bedriver verksamhet enligt 3 kap. 1 § andra
+    stycket 2 eller 3 § den lagen, 6. verksamhet enligt lagen (2011:755) om elektroniska
+    pengar, 7. fondverksamhet enligt lagen (2004:46) om värdepappersfonder, 8. verksamhet
+    som betalningsinstitut enligt lagen (2010:751) om betaltjänster, 9. verksamhet
+    som registrerad betaltjänstleverantör enligt lagen om betaltjänster, 10. verksamhet
+    som förvaltare av alternativa investeringsfonder enligt lagen (2013:561) om förvaltare
+    av alternativa investeringsfonder, 11. verksamhet med bostadskrediter enligt lagen
+    (2016:1024) om verksamhet med bostadskrediter och vissa andra konsumentkrediter,
+    12. verksamhet som leverantör av gräsrotsfinansieringstjänster enligt Europaparlamentets
+    och rådets förordning (EU) 2020/1503 av den 7 oktober 2020 om europeiska leverantörer
+    av gräsrotsfinansieringstjänster för företag och om ändring av förordning (EU)
+    2017/1129 och direktiv (EU) 2019/1937, om företaget är en juridisk person som
+    är etablerad i Sverige, 13. verksamhet som leverantör av kryptotillgångstjänster
+    enligt Europaparlamentets och rådets förordning (EU) 2023/1114 av den 31 maj 2023
+    om marknader för kryptotillgångar och om ändring av förordningarna (EU) nr 1093/2010
+    och (EU) nr 1095/2010 samt direktiven 2013/36/EU och (EU) 2019/1937, 14. verksamhet
+    som fastighetsmäklare eller fastighetsmäklarföretag med särskild registrering
+    för hyresförmedling eller fullständig registrering enligt fastighetsmäklarlagen
+    (2021:516), 15. spelverksamhet som bedrivs med licens eller registrering enligt
+    spellagen (2018:1138), 16. yrkesmässig handel med varor, om det kan antas att
+    det i verksamheten eller i en del av verksamheten genomförs eller kommer att genomföras
+    transaktioner, enstaka eller sådana som kan antas ha samband, som innebär att
+    ett utbetalt eller mottaget belopp i kontanter uppgår till motsvarande 5 000 euro
+    eller mer, 17. verksamhet enligt pantbankslagen (1995:1000), 18. verksamhet som
+    auktoriserad eller godkänd revisor eller registrerat revisionsbolag, 19. yrkesmässig
+    verksamhet som avser bokföringstjänster eller revisionstjänster som inte omfattas
+    av 18, 20. yrkesmässig rådgivning avseende skatter och avgifter (skatterådgivare),
+    21. verksamhet som advokat eller advokatbolag, till den del verksamheten avser
+    tjänster som anges i 4 § första stycket, 22. yrkesmässig verksamhet som annan
+    oberoende jurist än den som avses i 21, till den del verksamheten avser tjänster
+    som anges i 4 § första stycket, 23. yrkesmässig verksamhet till den del verksamheten
+    avser tjänster som anges i 4 § andra stycket och verksamhetsutövaren inte är en
+    sådan person som avses i 18-22, eller 24. yrkesmässig verksamhet som avser förmedling,
+    förvaring eller handel med konstverk, om det kan antas att det i verksamheten
+    eller i en del av verksamheten genomförs eller kommer att genomföras transaktioner,
+    enstaka eller sådana som kan antas ha samband, som innebär att ett utbetalt eller
+    mottaget belopp uppgår till motsvarande 10 000 euro eller mer. Vissa speltjänster
+    får undantas från tillämpning av lagen eller bestämmelser i den enligt föreskrifter
+    som meddelas med stöd av 8 kap. 1 § 1.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - &id001
+    typ: kundmall
+    id: KM-A
+    etapp: M2
+  - &id002
+    typ: dokument
+    id: D-RR.1
+    etapp: M6
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-1-4
+  kalla: SRC-PTL
+  lagrum: 1 kap. 4 §
+  lydelser:
+  - LYD-PTL-1-4-2021-11-10
+  grund: ska_krav
+  text: Tjänster som avses i 2 § första stycket 21 och 22 omfattar 1. handlande i
+    en klients namn för dennes räkning vid finansiella transaktioner eller transaktioner
+    med fastigheter, och 2. hjälp vid planering eller genomförande av transaktioner
+    för en klients räkning vid a) köp och försäljning av fastigheter eller företag,
+    b) förvaltning av klientens pengar, värdepapper eller andra tillgångar, c) öppnande
+    eller förvaltning av bank-, spar- eller värdepapperskonton, d) anskaffande av
+    nödvändigt kapital för bildande, drift eller ledning av företag, och e) bildande,
+    drift eller ledning av bolag, föreningar, stiftelser eller truster och liknande
+    juridiska konstruktioner. Tjänster som avses i 2 § första stycket 23 omfattar
+    1. bildande av juridiska personer, försäljning av nybildade aktiebolag och förmedling
+    av svenska eller utländska juridiska personer, 2. fullgörande av funktion som
+    styrelseledamot eller bolagsrättsligt ansvarig, som bolagsman i handels- eller
+    kommanditbolag eller i någon liknande ställning i förhållande till andra juridiska
+    personer, 3. tillhandahållande av ett registrerat kontor eller en postadress och
+    därmed sammanhängande tjänster till en fysisk person, en juridisk person eller
+    en trust eller en liknande juridisk konstruktion, 4. förvaltning av en trust eller
+    en liknande juridisk konstruktion, och 5. funktion som nominell aktieägare för
+    någon annans räkning eller åtgärder som syftar till att någon annan ska ha en
+    sådan funktion, med undantag för uppdrag åt en juridisk person som är noterad
+    på en reglerad marknad.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - *id001
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-1-6
+  kalla: SRC-PTL
+  lagrum: 1 kap. 6 §
+  lydelser:
+  - LYD-PTL-1-6-2017-08-01
+  grund: ska_krav
+  text: Med penningtvätt avses i denna lag åtgärder med avseende på pengar eller annan
+    egendom som härrör från brott eller brottslig verksamhet som 1. kan dölja egendomens
+    samband med brott eller brottslig verksamhet, 2. kan främja möjligheterna för
+    någon att tillgodogöra sig egendomen eller dess värde, 3. kan främja möjligheterna
+    för någon att undandra sig rättsliga påföljder, eller 4. innebär att någon förvärvar,
+    innehar, hävdar rätt till eller brukar egendomen. Vid tillämpning av denna lag
+    ska med penningtvätt jämställas åtgärder med egendom som typiskt sett är ägnade
+    att dölja att någon avser att berika sig eller någon annan genom en framtida brottslig
+    handling.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - *id001
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-1-7
+  kalla: SRC-PTL
+  lagrum: 1 kap. 7 §
+  lydelser:
+  - LYD-PTL-1-7-2022-07-01
+  grund: ska_krav
+  text: Med finansiering av terrorism avses i denna lag sådan insamling eller sådant
+    mottagande eller tillhandahållande av pengar eller annan egendom som avses i 6
+    § terroristbrottslagen (2022:666).
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - *id001
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-1-8
+  kalla: SRC-PTL
+  lagrum: 1 kap. 8 §
+  lydelser:
+  - LYD-PTL-1-8-2020-04-01
+  grund: ska_krav
+  text: 'I denna lag avses med 1. affärsförbindelse: en affärsmässig förbindelse som
+    när den etableras förväntas ha en viss varaktighet, 2. brevlådebank: ett utländskt
+    institut som är registrerat inom en jurisdiktion inom vilken institutet saknar
+    verklig etablering och ledning och där institutet inte heller ingår i en finansiell
+    grupp som omfattas av tillsyn, 3. EES: Europeiska ekonomiska samarbetsområdet,
+    4. kund: den som har trätt eller står i begrepp att träda i avtalsförbindelse
+    med sådan verksamhetsutövare som avses i denna lag, 5. person i politiskt utsatt
+    ställning: fysisk person som har eller har haft en viktig offentlig funktion i
+    en stat eller i en internationell organisation, 6. verklig huvudman: detsamma
+    som i 1 kap. 3-7 §§ lagen (2017:631) om registrering av verkliga huvudmän, 7.
+    koncern, moderföretag och dotterföretag: detsamma som i 1 kap. 4 § årsredovisningslagen
+    (1995:1554) eller motsvarande utländska företeelser, 8. verksamhetsutövare: en
+    fysisk eller juridisk person som utför verksamhet som omfattas av denna lag, och
+    9. behörig beslutsfattare: styrelseledamot, verkställande direktör eller annan
+    befattningshavare som har tillräckliga kunskaper om verksamhetsutövarens riskexponering
+    mot penningtvätt och finansiering av terrorism och som har tillräckliga befogenheter
+    att fatta beslut som påverkar dess riskexponering.'
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - *id001
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-1-9
+  kalla: SRC-PTL
+  lagrum: 1 kap. 9 §
+  lydelser:
+  - LYD-PTL-1-9-2020-04-01
+  grund: ska_krav
+  text: Med viktig offentlig funktion i en stat avses funktioner som 1. stats- eller
+    regeringschefer, ministrar samt vice och biträdande ministrar, 2. parlamentsledamöter
+    och ledamöter av liknande lagstiftande organ, 3. ledamöter i styrelsen för politiska
+    partier, 4. domare i högsta domstol, konstitutionell domstol eller andra rättsliga
+    organ på hög nivå vilkas beslut endast undantagsvis kan överklagas, 5. högre tjänstemän
+    vid revisionsmyndigheter och ledamöter i centralbankers styrande organ, 6. ambassadörer,
+    beskickningschefer samt höga officerare i försvarsmakten, och 7. personer som
+    ingår i statsägda företags förvaltnings-, lednings- eller kontrollorgan. Med viktig
+    offentlig funktion i en internationell organisation avses funktioner som direktörer,
+    biträdande direktörer, styrelseledamöter och innehavare av liknande poster.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - *id001
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-1-10
+  kalla: SRC-PTL
+  lagrum: 1 kap. 10 §
+  lydelser:
+  - LYD-PTL-1-10-2017-08-01
+  grund: ska_krav
+  text: Med familjemedlem till en person i politiskt utsatt ställning avses make,
+    registrerad partner, sambo, barn och deras makar, registrerade partner eller sambor
+    samt föräldrar. Med känd medarbetare till en person i politiskt utsatt ställning
+    avses 1. fysisk person som, enligt vad som är känt eller finns anledning att förmoda,
+    gemensamt med en person i politiskt utsatt ställning är verklig huvudman till
+    en juridisk person eller juridisk konstruktion eller som på annat sätt har eller
+    har haft nära förbindelser med en person i politiskt utsatt ställning, och 2.
+    fysisk person som ensam är verklig huvudman till en juridisk person eller juridisk
+    konstruktion som, enligt vad som är känt eller finns anledning att förmoda, egentligen
+    har upprättats till förmån för en person i politiskt utsatt ställning. Med nära
+    förbindelser i andra stycket 1 avses nära affärsförbindelser och andra förbindelser
+    som kan medföra att den kända medarbetaren kan förknippas med förhöjd risk för
+    penningtvätt eller finansiering av terrorism.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - *id001
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-1
+  kalla: SRC-PTL
+  lagrum: 2 kap. 1 §
+  lydelser:
+  - LYD-PTL-2-1-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska göra en bedömning av hur de produkter och tjänster
+    som tillhandahålls i verksamheten kan utnyttjas för penningtvätt eller finansiering
+    av terrorism och hur stor risken är för att detta sker (allmän riskbedömning).
+    Vid den allmänna riskbedömningen ska det särskilt beaktas vilka slags produkter
+    och tjänster som tillhandahålls, vilka kunder och distributionskanaler som finns
+    och vilka geografiska riskfaktorer som föreligger. Hänsyn ska också tas till uppgifter
+    som kommer fram vid verksamhetsutövarens rapportering av misstänkta aktiviteter
+    och transaktioner samt till information om tillvägagångssätt för penningtvätt
+    och finansiering av terrorism och andra relevanta uppgifter som myndigheter lämnar.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-ARB.1
+  mal:
+  - typ: dokument
+    id: D-ARB.1
+    etapp: M1
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-2
+  kalla: SRC-PTL
+  lagrum: 2 kap. 2 §
+  lydelser:
+  - LYD-PTL-2-2-2017-08-01
+  grund: ska_krav
+  text: Omfattningen av den allmänna riskbedömningen ska bestämmas med hänsyn till
+    verksamhetsutövarens storlek och art och de risker för penningtvätt eller finansiering
+    av terrorism som kan antas föreligga. Riskbedömningen ska utformas så att den
+    kan ligga till grund för verksamhetsutövarens rutiner, riktlinjer och övriga åtgärder
+    mot penningtvätt och finansiering av terrorism. Den allmänna riskbedömningen ska
+    dokumenteras och hållas uppdaterad.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-ARB.2
+  mal:
+  - typ: dokument
+    id: D-ARB.2
+    etapp: M1
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-3
+  kalla: SRC-PTL
+  lagrum: 2 kap. 3 §
+  lydelser:
+  - LYD-PTL-2-3-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska bedöma den risk för penningtvätt eller finansiering
+    av terrorism som kan förknippas med kundrelationen (kundens riskprofil). Kundens
+    riskprofil ska bestämmas med utgångspunkt i den allmänna riskbedömningen och verksamhetsutövarens
+    kännedom om kunden. När det behövs för att bestämma kundens riskprofil ska verksamhetsutövaren
+    beakta omständigheter som avses i 4 och 5 §§ och föreskrifter som meddelats med
+    stöd av denna lag samt andra omständigheter som i det enskilda fallet påverkar
+    risken som kan förknippas med kundrelationen. Kundens riskprofil ska följas upp
+    under pågående affärsförbindelser och ändras när det finns anledning till det.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - &id003
+    typ: kundmall
+    id: KM-C
+    etapp: M2
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-4
+  kalla: SRC-PTL
+  lagrum: 2 kap. 4 §
+  lydelser:
+  - LYD-PTL-2-4-2020-01-01
+  grund: ska_krav
+  text: Som omständigheter som kan tyda på att risken för penningtvätt och finansiering
+    av terrorism är låg kan verksamhetsutövaren beakta bland annat att kunden 1. är
+    en stat, en region, en kommun eller motsvarande eller en juridisk person över
+    vilken en stat, en region, en kommun eller motsvarande, var för sig eller tillsammans,
+    har ett direkt eller indirekt rättsligt bestämmande inflytande, 2. har hemvist
+    inom EES, 3. har hemvist i en stat som har bestämmelser om åtgärder mot penningtvätt
+    och finansiering av terrorism som motsvarar dem i denna lag och som tillämpar
+    dessa bestämmelser på ett effektivt sätt, 4. har hemvist i en stat som har en
+    låg nivå av korruption och annan relevant brottslighet, och 5. är ett företag
+    vars överlåtbara värdepapper är upptagna till handel på en reglerad marknad inom
+    EES eller på en motsvarande marknad utanför EES.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - *id003
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-5
+  kalla: SRC-PTL
+  lagrum: 2 kap. 5 §
+  lydelser:
+  - LYD-PTL-2-5-2017-08-01
+  grund: ska_krav
+  text: Som omständigheter som kan tyda på att risken för penningtvätt eller finansiering
+    av terrorism är hög kan verksamhetsutövaren beakta bland annat att 1. kundens
+    ägarstruktur framstår som ovanlig eller alltför komplicerad för dess verksamhet,
+    2. kunden bedriver kontantintensiv verksamhet, 3. kunden är en juridisk person
+    som har nominella aktieägare eller andelar utställda på innehavaren, 4. kunden
+    är en juridisk person, en trust eller en liknande juridisk konstruktion som har
+    till syfte att förvalta en viss fysisk persons tillgångar, 5. kunden har hemvist
+    i en stat som saknar effektiva system för bekämpning av penningtvätt eller finansiering
+    av terrorism, 6. kunden har hemvist i en stat med betydande korruption och annan
+    relevant brottslighet, 7. kunden har hemvist i en stat som är föremål för sanktioner,
+    embargon eller liknande åtgärder, 8. kunden har hemvist i en stat som finansierar
+    eller stöder terroristverksamhet eller där terroristorganisationer är verksamma,
+    9. affärsrelationer eller transaktioner sker på distans, utan användning av metoder
+    som på ett tillförlitligt sätt kan säkerställa kundens identitet, och 10. betalning
+    av varor eller tjänster görs av någon som är okänd eller saknar koppling till
+    kunden. brevlådebanker
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.1
+  mal:
+  - *id003
+  - *id002
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-8
+  kalla: SRC-PTL
+  lagrum: 2 kap. 8 §
+  lydelser:
+  - LYD-PTL-2-8-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska ha dokumenterade rutiner och riktlinjer avseende
+    sina åtgärder för kundkännedom, övervakning och rapportering samt för behandling
+    av personuppgifter. Rutinerna och riktlinjerna ska fortlöpande anpassas efter
+    nya och förändrade risker för penningtvätt och finansiering av terrorism. Rutinernas
+    och riktlinjernas omfattning och innehåll ska bestämmas med hänsyn till verksamhetsutövarens
+    storlek, art och riskerna för penningtvätt och finansiering av terrorism som identifierats
+    i den allmänna riskbedömningen.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - &id004
+    typ: dokument
+    id: D-RR.2
+    etapp: M6
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-9
+  kalla: SRC-PTL
+  lagrum: 2 kap. 9 §
+  lydelser:
+  - LYD-PTL-2-9-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare som är det yttersta moderföretaget i en koncern ska
+    fastställa gemensamma rutiner och riktlinjer för koncernen. De gemensamma rutinerna
+    och riktlinjerna ska åtminstone omfatta rutiner och riktlinjer för behandling
+    av personuppgifter och informationsutbyte inom koncernen för att säkerställa att
+    information om misstänkt penningtvätt och finansiering av terrorism och andra
+    relevanta uppgifter vid behov sprids till berörda inom koncernen.
+  galler_om:
+    falt: P-ORG.koncernmoder
+    op: ==
+    varde: true
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - *id004
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-10
+  kalla: SRC-PTL
+  lagrum: 2 kap. 10 §
+  lydelser:
+  - LYD-PTL-2-10-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare som avses i 9 § första stycket ska se till att gemensamma
+    rutiner och riktlinjer tillämpas inom koncernen.
+  galler_om:
+    falt: P-ORG.koncernmoder
+    op: ==
+    varde: true
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - *id004
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-11
+  kalla: SRC-PTL
+  lagrum: 2 kap. 11 §
+  lydelser:
+  - LYD-PTL-2-11-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare som avses i 9 § första stycket ska se till att dotterföretag
+    med hemvist i ett land utanför EES (hemviststaten) tillämpar bestämmelserna i
+    denna lag och föreskrifter som meddelats med stöd av lagen, om bestämmelserna
+    för att förhindra penningtvätt och finansiering av terrorism är mindre ingripande
+    i det landet. Första stycket gäller även verksamhetsutövare som har filialer i
+    ett land utanför EES.
+  galler_om:
+    falt: P-ORG.koncernmoder
+    op: ==
+    varde: true
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - *id004
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-12
+  kalla: SRC-PTL
+  lagrum: 2 kap. 12 §
+  lydelser:
+  - LYD-PTL-2-12-2017-08-01
+  grund: ska_krav
+  text: Om kraven i 10 eller 11 § inte kan uppfyllas i fråga om ett dotterföretag
+    utanför EES på grund av bestämmelser i hemviststaten, ska en verksamhetsutövare
+    som avses i 9 § första stycket vidta åtgärder för att effektivt hantera den ökade
+    risken för penningtvätt och finansiering av terrorism som därigenom uppkommer.
+    Första stycket gäller även verksamhetsutövare som har filialer i ett land utanför
+    EES. Verksamhetsutövaren ska underrätta tillsynsmyndigheten om kraven inte kan
+    uppfyllas.
+  galler_om:
+    falt: P-ORG.koncernmoder
+    op: ==
+    varde: true
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - *id004
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-13
+  kalla: SRC-PTL
+  lagrum: 2 kap. 13 §
+  lydelser:
+  - LYD-PTL-2-13-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska ha rutiner för att säkerställa lämpligheten hos
+    anställda, uppdragstagare och andra som på liknande grund deltar i verksamheten,
+    om de utför arbetsuppgifter av betydelse för att förhindra att verksamheten utnyttjas
+    för penningtvätt eller finansiering av terrorism.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - *id004
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-14
+  kalla: SRC-PTL
+  lagrum: 2 kap. 14 §
+  lydelser:
+  - LYD-PTL-2-14-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska se till att anställda, uppdragstagare och andra
+    som på liknande grund deltar i verksamheten och som utför arbetsuppgifter av betydelse
+    för att förhindra att verksamheten utnyttjas för penningtvätt eller finansiering
+    av terrorism fortlöpande får relevant utbildning och information för att kunna
+    fullgöra verksamhetsutövarens skyldigheter enligt denna lag. Utbildningen ska
+    åtminstone avse relevanta delar av innehållet i gällande regelverk, verksamhetsutövarens
+    allmänna riskbedömning, rutiner och riktlinjer samt information som ska underlätta
+    för personer som avses i första stycket att upptäcka misstänkt penningtvätt och
+    finansiering av terrorism.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - *id004
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-15
+  kalla: SRC-PTL
+  lagrum: 2 kap. 15 §
+  lydelser:
+  - LYD-PTL-2-15-2020-01-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska ha rutiner och vidta de åtgärder i övrigt som behövs
+    för att skydda anställda, uppdragstagare och andra som på liknande grund deltar
+    i verksamheten från hot, hämnd eller andra fientliga åtgärder till följd av att
+    de fullgör verksamhetsutövarens skyldigheter enligt denna lag. En verksamhetsutövare
+    får inte utsätta en anställd, en uppdragstagare eller någon annan som på liknande
+    grund deltar i verksamheten för repressalier på grund av att denne har informerat
+    om misstänkt penningtvätt eller finansiering av terrorism, internt eller till
+    Polismyndigheten.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - *id004
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-2-16
+  kalla: SRC-PTL
+  lagrum: 2 kap. 16 §
+  lydelser:
+  - LYD-PTL-2-16-2021-07-01
+  grund: ska_krav
+  text: Om en verksamhetsutövare som är en fysisk person driver sin verksamhet som
+    anställd hos en juridisk person, ska de krav som avses i 1, 2, 8-12, 14 och 15
+    §§ samt 6 kap. 1 och 2 §§ gälla den juridiska personen.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.2
+  mal:
+  - *id004
+  - typ: drift
+    id: DRIFT-ORGANISATION
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-1
+  kalla: SRC-PTL
+  lagrum: 3 kap. 1 §
+  lydelser:
+  - LYD-PTL-3-1-2019-11-01
+  grund: ska_krav
+  text: En verksamhetsutövare får inte etablera eller upprätthålla en affärsförbindelse
+    eller utföra en enstaka transaktion, om verksamhetsutövaren inte har tillräcklig
+    kännedom om kunden för att kunna 1. hantera risken för penningtvätt eller finansiering
+    av terrorism som kan förknippas med kundrelationen, och 2. övervaka och bedöma
+    kundens aktiviteter och transaktioner enligt 4 kap. 1 och 2 §§. Första stycket
+    gäller inte advokater och advokatbolag, andra oberoende jurister, auktoriserade
+    och godkända revisorer samt skatterådgivare, om affärsförbindelsen syftar till
+    att försvara eller företräda en klient i fråga om ett rättsligt förfarande, inklusive
+    rådgivning för att inleda eller undvika ett rättsligt förfarande, eller till att
+    bedöma klientens rättsliga situation.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id001
+  - &id005
+    typ: dokument
+    id: D-RR.3
+    etapp: M6
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-2
+  kalla: SRC-PTL
+  lagrum: 3 kap. 2 §
+  lydelser:
+  - LYD-PTL-3-2-2017-08-01
+  grund: ska_krav
+  text: En affärsförbindelse får inte etableras om det finns misstanke om att verksamhetsutövarens
+    produkter eller tjänster kommer att användas för penningtvätt eller finansiering
+    av terrorism.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id001
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-3
+  kalla: SRC-PTL
+  lagrum: 3 kap. 3 §
+  lydelser:
+  - LYD-PTL-3-3-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare får inte utföra en transaktion om det på skälig grund
+    kan misstänkas att den utgör ett led i penningtvätt eller finansiering av terrorism.
+    Om en rapport har lämnats till Polismyndigheten enligt 4 kap. 3 § ska verksamhetsutövaren
+    även beakta den information som Polismyndigheten kan lämna om hanteringen av ärendet.
+    Om det inte är möjligt att låta bli att utföra en misstänkt transaktion, eller
+    om ett avstående från att genomföra transaktionen sannolikt skulle försvåra den
+    vidare utredningen, får transaktionen genomföras.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id001
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-4
+  kalla: SRC-PTL
+  lagrum: 3 kap. 4 §
+  lydelser:
+  - LYD-PTL-3-4-2024-12-30
+  grund: ska_krav
+  text: En verksamhetsutövare ska vidta åtgärder för kundkännedom vid etableringen
+    av en affärsförbindelse. Om verksamhetsutövaren inte har en affärsförbindelse
+    med kunden, ska åtgärder för kundkännedom vidtas 1. vid enstaka transaktioner
+    som uppgår till ett belopp motsvarande 15 000 euro eller mer, 2. vid transaktioner
+    som understiger ett belopp motsvarande 15 000 euro och som verksamhetsutövaren
+    inser eller borde inse har samband med en eller flera andra transaktioner och
+    som tillsammans uppgår till minst detta belopp, och 3. vid utförandet av sådana
+    överföringar av medel eller kryptotillgångar som avses i artikel 3.9 i Europaparlamentets
+    och rådets förordning (EU) 2023/1113 av den 31 maj 2023 om uppgifter som ska åtfölja
+    överföringar av medel och vissa kryptotillgångar och ändring av direktiv (EU)
+    2015/849, om överföringen överstiger ett belopp motsvarande 1 000 euro.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - &id006
+    typ: kundmall
+    id: KM-B
+    etapp: M2
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-7
+  kalla: SRC-PTL
+  lagrum: 3 kap. 7 §
+  lydelser:
+  - LYD-PTL-3-7-2020-01-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska identifiera kunden och kontrollera kundens identitet
+    genom identitetshandlingar eller registerutdrag eller genom andra uppgifter och
+    handlingar från en oberoende och tillförlitlig källa. När första stycket tillämpas
+    får man använda medel för elektronisk identifiering och betrodda tjänster enligt
+    Europaparlamentets och rådets förordning (EU) nr 910/2014 av den 23 juli 2014
+    om elektronisk identifiering och betrodda tjänster för elektroniska transaktioner
+    på den inre marknaden och om upphävande av direktiv 1999/93/EG. Andra säkra identifieringsprocesser
+    på distans eller på elektronisk väg som är reglerade, erkända, godkända eller
+    accepterade av relevanta myndigheter får också användas. Om kunden företräds av
+    en person som uppger sig handla på kundens vägnar, ska verksamhetsutövaren kontrollera
+    den personens identitet och behörighet att företräda kunden.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-8
+  kalla: SRC-PTL
+  lagrum: 3 kap. 8 §
+  lydelser:
+  - LYD-PTL-3-8-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska utreda om kunden har en verklig huvudman. En sådan
+    utredning ska åtminstone avse sökning i registret över verkliga huvudmän enligt
+    lagen (2017:631) om registrering av verkliga huvudmän. Om kunden är en juridisk
+    person, en trust eller en liknande juridisk konstruktion, ska utredningen omfatta
+    åtgärder för att förstå kundens ägarförhållanden och kontrollstruktur. Om kunden
+    har en verklig huvudman, ska verksamhetsutövaren vidta åtgärder för att kontrollera
+    den verkliga huvudmannens identitet. Första stycket gäller inte om kunden är ett
+    aktiebolag vars aktier är upptagna till handel på en reglerad marknad i Sverige
+    eller inom EES eller på en motsvarande marknad utanför EES eller ett dotterföretag
+    till ett sådant bolag. Om kunden är en juridisk person och det efter åtgärder
+    enligt första stycket står klart att den juridiska personen inte har en verklig
+    huvudman, ska den person som är styrelseordförande, verkställande direktör eller
+    motsvarande befattningshavare anses vara verklig huvudman. Detsamma gäller om
+    verksamhets- utövaren har anledning att anta att den person som identifierats
+    enligt första stycket inte är den verkliga huvudmannen. (2019:1254).
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-8a
+  kalla: SRC-PTL
+  lagrum: 3 kap. 8 a §
+  lydelser:
+  - LYD-PTL-3-8a-2020-01-02
+  grund: ska_krav
+  text: Bestämmelsen i 8 § tredje stycket gäller inte om - kunden är en stat, en region,
+    en kommun eller motsvarande, och - den risk som kan förknippas med kunden enligt
+    2 kap. 3 § bedöms som låg.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-9
+  kalla: SRC-PTL
+  lagrum: 3 kap. 9 §
+  lydelser:
+  - LYD-PTL-3-9-2017-08-01
+  grund: ska_krav
+  text: Kontroll av kundens och den verkliga huvudmannens identitet ska slutföras
+    innan en affärsförbindelse etableras eller en enstaka transaktion utförs. Om det
+    är nödvändigt för att inte avbryta verksamhetens normala gång, får identitetskontroll
+    med anledning av en ny affärsförbindelse göras senare än enligt första stycket,
+    dock senast när affärsförbindelsen etableras. Andra stycket får endast tillämpas
+    om risken för penningtvätt eller finansiering av terrorism är låg.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-10
+  kalla: SRC-PTL
+  lagrum: 3 kap. 10 §
+  lydelser:
+  - LYD-PTL-3-10-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska bedöma om kunden eller kundens verkliga huvudman
+    är en person i politiskt utsatt ställning eller en familjemedlem eller känd medarbetare
+    till en sådan person.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-11
+  kalla: SRC-PTL
+  lagrum: 3 kap. 11 §
+  lydelser:
+  - LYD-PTL-3-11-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska kontrollera om kunden är etablerad i ett land utanför
+    EES som av Europeiska kommissionen har identifierats som ett högrisktredjeland.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-12
+  kalla: SRC-PTL
+  lagrum: 3 kap. 12 §
+  lydelser:
+  - LYD-PTL-3-12-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska inhämta information om affärsförbindelsens syfte
+    och art. Informationen ska ligga till grund för en bedömning av 1. vilka aktiviteter
+    och transaktioner som kunden kan förväntas vidta och genomföra inom ramen för
+    affärsförbindelsen, och 2. kundens riskprofil enligt 2 kap. 3 §.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-13
+  kalla: SRC-PTL
+  lagrum: 3 kap. 13 §
+  lydelser:
+  - LYD-PTL-3-13-2020-01-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska löpande och vid behov följa upp pågående affärsförbindelser
+    i syfte att säkerställa att kännedomen om kunden enligt 7, 8 och 10-12 §§ är aktuell
+    och tillräcklig för att hantera den bedömda risken för penningtvätt eller finansiering
+    av terrorism. En verksamhetsutövare som är ett rapporteringsskyldigt finansiellt
+    institut ska vidta åtgärder som avses i första stycket även när kontakt måste
+    tas med kunden för att fullgöra skyldigheterna att granska finansiella konton
+    enligt lagen (2015:911) om identifiering av rapporteringspliktiga konton vid automatiskt
+    utbyte av upplysningar om finansiella konton.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-14
+  kalla: SRC-PTL
+  lagrum: 3 kap. 14 §
+  lydelser:
+  - LYD-PTL-3-14-2017-08-01
+  grund: ska_krav
+  text: Åtgärder för kontroll, bedömning och utredning enligt 7, 8 och 10–13 §§ ska
+    utföras i den omfattning det behövs med hänsyn till kundens riskprofil och övriga
+    omständigheter.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-15
+  kalla: SRC-PTL
+  lagrum: 3 kap. 15 §
+  lydelser:
+  - LYD-PTL-3-15-2017-08-01
+  grund: ska_krav
+  text: Om risken för penningtvätt eller finansiering av terrorism som kan förknippas
+    med kundrelationen bedöms som låg, får verksamhetsutövaren tillämpa förenklade
+    åtgärder för kundkännedom. Förenklade åtgärder för kundkännedom innebär att kontroller,
+    bedömningar och utredningar som följer av 7, 8 och 10–13 §§ kan vara av mer begränsad
+    omfattning och vidtas på annat sätt.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-16
+  kalla: SRC-PTL
+  lagrum: 3 kap. 16 §
+  lydelser:
+  - LYD-PTL-3-16-2017-08-01
+  grund: ska_krav
+  text: Om risken för penningtvätt eller finansiering av terrorism som kan förknippas
+    med kundrelationen bedöms som hög, ska särskilt omfattande kontroller, bedömningar
+    och utredningar enligt 7, 8 och 10–13 §§ göras. Åtgärderna ska i sådant fall kompletteras
+    med de ytterligare åtgärder som krävs för att motverka den höga risken för penningtvätt
+    eller finansiering av terrorism. Sådana åtgärder kan avse inhämtande av ytterligare
+    information om kundens affärsverksamhet eller ekonomiska situation och uppgifter
+    om varifrån kundens ekonomiska medel kommer.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-17
+  kalla: SRC-PTL
+  lagrum: 3 kap. 17 §
+  lydelser:
+  - LYD-PTL-3-17-2020-01-01
+  grund: ska_krav
+  text: Skärpta åtgärder enligt 16 § ska vidtas vid affärsförbindelser eller enstaka
+    transaktioner när kunden är etablerad i ett land utanför EES som har identifierats
+    som ett högrisktredjeland av Europeiska kommissionen. Sådana åtgärder ska åtminstone
+    avse skärpning av övervakningen av pågående affärsförbindelser och bedömningen
+    av enstaka transaktioner enligt 4 kap. 1 § och omfatta inhämtande av 1. ytterligare
+    information om kunden och den verkliga huvudmannen, 2. ytterligare information
+    om affärsförbindelsens eller den enstaka transaktionens syfte och art, 3. information
+    om kundens och den verkliga huvudmannens ekonomiska situation och varifrån kundens
+    och den verkliga huvudmannens ekonomiska medel kommer, och 4. godkännande från
+    en behörig beslutsfattare att etablera eller upprätthålla en affärsförbindelse.
+    Skärpta åtgärder behöver inte vidtas i förhållande till filialer eller dotterföretag
+    till juridiska personer som är etablerade inom EES, om 1. den juridiska personen
+    omfattas av denna lag eller motsvarande krav enligt utländsk rätt, 2. risken för
+    penningtvätt eller finansiering av terrorism som kan förknippas med kunden inte
+    bedöms som hög vid riskbedömning enligt 2 kap. 3 §, och 3. kunden tillämpar rutiner
+    som fastställts enligt 2 kap. 8 eller 9 § eller motsvarande krav enligt lagstiftningen
+    i det land där kunden finns eller har hemvist.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-19
+  kalla: SRC-PTL
+  lagrum: 3 kap. 19 §
+  lydelser:
+  - LYD-PTL-3-19-2017-08-01
+  grund: ska_krav
+  text: Om kunden eller kundens verkliga huvudman är en person i politiskt utsatt
+    ställning, ska en verksamhetsutövare utöver åtgärder enligt 7, 8 och 10–12 §§
+    alltid 1. vidta lämpliga åtgärder för att ta reda på varifrån de tillgångar som
+    hanteras inom ramen för affärsförbindelsen eller den enstaka transaktionen kommer,
+    2. tillämpa skärpt fortlöpande uppföljning av affärsförbindelsen enligt 13 § och
+    övervaka aktiviteter och transaktioner enligt 4 kap. 1 § i förhöjd omfattning,
+    och 3. inhämta godkännande från behörig beslutsfattare inför beslut om att ingå
+    eller avbryta en affärsförbindelse. Första stycket tillämpas också om kunden är
+    en familjemedlem eller känd medarbetare till en person i politiskt utsatt ställning.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-20
+  kalla: SRC-PTL
+  lagrum: 3 kap. 20 §
+  lydelser:
+  - LYD-PTL-3-20-2017-08-01
+  grund: ska_krav
+  text: När en person i politiskt utsatt ställning upphör att utöva en offentlig funktion
+    enligt 1 kap. 8 § 5, ska 19 § tillämpas i 18 månader. Därefter ska åtgärder enligt
+    19 § tillämpas om risken för penningtvätt eller finansiering av terrorism som
+    kan förknippas med kundrelationen bedöms som hög. Om åtgärder enligt 19 § inte
+    längre ska tillämpas på en person som avses i första stycket, ska sådana åtgärder
+    inte heller tillämpas på familjemedlemmar eller kända medarbetare till en person
+    i politiskt utsatt ställning.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-21
+  kalla: SRC-PTL
+  lagrum: 3 kap. 21 §
+  lydelser:
+  - LYD-PTL-3-21-2017-08-01
+  grund: ska_krav
+  text: Vid tillämpningen av 7, 8 och 12 §§ får en verksamhetsutövare förlita sig
+    på åtgärder som har utförts av en utomstående som anges i 22 §, om verksamhetsutövaren
+    utan dröjsmål 1. får del av de uppgifter som den utomstående har inhämtat, och
+    2. på begäran kan få del av den dokumentation som ligger till grund för uppgifterna.
+    Verksamhetsutövaren svarar för att de åtgärder för kundkännedom som vidtagits
+    av utomstående är tillräckliga.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-22
+  kalla: SRC-PTL
+  lagrum: 3 kap. 22 §
+  lydelser:
+  - LYD-PTL-3-22-2021-11-10
+  grund: ska_krav
+  text: Med utomstående enligt 21 § avses 1. fysiska eller juridiska personer med
+    verksamhet som anges i 1 kap. 2 § första stycket 1-3, 5-8 och 10-15 eller motsvarande
+    verksamhet, auktoriserade eller godkända revisorer och advokater som är etablerade
+    inom EES, och 2. fysiska eller juridiska personer med verksamhet som anges i 1
+    kap. 2 § första stycket 1-3, 5-8 och 10-15 eller motsvarande verksamhet, auktoriserade
+    eller godkända revisorer och advokater som är etablerade utanför EES, om de a)
+    tillämpar bestämmelser om kundkännedom och bevarande av handlingar som motsvarar
+    kraven i denna lag, och b) står under tillsyn över att dessa bestämmelser följs.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-23
+  kalla: SRC-PTL
+  lagrum: 3 kap. 23 §
+  lydelser:
+  - LYD-PTL-3-23-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare får inte förlita sig på åtgärder för kundkännedom som
+    vidtagits av en utomstående med hemvist i ett sådant land utanför EES som av Europeiska
+    kommissionen identifierats som ett högrisktredjeland. Första stycket gäller inte
+    om den utomstående är filial eller dotterföretag till en juridisk person som anges
+    i 22 § 1, om filialen eller dotterföretaget tillämpar gemensamma rutiner som fastställts
+    enligt 2 kap. 8 eller 9 § eller motsvarande krav enligt lagstiftningen i det land
+    där kunden finns eller har hemvist.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-24
+  kalla: SRC-PTL
+  lagrum: 3 kap. 24 §
+  lydelser:
+  - LYD-PTL-3-24-2017-08-01
+  grund: ska_krav
+  text: Kraven i 21–23 §§ ska inte tillämpas vid utkontraktering, agenturförhållanden
+    eller liknande förhållanden där den utomstående tjänsteleverantören, agenten eller
+    motsvarande enligt avtal ska anses ingå i verksamhetsutövaren.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-29
+  kalla: SRC-PTL
+  lagrum: 3 kap. 29 §
+  lydelser:
+  - LYD-PTL-3-29-2017-08-01
+  grund: ska_krav
+  text: Om kunden är eller företräder en trust eller liknande juridisk konstruktion
+    och trustens eller den juridiska konstruktionens förmånstagare identifieras på
+    annat sätt än med namn, ska en verksamhetsutövare säkerställa att förmånstagaren
+    kan identifieras senast vid utbetalningstillfället. Förmånstagarens identitet
+    ska kontrolleras senast vid utbetalningen av förmånerna eller när förmånstagaren
+    gör gällande någon annan förvärvad rättighet.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-3-30
+  kalla: SRC-PTL
+  lagrum: 3 kap. 30 §
+  lydelser:
+  - LYD-PTL-3-30-2017-08-01
+  grund: ska_krav
+  text: Kontroller och åtgärder enligt 29 § ska vidtas i den omfattning det behövs
+    med hänsyn till den risk som kan förknippas med kundrelationen enligt 2 kap. 3
+    §. När det behövs för att bedöma risken ska omständigheter hänförliga till förmånstagaren
+    också beaktas.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.3
+  mal:
+  - *id006
+  - *id005
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-4-1
+  kalla: SRC-PTL
+  lagrum: 4 kap. 1 §
+  lydelser:
+  - LYD-PTL-4-1-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska övervaka pågående affärsförbindelser och bedöma
+    enstaka transaktioner i syfte att upptäcka aktiviteter och transaktioner som 1.
+    avviker från vad verksamhetsutövaren har anledning att räkna med utifrån den kännedom
+    om kunden som verksamhetsutövaren har, 2. avviker från vad verksamhetsutövaren
+    har anledning att räkna med utifrån den kännedom som verksamhetsutövaren har om
+    sina kunder, de produkter och tjänster som tillhandahålls, de uppgifter som kunden
+    lämnar och övriga omständigheter, eller 3. utan att vara avvikande enligt 1 eller
+    2 kan antas ingå som ett led i penningtvätt eller finansiering av terrorism. Inriktningen
+    och omfattningen av övervakningen ska bestämmas med beaktande av de risker som
+    identifierats i den allmänna riskbedömningen, den risk för penningtvätt och finansiering
+    av terrorism som kan förknippas med kundrelationen och annan information om tillvägagångssätt
+    för penningtvätt eller finansiering av terrorism.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.4
+  mal:
+  - &id007
+    typ: kundmall
+    id: KM-D
+    etapp: M2
+  - &id008
+    typ: dokument
+    id: D-RR.4
+    etapp: M6
+  - typ: drift
+    id: DRIFT-MISSTANKE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-4-2
+  kalla: SRC-PTL
+  lagrum: 4 kap. 2 §
+  lydelser:
+  - LYD-PTL-4-2-2017-08-01
+  grund: ska_krav
+  text: Om avvikelser eller misstänkta aktiviteter eller transaktioner uppmärksammas
+    enligt 1 § eller på annat sätt, ska en verksamhetsutövare genom skärpta åtgärder
+    för kundkännedom enligt 3 kap. 16 § och andra nödvändiga åtgärder bedöma om det
+    finns skälig grund att misstänka att det är fråga om penningtvätt eller finansiering
+    av terrorism eller att egendom annars härrör från brottslig handling. När en verksamhetsutövare
+    anser att det finns skälig grund att misstänka att det är fråga om penningtvätt
+    eller finansiering av terrorism eller att egendom annars härrör från brottslig
+    handling, behöver ytterligare åtgärder enligt första stycket inte vidtas.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.4
+  mal:
+  - *id007
+  - *id008
+  - typ: drift
+    id: DRIFT-MISSTANKE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-4-3
+  kalla: SRC-PTL
+  lagrum: 4 kap. 3 §
+  lydelser:
+  - LYD-PTL-4-3-2017-08-01
+  grund: ska_krav
+  text: Om en verksamhetsutövare efter en bedömning enligt 2 § har skälig grund att
+    misstänka penningtvätt eller finansiering av terrorism eller att egendom annars
+    härrör från brottslig handling, ska uppgifter om alla omständigheter som kan tyda
+    på detta utan dröjsmål rapporteras till Polismyndigheten. En sådan rapport ska
+    göras även om transaktioner inte genomförs liksom om det före ingåendet av en
+    affärsförbindelse eller utförandet av en transaktion uppkommer misstanke om att
+    kunden avser att använda verksamhetsutövarens produkter eller tjänster för penningtvätt
+    eller finansiering av terrorism. Om den egendom som avses i rapporten till Polismyndigheten
+    finns hos verksamhetsutövaren ska detta anges särskilt, liksom i förekommande
+    fall uppgifter om 1. vilka tillgodohavanden kunden har hos verksamhetsutövaren,
+    2. huruvida verksamhetsutövaren avstått från att genomföra en misstänkt transaktion,
+    och 3. mottagare av en misstänkt transaktion.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.4
+  mal:
+  - *id007
+  - *id008
+  - typ: drift
+    id: DRIFT-MISSTANKE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-4-6
+  kalla: SRC-PTL
+  lagrum: 4 kap. 6 §
+  lydelser:
+  - LYD-PTL-4-6-2024-07-01
+  grund: ska_krav
+  text: 'Följande fysiska eller juridiska personer ska på begäran av Polismyndigheten
+    eller Säkerhetspolisen utan dröjsmål lämna alla uppgifter som behövs för en utredning
+    om penningtvätt eller finansiering av terrorism: 1. en verksamhetsutövare, 2.
+    ett clearingbolag, 3. den som tillhandahåller finansiell infrastruktur som avser
+    omedelbara betalningar, och 4. den som bedriver eller under de senaste fem åren
+    har bedrivit penninginsamling för humanitärt, välgörande, kulturellt eller något
+    annat allmännyttigt ändamål. När uppgifter har lämnats enligt 3 §, ska även andra
+    fysiska eller juridiska personer som avses i 1 kap. 2-5 §§ lämna de uppgifter
+    för utredningen som Polismyndigheten eller Säkerhetspolisen begär.'
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.4
+  mal:
+  - *id007
+  - *id008
+  - typ: drift
+    id: DRIFT-MISSTANKE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-4-7
+  kalla: SRC-PTL
+  lagrum: 4 kap. 7 §
+  lydelser:
+  - LYD-PTL-4-7-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska ha ett system för att snabbt och fullständigt kunna
+    lämna uppgifter om huruvida verksamhetsutövaren under de senaste fem åren har
+    haft en affärsförbindelse med en viss person och, om så skulle vara fallet, om
+    förbindelsens art.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.4
+  mal:
+  - *id007
+  - *id008
+  - typ: drift
+    id: DRIFT-MISSTANKE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-4-8
+  kalla: SRC-PTL
+  lagrum: 4 kap. 8 §
+  lydelser:
+  - LYD-PTL-4-8-2019-11-01
+  grund: ska_krav
+  text: Advokater och andra oberoende jurister, auktoriserade och godkända revisorer
+    samt skatterådgivare är inte skyldiga att lämna uppgifter enligt 3 eller 6 § om
+    vad som anförtrotts dem när de försvarar eller företräder en klient i fråga om
+    ett rättsligt förfarande, inklusive rådgivning för att inleda eller undvika ett
+    rättsligt förfarande. Detsamma gäller information som avser en klient och som
+    de har fått del av i samband med att de bedömer klientens rättsliga situation.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.4
+  mal:
+  - *id007
+  - *id008
+  - typ: drift
+    id: DRIFT-MISSTANKE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-4-9
+  kalla: SRC-PTL
+  lagrum: 4 kap. 9 §
+  lydelser:
+  - LYD-PTL-4-9-2023-01-01
+  grund: ska_krav
+  text: En verksamhetsutövare eller den som är verksam hos verksamhetsutövaren får
+    inte för en kund eller någon utomstående obehörigen röja att en bedömning enligt
+    2 § utförs, har utförts eller kommer att utföras eller att uppgifter har lämnats
+    enligt 3 eller 6 §. Som obehörigt röjande avses inte att 1. uppgifter lämnas till
+    en tillsynsmyndighet eller en brottsbekämpande myndighet, 2. uppgifter lämnas
+    mellan verksamhetsutövare som avses i 1 kap. 2 § första stycket 1-13 med hemvist
+    i EES och som ingår i samma koncern eller mellan sådana verksamhetsutövare och
+    deras filialer och dotterföretag belägna i ett land utanför EES, förutsatt att
+    filialerna och dotterföretagen utanför EES tillämpar gemensamma rutiner som fastställts
+    enligt 2 kap. 8 eller 9 § eller motsvarande krav enligt lagstiftningen i det land
+    där filialen finns eller dotterföretaget har hemvist, 3. uppgifter lämnas mellan
+    advokater, andra oberoende jurister, revisorer, tillhandahållare av bokföringstjänster,
+    skatterådgivare och fastighetsmäklare som omfattas av Europaparlamentets och rådets
+    direktiv (EU) 2015/849, i den ursprungliga lydelsen, eller likvärdiga bestämmelser
+    i ett land utanför EES och som är anställda eller på annat sätt verksamma inom
+    samma juridiska person eller olika juridiska personer med gemensamt ägande, gemensam
+    ledning eller gemensam efterlevnadskontroll, 4. uppgifter som rör samma kund och
+    samma transaktion och som omfattar fler än en verksamhetsutövare lämnas mellan
+    sådana juridiska och fysiska personer som anges i 1 kap. 2 § första stycket 1-13
+    och 18-22, förutsatt att de tillhör samma verksamhets- eller yrkeskategori och
+    omfattas av skyldigheter i fråga om tystnadsplikt och skydd för personuppgifter
+    som följer av denna lag, 5. en kund får kännedom om att åtgärder enligt första
+    stycket vidtas eller kan komma att vidtas, när ett röjande inte kan undvikas till
+    följd av verksamhetsutövarens skyldighet att avstå från en transaktion, att avstå
+    från att inleda en affärsförbindelse eller att avsluta en affärsförbindelse enligt
+    3 kap. 1-3 §§, och 6. uppgifter lämnas i samverkan enligt 4 a kap. Bestämmelser
+    om ansvar för den som bryter mot tystnadsplikten enligt första stycket finns i
+    20 kap. 3 § brottsbalken.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.4
+  mal:
+  - *id007
+  - *id008
+  - typ: drift
+    id: DRIFT-MISSTANKE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-4-10
+  kalla: SRC-PTL
+  lagrum: 4 kap. 10 §
+  lydelser:
+  - LYD-PTL-4-10-2023-01-01
+  grund: ska_krav
+  text: En verksamhetsutövare eller den som är verksam hos verksamhetsutövaren får
+    inte göras ansvarig för att ha åsidosatt tystnadsplikt för uppgifter som lämnas
+    med stöd av 3 eller 6 §, om personen hade anledning att räkna med att uppgiften
+    borde lämnas. I fråga om europabolag och europakooperativ som har ett sådant förvaltningssystem
+    som avses i artiklarna 39-42 i rådets förordning (EG) nr 2157/2001 av den 8 oktober
+    2001 om stadga för europabolag respektive artiklarna 37-41 i rådets förordning
+    (EG) nr 1435/2003 av den 22 juli 2003 om stadga för europeiska kooperativa föreningar
+    (SCE-föreningar) ska bestämmelserna i första stycket och i 9 § tillämpas på en
+    ledamot i tillsynsorganet. Av 16 § andra stycket och 22 § lagen (2004:575) om
+    europabolag samt 21 § andra stycket och 26 § lagen (2006:595) om europakooperativ
+    framgår att bestämmelserna i andra stycket ska tillämpas också på ledamöter i
+    ett europabolags eller ett europakooperativs lednings- eller förvaltningsorgan.
+    Särskilda bestämmelser om ansvar för revisorer i aktiebolag, ekonomiska föreningar,
+    stiftelser och vissa andra företag finns i 5 kap. 2 § stiftelselagen (1994:1220),
+    37 § revisionslagen (1999:1079), 29 kap. 2 § aktiebolagslagen (2005:551) och 21
+    kap. 2 § lagen (2018:672) om ekonomiska föreningar.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.4
+  mal:
+  - *id007
+  - *id008
+  - typ: drift
+    id: DRIFT-MISSTANKE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-1
+  kalla: SRC-PTL
+  lagrum: 5 kap. 1 §
+  lydelser:
+  - LYD-PTL-5-1-2023-01-01
+  grund: ska_krav
+  text: I detta kapitel finns bestämmelser om behandling av personuppgifter enligt
+    denna lag för 1. verksamhetsutövare (2-11 §§ ), och 2. andra än verksamhetsutövare
+    (12 och 13 §§ ). Kapitlet gäller om behandlingen helt eller delvis är automatiserad
+    eller om personuppgifterna ingår i eller är avsedda att ingå i en strukturerad
+    samling av personuppgifter som är tillgängliga för sökning eller sammanställning
+    enligt särskilda kriterier.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - &id009
+    typ: dokument
+    id: D-RR.5
+    etapp: M6
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-2
+  kalla: SRC-PTL
+  lagrum: 5 kap. 2 §
+  lydelser:
+  - LYD-PTL-5-2-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare får behandla personuppgifter i syfte att kunna fullgöra
+    sina skyldigheter enligt denna lag.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - *id009
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-3
+  kalla: SRC-PTL
+  lagrum: 5 kap. 3 §
+  lydelser:
+  - LYD-PTL-5-3-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska i fem år bevara handlingar och uppgifter, om handlingarna
+    och uppgifterna avser 1. åtgärder som har vidtagits för kundkännedom enligt 3
+    kap. och 4 kap. 2 §, eller 2. transaktioner som genomförts med kunder inom ramen
+    för affärsförbindelser eller vid enstaka transaktioner som omfattas av krav på
+    åtgärder för kundkännedom enligt 3 kap. 4–6 §§. Tiden ska räknas från det att
+    åtgärderna eller transaktionerna utfördes eller, i de fall då en affärsförbindelse
+    har etablerats, affärsförbindelsen upphörde. Om en enstaka transaktion inte har
+    genomförts till följd av misstanke om penningtvätt eller finansiering av terrorism,
+    ska tiden räknas från det att avståendet skedde.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - *id009
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-4
+  kalla: SRC-PTL
+  lagrum: 5 kap. 4 §
+  lydelser:
+  - LYD-PTL-5-4-2024-12-30
+  grund: ska_krav
+  text: Om det är nödvändigt för att förebygga, upptäcka eller utreda penningtvätt
+    eller finansiering av terrorism får verksamhetsutövare bevara handlingar och uppgifter
+    enligt 3 § under en längre tid än fem år. Den sammanlagda tiden får dock inte
+    överstiga tio år. Första stycket gäller också i fråga om handlingar och uppgifter
+    som ska bevaras enligt artikel 16 i Europaparlamentets och rådets förordning (EU)
+    2023/1113.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - *id009
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-5
+  kalla: SRC-PTL
+  lagrum: 5 kap. 5 §
+  lydelser:
+  - LYD-PTL-5-5-2023-01-01
+  grund: ska_krav
+  text: Personuppgifter som avses i artikel 9.1 i Europaparlamentets och rådets förordning
+    (EU) 2016/679 av den 27 april 2016 om skydd för fysiska personer med avseende
+    på behandling av personuppgifter och om det fria flödet av sådana uppgifter och
+    om upphävande av direktiv 95/46/EG (allmän dataskyddsförordning), här benämnd
+    EU:s dataskyddsförordning, får behandlas endast om det är nödvändigt för att 1.
+    bedöma om kunden är en person i politiskt utsatt ställning eller familjemedlem
+    eller känd medarbetare till en sådan person enligt 1 kap. 8-10 §§, 2. bedöma den
+    risk som kan förknippas med kundrelationen enligt 2 kap. 3 §, 3. uppfylla övervakningsskyldigheten
+    enligt 4 kap. 1 §, 4. bedöma misstänkta transaktioner och aktiviteter enligt 4
+    kap. 2 §, 5. lämna uppgifter enligt 4 kap. 3 och 6 §§, och 6. lämna uppgifter
+    i samverkan enligt 4 a kap. Personuppgifterna får också behandlas vid bevarande
+    av handlingar och uppgifter enligt 3 och 4 §§, om det är tillåtet att behandla
+    uppgifterna enligt första stycket.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - *id009
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-6
+  kalla: SRC-PTL
+  lagrum: 5 kap. 6 §
+  lydelser:
+  - LYD-PTL-5-6-2023-01-01
+  grund: ska_krav
+  text: Personuppgifter som avses i artikel 10 i EU:s dataskyddsförordning får behandlas
+    endast om det är nödvändigt för att 1. bedöma den risk som kan förknippas med
+    kundrelationen enligt 2 kap. 3 §, 2. uppfylla övervakningsskyldigheten enligt
+    4 kap. 1 §, 3. bedöma misstänkta transaktioner och aktiviteter enligt 4 kap. 2
+    §, 4. lämna uppgifter enligt 4 kap. 3 och 6 §§, och 5. lämna uppgifter i samverkan
+    enligt 4 a kap. Personuppgifterna får också behandlas vid bevarande av handlingar
+    och uppgifter enligt 3 och 4 §§, om det är tillåtet att behandla uppgifterna enligt
+    första stycket.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - *id009
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-7
+  kalla: SRC-PTL
+  lagrum: 5 kap. 7 §
+  lydelser:
+  - LYD-PTL-5-7-2017-08-01
+  grund: ska_krav
+  text: Besked om att personuppgifter behandlas enligt 4 kap. 2, 3 eller 6 § och om
+    att sådana uppgifter lagras enligt 3 eller 4 § får inte lämnas ut till den registrerade.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - *id009
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-8
+  kalla: SRC-PTL
+  lagrum: 5 kap. 8 §
+  lydelser:
+  - LYD-PTL-5-8-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövares register med uppgifter om misstänkt penningtvätt eller
+    finansiering av terrorism får inte samköras med motsvarande register hos någon
+    annan.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - *id009
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-5-11
+  kalla: SRC-PTL
+  lagrum: 5 kap. 11 §
+  lydelser:
+  - LYD-PTL-5-11-2017-08-01
+  grund: ska_krav
+  text: Den som är verksam hos en verksamhetsutövare får inte obehörigen röja att
+    personuppgifter behandlas enligt 5 och 6 §§ eller 4 kap. 2, 3 och 6 §§ och att
+    sådana uppgifter bevaras enligt 3 och 4 §§. Ansvar enligt 20 kap. 3 § brottsbalken
+    ska inte följa för den som bryter mot förbudet i första stycket.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i:
+  - D-RR.5
+  mal:
+  - *id009
+  - typ: drift
+    id: DRIFT-BEVARANDE
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-6-1
+  kalla: SRC-PTL
+  lagrum: 6 kap. 1 §
+  lydelser:
+  - LYD-PTL-6-1-2017-08-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska ha rutiner och riktlinjer för intern kontroll. Om
+    en verksamhetsutövare använder modeller för riskbedömning, riskklassificering,
+    övervakning eller andra förfaranden, ska verksamhetsutövaren ha rutiner för modellriskhantering.
+    Rutinerna för modellriskhantering ska syfta till att utvärdera och kvalitetssäkra
+    de modeller som verksamhetsutövaren använder. Omfattningen av och innehållet i
+    rutinerna och riktlinjerna ska bestämmas med hänsyn till verksamhetsutövarens
+    storlek och art samt den risk för penningtvätt och finansiering av terrorism som
+    identifierats i den allmänna riskbedömningen.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.6
+  mal:
+  - &id010
+    typ: dokument
+    id: D-RR.6
+    etapp: M6
+  - typ: drift
+    id: DRIFT-INTERN-KONTROLL
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-6-2
+  kalla: SRC-PTL
+  lagrum: 6 kap. 2 §
+  lydelser:
+  - LYD-PTL-6-2-2017-08-01
+  grund: ska_krav
+  text: När det är motiverat med hänsyn till verksamhetens storlek och art, ska en
+    verksamhetsutövare 1. utse en medlem av ledningsgruppen, verkställande direktören
+    eller motsvarande befattningshavare som ska ansvara för att verksamhetsutövaren
+    genomför de åtgärder som krävs för att följa denna lag och de föreskrifter som
+    meddelats med stöd av lagen, 2. utse en person att löpande kontrollera att verksamhetsutövaren
+    fullgör sina skyldigheter enligt denna lag eller föreskrifter som meddelats med
+    stöd av lagen (centralt funktionsansvarig), och 3. inrätta en oberoende granskningsfunktion
+    med ansvar för att granska de interna riktlinjer, kontroller och förfaranden som
+    syftar till att verksamhetsutövaren ska fullgöra sina skyldigheter enligt denna
+    lag eller föreskrifter som meddelats med stöd av lagen. Den som är centralt funktionsansvarig
+    ska ansvara för rapporter till Polismyndigheten enligt 4 kap. 3 §.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.6
+  mal:
+  - *id010
+  - typ: drift
+    id: DRIFT-INTERN-KONTROLL
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-6-4
+  kalla: SRC-PTL
+  lagrum: 6 kap. 4 §
+  lydelser:
+  - LYD-PTL-6-4-2024-12-30
+  grund: ska_krav
+  text: En verksamhetsutövare ska tillhandahålla ändamålsenliga rapporteringssystem
+    för anställda, uppdragstagare och andra som på liknande grund deltar i verksamheten
+    och som vill göra anmälningar om misstänkta överträdelser av bestämmelserna i
+    denna lag eller föreskrifter som meddelats med stöd av lagen. För verksamhetsutövare
+    som omfattas av Europaparlamentets och rådets förordning (EU) 2023/1113 ska rapporteringssystemen
+    även möjliggöra anmälningar av misstänkta överträdelser av bestämmelserna i den
+    förordningen.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.6
+  mal:
+  - *id010
+  - typ: drift
+    id: DRIFT-INTERN-KONTROLL
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-6-4a
+  kalla: SRC-PTL
+  lagrum: 6 kap. 4 a §
+  lydelser:
+  - LYD-PTL-6-4a-2020-01-01
+  grund: ska_krav
+  text: En verksamhetsutövare ska ha rutiner och vidta de åtgärder i övrigt som behövs
+    för att skydda anställda, uppdragstagare och andra som på liknande grund deltar
+    i verksamheten från hot, hämnd eller andra fientliga åtgärder till följd av att
+    de gjort en anmälan om misstänkta överträdelser av bestämmelserna i denna lag
+    eller i föreskrifter som meddelats med stöd av lagen. En verksamhetsutövare får
+    inte utsätta en anställd, en uppdragstagare eller någon annan som på liknande
+    grund deltar i verksamheten för repressalier på grund av att denne har gjort en
+    anmälan.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.6
+  mal:
+  - *id010
+  - typ: drift
+    id: DRIFT-INTERN-KONTROLL
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-6-5
+  kalla: SRC-PTL
+  lagrum: 6 kap. 5 §
+  lydelser:
+  - LYD-PTL-6-5-2017-08-01
+  grund: ska_krav
+  text: Uppgift i en anmälan om en misstänkt överträdelse enligt 4 § får inte obehörigen
+    röjas, om uppgiften kan avslöja anmälarens identitet. Ansvar enligt 20 kap. 3
+    § brottsbalken ska inte följa för den som bryter mot förbudet i första stycket.
+    I det allmännas verksamhet tillämpas i stället bestämmelserna i offentlighets-
+    och sekretesslagen (2009:400). Om det i lag finns bestämmelser som avviker från
+    första eller andra stycket, gäller de bestämmelserna.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  - beslut
+  uppfylls_i:
+  - D-RR.6
+  mal:
+  - *id010
+  - typ: drift
+    id: DRIFT-INTERN-KONTROLL
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-7-3
+  kalla: SRC-PTL
+  lagrum: 7 kap. 3 §
+  lydelser:
+  - LYD-PTL-7-3-2017-08-01
+  grund: ska_krav
+  text: Den som avser att driva verksamhet som anges i 1 § första stycket ska anmäla
+    detta till Bolagsverket. Sådan verksamhet får inte drivas om anmälan inte har
+    gjorts. Om en fysisk eller juridisk person som är antecknad i Bolagsverkets register
+    anmäler att verksamheten har upphört eller om det på annat sätt framgår att så
+    är fallet, ska verket ta bort personen ur registret.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i: []
+  mal:
+  - typ: drift
+    id: DRIFT-REGISTRERING
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad
+- id: KRV-PTL-7-6
+  kalla: SRC-PTL
+  lagrum: 7 kap. 6 §
+  lydelser:
+  - LYD-PTL-7-6-2023-01-01
+  grund: ska_krav
+  text: Den som i väsentlig utsträckning har åsidosatt skyldigheter i näringsverksamhet
+    eller som har gjort sig skyldig till allvarlig brottslighet får inte ägna sig
+    åt verksamhet som är anmälningspliktig enligt 3 §. Om verksamhetsutövaren är en
+    juridisk person, gäller första stycket den som är verklig huvudman i den juridiska
+    personen eller ingår i dess ledning. Verksamhetsutövaren ska anmäla förändringar
+    i ledningen till tillsynsmyndigheten.
+  galler_om:
+    alla: []
+  belagg:
+  - dokument
+  uppfylls_i: []
+  mal:
+  - typ: drift
+    id: DRIFT-REGISTRERING
+    etapp: M4
+  sakkunnig:
+    status: ej_granskad

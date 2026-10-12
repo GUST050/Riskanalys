@@ -1,0 +1,22 @@
+{
+  "skapad": "2026-10-10T14:36:35.161909Z",
+  "programversion": "0.1.0",
+  "programproveniens": {
+    "commit": "77c147f463cb338d07a98b29441d888804d42534",
+    "arbetskopia": "andrad",
+    "innehallssumma": "sha256:f867b2785e143cfbdcf4f3d4b54cdd70378fca26caba76f37458278ae5376504"
+  },
+  "git_commit": "77c147f463cb338d07a98b29441d888804d42534",
+  "metadata": {
+    "status": "utkast",
+    "id": "RP-AMLR-UTKAST",
+    "kallkontroll": "2026-10-10",
+    "frigivning": "Ingen operativ frigivning"
+  },
+  "filer": {
+    "README.md": "sha256:05a127fe4d7174d835db5b398fdbda665690cadc92ae4a822a3668bdfbd679a8",
+    "kallor.yaml": "sha256:52deae6e31b497ef0d438a9b1215eb4bdc86a9e749245bd8024ab26c7c2bbdd7",
+    "kravkarta.yaml": "sha256:abd1ce4f3bb71db41c478c64a276b3f77225dc81f9231f7304d94f28c85cebf6",
+    "paket.yaml": "sha256:f161a691efae3b3eb3a0ebd1dcd876429f90c172fe011fc18a2949d49edf4498"
+  }
+}
