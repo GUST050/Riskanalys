@@ -4,7 +4,7 @@ import json
 from datetime import date
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
 
 from riskanalys.lagring.kontrollsumma import for_text
 from riskanalys.regelverk.villkor import Faltdef
@@ -52,7 +52,16 @@ class Falt(Strikt):
     intag: Intagsfalt | None = None
     alias_for: str | None = None
     enhet: str | None = None
+    etikett: str | None = None  # Kortnamn i löptext; visningstext som inte ändrar någon regel (spec 8.4.9).
     val: tuple[str, ...] = ()
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Utelämna saknat kortnamn, så att historiska innehålls- och attestsummor består."""
+        data = handler(self)
+        if self.etikett is None:
+            data.pop("etikett", None)
+        return data
 
 
 class Kalla(Strikt):

@@ -25,6 +25,7 @@
   kritisk: true
   smagrupp: true
   fraga: Hur många personer arbetar på byrån, inklusive ägare?
+  etikett: Antal personer som arbetar på byrån
   varfor: Storleken påverkar hur omfattande riskbedömningen och rutinerna ska vara.
   intag:
     grupp: P-ORG
@@ -44,6 +45,7 @@
   typ: heltal
   kritisk: true
   fraga: På hur många orter eller kontor bedriver byrån verksamhet?
+  etikett: Antal orter eller kontor
   varfor: Fler verksamhetsställen ger fler kanaler och kräver tydligare ansvarsfördelning.
   intag:
     grupp: P-ORG
@@ -92,6 +94,7 @@
 - id: P-KUND.andel_riskbransch
   typ: andel
   fraga: Hur många aktiva kunder har verksamhet i riskbranscher? (beräknad andel)
+  etikett: Andel kunder i riskbranscher
   varfor: Härleds ur P-KUND.antal_riskbransch/P-KUND.antal_aktiva; kategorier kan överlappa.
   antalfalt: P-KUND.antal_riskbransch
   basfalt: P-KUND.antal_aktiva
@@ -101,6 +104,7 @@
 - id: P-KUND.andel_kontant
   typ: andel
   fraga: Hur många aktiva kunder har betydande kontanthantering? (beräknad andel)
+  etikett: Andel kunder med betydande kontanthantering
   varfor: Härleds ur P-KUND.antal_kontant/P-KUND.antal_aktiva; kategorier kan överlappa.
   antalfalt: P-KUND.antal_kontant
   basfalt: P-KUND.antal_aktiva
@@ -110,6 +114,7 @@
 - id: P-KANAL.andel_digitalt_underlag
   typ: andel
   fraga: Hur många aktiva kunder lämnar digitalt underlag? (beräknad andel)
+  etikett: Andel kunder som lämnar digitalt underlag
   varfor: Härleds ur P-KANAL.antal_digitalt_underlag/P-KUND.antal_aktiva; kategorier kan överlappa.
   antalfalt: P-KANAL.antal_digitalt_underlag
   basfalt: P-KUND.antal_aktiva
@@ -119,6 +124,7 @@
 - id: P-KANAL.bankdata_andel
   typ: andel
   fraga: För hur många aktiva kunder finns tillgång till bankdata? (beräknad andel)
+  etikett: Andel kunder där byrån har tillgång till bankdata
   varfor: Härleds ur P-KANAL.antal_bankdata/P-KUND.antal_aktiva; kategorier kan överlappa.
   antalfalt: P-KANAL.antal_bankdata
   basfalt: P-KUND.antal_aktiva
@@ -128,6 +134,7 @@
 - id: P-VERK.juniora_konsulter
   typ: bool
   fraga: Arbetar konsulter med mindre än två års erfarenhet självständigt mot kunder?
+  etikett: Konsulter med mindre än två års erfarenhet arbetar självständigt
   varfor: Verksamhetsspecifika omständigheter ska beaktas (14FS 2024:11 2 kap. 2 §).
   intag:
     grupp: P-VERK
@@ -504,6 +511,7 @@
 - id: P-VERK.omsattning
   typ: tal
   fraga: Vilken är byråns omsättning i SEK under samma period?
+  etikett: Byråns omsättning
   varfor: Bas för tjänsteintäkter utan dubbelräkning; tjänsteintäkter kan vara mindre än totalen.
   periodkrav: true
   kritisk: true
@@ -727,6 +735,7 @@
 - id: P-GEO.andel_utland_transaktion
   typ: andel
   fraga: Hur många aktiva kunder har transaktioner utanför Sverige? (beräknad andel)
+  etikett: Andel kunder med transaktioner utanför Sverige
   varfor: Härleds ur P-GEO.antal_utland_transaktion/P-KUND.antal_aktiva; kategorier kan överlappa.
   antalfalt: P-GEO.antal_utland_transaktion
   basfalt: P-KUND.antal_aktiva
@@ -736,6 +745,7 @@
 - id: P-VERK.antal_rapporter
   typ: heltal
   fraga: Hur många egna misstankerapporter har lämnats under perioden?
+  etikett: Antal egna misstankerapporter
   varfor: Egna observationer ska beaktas enligt PTL 2:1 och LSF 2:2; rapportantal är inte en riskpoäng.
   periodkrav: true
   kritisk: true
@@ -756,6 +766,7 @@
 - id: P-VERK.antal_avbojanden
   typ: heltal
   fraga: Hur många kundrelationer eller transaktioner har avböjts på grund av misstanke?
+  etikett: Antal avböjda kundrelationer eller transaktioner på grund av misstanke
   varfor: Egna observationer ska beaktas enligt PTL 2:1 och LSF 2:2; rapportantal är inte en riskpoäng.
   periodkrav: true
   kritisk: true
@@ -2865,6 +2876,7 @@
 - id: P-BESK.geografi
   typ: text
   fraga: I vilka länder och områden finns kunder, ägare, verksamheter och betalningsflöden?
+  etikett: Kundernas, ägarnas och betalningsflödenas geografi
   varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
     Texten stannar lokalt.
   kritisk: true
@@ -2885,6 +2897,7 @@
   typ: text
   fraga: Vilka egna erfarenheter finns av misstankar, avböjda uppdrag och avvikande beteenden? Beskriv
     även om inga sådana erfarenheter finns.
+  etikett: Byråns egna erfarenheter av misstankar och avböjda uppdrag
   varfor: Underlag för verksamhetsanpassningen enligt PTL 2 kap. 1–2 §§. Skriv inga kundnamn eller personnummer.
     Texten stannar lokalt.
   kritisk: true
@@ -4756,6 +4769,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Nära kundrelation kan försvaga oberoende
     granskning?'
+  etikett: Nära kundrelation som kan försvaga granskningen
   varfor: En nära relation kan göra att avvikelser förbises eller att kundkännedomen blir otillräcklig.
     Bekräfta även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4775,6 +4789,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: PEP, familjemedlem eller känd medarbetare
     bland kunder eller huvudmän?'
+  etikett: PEP, familjemedlem eller känd medarbetare bland kunder eller huvudmän
   varfor: PEP-anknytning kräver särskild prövning; den är ingen uppgift om brott. Bekräfta även ett nej
     från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4793,6 +4808,7 @@
 - id: P-RISK.komplex_agare
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Komplex eller svårförklarad ägarstruktur?'
+  etikett: Komplex eller svårförklarad ägarstruktur
   varfor: Komplexitet kan försvåra identifiering av verklig huvudman och transaktionernas syfte. Bekräfta
     även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4812,6 +4828,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Utländsk ägarstruktur med behov av ytterligare
     verifiering?'
+  etikett: Utländsk ägarstruktur som kräver ytterligare verifiering
   varfor: Begränsad insyn i utländska konstruktioner kan försvåra verifiering; utländskt ägande är inte
     i sig brottsligt. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4830,6 +4847,7 @@
 - id: P-RISK.ideell
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Ideella föreningar eller liknande organisationsformer?'
+  etikett: Ideella föreningar eller liknande organisationer bland kunderna
   varfor: Insamling och vidareförmedling av medel kan missbrukas för terrorfinansiering; organisationsformen
     är inte ensam bevis för missbruk. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas
     per tjänst.
@@ -4850,6 +4868,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Företrädare med återkommande kortlivade
     bolag?'
+  etikett: Företrädare med återkommande kortlivade bolag
   varfor: Återkommande kortlivade bolag kan dölja ett brottsupplägg och försvåra uppföljning. Bekräfta
     även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4868,6 +4887,7 @@
 - id: P-RISK.overtagen
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Övertagna bolag eller täta byten av företrädare?'
+  etikett: Övertagna bolag eller täta byten av företrädare
   varfor: Övertagna bolags registreringar och konton kan användas i nya upplägg utan att förändringen
     upptäcks. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4886,6 +4906,7 @@
 - id: P-RISK.utan_mote
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Kundrelation etablerad utan fysiskt möte?'
+  etikett: Kundrelation etablerad utan fysiskt möte
   varfor: Distanskontakt kan försvåra identitetsverifiering och förståelse av verksamheten. Bekräfta även
     ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4905,6 +4926,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Ombud eller tredje part i kundkontakt eller
     leverans?'
+  etikett: Ombud eller tredje part i kundkontakt eller leverans
   varfor: Mellanhänder kan begränsa insynen i den verkliga kunden och hur tjänsten används. Bekräfta även
     ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4924,6 +4946,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Extern leverantör för kundkännedom eller
     AML?'
+  etikett: Extern leverantör för kundkännedom eller penningtvättsarbete
   varfor: Extern teknik eller leverantör ersätter inte personalens vaksamhet eller byråns ansvar. Bekräfta
     även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4942,6 +4965,7 @@
 - id: P-RISK.hogrisktredjeland
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till EU-högrisktredjeland?'
+  etikett: Anknytning till EU-högrisktredjeland
   varfor: Aktuell EU-lista och anknytning måste kontrolleras; programmet innehåller ingen automatisk landlista.
     Bekräfta även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4961,6 +4985,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till land eller område
     med korruption?'
+  etikett: Anknytning till land eller område med korruption
   varfor: Korruption kan försämra tillförlitligheten i identitets-, ägar- och transaktionsunderlag. Bekräfta
     även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4980,6 +5005,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till land med svagt
     AML-regelverk?'
+  etikett: Anknytning till land med svagt regelverk mot penningtvätt
   varfor: Ett ineffektivt regelverk kan begränsa kontroller och spårbarhet i betalningskedjan. Bekräfta
     även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -4999,6 +5025,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till utsatt område
     i Sverige?'
+  etikett: Anknytning till utsatt område i Sverige
   varfor: Lokala riskförhållanden ska analyseras tillsammans med tjänstens funktion; adressen innebär
     inte att en kund är kriminell. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas
     per tjänst.
@@ -5019,6 +5046,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Personal eller uppdragstagare saknar relevant
     aktuell utbildning?'
+  etikett: Personal eller uppdragstagare utan aktuell utbildning
   varfor: Bristande utbildning kan leda till att avvikande underlag och flöden inte upptäcks. Bekräfta
     även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -5038,6 +5066,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: En person utför uppdrag, kontroll och alla
     ansvarsfunktioner?'
+  etikett: En person utför uppdrag, kontroll och alla ansvarsfunktioner
   varfor: Avsaknad av oberoende kontroll är här en metodtolkning av organisation och ansvar; ensam verksamhet
     är inte ett generellt lagbrott. Bekräfta även ett nej från undersökt underlag. Förhållandet prövas
     per tjänst.
@@ -5058,6 +5087,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Ekonomiskt beroende av en eller få kunder
     påverkar kontrollen?'
+  etikett: Ekonomiskt beroende av en eller få kunder
   varfor: Ekonomiskt beroende kan försvaga möjligheten att ifrågasätta kunden; indikatorn är ett metodval
     för verksamhetsspecifika omständigheter. Bekräfta även ett nej från undersökt underlag. Förhållandet
     prövas per tjänst.
@@ -5078,6 +5108,7 @@
   typ: bool
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Utkontrakterade delar av uppdrag eller
     AML-arbete?'
+  etikett: Utkontrakterade delar av uppdrag eller penningtvättsarbete
   varfor: Utkontraktering kan begränsa överblick och ansvarsfördelning; byråns ansvar kvarstår. Bekräfta
     även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
   kritisk: true
@@ -5116,6 +5147,7 @@
 - id: P-KUND.andel_utan_mote
   typ: andel
   fraga: Andel kunder antagna utan fysiskt möte
+  etikett: Andel kunder antagna utan fysiskt möte
   varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
   antalfalt: P-KUND.antal_utan_mote
   basfalt: P-KUND.antal_aktiva
@@ -5174,6 +5206,7 @@
 - id: P-GEO.andel_agare_utanfor_ees
   typ: andel
   fraga: Andel kunder med ägare utanför EES
+  etikett: Andel kunder med ägare utanför EES
   varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
   antalfalt: P-GEO.antal_agare_utanfor_ees
   basfalt: P-KUND.antal_aktiva
@@ -5232,6 +5265,7 @@
 - id: P-GEO.andel_hogrisktredjeland
   typ: andel
   fraga: Andel kunder etablerade i EU-högrisktredjeland
+  etikett: Andel kunder etablerade i EU-högrisktredjeland
   varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
   antalfalt: P-GEO.antal_hogrisktredjeland
   basfalt: P-KUND.antal_aktiva
@@ -5261,6 +5295,7 @@
 - id: P-GEO.andel_utsatt_omrade
   typ: andel
   fraga: Andel kunder med relevant anknytning till utsatt område
+  etikett: Andel kunder med anknytning till utsatt område
   varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
   antalfalt: P-GEO.antal_utsatt_omrade
   basfalt: P-KUND.antal_aktiva
@@ -5872,6 +5907,7 @@
 - id: P-OMFATTNING.motivering
   typ: text
   fraga: Motivera vald analysomfattning utifrån verksamhetens storlek, art och risker.
+  etikett: Motivering av vald analysomfattning
   varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
     fritext stannar lokalt.
   kritisk: true
@@ -5889,6 +5925,7 @@
 - id: P-BEVAKNING.kallor
   typ: text
   fraga: Ange de källor byrån faktiskt har läst, med käll-ID, version eller kontrollsumma.
+  etikett: Källor som byrån har läst i omvärldsbevakningen
   varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
     fritext stannar lokalt.
   kritisk: true
@@ -5906,6 +5943,7 @@
 - id: P-BEVAKNING.datum
   typ: datum
   fraga: När läste och utvärderade byrån källorna?
+  etikett: Datum då byrån läste och utvärderade källorna
   varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
     fritext stannar lokalt.
   kritisk: true
@@ -5923,6 +5961,7 @@
 - id: P-BEVAKNING.ansvarig
   typ: text
   fraga: Vilken ansvarsfunktion utför omvärldsbevakningen? Ange roll, inte personnamn.
+  etikett: Ansvarsfunktion för omvärldsbevakningen
   varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
     fritext stannar lokalt.
   kritisk: true
@@ -5940,6 +5979,7 @@
 - id: P-BEVAKNING.relevans
   typ: text
   fraga: Hur påverkar lästa källor varje tjänsts hot, sårbarheter och fortsatta åtgärder?
+  etikett: Hur lästa källor påverkar tjänsternas risker
   varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
     fritext stannar lokalt.
   kritisk: true
@@ -5957,6 +5997,7 @@
 - id: P-VERK.spridning
   typ: text
   fraga: Hur har riskbedömningen spridits till berörda roller och använts i utbildning?
+  etikett: Spridning av riskbedömningen inom byrån
   varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
     fritext stannar lokalt.
   kritisk: true
@@ -5974,6 +6015,7 @@
 - id: P-VERK.goaml
   typ: text
   fraga: Hur säkerställs aktuell goAML-registrering, behörighet och rapporteringsförmåga?
+  etikett: Registrering och rapporteringsförmåga i goAML
   varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
     fritext stannar lokalt.
   kritisk: true
@@ -5992,6 +6034,7 @@
   typ: text
   fraga: Vilken tidigare tillsyn och vilka beslut finns, och hur följs åtgärdade eller kvarstående brister
     upp? Ange även om ingen tillsyn förekommit.
+  etikett: Tidigare tillsyn och uppföljning av brister
   varfor: Aktuellt källbundet underlag för byråns egen analys. Bekräftelse är inte sakkunniggodkännande;
     fritext stannar lokalt.
   kritisk: true
