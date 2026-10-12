@@ -2,6 +2,25 @@
 
 Senast uppdaterad 2026-10-12.
 
+## Pilot efter kalibreringen, 2026-10-12
+
+Claude Sonnet 5.5 skrev tre tjänster åt den syntetiska byrån: löpande bokföring (T-RED-01), deklarationer (T-RED-03) och betalningar och attest i kundens namn (T-RED-05). Varje tjänst skrevs med effort `medium` och `high` på samma bedömning. Kostnadstaket var 10 USD; körningen kostade 2,42 USD.
+
+| Tre tjänster, fem delar var | `medium` | `high` |
+|---|---|---|
+| Godkända förstaförsök | 12 av 15 | 13 av 15 |
+| Reservmall | 0 | 0 |
+| Kostnad | 0,81 USD | 1,61 USD |
+| Tid per tjänst | 2–3 min | 5–6,5 min |
+
+Före kalibreringen underkändes alla tio förstaförsök i en tjänst, och delen sårbarheter blev reservmall med båda effortnivåerna. De fem underkända förstaförsöken i den nya piloten godkändes efter omförsök: tre var för långa, ett använde få rapporter som belägg för litet hot och ett saknade referensen till ett tal. Texterna är konkreta och byråspecifika i båda nivåerna; möjliga överlapp skrivs som scenario. `high` ger något mer detaljerade kontroll- och övervakningsavsnitt. `medium` är ett preliminärt val för fortsatt provning, inte ett slutligt modellval. Piloten täcker ännu inte bolagstjänster eller skatterådgivning utöver deklarationer.
+
+Piloten visade tre fynd:
+
+- I fem av sex körningar skrev AI interna kommentarer i dokumentet, till exempel ”underlaget lämnas inte till AI”. Formuleringen kom från faktabladets och de låsta instruktionernas egna texter. De är nu neutrala (”underlaget finns i byråns lokala belägg”), systemprompten ber AI skriva att underlaget behöver granskas lokalt, och valideringen underkänner kommentarer om vad AI har fått. Beskrivningar av teknik, som ”AI-verktyg” eller ”fakturor som tolkas av AI”, godtas.
+- Sårbarheten kunder i riskbranscher redovisas som att den inte gäller, fast 15 % av kunderna finns i riskbranscher. Metodens gräns för automatiskt riskpåslag är 20 %. Texten ska säga att faktorn förekommer men ligger under gränsen; tröskeln ändras inte. Det ingår i planen för klartext.
+- De låsta styckena visar fält-ID, villkorsuttryck och sektorskoder. En plan för klartext tas fram och granskas innan formatet `D-ARB-tjanst-v4` byggs.
+
 ## Kalibrering efter piloten (planens del C), 2026-10-12
 
 Piloten med Claude på den syntetiska byrån (en tjänst, Sonnet 5.5, effort `medium` och `high`) visade två systematiska fel. Prompten angav inga ordgränser, så alla första försök blev för långa. Kombinationsregeln underkände varje sårbarhetsstycke som nämnde två tillämpliga sårbarheter, så delen sårbarheter föll tillbaka till reservmallen.
@@ -10,9 +29,9 @@ Piloten med Claude på den syntetiska byrån (en tjänst, Sonnet 5.5, effort `me
 - Kombinationsregeln ersätter regeln i avsnittet om granskningsrättelser nedan. Ett analysstycke underkänns när det påstår ett samband (samverkar, tillsammans, kombination, förstärker) och refererar minst två faktorer, alltså sårbarheter eller faktauppgifter. Att två faktorer gäller utan påstått samband godtas. Formuleringen ”ingen belagd kombination” godtas i analys enligt spec 8.4.4, liksom ”inga belagda kombinationer” och ”ingen kombination är belagd”. Systemprompten och sårbarhetsmodulen föreslår den formuleringen, ber om ett stycke per kategori och förbjuder sambandsord i analysstycken.
 - Omsättningskontrollen räknade härledda andelar (0–1) som kronor i summan av tjänsternas intäkter. När hela omsättningen fördelades på tjänsterna underkändes därför underlaget. Andelsfälten räknas inte längre.
 
-Verifiering: varje ändring har ett regressionstest som fallerade före rättningen, bland annat tre tjänster på 3 000 kr mot en omsättning på 9 000 kr och ett påstått samband mellan en sårbarhet och en faktauppgift. Fullsvit: **1 240 passerar, två livetester bortvalda** (695,91 s), utan API-nycklar i körmiljön. Regelbasvalidering och `git diff --check` är gröna; kontrollsumma och sakkunnigstatus är oförändrade. Inga riktiga API-anrop har gjorts under denna rättningsomgång. Del C:s tre ändringar är committade lokalt (e10d2d4, c4fa39f, a6d4ce9), och rättelserna efter granskningen är committade i en egen commit efter dem. Inget är pushat.
+Verifiering: varje ändring har ett regressionstest som fallerade före rättningen, bland annat tre tjänster på 3 000 kr mot en omsättning på 9 000 kr och ett påstått samband mellan en sårbarhet och en faktauppgift. Fullsvit: **1 240 passerar, två livetester bortvalda** (695,91 s), utan API-nycklar i körmiljön. Regelbasvalidering och `git diff --check` är gröna; kontrollsumma och sakkunnigstatus är oförändrade. Inga riktiga API-anrop har gjorts under denna rättningsomgång. Del C:s tre ändringar är committade lokalt (e10d2d4, c4fa39f, a6d4ce9), och rättelserna efter granskningen är committade i en egen commit efter dem. Grenen är pushad till draft-PR #1.
 
-Kvar: en ny betald pilot ska mäta förstaförsök och mallfall efter kalibreringen. I den första piloten gav `medium` ungefär samma kvalitet som `high` till omkring 40 % av kostnaden, men en tjänst räcker inte för ett modellval; det prövas vidare enligt spec 8.4.8. De låsta styckena visar fortfarande fält-ID för läsaren, och ett förslag om klartext återstår.
+Den nya piloten efter kalibreringen redovisas i avsnittet ovan.
 
 ## Rättelser efter avbruten pilot, 2026-10-12
 
