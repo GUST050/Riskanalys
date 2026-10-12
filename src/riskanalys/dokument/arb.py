@@ -2,7 +2,7 @@
 
 from riskanalys.bedomning.modeller import Bedomning, Tjanstbedomning
 from riskanalys.dokument.modeller import Avsnitt, AvsnittsUtkast, Dokument, Textstycke
-from riskanalys.dokument.nivatext import nivastycken
+from riskanalys.dokument.nivatext import nivastycken, sektorsmening
 from riskanalys.dokument.underlag import sarbarhet_status, tjanster_med_avsnitt
 from riskanalys.dokument.validering import VERIFIERA
 from riskanalys.drift.historik import Historik
@@ -222,10 +222,18 @@ def _metod(regelbas: Regelbas, bedomning: Bedomning) -> Avsnitt:
         if t.inneboende is None:
             continue
         ref = regelbas.sektorsreferenser.get(regelbas.tjanster[t.tjanst].sektorreferens)
-        text = f"{t.tjanst}: penningtvätt {t.inneboende.risk}, kvarstående {t.kvarstaende}; terrorfinansiering {t.terrorfinansiering.risk}. "
-        if t.sanktionsrisk and t.sanktionsrisk.inneboende:
-            text += f"Sanktionsrisk {t.sanktionsrisk.inneboende.risk}, kvarstående {t.sanktionsrisk.kvarstaende}. "
-        if ref:
-            text += f"Sektorsreferens {ref.id}: {ref.niva} på källans skala {ref.skala}, {ref.kalla}, sida {ref.sida}, version {ref.referensversion}. Källans skala är separat från byråns motor."
-        stycken.append(_stycke("beskrivning", text, [t.tjanst]))
+        stycken.append(_stycke("beskrivning", _tjanstens_metodtext(regelbas, t, ref), [t.tjanst]))
     return Avsnitt(id="D-ARB.2", rubrik="Metod, omfattning och referensrisk", kalla="regelbas", stycken=tuple(stycken))
+
+
+def _tjanstens_metodtext(regelbas: Regelbas, t: Tjanstbedomning, ref) -> str:
+    # Den frysta M1-kedjan behåller sitt historiska dokumentformat; klartext gäller från utökade krav (spec 8.4.9).
+    namn = regelbas.tjanster[t.tjanst].namn if regelbas.utokade_krav else t.tjanst
+    text = f"{namn}: penningtvätt {t.inneboende.risk}, kvarstående {t.kvarstaende}; terrorfinansiering {t.terrorfinansiering.risk}. "
+    if t.sanktionsrisk and t.sanktionsrisk.inneboende:
+        text += f"Sanktionsrisk {t.sanktionsrisk.inneboende.risk}, kvarstående {t.sanktionsrisk.kvarstaende}. "
+    if not ref:
+        return text
+    if regelbas.utokade_krav:
+        return text + sektorsmening(regelbas, ref)
+    return text + f"Sektorsreferens {ref.id}: {ref.niva} på källans skala {ref.skala}, {ref.kalla}, sida {ref.sida}, version {ref.referensversion}. Källans skala är separat från byråns motor."

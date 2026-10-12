@@ -2,6 +2,7 @@
 from riskanalys.dokument.modeller import Avsnitt, Textstycke, Underrubrik
 from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
 from riskanalys.dokument.analysunderlag import _belagg, erfarenhetsstycke, sarbarhetsstycke
+from riskanalys.dokument.klartext import uppgiftstext
 from collections.abc import Iterable
 from riskanalys.bedomning.modeller import Tjanstbedomning
 from riskanalys.dokument.modeller import AvsnittsUtkast
@@ -63,7 +64,7 @@ def bygg_tjanstavsnitt(rb: Regelbas, p: Profil, t: Tjanstbedomning, utkast: Avsn
         id = slug + suffix
         if id in rb.falt:
             refs.append(id)
-            text += label + ': ' + _belagg(rb, p, id) + ' '
+            text += uppgiftstext(rb, p, id, namn=label) + ' '
     delar = [('Beskrivning och omfattning', (stycke(text, refs, typ='beskrivning'),)), ('Hot och egna erfarenheter', tuple((stycke(f'{rb.hot[id].namn}: {rb.hot[id].beskrivning}', [t.tjanst, id, *rb.hot[id].kallor]) for id in t.hot)) + (erfarenhetsstycke(rb, p, t),)), ('Sårbarheter och motivering', tuple((sarbarhetsstycke(rb, p, t.tjanst, id) for id in tj.sarbarheter)) + (scenarier(rb, t) if utokad else ())), ('Kontroller och effekt', kontrollstycken(rb, p, t)), ('Risknivåer och motivering', (*nivastycken(t), *utkast.stycken)), ('Slutsatser', slutsatsstycken(rb, t))]
     stycken = []
     rubriker = []

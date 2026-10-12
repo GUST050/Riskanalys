@@ -30,6 +30,13 @@ def test_varje_falt_i_lasta_stycken_har_ett_eget_namn():
     assert [i for i in _falt_i_lasta_stycken(rb) if not har_eget_namn(rb, i)] == []
 
 
+def test_varje_harledd_andel_har_ett_eget_namn():
+    rb = ladda_regelbas()
+    andelar = [f.id for f in rb.falt.values() if f.antalfalt and f.basfalt and not f.alias_for]
+    assert andelar
+    assert [i for i in andelar if not har_eget_namn(rb, i)] == []
+
+
 def test_etiketter_ar_korta_och_utan_falt_id():
     rb = ladda_regelbas()
     for f in rb.falt.values():

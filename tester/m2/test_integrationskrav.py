@@ -31,7 +31,7 @@ def test_deterministiskt_dokument_visar_metod_tre_dimensioner_sektorreferens(reg
  d=bygg_arb(regelbas_v1,p,b,{},Historik())
  text=' '.join(s.text for a in d.avsnitt for s in a.stycken)
  assert 'D-ARB.2' in d.avsnitt_med_id()
- assert 'Sanktionsrisk' in text and 'Sektorsreferens' in text
+ assert 'Sanktionsrisk' in text and 'för sektorn' in text
 
 def test_underlag_filtrerar_inaktiva_uppgifter_och_doljer_liten_andel(regelbas_v1):
  p=profil(regelbas_v1)

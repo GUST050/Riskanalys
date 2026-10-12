@@ -642,6 +642,7 @@
 - id: P-KUND.andel_nya
   typ: andel
   fraga: Hur många av de aktiva kunderna är nya under perioden? (beräknad andel)
+  etikett: Andel nya kunder under perioden
   varfor: Härleds ur P-KUND.antal_nya/P-KUND.antal_aktiva; kategorier kan överlappa.
   antalfalt: P-KUND.antal_nya
   basfalt: P-KUND.antal_aktiva
@@ -673,6 +674,7 @@
 - id: P-KUND.andel_juridisk
   typ: andel
   fraga: Hur många aktiva kunder är juridiska personer? (beräknad andel)
+  etikett: Andel kunder som är juridiska personer
   varfor: Härleds ur P-KUND.antal_juridisk/P-KUND.antal_aktiva; kategorier kan överlappa.
   antalfalt: P-KUND.antal_juridisk
   basfalt: P-KUND.antal_aktiva
@@ -704,6 +706,7 @@
 - id: P-GEO.andel_utland_agare
   typ: andel
   fraga: Hur många aktiva kunder har ägaranknytning utanför Sverige? (beräknad andel)
+  etikett: Andel kunder med ägaranknytning utanför Sverige
   varfor: Härleds ur P-GEO.antal_utland_agare/P-KUND.antal_aktiva; kategorier kan överlappa.
   antalfalt: P-GEO.antal_utland_agare
   basfalt: P-KUND.antal_aktiva
@@ -5177,6 +5180,7 @@
 - id: P-KANAL.andel_hanvisade
   typ: andel
   fraga: Andel kunder hänvisade av annan rådgivare
+  etikett: Andel kunder hänvisade av annan rådgivare
   varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
   antalfalt: P-KANAL.antal_hanvisade
   basfalt: P-KUND.antal_aktiva
@@ -5236,6 +5240,7 @@
 - id: P-GEO.andel_transaktion_utanfor_ees
   typ: andel
   fraga: Andel kunder med transaktioner utanför EES
+  etikett: Andel kunder med transaktioner utanför EES
   varfor: Härleds från bekräftat antal och aktiva kunder under samma period.
   antalfalt: P-GEO.antal_transaktion_utanfor_ees
   basfalt: P-KUND.antal_aktiva

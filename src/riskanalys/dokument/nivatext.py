@@ -23,11 +23,16 @@ def nivastycken(t: Tjanstbedomning) -> tuple[Textstycke, ...]:
     return tuple(Textstycke(typ="beskrivning", text=rad, referenser=refs) for rad in rader)
 
 
-def sektorsstycken(rb,t: Tjanstbedomning) -> tuple[Textstycke,...]:
-    ref=rb.sektorsreferenser.get(rb.tjanster[t.tjanst].sektorreferens)
+def sektorsmening(rb, ref) -> str:
+    """Sektorsreferensen med källans titel, nivå, skala och sida, utan ID eller koder (spec 8.4.9 punkt 4)."""
+    return (f"{rb.kallor[ref.kalla].titel} anger risknivån {ref.niva} för sektorn {ref.sektor} på sin egen skala "
+            f"({', '.join(ref.skala)}), sida {ref.sida}. Källans skala är separat från byråns motor och likställs "
+            "inte med tjänstens risknivå.")
+
+
+def sektorsstycken(rb, t: Tjanstbedomning) -> tuple[Textstycke, ...]:
+    ref = rb.sektorsreferenser.get(rb.tjanster[t.tjanst].sektorreferens)
     if not ref:
         return ()
-    text=(f"Sektorsreferens {ref.id}: {ref.niva} på källans skala {ref.skala}, sida {ref.sida}, "
-          f"version {ref.referensversion}. Källans skala är separat från byråns motor och likställs inte med tjänstens risknivå. "
-          "Motiveringen ska pröva tjänstens egna förhållanden mot denna sektorsreferens.")
-    return (Textstycke(typ="beskrivning",text=text,referenser=[t.tjanst,ref.id,ref.kalla]),)
+    text = f"{sektorsmening(rb, ref)} Motiveringen ska pröva tjänstens egna förhållanden mot denna sektorsreferens."
+    return (Textstycke(typ="beskrivning", text=text, referenser=[t.tjanst, ref.id, ref.kalla]),)
