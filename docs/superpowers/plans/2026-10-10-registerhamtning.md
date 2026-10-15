@@ -81,3 +81,35 @@ Användaren frågar om varje fakta behöver en källa, vilka fler källor som b�
 - [x] Fristående slutgranskning utan egna kodändringar: inga konkreta fynd i kategori-/period-/CAS-/kontroll-/snapshotgränserna. **83 fokuserade prov passerade (35,50 s)**; alla berörda intags-/företagsdataprov **172 passerade (186,90 s)**. Syntetiskt webbläsarprov verifierade nya förslag, sparad egen kännedom, återanvänt kundunderlag/period och avskild omsättningskälla. Ingen riktig SCB-, AI- eller pilotbyrådata användes.
 
 **Slutlig fullsvit:** `env -u ANTHROPIC_API_KEY -u RISKANALYS_SCB_API_KEY .venv/bin/pytest` gav **1008 passerade, 1 livetest bortvalt, 466,39 s (7:46)**, exitkod 0, utan varningar. Logg: `/tmp/riskanalys-underlagsval-final-full-pytest.log`. Regelbasvalidering, compileall och diff --check passerar; sakkunnigstatus fortfarande `ej_granskad`. Kod/testuppsättning ändrades inte efter fullsvitens start; därefter endast dokumentationsnoter. Syntetisk provflik/server avslutade. Ingen commit/push; verklig pilotserver lämnad orörd. Samma sparade intags-ID ska återanvändas när användaren startar om, även om stavningen skiljer sig från byråns namn.
+
+
+## Godkänd första Bolagsverket-läsväg, 2026-10-14
+
+Användaren godkände uttryckligen ett lokalt kommando med token i minnet, företagsuppgifter och lista över tillgängliga årsredovisningar. Underlaget har verifierats mot myndighetens OpenAPI och anslutningsanvisning; se research 10 §14.5 och spec 14.4. Detta är en avgränsad fortsättning på registerhämtningen, utan ändring av SCB:s snapshotformat eller intagets bekräftelser.
+
+1. Syntetiska regressioner först: nyckelfil, OAuth, utgång/401, sekretess, identitet, delfel, storlek och CLI utan profilsparande.
+2. Separat HVD-klient och projektion, kommandot `riskanalys bolagsverket ORGNR`, befintlig nyckelfil utökas med två variabelnamn.
+3. Självgranskning, riktade prov och hela pytest utan verkliga nycklar. Manuell autentisering och uttryckligen valt företagsuppslag hålls utanför testerna.
+4. STATUS uppdateras med faktiskt utfall. Ingen staging, commit eller push. Intagsintegration och nedladdning/tolkning av årsredovisningar ingår inte.
+
+**Verifierat genomförande:** 28 röda prov före produktionskod, därefter 35 nya Bolagsverksprov inklusive kompletterande felvägar. Totalt 91 riktade företagsdata-/nyckelfilsprov gröna. Färsk fullsvit: 1 521 godkända, ett bortvalt livetest, 722,13 s. Regelbasvalidering och diffkontroll gröna. Manuell token/ping lyckades; företagsuppslag väntar på organisationsnummer. Ingen commit/push.
+
+## Godkänd intagsintegration 2026-10-14
+
+Användaren har godkänt granskningens nästa bygge, därefter fokus på allmän riskanalys. Implementeras inline med test först, utan commit/push eller ändring av pilotprofil. Befintliga ändringar bevaras.
+
+1. Begränsad lokal ZIP/iXBRL-läsare och dokumenthämtning: identitet, verifierad taxonomi, bolagskontext utan dimensioner, period, SEK, skala/tecken, precision och konflikter. Okänt format ger tydlig begränsning, aldrig gissade värden. Originalpaket lagras privat med SHA256.
+2. Registerschema 4 med separat Bolagsverksunderlag; gamla snapshotars serialisering/summor bevaras. Filialförslag endast AB/FL, redigerbar registrerad verksamhetsbeskrivning och periodbunden omsättning. Personal och status är bakgrund.
+3. Befintligt webbflöde utökas till valbar samlad hämtning, samlat godkännande och start. Explicit urval, rätt byrå, periodbekräftelse, ersättningsval, datumgrind och atomisk profilsparning består. Källor hålls per fält.
+4. Riktade tester, syntetiskt HTTP/UI-prov, oberoende slutgranskning och full pytest. STATUS/spec/README uppdateras med faktisk verifiering.
+
+Beslut: SCB förblir källa för de fyra befintliga förslagen; avvikande Bolagsverksnamn visas för kontroll. Senaste dokumentperiod väljs bara när entydig; inga automatiska äldre bokslutsförslag vid fel. Bokslutsperiod måste uttryckligen godkännas och matcha redan bekräftad kundstatistik. Verksamhetsutkastet använder endast registrerad beskrivning, inte generell extraktion av fri årsredovisningstext. Parsern stöder den granskade taxonomin 2021-10-31; andra versioner ger manuellt underlag tills verifierade. Kundimport och nya riskregler ingår inte.
+
+### Genomförande och beslut
+
+- Steg 1–3 implementerade; initiala parserprov 14 RED→GREEN, adapterprov 11 RED→GREEN (36 befintliga gröna). HTTP-proven visade fyra förväntade fel innan kopplingen byggdes. 156 riktade prov passerade därefter.
+- Webbläsarprov upptäckte att den faktiska personalfrågan heter P-ORG.antal_anstallda; regression och rättning, tillsammans med förvald BV-hämtning på första sidan när nycklar finns.
+- Oberoende granskning hittade periodasymmetri och ofångad zlib.error. Rättat med RED→GREEN, periodförslag och kontroll även när kund-/tjänstestatistik sparas efter bokslutet. 24 riktade prov gröna efter rättning.
+- Ruling: arbetskopian har omfattande godkända tidigare ändringar; ingen commitbas används som om den vore denna uppgifts diff. Befintlig plan är genomförandelogg, inga parallella designfiler. Inga commits trots skills standardsteg, enligt användarens Git-regel.
+- Ruling: medelantal och registrerad verksamhet används avgränsat; inga fria årsredovisningstexter eller historiska styrelseuppgifter blir aktuella profilsvar. Okänd taxonomi ger manuell komplettering.
+- Återgranskning klar: inga kvarvarande konkreta P1/P2 inom uppgiften. 33 relevanta och 11 befintliga underlagsvalstester gröna. Slutlig helsvit: **1 557 godkända, ett bortvalt livetest, 730,10 s**, exitkod 0, utan riktiga API-nycklar. Logg `/tmp/riskanalys-bv-intag-full.log`. Regelbasvalidering, compileall och diffkontroll godkända. Inga kod-/teständringar efter helsvitens start. Alla fyra steg klara; användarens nästa fokus är den allmänna riskanalysen. Ingen staging, commit eller push.

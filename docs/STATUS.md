@@ -1,6 +1,166 @@
 # Status och framsteg
 
-Senast uppdaterad 2026-10-12.
+Senast uppdaterad 2026-10-15.
+
+## Godkänd uppdelning i tre commits, 2026-10-15
+
+Användaren beställde den föreslagna trecommitsuppdelningen. Den byggdes i en separat lokal klon med backup av 621 arbetsfiler, staged/unstaged diffar och det ursprungliga indexet. Appens worktreeverktyg pekade på en annan, tom Git-katalog och användes därför inte för det faktiska repot.
+
+1. **`8e7e83fb`**: skyddad AI-begäran, namn/precision och Bolagsverket med samlat registerintag. Officiellt API-kontrakt följer koden. H6:s kod-/testdiff är borttagen i detta mellanläge.
+2. **`a08f6c5a`**: H6, inklusive båda presentationsrättningarna och regressionerna. Programkod, tester och regelbas matchar exakt innehållet före commituppdelningen.
+3. **Dokumentation**: återstående research, plan, spec, README och denna status. Inga ytterligare program-/regeländringar ingår.
+
+**Verifiering:** mellanläget gav **1557 passerade, 1 bortvalt livetest, 747.48 s**; H6-läget gav **1632 passerade, 1 bortvalt livetest, 754.91 s**. Båda kördes med kopians egen Python-/CLI-miljö och redan installerade beroenden. Före commits kontrollerades identiska testade filer, diffar och kända lokala namn, organisationsnummer och nycklar; inga träffar. Den avslutande dokumentationscommiten ändrar bara Markdown och behåller den verifierade programkoden.
+
+Den första mellanlägeskörningen gav tio falleringar i `test_m2_hela_cli_kedjan_och_aterstallning` (tre län) och `test_m2_negativ_cli_skapar_inget_paket` (sju varianter), eftersom deras subprocessmiljö tappade `PYTHONPATH` och startade huvudrepots H6-installation. Det var ett blandat testläge. Egen lokal CLI-miljö löste isoleringen; kod och tester ändrades inte. Den körningen används inte som verifiering. Samtliga loggar och nodnamn finns i evidensmappen.
+
+`research_notes/` är bevarad och utanför commitsen. Tidigare staging är säkerhetskopierad; slutindexet motsvarar commitkedjan. Ingen push, inget riktigt API-anrop och inga ändringar i privata byråprofiler eller tidigare exporter. A + B är valt men ännu inte implementerat. Backup och evidens: `~/.local/share/riskanalys/provkorningar/commituppdelning-20261015-155926`.
+
+
+## H6: oberoende granskning, rättningar och valt fortsättningsspår, 2026-10-15
+
+Två nya subagenter granskade H6:s dokument-/exportkedja respektive skriv-/dataskyddskontrakt, med den privata startkopian som avgränsning. Dokumentgranskningen fann två P2-presentationsfel: kontrolltabellen dolde att motorn nekat kontrollverkan när effektbelägg saknades, och risköversikten markerade inte okänt erbjudande/preliminära nivåer. Båda är rättade i `tabeller.py`. Åtta nya regressioner föll före rättningen; därefter passerade 50 riktade prov. Återgranskningen fann inga kvarstående åtgärdskrävande fynd i rättningen (29 prov samt två syntetiska markering-/källprov).
+
+Skrivgranskningen fann inga konkreta H6-regressioner inom sitt scope (253 riktade prov samt ett separat 60-anropsprov med Testleverantor). Detta ersätter den uteblivna tekniska slutgranskningen från 2026-10-14 inom dessa avgränsningar, inte sakkunnig metodprövning eller ett verkligt språk-/byråprov. Ny fullsvit efter rättningarna: **1 632 passerade, ett bortvalt livetest, 729,24 s**, exitkod 0. Kod, tester och regelbas är oförändrade sedan fullsvitens start enligt hashjämförelsen. Regelbasvalidering, compileall och diffkontroll passerar; samtliga 326 jämförda motor-/regelbasfiler är byteidentiska mot H6-startkopian.
+
+Användaren valde **A + B** för nästa revision: generell källbunden kontrollräckvidd och obligatorisk lokal granskning av byråns faktiska tillämpning. Inriktning och öppna konstruktionsfrågor är tillagda i [befintlig D-ARB-plan](superpowers/plans/2026-10-11-d-arb-tjanststruktur.md#valt-fortsättningsspår-a--b-2026-10-15), spec revision 28. Scenariotäckning, nytt lokalt granskningsintag och ny disposition är ännu inte implementerade. M1–M4 är fortsatt öppna.
+
+Evidens: `~/.local/share/riskanalys/provkorningar/h6-granskning-20261015/`. En separat diff för H6:s kod/tester kan tillämpas på den privata startkopian (`git apply --check` passerar). Föreslagna commitgrupper finns i planen; inga commitobjekt har skapats, Git-indexet är bevarat och ingen push har gjorts. Historiska exporter och deras mätningar är orörda.
+
+## Fördjupad strukturresearch efter H6, 2026-10-14
+
+[Research 11 §9](research/11-kallkontroll-allman-riskbedomning.md#9-fördjupad-strukturresearch-efter-h6--2026-10-14) jämför aktuellt Word-prov med 24 primärkällor, inklusive fyra offentliga tillsynsbeslut och skriv-/tillgänglighetsvägledning. Ingen universellt bästa disposition är belagd. Förslaget är sex huvuddelar med risköversikt först, tydligare scenario-/exponeringsanalys per tjänst och full beräkningslogg i navigerbar B1 i samma Word-fil. En mekanisk utfallsförklaring ersätter inte saklig motivering av nivån.
+
+Ny mätning: fyra beräkningstabeller står för 999 huvudord; återkommande källsuffix för cirka 892 ord, delvis överlappande. Dagens lokala dokumentinnehåll står för 4 346 ord utöver 1 750 förberedda skrivord. Förkortning behöver alltså omfatta mer än AI-text. Två nya nationella 2026-rapporter föreslås för relevansprövning men har inte aktiverats. Det livehämtade NRA-originalets hash stämmer med dagens katalog.
+
+Endast research/status och en hänvisning i befintlig plan ändrade; ingen kod, riskmetod, regelbas, export eller commit. Rekommendationerna är ännu inte implementerade. Fullsviten har inte körts om för dokumentationsarbetet; ny evidens ligger i `~/.local/share/riskanalys/provkorningar/strukturresearch-20261014/`. Verkligt modellprov, medarbetarläsning och sakkunnig metodprövning återstår.
+
+## H6 implementerat och tekniskt verifierat, 2026-10-14
+
+D-ARB-tjanst-v5 har riktiga tjänste-, kontroll-, risk- och åtgärdstabeller, riskmatris, lokala beräkningsförklaringar och numrerade källor. Gemensamma kontrollbeskrivningar och exakt samma geografiska villkor samlas en gång. Cellinnehåll, källreferenser, ordning och visningsnummer ingår i sakgranskningen; CLI visar också tabellerna. En Word-fil innehåller huvudrapport, navigering och B1 efter sidbrytning. Äldre exporter är fortsatt verifierbara. AI får samma tillåtna data och schema, med nya längdgränser 400–750 ord per tjänst och kvalitativ scenariotext i riskdelen. Gamla skrivförsök får inte återanvändas som nygodkända v5-svar.
+
+**Mätt fyrtjänstprov:** huvudtext 13 138 → **6 096 ord**, B1 5 078 ord, **10 tabeller**. Word-kompatibel rendering: **15 sidor huvudtext + 15 sidor bilaga/fynd**. Sidnummer fungerar; innehållsförteckningsfältets sidnummer behöver uppdateras i Word, medan den statiska länköversikten finns direkt. Samtliga fyra gamla höga fynd och alla tjänstebedömningar är exakt bevarade. Huvudtexten når alltså **inte** målet 3 500–5 000 ord / 8–12 sidor. Maxprovet med 3 000 skrivord ger 7 346 huvudord; båda visar längdvarning utan trunkering. Det realistiska läsprovet använder 1 750 ord manuellt förberedda, tjänsteanpassade svar, ingen riktig AI.
+
+Startläget säkrades före kodändring; baslinjen gav 1 557 passerade tester. Subagenter implementerade modell/rendering, skrivkontrakt och käll-/utfallsförklaring. Bolagsverksgranskningen fann inget blockerande inom sin avgränsning (71 prov). Slutgranskningsagenten och skrivagentens sista kontroll stoppades av användningsgränsen; huvudagenten integrerade och självgranskade. Ingen oberoende slutgranskning påstås. Regelbas, motor, tillåtelselista och registerintegration har inga H6-ändringar enligt startfilernas hashjämförelse. En befintlig precisionsfråga vid mycket stora registerbelopp ligger utanför H6.
+
+Slutlig fullsvit: **1 621 passerade, ett bortvalt livetest, 738,86 s**, exitkod 0 (`final-full.log`). Inga funktionella kodändringar efter körningens start; två rena layoutjusteringar och en tom slutrad kontrollerades separat. Tre extra tabellkontrakt tillkom efter insamlingen till fullsviten och passerade i den separata 13-provskörningen. Riktade slutprov: 51 passerade; separat layoutprov 10; tabellkontrakt 13 inklusive tre efterhandsprov för okända/uteblivna tjänster, skilda kontrollutfall och noll rapporter. Efter fullsviten passerade även alla 23 tabell-/renderingsprov på de sista layoutjusteringarna (`final-postsuite.log`). Regelbasvalidering, compileall och diffkontroll passerar. Regelbas 1.3.0 är fortsatt ej_granskad. Inga commits, pushar, riktiga API-anrop eller ändringar i riktiga profiler.
+
+[Genomförande och kvarstående redaktionellt gap](superpowers/plans/2026-10-11-d-arb-tjanststruktur.md#genomförande-2026-10-14), spec revision 27. Artefakter och loggar: `~/.local/share/riskanalys/provkorningar/h6-20261014-203520/`; `provresultat.json` pekar på Word-provet, `jamforelse.json` binder före/efter och `maxresultat.json` visar gränsprovet. Metodfrågorna M1–M4 är fortsatt öppna; presentationen validerar inte riskmetoden.
+
+## Reviderad H6-plan efter granskning, 2026-10-14
+
+H6-planen och spec revision 26 ersätter föregående tvåfilsförslag: en Word-fil med bilaga efter sidbrytning. Nya planerade AI-intervall ger högst 750 ord per tjänst; ett maxlängdsprov och totalbudget ingår. Befintlig riskdel behålls som kort kvalitativ syntes, medan lokal tabell förklarar beräkningen. Före kodändring ska startläget säkras, Bolagsverksintaget granskas och fullsviten köras. Inget är committat eller implementerat genom denna planrevidering. Namngiven sakkunnig och kalenderfrist för metodbesluten är ännu inte utsedda.
+
+## Dokumentplan H6 och metodspår, 2026-10-14
+
+På användarens begäran har [befintlig H5-plan kompletterats med H6](superpowers/plans/2026-10-11-d-arb-tjanststruktur.md#h6--kortare-rapport-med-tabeller-och-separat-metodspår-2026-10-14). Fem genomförandeuppgifter täcker typade tabeller, mindre dubblering, lokala utfallsförklaringar/källor, separat verifierbar bilaga och ett komplett läsprov. Spec revision 25 markerar detta som planerat. Dokumentarbete kan utföras före metodkalibrering; fyra öppna metodbeslut hålls separat. Endast plan/spec/status ändrade i denna leverans, ingen program- eller regeländring.
+
+
+## Källresearch och granskning av realistiskt utkast, 2026-10-14
+
+[Research 11 §8](research/11-kallkontroll-allman-riskbedomning.md#8-ny-granskning-av-skrivande-riskmotor-och-realistiskt-utkast--2026-10-14) jämför samtliga 24 registrerade källors användning, kompletterande officiella webbkällor, kod och det realistiska utkastet. Mätning: 18 167 ord, noll tabeller; förberedda skrivsvar står för 3 264 ord före sammansättning. Diagnostiska motoranrop visar generell kontrollreduktion och snabb mättnad av TF-nivån. Rapporten föreslår scenario-/kontrolltabeller, mindre dubblering, bättre lokala motiveringar och metodprövning före kalibrering. Endast research/statusdokument ändrade; ingen riskregel eller export ändrad. Fullsviten har inte körts om; riktig AI-skrivkvalitet är fortfarande oprövad. Mätartefakter: `~/.local/share/riskanalys/provkorningar/granskning-20261014/`.
+
+## Realistiskt fiktivt byråunderlag, 2026-10-14
+
+Användaren bad om mer realistiska byråsvar. Ny separat profil i `~/.local/share/riskanalys/provkorningar/realistisk-byra-20261014` beskriver sju personer, 120 kunder och 5,4 mkr januari–september, med bokföring, bokslut, deklarationer och löner. Frågesvar och kontrollbegränsningar är individuellt skrivna och tydligt fiktiva. Täckning och omsättningssummering godkända; ordinarie kedja exporterade Word med 20 förberedda skrivdelar. Fyra höga granskningsfynd bevaras, bland annat ej bedömd sanktionskontrolleffekt och saknad utvärdering. Första försöket stoppade på övriga riskförhållanden; scenariosvaret korrigerades eftersom förhållandena redan täcks av befintliga frågor. Inga regler ändrades. Word och profil kontrollerades för kvarvarande generiska testnamn. Ingen riktig AI-användning, inga riktiga profiländringar och inga program-/teständringar. Läs `BYRANS-SVAR.md` och `LAS-MIG.md` i provmappen. Kostnadstak för livepilot är fortfarande inte angivet.
+
+## Syntetiskt skrivprov från intag till Word, 2026-10-14
+
+På användarens begäran kördes ordinarie dokumentkedja på komplett syntetisk profil med tre tjänster. Testleverantören gav 15 förberedda delsvar; ingen riktig AI eller register-API anropades. Bedömning, skrivning, granskning, Word-export och exportkontroll lyckades. Första exporten gav två höga fynd om saknad utvärdering. Efter en tydligt syntetisk utvärderingshändelse och omexport med samma skrivunderlag blev fyndlistan tom. Inget fastställdes och inga riktiga profiler ändrades. Nio riktade kedjetester passerade på 12,15 s; fullsviten kördes inte om eftersom programkod och tester är oförändrade.
+
+Artefakter utanför Git: `/Users/gt/.local/share/riskanalys/provkorningar/20261014-193452-syntetisk` (LAS-MIG.md, resultat.json och två Word-exporter). Läskontrollen visar kapitel 7 före 6, dubblerade kontrolltexter samt intern M6-formulering i rapporten. Detta är observationer inför skrivfasen, inte rättningar. Fixturtexterna är avsiktligt repetitiva och utvärderar inte modellens skrivkvalitet. Kostnadstak för riktig skrivpilot har efterfrågats; inget liveprov ingår i denna körning.
+
+## Samlat registerintag och bokslut, 2026-10-14
+
+Användaren godkände att bygga registerflödet och därefter fokusera på den allmänna riskanalysen. Intaget kan nu välja SCB tillsammans med Bolagsverket, visa filialförslag (AB/FL), lokalt redigerbart verksamhetsutkast och exakt bokslutsomsättning med period. Grunduppgifter och valda förslag kan godkännas tillsammans redan vid starten. Medelantal anställda är stöd vid personantalfrågan. SCB-källor och äldre snapshotformat bevaras. Inga regelbas-/AI-ändringar ingår.
+
+Läsaren stöder gen-base 2021-10-31 och avgränsade iXBRL-format; okänt eller tvetydigt bokslut ger en synlig notis och manuell komplettering. ZIP-original lagras privat och källan inkluderar dokument-ID, SHA256, fil, kontext och taxonomi. Omsättningsperioden godkänns uttryckligen och måste stämma med kund-/tjänstestatistik, även när statistiken anges senare.
+
+Verifiering: initialt 14 röda parserprov och 11 röda adapterprov, därefter 156 riktade prov gröna. Syntetiskt webbläsarprov gick från hämtning till samlad start och nästa fråga. Det upptäckte fel ID för personalstödet; två nya UI-prov gick RED→GREEN. Oberoende granskning hittade periodkontroll som bara fungerade i ena svarsriktningen och ofångat dekomprimeringsfel; båda reproducerade före rättning. Efter dessa rättningar passerade 24 riktade prov. Regelbasvalidering godkänd med oförändrad summa och fortsatt ej_granskad. Återgranskningen efter rättningarna fann inga kvarvarande konkreta P1/P2 inom avgränsningen; 33 relevanta och 11 befintliga underlagsvalstester passerade. **Slutlig fullsvit på färdig kod:** `env -u ANTHROPIC_API_KEY -u RISKANALYS_SCB_API_KEY -u BOLAGSVERKET_CLIENT_ID -u BOLAGSVERKET_CLIENT_SECRET .venv/bin/pytest` gav **1 557 godkända, ett bortvalt livetest, 730,10 s**, exitkod 0. Logg: `/tmp/riskanalys-bv-intag-full.log`. Inga kod-/teständringar efter fullsvitens start; därefter endast dokumentation. Compileall och diffkontroll godkända. Syntetiska provservrar/fliken avslutade.
+
+Manuell läskontroll av tidigare privat sparat verkligt original gav samma period, omsättning och medelantal som föregående manuella extraktion. Inga nya autentiserade API-anrop, ändringar i riktiga profiler, riktiga API-nycklar i tester, installationer, staging, commits eller pushar. Den verkliga pilotservern är inte omstartad. Syntetiskt webbläsarprov efter omladdning verifierade sparade svar, personalstöd och att avvikande verksamhetsutkast inte skriver över den kompletterade texten. Bildbevis utanför Git: `/Users/gt/.codex/visualizations/2026/10/14/01a13b5b-a065-7483-b9f2-537a445188c4/register-personalstod.png`.
+
+## Bolagsverket HVD: första lokala läskommandot, 2026-10-14
+
+Användaren har godkänt en första avgränsad anslutning och användning av sina lokala anslutningsuppgifter. `riskanalys bolagsverket ORGNR` visar aktuell företagsinformation och metadata för tillgängliga digitala årsredovisningar. Den befintliga privata nyckelfilen läser nu även `BOLAGSVERKET_CLIENT_ID` och `BOLAGSVERKET_CLIENT_SECRET`; token hämtas/förnyas i minnet. Nycklar/token skrivs inte ut eller sparas i resultat. Omdirigeringar tillåts inte, dataidentitet och svarsstorlek kontrolleras, delfel visas uttryckligen och 401 medger högst en tokenförnyelse per dataoperation. Övriga HTTP-fel ger ett svenskt fel utan råsvar.
+
+Primärkällor och användning finns i [research 10 §14.5](research/10-kallkontroll-och-gapinventering-m2.md#145-bolagsverket-hvd-verifierat-kontrakt-och-första-läsväg-2026-10-14), med officiellt OpenAPI-kontrakt och SHA256, anslutningsanvisning 1.01 samt kodlistor. Spec revision 23, den befintliga registerplanen och README beskriver avgränsningen. SCB:s format och intag är oförändrade. Inga registeruppgifter blir automatiskt bekräftade profilsvar, riskregler eller AI-underlag. Intagsintegration, dokumentnedladdning och bokslutstolkning återstår.
+
+Manuell livekontroll, separat från testerna: autentisering lyckades (3600 sekunders giltighet); /isalive gav HTTP 200 och OK. Därefter gjordes ett användarauktoriserat företagsuppslag och hämtning av de två senaste tillgängliga årsredovisningspaketen. Identitet, period, enhet och exakt kronprecision kontrollerades; balanssummor och tio jämförelseposter mellan åren stämmer. Original, extraherade uppgifter och sammanställning lagras privat utanför Git. Företagsnamn, nummer och belopp läggs inte i repot. Detta är en manuell kontrakts-/dataundersökning, inte en färdig generell årsredovisningsimport eller intagsintegration. Inga riktiga registerdata används som testfixturer.
+
+Verifiering: 28 nya prov fallerade före implementation; efter implementation och kompletterande felvägsprov passerade 91 företagsdata-/nyckelfilsprov. Färsk helsvit utan Claude-, SCB- eller Bolagsverksnycklar gav **1 521 godkända och ett bortvalt livetest, 722,13 s**, exitkod 0. Logg: `/tmp/riskanalys-bolagsverket-full-pytest.log`. Den riktiga nyckelfilen är bortkopplad i provsviten. Inga produktions- eller testfiler ändrades efter helsvitens start; därefter endast dokumentation. Regelbasvalidering och diffkontroll är gröna. Regelbasens checksumma är oförändrad (`sha256:1e34b174e6882764c400613328df589a29f63c24875690929c0a87338dc7e5ff`). Inga tidigare arbetsändringar eller stageade filer har återställts; ingen staging, commit eller push har gjorts.
+
+## Kedja, begränsad precision och namnfält, 2026-10-14
+
+Spec revision 22 och planen `2026-10-14-kedja-precision-namnfalt.md` är genomförda efter användarens godkännande. Detta avsnitt ersätter revision 21:s beslut nedan om fristående analysdelar och generell maskering av härledda kundandelar.
+
+- Kedjan är återställd: riskmotiveringen får de maskinellt godkända delarna om hot, sårbarheter och kontroller, och slutsatsen får riskmotiveringen. Endast AI:s egen text med olösta platshållare förs vidare. Ett namn som AI själv skrivit kan därför återföras utan att programmet bekräftar om namnet finns i profilen. Namnkontrollen görs efter alla anrop för tjänsten och påverkar aldrig följdanrop eller omförsök. Identitetsproven använder profilens verkliga syntetiska namn.
+- De sex tillåtna kundandelarna (riskbransch, kontant, digitalt underlag, bankdata, nya och juridiska kunder) visas åter för AI i hela procent. Inom en halv procentenhet från en metodgräns visas bara sidan, exempelvis ”strax under 20 %” eller ”minst 20 %”, även exakt på gränsen. Lokala texter behåller decimalerna. Smågruppsskyddet går alltid före precisionsvisningen. Inga antalsfält har lagts till på tillåtelselistan.
+- Alla 18 S-ARB-sårbarheter prövas fortsatt lokalt eftersom deras villkor läser fält utanför tillåtelselistan. S-KUND-01, S-KUND-02, S-KANAL-01, S-GEO-01 och S-KOMB-01 prövas lokalt när deras smågruppsvärden är maskerade eller okända; kundandelarna är inte längre alltid maskerade. I den använda syntetiska grundprofilen är dessa fem maskerade, alltså totalt 23 av 28 lokalt. S-VERK-01 och S-TJ-01–04 är öppna i samma profil.
+- `namnfalt` anger vilka textfält som är personnamn. Endast P-ROLL.ffr_namn har egenskapen; ansvarsfunktionens rolltext har den inte. Namnfält måste vara personuppgifter av typen text. Saknad/falsk egenskap serialiseras inte, så historiska innehålls- och attestsummor består. En namnstoppad del följs nu hela vägen genom skrivning och granskning: programmets mall används i dokumentet och ett blockerande fynd kräver omskrivning med rollplatshållare och ny sakgranskning.
+- Återkoppling om felaktiga platshållare och fält-ID anger ordningsnummer utan att citera texten. Numreringen räknar även giltiga rollplatshållare. Gränsindexet byggs en gång per dokument och skickas till delbyggarna; ett räknande prov täcker både tjänsteavsnitt och hela dokumentet. Ingen global cache införs.
+
+**Härledningsprovet.** Alla antal från 0 till basen prövas för baserna i tabellen. Tabellen visar exakt härledbara antal utöver hela basen, utifrån den synliga riskbranschandelen och en känd kundbas. ”Steg” anger varje tal i den aritmetiska följden, inklusive ändpunkterna.
+
+| Kundbas | Exakt härledbara antal, utom hela basen |
+|---|---|
+| 20 | 5–15 |
+| 50 | 5–45 |
+| 100 | 5–95 |
+| 150 | 5; 6–144 (steg 3); 145 |
+| 199 | 39; 40 |
+| 200 | 5; 6–38 (steg 4); 39; 42–106 (steg 4); 118–194 (steg 4); 195 |
+| 250 | 49 |
+| 399 | 5; 394 |
+| 401 | inga |
+| 1000 | 5; 995 |
+
+Hela kundbasen är exakt härledbar vid samtliga tio provbaser, upp till 1 000. Största provbas med andra exakt härledbara antal är också **1 000** (5 och 995). Det finns alltså ingen styrkt generell 200/400-gräns. Inga provade grupper på 0–4 eller restgrupper på 1–4 visas öppet. Baslinjeprovet bevarar grupperingen för hela procent plus sidan om metodgränsen, med hela kundbasen separat som godkänt undantag. Vid baserna 20, 100 och 1 000 jämförs också hela serialiserade AI-begäran för små grupper och restgrupper, inklusive andra poster, sårbarhetsutfall, schema, kedja och omförsök. Ett geografiprov har 90 av 100 som öppet kontrollvärde. Resultaten gäller prövade profiler och baser, inte alla möjliga kombinationer av uppgifter.
+
+Regelbasen är fortsatt 1.3.0. Den enda regelbasändringen i denna omgång är `namnfalt: true` på P-ROLL.ffr_namn. Kontrollsumman går från `sha256:12180a9773ed9996c680e106b06e3a9e5f8b35203cf3482fb6a2867fb126c3d9` till `sha256:1e34b174e6882764c400613328df589a29f63c24875690929c0a87338dc7e5ff`. Äldre bedömningar måste köras om. Riskgränser, regler, källor och sakkunnigstatus är oförändrade.
+
+Verifiering: den färska fullsviten gav **1 486 godkända och ett bortvalt livetest** (708,62 s), med båda API-nycklarna borttagna. Riktade beteendeprov kördes röda före kodändringarna. Första fullsviten hittade tre äldre testförväntningar (feltexter och namnfält i den historiska regelbasen); testerna anpassades till de beslutade kontrakten och omgranskades utan nya fynd, varefter hela sviten kördes på nytt. Oberoende slutgranskning och dokumentationsgranskning har inga åtgärdskrävande fynd. Regelbasvalidering och diffkontroll är gröna. Skyddade typfall, den gyllene M1-kedjan och befintligt Git-index är bevarade. Inga riktiga API-anrop, staging, commits eller pushar. Piloten väntar på separat godkännande och kostnadstak.
+
+## Historik: rättningar enligt revision 21, 2026-10-14
+
+Den tidigare slutgranskningen missade falska namnträffar och två integritetsproblem. De 1 433 gröna testerna nedan avser det tidigare läget och täckte inte dessa fynd. Rättningsomgången är genomförd enligt spec revision 21 och tillägget i den befintliga planen.
+
+- Namnmatchning använder uttryckliga namnfält, hela namn och genitiv; rolltext och rollplatshållare behandlas inte som personnamn. Bo i bokföring, Eva i evaluering och VD i avdrag ger inte längre namnträff.
+- Tidigare fri AI-text skickas aldrig vidare till senare delar. Även felmeddelanden om felaktiga platshållare och fält-ID är generiska, så att namn i AI-text inte citeras tillbaka vid omförsök. Varje del får det skyddade faktabladet, och namnkontrollen sker fortfarande lokalt efter alla delanrop. Därmed behövs inget undantag för återförda namn.
+- Härledda andelar maskeras för AI om antal eller bas saknar tillåtelse. Även beroende sårbarhetsutfall och gränsmeningar skyddas. Lokal precision behålls. Detta ger mindre information i AI-texten; lokal analys och sakgranskning har kvar underlaget.
+- Lokala namnstopp redovisas i CLI med orsak och konkret åtgärd och räknas inte som godkända förstaförsök. Anrops- och tokenmätning behålls.
+- Decimaler i själva metodgränsen och intagets visning rättas. Ingen riskgräns eller riskbedömning ändras. Metodgränserna använder den befintliga typade villkorstolkningen och ett lokalt index som återanvänds inom AI-underlaget och intagsöversikten. Fristående lokala dokumentuppslag bygger fortfarande ett eget index; ingen global cache införs.
+
+Verifiering: nya regressioner har körts röda före rättningarna. Hela sviten gav **1 461 passerade och ett bortvalt livetest** (699,99 s), med API-nycklarna borttagna. Granskning av namn/kedja/rapportering upptäckte återkopplingsläckan som rättades med ett eget kedjeprov och granskades igen. Precision och integritet kontrollerades mot kod och riktade prov. Regelbasvalidering och diffkontroll är gröna; kontrollsumman är oförändrad. Skyddade jämförelsefiler och befintligt index är bevarade. Inga riktiga API-anrop, commits eller pushar.
+
+## Namn, maskering och avrundning, 2026-10-14
+
+Planen för spec revision 20 är implementerad med fallerande regressionstester före kodändringarna. Personnamn kontrolleras lokalt efter tjänstens alla AI-anrop, små grupper och små restgrupper får samma maskeringstext och andelar nära metodgränser visas på rätt sida om gränsen. Separat granskning av uppgifterna och slutgranskning är godkända utan kvarstående fynd. Fullsviten gav **1 433 passerade och ett bortvalt livetest** (683,92 s), med båda API-nycklarna borttagna. Regelbasvalideringen och diffkontrollen är gröna. De skyddade jämförelsefilerna och den frysta M1-kedjan är oförändrade. Hela sviten kördes en gång efter integration och slutgranskning; varje koduppgift hade egna röda och gröna regressionstester. Inga riktiga API-anrop, commits eller pushar har gjorts under denna omgång.
+
+## Skyddad AI-begäran, 2026-10-13
+
+Det som skickas till AI skyddas nu enligt spec 8.4.10. Motorns bedömning, nivåer, regelspår, regler och gränser är oförändrade; det som ändras är vad AI får se.
+
+- AI får aldrig nivåer, regelspår eller nivåmeningar. Faktabladet och de låsta instruktionerna innehåller inga av dem. Återkopplingen vid omförsök valideras mot det AI faktiskt har sett (de skyddade låsta texterna), aldrig mot motorns riktiga nivåmeningar; de riktiga låsta texterna används bara lokalt vid den slutliga kontrollen före dokumentbygget. Ett mutationsprov byter alla nivåfält (inneboende, terrorfinansiering, kvarstående och sanktionsrisken) och alla regelspår mot andra värden och kräver att hela begäran är identisk, även när ett första svar innehåller kandidatmeningar för nivåerna och tjänsten får ett omförsök. Ett andra prov ändrar `P-RISK.pep` (en uppgift utanför tillåtelselistan som ändrar motorns nivå) och kräver samma identitet.
+- Sårbarheter vars villkor bygger på uppgifter utanför tillåtelselistan, eller på smågruppsskyddade värden, har utfallet ”prövas lokalt” i stället för ja eller nej. Av de 28 sårbarheterna läser 18 (alla S-ARB, byråövergripande indikatorer som PEP-anknytning och ägarstruktur) fält utanför tillåtelselistan och får alltid ”prövas lokalt”. Fem (S-KUND-01, S-KUND-02, S-KANAL-01, S-GEO-01 och S-KOMB-01) får det när smågruppsvärden är maskerade eller okända, vilket de är i den syntetiska provprofilen (testprofilens kundantal är 0). Fem (S-VERK-01 och S-TJ-01 till S-TJ-04) behåller ja eller nej. I provprofilen prövas alltså 23 av 28 lokalt.
+- Kontrollernas kategorifält (utformning, genomförande och effekt, 39 fält för 13 kontroller) är tillåtna efter beslut 2026-10-13 och står i `regelbas/tillatelselistor.yaml` med grund i en kommentar. AI:s kontrollstatus bygger enbart på dem. Belagd riskreduktion avgörs lokalt. Eftersom AI inte får veta om en kontroll har belagd effekt underkänner valideringen i kontrolldelen varje påstående om att risken minskar, oavsett vilken kontroll stycket hänvisar till, och återkopplingen säger att programmet avgör det lokalt. Verben minskar, begränsar, reducerar och sänker fångas i presensform (utan efterföljande inte, ej eller aldrig), och prompten för kontrolldelen nämner samma fyra verb. Andra formuleringar och böjningsformer fångas bara av sakgranskningen. Kontrollernas fria utfallstext skickas inte.
+- Prov visar att begäran är identisk för 0, 1, 3 och 4 kunder, för ett maskerat litet komplement (96, 97 och 99 av 100; 100 av 100 visas öppet när härledningens källfält också är tillåtna), vid saknad bas, för ett smågruppsfält och en ja/nej-uppgift utanför tillåtelselistan, för kontrollernas fria utfallstext och vid omförsök, även när ett svar innehåller nivåmeningar.
+- Bekräftade personnamn, även genitiv och förekomster i oklarhetsfrågor, prövas bara lokalt efter tjänstens alla AI-anrop. En träff ersätter den berörda delen med programmets mall och ger ett blockerande granskningsfynd. Namnkontrollen före dokumentbygget finns kvar. Omförsök får ingen namnberoende återkoppling; identitetsproven använder profilens verkliga syntetiska namn och kräver samma begäran och samma antal anrop för profiler med olika namn.
+- Både en liten grupp och en liten restgrupp visas för AI som ”skyddat värde, prövas lokalt”. Ett identitetsprov kräver samma hela begäran för 3 och 97 av 100. Det ersätter det tidigare beslutet att låta maskeringstypen avslöja vilken sida den lilla gruppen ligger på.
+- Andelar nära metodens gränser visas med en eller två decimaler, till exempel 19,5 % och 20,4 % mot gränsen 20 %. När två decimaler inte räcker används ”strax under” eller ”strax över”. Faktabladet och talplatshållarna behåller visningen; intervall lagras utan exakt tal. Smågruppsskyddet går före precisionen.
+- Andelar nära 0 och 100 % visas som ”mindre än 1 %” och ”mer än 99 %” i de låsta styckena, faktabladet och platshållarna. De lagras som intervall och aldrig som ett exakt tal.
+- Katalogkoder och kontrollsummor står bara i referenser och i bilaga D-ARB.B1. I löptexten visas regelpaket med namn och län i hindertexter, och registrerade källor, till exempel EU-269-2014, med titel.
+- Fastställelse kräver aktuellt format i varje tjänsteavsnitt. Ett tjänsteavsnitt utan formatmarkering eller med äldre format stoppar fastställelsen innan paketet byggs (gäller regelbaser med omfattningsmetod). Fastställda paket byggs inte om och kan fortfarande läsas.
+- Den äldre skrivvägen är stängd i både `kor_skrivning` (på en regelbas utan omfattningsmetod) och `skriv_avsnitt`: varje leverantör som inte är testleverantören vägras med felet ”äldre skrivvägen” innan något anrop görs. Testleverantören fungerar som förut, och en leverantör med riktigt namn stoppas inte på en regelbas med omfattningsmetod. Det frivilliga livetestet för den äldre vägen (`tester/live/test_claude_live.py`) är ersatt av ett enhetsprov i `tester/enhet/test_aldre_skrivvag.py`; den nya vägen täcks av `tester/live/test_delcache.py`.
+
+Regelbasen är fortsatt 1.3.0. Den enda ändringen under `regelbas/` är de 39 kategorifälten i `regelbas/tillatelselistor.yaml`; inga regler, gränser, källor eller sakkunnigstatus är ändrade. Kontrollsumman har ändrats av tillåtelselistan, från `sha256:7e9a26f1dc06025ba906d355b631f1ca3a9f142ce50ae18df4909397dc905800` till `sha256:12180a9773ed9996c680e106b06e3a9e5f8b35203cf3482fb6a2867fb126c3d9`. Bedömningar och granskningar som gjorts under 1.3.0 före ändringen är därför inaktuella och måste köras om. `tester/typfall/`, `tester/fixturer/`, `tester/enhet/test_m1_gyllene_dokument.py`, `tester/enhet/test_manifest.py` och `tester/enhet/test_faststall.py` är oförändrade mot utgångsläget (den nya fastställelsespärren prövas i `tester/enhet/test_formathinder.py`). Dokumentformatet är fortsatt `D-ARB-tjanst-v4`.
+
+Verifiering efter kompletteringarna 2026-10-14: slutlig fullsvit är grön, **1 433 tester passerar och ett livetest är bortvalt** (683,92 s), med båda API-nycklarna borttagna ur körmiljön; siffran gäller efter slutgranskningen av namn, maskering och avrundning. Regelbasvalideringen (regelbas 1.3.0, 107 krav, 11 tjänster) och `git diff --check` är gröna. Inga riktiga API-anrop har gjorts. Inget är committat: ändringarna väntar på användarens godkännande för commit.
+
+Kvar:
+
+- En pilot på en tjänst med effort `medium`, efter användarens godkännande och med ett uttryckligt kostnadstak inklusive omförsök, för att pröva formuleringen för faktorer under metodens gräns och utfallet ”prövas lokalt”.
+- Ett beslut om vilka fler uppgifter AI får se. Tillåtelselistan är medvetet snäv, och många sårbarheter får utfallet ”prövas lokalt” tills fler fält tillåts.
 
 ## Klartext i låsta stycken (format v4), 2026-10-12
 
@@ -26,7 +186,7 @@ Verifiering: slutlig fullsvit är grön, **1 327 tester passerar och två livete
 Kvar:
 
 - Nästa pilot ska kontrollera att AI inte skriver att en sårbarhet under gränsen ”inte gäller”.
-- Ett beslut återstår om sårbarhetens utfall (ja/nej) för villkor ”> 0” på smågruppsandelar. Det skiljer 0 från 1–4 kunder i faktabladet och fanns före denna ändring.
+- Ett beslut återstår om sårbarhetens utfall (ja/nej) för villkor ”> 0” på smågruppsandelar. Det skiljer 0 från 1–4 kunder i faktabladet och fanns före denna ändring. Löst 2026-10-13 för S-GEO-01: se avsnittet Skyddad AI-begäran.
 - Återanvändning av v3-utkast byggs inte (beslut 2026-10-12).
 - Kravsummorna är oförändrade, men paketsummorna har ändrats av regelbas 1.3.0. Underlaget för sakkunniggranskning av paketen behöver därför tas fram på nytt för 1.3.0.
 

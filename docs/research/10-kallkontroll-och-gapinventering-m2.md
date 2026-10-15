@@ -396,3 +396,38 @@ SCB:s [variabelbeskrivning](https://www.scb.se/vara-tjanster/bestall-data-och-st
 **Faktisk leverans nu:** lokal intervju → deterministisk bedömning → uttryckligt AI-skrivsteg → maskinell granskning → `allman-riskbedomning-UTKAST.docx`. Dokumentet innehåller verksamhetsbeskrivning, risker per tjänst, kontroller och åtgärder; åtgärds-/granskningsbilaga ingår vid öppna fynd. Namn och beskrivande fritext sätts in lokalt. Separata rutindokument, individuella kundriskbedömningar och ett fastställt dokument skapas inte av intagets skrivknapp. Grund-/översiktssidan visar nu detta innan användaren fyller i eller skriver. Juridiska/metodiska sakkunniggrindar och senare sakgranskning/fastställelse är oförändrade.
 
 **Verifiering av fortsättningen:** RED före produktionsändring för underlagsval, kategori-/periodgränser, okänt/stale-form och tydlig leverans; separat RED för det villkorade koncernförslaget. Efter rättning **83 fokuserade prov passerade (35,50 s)** och hela berörda intag-/företagsdatapaketet gav **172 passerade (186,90 s)**. Fristående teknisk granskning fann inga konkreta fynd i den avgränsade ändringen. Syntetiskt webbläsarprov verifierade SCB-kod 41 med uttrycklig bekräftelse, egen kännedom, kundunderlag/period som återanvänds och sparas i nästa kundfråga samt att samma underlag inte föreslås för omsättning. Bildbevis ligger utanför Git i `/Users/gt/.codex/visualizations/2026/10/11/01a12a55-3718-74f2-bc3b-588e958dab72/intag-underlagsval.png`. Slutlig fullsvit redovisas i STATUS och registerplanen. Denna fortsättning har inte en ny prestandamätning; tidsvinsten i §14.3 gäller den tidigare renderingsändringen.
+
+
+### 14.5 Bolagsverket HVD: verifierat kontrakt och första läsväg 2026-10-14
+
+Användaren har nu tillgång till HVD och har uttryckligen godkänt en första version med lokalt kommando för företagsuppgifter och dokumentlista. Det ersätter tidigare uppgiften att åtkomst och körbart kontrakt saknas; intagsintegration och årsredovisningstolkning är fortfarande senare arbete.
+
+Primärkällan är [Bolagsverkets HVD v1 i utvecklarportalen](https://portal.api.bolagsverket.se/devportal/apis/ff8f9a91-1fdd-4705-8836-c1906581162f/overview). Offentlig OpenAPI och anslutningsanvisning version 1.01 (2025-02-10) har hämtats direkt från portalens dokument-API. Exakta adresser, hämtningstid, kontrollsummor och OpenAPI finns i [kontraktsfilen](bolagsverket-hvd-v1-kontrakt.json). Webbplatsens CAPTCHA har inte kringgåtts; utvecklarportalens publika dokumentation var tillgänglig.
+
+- OAuth2 client credentials mot `https://portal.api.bolagsverket.se/oauth2/token`, formulär med grant_type, client_id, client_secret och scope. Läsning använder `vardefulla-datamangder:read`; driftkontroll använder separat ping-scope. Giltigheten kommer från expires_in.
+- API-bas: `https://gw.api.bolagsverket.se/vardefulla-datamangder/v1`. POST organisationer och dokumentlista med identitetsbeteckning. GET dokument/{dokumentId} finns i kontraktet men byggs inte i första versionen.
+- Använda uppgifter: namn med namntyp, organisationsform, juridisk form, verksamhetsbeskrivning, verksamstatus, registreringsdatum, avregistrering/orsak, pågående förfaranden, SNI och postadress. Dataproducent (Bolagsverket/SCB) följer med per uppgiftsgrupp. Saknad grupp och gruppfel redovisas separat, aldrig som bekräftat nej.
+- Dokumentlistan ger dokument-id, filformat, rapporteringsperiodens slut och registreringstidpunkt. Datum behålls som levererade: OpenAPI har strängtyper men flera officiella exempel använder millisekundstal. Ingen gissad kalenderomräkning, ekonomisk tolkning eller påstående om fullständig inlämningshistorik görs.
+- Hämtade uppgifter är lokal registerbakgrund, inte bekräftade profilsvar eller nya AML-kontrollbelägg. Ingen riskregel eller sakkunnigstatus ändras. Verkliga svar och nycklar får inte bli testfixturer eller läggas i Git.
+
+Manuell kontroll med användarens uppgifter: autentisering lyckades, expires_in var 3600 sekunder, driftkontroll gav HTTP 200 och OK. Token sparades inte eller skrevs ut. Det styrker åtkomst till token/ping, inte att ett visst företag eller dokument kan hämtas. Företagsuppslag redovisas separat efter att användaren angett organisationsnummer. Automatiska prov använder enbart syntetisk transport och syntetiska svar.
+
+
+#### Vad HVD kan tillföra i Riskanalys
+
+Kontrollerat även mot portalens officiella Code lists 2026-10-14 (adress och kontrollsumma i kontraktsfilen). Det här är en kartläggning, inte automatiska profilförslag eller nya riskregler.
+
+| Uppgift | Finns i kontraktet | Användning och begränsning |
+|---|---|---|
+| Namn och registrerad verksamhetsbeskrivning | Ja, flera namntyper kan förekomma | Grundtext för manuell granskning. Registrerad verksamhet bevisar inte dagens faktiska tjänsteutbud. |
+| Organisationsform | Ja, bland annat AB, HB, KB, FL, BFL, EK, BRF | FL/BFL är uttryckliga filialformer, till skillnad från SCB:s generella kod för utländsk juridisk person. Kan senare ge ett källbundet förslag, inte automatiskt bekräftat svar. |
+| Ideella föreningar/stiftelser | Koder I/S avser sådana som bedriver näringsverksamhet | API:t ska inte beskrivas som heltäckande för alla ideella föreningar och stiftelser. |
+| Registreringsdatum, verksamstatus, avregistreringsdatum/orsak | Ja | Registerbakgrund. Datum i ett aktuellt svar är inte fullständig historik och ger inte ensamt kundens verkliga verksamhetsålder. |
+| Pågående förfaranden | Kodlistan omfattar konkurs, likvidation, företagsrekonstruktion, fusion/delning, gränsöverskridande ombildning m.m. | Underlag för kontrollfrågor. Ett tomt/felaktigt svar är inte ett intyg på frånvaro. Inga AML-risknivåer härleds här. |
+| SNI och postadress | Ja | Registrerad bransch/adress, inte faktiskt tjänsteutbud eller geografiska kundrisker. Postadress bevisar inte säteslän. |
+| Registreringsland, reklamsparr och namnskyddslopnummer | Ja | Finns i API men ingår inte i den första lokala projektionen eftersom de inte behövs i det godkända kommandots registerbakgrund. |
+| Årsredovisningar | Lista med filformat, periodslut, registreringstidpunkt och dokument-id; separat ZIP-hämtning | Nästa steg kan undersöka faktiskt filformat och läsa bokslutsuppgifter. Dokumentlistan i sig ger inte omsättning, resultat, eget kapital eller medelantal anställda. |
+| Styrelse, firmatecknare, verkliga huvudmän, ägarandelar | Inga separata fält/operationer i HVD v1-kontraktet | Får inte utlovas med denna behörighet. Att andra API:er syns i portalen betyder inte att användaren har åtkomst. Eventuella namn i årsredovisningar är inte ett aktuellt styrelse-/ägarregister. |
+| PEP, sanktionsträffar, kundmix, antal rapporter, kontrollutfall | Saknas i HVD v1-kontraktet | Kan inte fyllas i från detta API. Kräver andra underlag och vid behov separat behörig tjänst. |
+
+För intaget prioriteras senare registrerad verksamhetsbeskrivning och tydlig organisationsform, med källvisning och uttrycklig bekräftelse. Bokslutsimport kräver ytterligare kontroll av identitet, period, valuta/enhet, taxonomi och bolag kontra koncern. Ingen sådan överföring är byggd i den första läsvägen.

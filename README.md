@@ -45,14 +45,26 @@ python3 -m venv .venv
 
 ### API-nycklar
 
-Programmet läser nycklar från `~/.config/riskanalys/.env` när ett kommando startar. Filen ligger utanför repot så att den inte kan committas eller läsas av verktyg som arbetar i projektmappen. Bara två rader används; övriga ignoreras:
+Programmet läser nycklar från `~/.config/riskanalys/.env` när ett kommando startar. Filen ligger utanför repot så att den inte kan committas eller läsas av verktyg som arbetar i projektmappen. Följande variabler stöds; ange bara de tjänster du använder:
 
 ```text
 ANTHROPIC_API_KEY=din-anthropic-nyckel
 RISKANALYS_SCB_API_KEY=din-scb-nyckel
+BOLAGSVERKET_CLIENT_ID=ditt-client-id
+BOLAGSVERKET_CLIENT_SECRET=ditt-client-secret
 ```
 
 Filen får bara vara läsbar för dig (`chmod 600`); annars stoppar programmet och säger hur du rättar det. En variabel som redan är satt i terminalen gäller före filen. `RISKANALYS_NYCKELFIL` pekar ut en annan fil vid behov. Provsviten läser aldrig den riktiga filen. Nyckelvärden visas inte i felmeddelanden.
+
+### Bolagsverket: lokalt företagsuppslag
+
+Efter att du fått tillgång till Värdefulla datamängder och sparat anslutningsuppgifterna ovan:
+
+```bash
+.venv/bin/riskanalys bolagsverket ORGANISATIONSNUMMER
+```
+
+Ersätt `ORGANISATIONSNUMMER` med en juridisk persons organisationsnummer. Kommandot visar registeruppgifter och lista över tillgängliga årsredovisningar. Token hämtas och förnyas automatiskt i minnet; spara ingen access token i `.env`. Nycklar skickas bara till Bolagsverkets tokenadress. Inga filer eller profilsvar sparas och ingen AI anropas. Den första versionen är ett separat läskommando; knappen i intaget använder fortfarande SCB. Årsredovisningsfiler laddas inte ner och bokslutstal tolkas inte ännu. Se [verifierat kontrakt och uppgiftskarta](docs/research/10-kallkontroll-och-gapinventering-m2.md#145-bolagsverket-hvd-verifierat-kontrakt-och-första-läsväg-2026-10-14).
 
 ### Börja med intaget
 
@@ -109,7 +121,7 @@ Programmet ger underlag. Verksamhetsutövaren fastställer dokumentationen och a
 
 ### Avgiftsfri registerhämtning i intaget
 
-Välj **Företagsuppgifter** i intaget. Ange organisationsnummer och välj **Hämta från SCB**. Kontrollera namn/nummer, jämför registerförslagen med egna svar och bekräfta de uppgifter som ska användas. Hämtningen ändrar inga svar automatiskt. Namn, säteslän och registrerade arbetsställen kan godkännas tillsammans och följa med redan vid starten. Avvikande sparade svar kräver ett särskilt ersättningsval. Du kan också fortsätta manuellt. Filialsvaret behöver ett eget underlag, exempelvis registreringsbevis; SCB-bilden används inte som källa till den frågan.
+Välj **Företagsuppgifter** i intaget. Ange organisationsnummer och välj **Hämta valda företagsuppgifter**. Välj även Bolagsverket för grunduppgifter och senaste digitala årsredovisning; valet är förmarkerat när båda Bolagsverksnycklarna är konfigurerade. Kontrollera namn/nummer, jämför registerförslagen med egna svar och bekräfta de uppgifter som ska användas. Hämtningen ändrar inga svar automatiskt. Namn, säteslän och registrerade arbetsställen kan godkännas tillsammans och följa med redan vid starten. Avvikande sparade svar kräver ett särskilt ersättningsval. Du kan också fortsätta manuellt. Filial kan föreslås från Bolagsverkets organisationsform AB/FL. Utan ett valt sådant förslag behövs eget filialunderlag; SCB-bilden styrker inte filialsvaret.
 
 SCB:s [AFR-API](https://www.scb.se/vara-tjanster/bestall-data-och-statistik/foretagsregistret/avgiftsfria-uppgifter-i-foretagsregistret/) är avgiftsfritt men kräver personlig nyckel. Registrera dig i [SCB:s portal](https://registreraafr.scb.se/) och godkänn deras villkor själv. Programmet skapar inga konton. Enklast: öppna **Ange eller byt SCB-nyckel** i det lokala hämtningsformuläret och klistra in nyckeln i lösenordsfältet. Den används bara i sessionen och sparas inte på disk. Alternativt i macOS/zsh kan nyckeln anges utan att dess värde skrivs i terminalhistoriken:
 
@@ -133,8 +145,16 @@ Nyckeln ska inte skrivas i chatt, Git eller vanliga svarsfält. Använd bara det
 
 Minimala registerbilder sparas privat i `$RISKANALYS_DATA/<byra>/register/`, med källa, tid och kontrollsumma. Hämtningstid är inte senaste ändringsdatum. Tidigare bilder bevaras; ta med mappen i säkerhetskopian. En bekräftelse refererar exakt bild i profilsvarets källa. Vid fel eller konflikt ska uppgiften kontrolleras; en aktuell registerbild får inte styrka en tidigare bedömningsdag. Hämtning/import efter bedömningsdatum avvisas och den tidigare bilden behålls. En ny bedömning med nytt datum behöver ett separat intag. Bekräftade ändringar använder profilens vanliga validering, följdfrågor och skydd mot gamla flikar. Rårespons, nycklar och registeridentitet går inte till AI.
 
-Utvidgad [datakällsresearch](docs/research/10-kallkontroll-och-gapinventering-m2.md#142-utvidgad-research-mindre-manuell-inmatning-2026-10-10) visar vilka uppgifter som kan hämtas, importeras och behöver bekräftas. Lokal import av aggregerad kund-/uppdragsstatistik är nästa föreslagna förenkling. Bolagsverket HVD är nästa möjlig avgiftsfri adapter; den är ännu inte implementerad. Allabolag eller ekonomisystem kräver ett separat verifierat åtkomst- och integrationssteg. Den nya SCB-kopplingen är testad med syntetisk transport; autentiserat uppslag kräver en personlig nyckel och är inte verifierat här.
+Utvidgad [datakällsresearch](docs/research/10-kallkontroll-och-gapinventering-m2.md#142-utvidgad-research-mindre-manuell-inmatning-2026-10-10) visar vilka uppgifter som kan hämtas, importeras och behöver bekräftas. Lokal import av aggregerad kund-/uppdragsstatistik är nästa föreslagna förenkling. Bolagsverket HVD kan nu komplettera SCB i samma intagsflöde. Allabolag eller ekonomisystem kräver ett separat verifierat åtkomst- och integrationssteg. Den nya SCB-kopplingen är testad med syntetisk transport; autentiserat uppslag kräver en personlig nyckel och är inte verifierat här.
 
 **Färre upprepningar i intaget:** **Byråns tjänster** samlar elva erbjudandefrågor med gemensam källa, roll och datum. Markera faktiskt erbjudna tjänster och bekräfta hela listan innan omarkerade blir ”nej”; använd enskilda frågor med ”Vet inte” när underlaget är osäkert. Vanliga frågor föreslår tidigare roll, och godkända registerförslag hoppar över motsvarande frågor. Registerbakgrund med bransch/storleksklasser samt F-skatt/moms/arbetsgivarstatus är expanderbar. De sistnämnda visas efter en ny SCB-hämtning; äldre bilder bevaras. [Ny källkontroll och avgränsning](docs/research/10-kallkontroll-och-gapinventering-m2.md#143-ny-källkontroll-och-förenklat-godkännande-2026-10-11).
 
-[Fler källor och återanvändning av underlag](docs/research/10-kallkontroll-och-gapinventering-m2.md#144-fler-källor-underlagsval-och-tydlig-leverans-2026-10-11): Bolagsverket kan tillföra registrerad verksamhet, organisationsform och tillgängliga digitala årsredovisningar efter separat API-åtkomst. Polisen/Länsstyrelserna samt EU/FATF ger riskunderlag som behöver versionshanteras och granskas. Dessa är inte nya byggda anslutningar. pilotbyråns egna exporter inventeras i det manuella pilotintaget före en formatanpassad CSV/XLSX-import.
+[Fler källor och återanvändning av underlag](docs/research/10-kallkontroll-och-gapinventering-m2.md#144-fler-källor-underlagsval-och-tydlig-leverans-2026-10-11): Bolagsverket kan tillföra registrerad verksamhet, organisationsform och tillgängliga digitala årsredovisningar efter separat API-åtkomst. Polisen/Länsstyrelserna samt EU/FATF ger riskunderlag som behöver versionshanteras och granskas. Bolagsverket har både ett separat läskommando och samlad intagshämtning; övriga nämnda källor är inte nya byggda anslutningar. Pilotbyråns egna exporter inventeras i det manuella pilotintaget före en formatanpassad CSV/XLSX-import.
+
+### Bolagsverket och bokslut i samma godkännande
+
+Med `BOLAGSVERKET_CLIENT_ID` och `BOLAGSVERKET_CLIENT_SECRET` i den privata nyckelfilen kan intaget komplettera SCB med filialförslag, registrerad verksamhetsbeskrivning som redigerbart utkast och exakt nettoomsättning. Markera önskade förslag och godkänn dem tillsammans. Bekräfta uttryckligen bokslutets statistikperiod; den måste stämma med redan bekräftad kund-/tjänstestatistik och föreslås för följande statistikfrågor. Även senare svar kontrolleras mot den godkända bokslutsperioden. Vid periodbyte behöver omsättningen först uppdateras med rätt underlag.
+
+Årsredovisningsläsaren stöder iXBRL med `gen-base/2021-10-31`, odimensionerad bolagskontext och SEK. Den kontrollerar identitet, period, skala/precision och motstridiga dubbletter. Andra taxonomier, koncernkontexter, enbart avrundade belopp eller flera dokument för senaste period ger inget automatiskt beloppsförslag. Grundförslagen kan ändå användas och begränsningen visas. Medelantal anställda visas som stöd; dagens antal inklusive ägare besvaras fortfarande manuellt.
+
+Originalpaketet sparas privat i `$RISKANALYS_DATA/<byra>/register/original/<sha256>.zip`. Registerschema 4 binder Bolagsverksfakta och bokslut till samma juridiska person; äldre SCB-bilders format och kontrollsummor bevaras. Källan följer respektive fält och får inte återanvändas som belägg för andra verksamhetsfakta. Hämtning bekräftar ingenting och gör inga AI-anrop.
