@@ -9,7 +9,12 @@ from riskanalys.dokument.platshallare import faltid_fel, platshallarfel
 from riskanalys.dokument.validering import FORBJUDNA_FORMULERINGAR, VERIFIERA, har_nivasprak
 
 # Ord per del. Metodval som prövas i piloten.
-LANGD = {"hot": (80, 450), "sarbarheter": (100, 600), "kontroller": (60, 400), "risknivaer": (80, 400), "slutsatser": (80, 400)}
+LANGD = {"hot": (80, 160), "sarbarheter": (100, 220), "kontroller": (60, 120), "risknivaer": (80, 120), "slutsatser": (80, 130)}
+# Smala språkprov kompletterar sakgranskning; de bevisar inte semantisk riktighet.
+_UTFALLSMOTIVERING = re.compile(
+    r"\b(?:därför\s+är\s+risknivån|risknivån\s+(?:är\s+motiverad|avviker\s+från\s+sektorns))\b",
+    re.IGNORECASE,
+)
 _NOLL_RAPPORTER = re.compile(r"\b(?:inga|få|noll)\s+(?:misstanke)?rapporter\b[^.]*\b(?:visar|därför|innebär|tyder)\b", re.IGNORECASE)
 _MINSKNING = re.compile(r"\b(?:minskar|begränsar|reducerar|sänker)\b", re.IGNORECASE)
 _SAMVERKAN = re.compile(r"\b(?:samverk\w*|kombination\w*|tillsammans|förstärk\w*)\b", re.IGNORECASE)
@@ -110,6 +115,8 @@ def _per_del(del_id: str, svar: AISvar, fb: Faktablad) -> list[str]:
             s.typ == "motivering" and any(r.startswith("H-") for r in s.referenser)
             and any(r.startswith(("S-", "P-")) for r in s.referenser) for s in svar.stycken):
         fel.append("Minst ett stycke av typen motivering ska hänvisa till ett hot och en sårbarhet eller uppgift.")
+    if del_id == "risknivaer" and _UTFALLSMOTIVERING.search(text):
+        fel.append("Delen motiverar ett motorutfall. Beskriv endast kvalitativa samband och villkorliga scenarier.")
     if del_id == "slutsatser":
         fel += [f"Slutsatserna ska ta upp {ord_} i tjänsten." for ord_ in ("kundkännedom", "övervakning", "utbildning")
                 if ord_ not in text.lower()]

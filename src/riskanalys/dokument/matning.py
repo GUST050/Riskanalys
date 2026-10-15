@@ -47,3 +47,33 @@ def kostnad_usd(s: Skrivsammanfattning, indatapris: float, utdatapris: float, *,
     laspris=indatapris if cache_laspris is None else cache_laspris
     skrivpris=indatapris if cache_skrivpris is None else cache_skrivpris
     return round((s.indata_token*indatapris+s.utdata_token*utdatapris+s.cache_lasning_token*laspris+s.cache_skrivning_token*skrivpris)/1e6,4)
+
+
+def dokumentord(dokument, profil) -> dict[str, int]:
+    """Synlig modelltext efter lokal substitution; Word-fältens cache räknas inte dubbelt."""
+    from riskanalys.dokument.rendering import renderat_avsnitt, synliga_texter
+    huvud=len(dokument.titel.split()); bilaga=0
+    for a in dokument.avsnitt:
+        antal=sum(len(text.split()) for text in synliga_texter(renderat_avsnitt(a,profil)))
+        if a.id.startswith('D-ARB.B'):
+            bilaga+=antal
+        else:
+            huvud+=antal
+    return {'huvudtext':huvud,'bilaga':bilaga,'totalt':huvud+bilaga}
+
+
+def med_langdvarning(dokument, profil):
+    """Redaktionellt mål, aldrig trunkering eller ett nytt fastställelsekrav."""
+    from riskanalys.dokument.modeller import Textstycke
+    varningstext=('Redaktionell längdvarning: huvudtexten överstiger riktmärket 5 000 ord för fyra tjänster. '
+        'Gör en redaktionell genomgång; inga underlag har kapats för att uppfylla målet.')
+    avsnitt=tuple(a.model_copy(update={'stycken':tuple(s for s in a.stycken if s.text!=varningstext or s.referenser)})
+                  for a in dokument.avsnitt)
+    ren=dokument.model_copy(update={'avsnitt':avsnitt})
+    if not avsnitt or dokumentord(ren,profil)['huvudtext']<=5000:
+        return ren
+    varning=Textstycke(typ='beskrivning',text=varningstext,referenser=[])
+    for index,a in enumerate(avsnitt):
+        if not a.id.startswith('D-ARB.B'):
+            return ren.model_copy(update={'avsnitt':(*avsnitt[:index],a.model_copy(update={'stycken':(*a.stycken,varning)}),*avsnitt[index+1:])})
+    return ren

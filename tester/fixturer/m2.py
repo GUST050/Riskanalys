@@ -53,7 +53,7 @@ def tjanst_for_prov(mapp, rb, profil):
     return tjanster_med_avsnitt(b)[0]
 
 
-def godkant_delsvar(del_id, t):
+def historiskt_delsvar(del_id, t):
     rb=_regelbas_for_delsvar()
     fyll={
         'T-RED-01':' Bokföraren konterar fakturor och granskar verifikationernas affärshändelser innan periodens bokslut stäms av.',
@@ -83,3 +83,86 @@ def _regelbas_for_delsvar():
 def bygg_delsvar(rb, profil, bedomning):
     from riskanalys.dokument.promptar import DELAR
     return [godkant_delsvar(d,t) for _,t in tjanster_med_avsnitt(bedomning) for d in DELAR]
+
+
+def godkant_delsvar(del_id, t):
+    """Separata korta H6-svar; äldre jämförelsetext finns i historiskt_delsvar."""
+    rb = _regelbas_for_delsvar()
+    tj = rb.tjanster[t.tjanst]
+    inledning = {
+        'T-RED-01': 'Bokföraren granskar fakturor och stämmer av verifikationer mot affärshändelser.',
+        'T-RED-02': 'Bokslutskonsulten utreder balansposternas existens genom värderingsunderlag, lagerintyg och dokumentation av ägarlån.',
+        'T-RED-03': 'Deklarationshandläggaren jämför avdragsyrkanden, skattemässiga justeringar och dokumenterade transaktioners verkliga innebörd inför deklaration.',
+        'T-RED-04': 'Lönekonsulten kontrollerar anställningsavtal, tidrapporter, ersättningsmönster samt mottagarkonton genom attestbehörigheter och oberoende bekräftelser.',
+        'T-SKATT-01': 'Skatterådgivaren prövar deklarationsunderlag och transaktionernas skattemässiga syften.',
+        'T-BOLAG-01': 'Bolagskonsulten utreder ägarbyten och kapitaltillskott samt företrädarnas mandat.',
+    }.get(t.tjanst, tj.namn + ' kräver granskning av uppdragets särskilda underlag och kundens verksamhet.')
+    tjansttext = {
+        'T-RED-01': (
+            ' Fakturor behöver jämföras med leveranser och bokförda betalningar. Oriktiga verifikationer kan ge '
+            'brottsvinster sken av vanliga rörelseintäkter. Bokföringsarbetet kräver uppmärksamhet på avvikande '
+            'motparter och oförklarade differenser. Avstämning av reskontra behöver knytas till ursprungliga '
+            'handlingar. Bokföraren behöver dokumentera vilka affärshändelser som inte kunnat styrkas. '
+            'När kvitton saknas behöver kunden förklara utbetalningens ändamål. Kontoutdrag ensamt visar '
+            'inte att den bokförda kostnaden avser verklig verksamhet. Periodavslut och rättelser behöver '
+            'därför kunna följas tillbaka till verifikationerna och de frågor som ställdes vid granskningen.'),
+        'T-RED-02': (
+            ' Bokslutsuppdraget samlar periodens resultat och tillgångar i årsredovisningen. Fiktiva kundfordringar '
+            'eller osäkra lageruppgifter kan skapa en missvisande bild av ekonomin. Konsulten behöver begära '
+            'underlag för värderingar och undersöka ägarlån som saknar tydlig dokumentation. Att posterna '
+            'balanserar styrker inte deras existens. Företagsledningen ansvarar för lämnade uppgifter men '
+            'byrån behöver följa upp motsägelser före leverans. Avstämningar av balanskonton och dokumenterad '
+            'andragranskning ger information om vilka områden som kontrollerats. Det behöver framgå när '
+            'kundens förklaring fortfarande saknar oberoende stöd. Sådana begränsningar påverkar hur uppdraget '
+            'kan följas upp inför nästa bokslut.'),
+        'T-RED-03': (
+            ' Deklarationer bygger på redovisade resultat och lämnade uppgifter om avdrag. Osanna kostnader '
+            'kan föras vidare utan att en formell skattemässig avstämning avslöjar affärens verkliga innehåll. '
+            'Deklarationskonsulten behöver pröva större justeringars stöd och skilja privata utgifter från '
+            'verksamhetens kostnader. Kundens dokumentation behöver visa vad transaktionerna avser. Felaktiga '
+            'yrkanden ska utredas före inlämning och återkommande avvikelser följas upp. Skatteuppgifternas '
+            'överensstämmelse med bokslutet ersätter inte kontroll av det bakomliggande materialet. Osäkerheter '
+            'om faktiska leveranser kan kräva kompletteringar även när räkneoperationerna är korrekta. '
+            'Handläggaren behöver dokumentera vilka antaganden som fortfarande återstår.'),
+        'T-RED-04': (
+            ' Löneuppdraget bygger på anställningsavtal och kundattesterade tidrapporter. Påhittade anställningar '
+            'eller ändrade mottagarkonton kan ge obehöriga betalningar ett till synes legitimt ändamål. '
+            'Lönekonsulten behöver kontrollera beställarens behörighet och uppmärksamma sena ändringar. '
+            'Att arbetsgivaren attesterat timmarna bevisar inte att arbetet har utförts. Kontobyten behöver '
+            'bekräftas genom en tidigare känd kontaktväg. Underlag för ovanliga ersättningar bör sparas '
+            'så att efterföljande granskning kan följa hanteringen. Avvikande mönster mellan anställda och '
+            'återkommande rättelser behöver diskuteras med kunden. Dokumentationen ska skilja kundens '
+            'uppgifter från vad byrån själv faktiskt kunnat kontrollera.'),
+        'T-SKATT-01': (
+            ' Deklarationsarbetet kan beröras av upplägg där oriktiga avdrag döljer pengars ursprung. '
+            'Rådgivaren behöver förstå beskattningsunderlagets koppling till verkliga transaktioner. '
+            'Skatteberäkningar ska kunna följas till relevanta avtal och kundens beskrivning av affärssyftet. '
+            'Oklara avdragsyrkanden behöver utredas innan de används i rådgivningen. Gränsöverskridande '
+            'arrangemang kan kräva kompletterande handlingar för att förstå mottagare och betalningsändamål. '
+            'Konsulten behöver skilja skatteplaneringens formella dokumentation från bevis om den ekonomiska '
+            'innebörden. Utredningen behöver ange vilka antaganden som återstår och hur klientens '
+            'förklaringar har jämförts med tillgängliga uppgifter.'),
+        'T-BOLAG-01': (
+            ' Bolagsbildning kan användas för att skapa juridiska strukturer som döljer verklig kontroll. '
+            'Aktieteckning behöver därför förstås utifrån kapitalets ursprung och ägarnas avsikter. '
+            'Konsulten behöver granska fullmakter och kontrollera vem som faktiskt företräder uppdragsgivaren. '
+            'Ägarförändringar kan kräva nya handlingar om kontrollkedjan. Ett registrerat bolag visar '
+            'inte att verksamhetens syfte är klarlagt. Osäkerheter om företrädare och finansiering '
+            'behöver dokumenteras före fortsatt handläggning. Bildningshandlingar och överlåtelseavtal '
+            'behöver vara förenliga med kundens förklaringar. Saknas förståelse för konstruktionen '
+            'behöver konsulten begära kompletteringar och överväga uppdragets fortsatta hantering.'),
+    }.get(t.tjanst, (' Uppdragets särskilda underlag behöver granskas mot kundens verksamhet och dokumenteras.' * 8))
+    hot = list(t.hot)
+    if del_id == 'sarbarheter':
+        omraden = {}
+        for id in tj.sarbarheter:
+            omraden.setdefault(rb.sarbarheter[id].omrade, id)
+        text = (inledning + ' Faktorn prövas lokalt mot dokumenterade uppdrag. Exponering och kompletteringsbehov i verksamhetens dokumenterade underlag '
+                'behöver granskas. Ingen belagd kombination finns.')
+        return AISvar(stycken=[AIStycke(typ='analys', referenser=[t.tjanst,id], text=text)
+                               for id in omraden.values()], oklarheter=[])
+    refs = {'hot':[t.tjanst,*hot], 'kontroller':[t.tjanst],
+            'risknivaer':[t.tjanst,hot[0],tj.sarbarheter[0]], 'slutsatser':[t.tjanst,hot[0]]}
+    extra = ' Kundkännedom, övervakning och utbildning behöver anpassas efter identifierade hot.' if del_id == 'slutsatser' else ''
+    return AISvar(stycken=[AIStycke(typ='motivering' if del_id=='risknivaer' else 'analys',
+        referenser=refs[del_id],text=inledning+tjansttext+extra)],oklarheter=[])

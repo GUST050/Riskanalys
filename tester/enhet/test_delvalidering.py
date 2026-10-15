@@ -4,7 +4,7 @@ from riskanalys.dokument.delvalidering import innehaller_personnamn, validera_de
 from riskanalys.dokument.modeller import AIOklarhet, AIStycke, AISvar
 from riskanalys.dokument.underlag import SKYDDAD_VISNING
 
-FYLLNAD = " Byrån konterar kundernas underlag och stämmer av dem mot bankens uppgifter varje månad." * 10
+FYLLNAD = " Byrån konterar kundernas underlag och stämmer av dem mot bankens uppgifter varje månad." * 7 + " Underlaget granskas lokalt före användning."
 
 
 def _svar(*stycken):

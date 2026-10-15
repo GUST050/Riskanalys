@@ -89,3 +89,13 @@ def test_kontrollmodulen_sager_att_riskreduktion_avgors_lokalt():
 def test_kontrollmodulen_forbjuder_alla_fyra_verben():
     # Samma verb som valideringen i kontrolldelen underkänner (delvalidering._MINSKNING).
     assert "minskar, begränsar, reducerar eller sänker risk" in " ".join(delmodul("kontroller").split())
+
+
+def test_riskdelens_uppgift_ar_kvalitativ_syntes(faktablad_exempel):
+    block=bygg_innehall(faktablad_exempel,'risknivaer',(),(),())
+    text=next(b['text'] for b in block if b['text'].startswith('<uppgift'))
+    assert 'Scenarier och osäkerheter' in text
+    assert 'kvalitativ syntes' in text
+    assert 'inte varför en viss nivå är riktig' in text
+    assert 'villkorliga scenarier' in text
+    assert 'motivera skillnader' not in text

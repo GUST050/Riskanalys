@@ -19,7 +19,7 @@ from riskanalys.dokument.promptar import DELAR, bygg_innehall, promptsumma, syst
 from riskanalys.dokument.tjanstavsnitt import kontrollstycken
 from riskanalys.lagring.kontrollsumma import for_text
 
-FORMATVERSION = "D-ARB-tjanst-v4"
+FORMATVERSION = "D-ARB-tjanst-v5"
 MAX_OMFORSOK = 2
 MAX_TOKENS = 64000
 EFFORTSTEG = {"low": "medium", "medium": "high", "high": "xhigh", "xhigh": "max", "max": "max"}
@@ -57,7 +57,7 @@ class Tjanstresultat(Last):
     avsnitt: str
     tjanst: str
     design: Literal["A", "B"]
-    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4"] = FORMATVERSION
+    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4", "D-ARB-tjanst-v5"] = FORMATVERSION
     faktablad: Faktablad
     delar: tuple[Delresultat, ...]
 
@@ -185,6 +185,9 @@ def kontrollera_resultat(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str, *,
             continue
         if not d.godkant_svar:
             raise RiskanalysFel("En analysdel saknar validerat svar. Skriv om delen.")
+        anrop = d.forsok[-1].anrop
+        if anrop.prompt_kontrollsumma != promptsumma(anrop.begard_modell, d.del_id):
+            raise RiskanalysFel("Analysdelens prompt är inte aktuell. Skriv om delen och sakgranska på nytt.")
         svar, fel = _tolka(d.forsok[-1].text,resultat.faktablad)
         if svar != d.godkant_svar or fel:
             raise RiskanalysFel("Analysdelens råsvar avviker från det sparade svaret. Skriv om delen.")

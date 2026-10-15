@@ -79,12 +79,7 @@ def kor_sakgranska(args: argparse.Namespace) -> int:
         for avsnitt_id, oklarhet in utkastens_oklarheter(byramapp, utkastnamn):
             if avsnitt_id == avsnitt.id:
                 print(f"Öppen fråga från AI-utkastet: {oklarhet.fraga} Uppgift som saknas: {oklarhet.saknad_uppgift}.")
-        rubriker = {u.fore_stycke: u.rubrik for u in avsnitt.underrubriker}
-        for position, stycke in enumerate(renderat_avsnitt(avsnitt, profil).stycken):
-            if position in rubriker:
-                print(f"\n{rubriker[position]}")
-            print(f"\n[{stycke.typ}] {stycke.text}")
-            print(f"Hänvisningar: {', '.join(stycke.referenser) or 'inga'}")
+        print(beskriv_avsnitt(renderat_avsnitt(avsnitt, profil)))
         return 0
     for avsnitt in dokument.avsnitt:
         print(f"{avsnitt.id} {avsnitt.rubrik}: {sakgranskningsstatus(sakgranskningar, avsnitt, profil, dokument)}")
@@ -109,3 +104,23 @@ def beskriv_motorns_nivaer(tjanst: Tjanstbedomning) -> str:
         f"konsekvens {tf.konsekvens}), kvarstående risk {tjanst.kvarstaende}. "
         + sanktext + "Kontrollera att texten anger samma nivåer."
     )
+
+
+def beskriv_avsnitt(avsnitt) -> str:
+    """Visa samma synliga stycken och tabellceller som Word, med granskningsreferenser."""
+    rader=[]
+    rubriker={u.fore_stycke:u.rubrik for u in avsnitt.underrubriker}
+    for pos in range(len(avsnitt.stycken)+1):
+        if pos in rubriker:
+            rader.append(rubriker[pos])
+        for tab in avsnitt.tabeller:
+            if tab.fore_stycke!=pos:
+                continue
+            rader.extend((tab.rubrik, ' | '.join(tab.kolumner)))
+            for rad in tab.rader:
+                rader.append(' | '.join(c.text for c in rad.celler))
+                rader.append('Hänvisningar: '+', '.join(dict.fromkeys(r for c in rad.celler for r in c.referenser)))
+        if pos<len(avsnitt.stycken):
+            s=avsnitt.stycken[pos]
+            rader.extend((f'[{s.typ}] {s.text}', 'Hänvisningar: '+(', '.join(s.referenser) or 'inga')))
+    return '\n\n'.join(rader)

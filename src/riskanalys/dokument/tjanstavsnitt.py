@@ -89,6 +89,9 @@ def bygg_tjanstavsnitt_v3(rb: Regelbas, p: Profil, t: Tjanstbedomning, resultat,
     """Låsta stycken byggs om ur profil och bedömning; AI-stycken kommer från maskinellt validerade delar (spec 8.4.6)."""
     if gransindex is None:
         gransindex = metodgransindex(rb)
+    if resultat.formatversion == "D-ARB-tjanst-v5":
+        from riskanalys.dokument.arb_v5 import bygg_tjanstavsnitt_v5
+        return bygg_tjanstavsnitt_v5(rb, p, t, resultat, avsnitt_id, gransindex=gransindex)
     from riskanalys.dokument.delskrivning import ANSVARSMENING, FORMATVERSION
     from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
     from riskanalys.dokument.delskrivning import kontrollera_resultat

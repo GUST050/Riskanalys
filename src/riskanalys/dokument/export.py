@@ -49,6 +49,7 @@ def kor_export_utkast(byramapp: Path, datum: date, *, granskningsmapp: Path | No
     bilaga = atgardslista(fynd, utkastens_oklarheter(byramapp, metadata["utkast"]))
     mapp = ny_korningsmapp(byramapp, EXPORT)
     rendera_docx(dokument, profil, utkaststatus(datum), mapp / UTKASTFIL, bilaga)
-    skriv_manifest(mapp, {"typ": "export_utkast", "granskning": granskningsmapp.name,
+    from riskanalys.dokument.matning import dokumentord
+    skriv_manifest(mapp, {**{f"ord_{k}": str(v) for k,v in dokumentord(dokument, profil).items()}, "typ": "export_utkast", "granskning": granskningsmapp.name,
                          "dokumentformat": dokument.formatversion, "datum": datum.isoformat()})
     return mapp

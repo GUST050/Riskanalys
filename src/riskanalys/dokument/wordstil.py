@@ -1,0 +1,65 @@
+"""Läsbar v5-typografi och kolumnbredder; påverkar inte bedömningar eller text."""
+from docx.shared import Mm, Pt, RGBColor
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
+
+
+def formatera_dokument(word):
+    for section in word.sections:
+        section.left_margin=section.right_margin=Mm(18)
+        section.top_margin=section.bottom_margin=Mm(19)
+    normal=word.styles['Normal']
+    normal.font.name='Arial'
+    normal.font.size=Pt(11)
+    normal.paragraph_format.space_after=Pt(5)
+    normal.paragraph_format.line_spacing=1.06
+    for name,size in [('Title',22),('Heading 1',15),('Heading 2',12),('Heading 3',11)]:
+        style=word.styles[name]
+        for border in list(style.element.iter(qn('w:pBdr'))):
+            border.getparent().remove(border)
+        style.font.name='Arial'
+        style.font.size=Pt(size)
+        style.font.color.rgb=RGBColor(0,0,0)
+        style.paragraph_format.space_before=Pt(10)
+        style.paragraph_format.space_after=Pt(5)
+    for name in ('Header','Footer'):
+        word.styles[name].font.name='Arial'
+        word.styles[name].font.size=Pt(9)
+
+
+def formatera_tabell(word, table, id):
+    antal=len(table.columns)
+    vikter=({'TAB-KONTROLL':(20,17,25,38), 'TAB-TJANSTER':(27,18,22,33),
+             'TAB-RISK':(32,17,17,14,20), 'TAB-ATGARDER':(19,34,13,13,21)}.get(id)
+            or ((22,56,22) if id.endswith('-utfall') else (25,39,36) if 'geografi' in id else (1,)*antal))
+    sek=word.sections[0]
+    bredd=sek.page_width-sek.left_margin-sek.right_margin
+    bredder=[int(bredd*v/sum(vikter)) for v in vikter]
+    table.autofit=False
+    for col,width in zip(table.columns,bredder):
+        col.width=width
+    borders=OxmlElement('w:tblBorders')
+    for kant in ('top','left','bottom','right','insideH','insideV'):
+        node=OxmlElement('w:'+kant)
+        for key,value in [('val','single'),('sz','4'),('color','D9D9D9')]:
+            node.set(qn('w:'+key),value)
+        borders.append(node)
+    table._tbl.tblPr.append(borders)
+    for nr,row in enumerate(table.rows):
+        for cell,width in zip(row.cells,bredder):
+            cell.width=width
+            cell.vertical_alignment=WD_CELL_VERTICAL_ALIGNMENT.CENTER
+            props=cell._tc.get_or_add_tcPr()
+            margins=OxmlElement('w:tcMar')
+            for kant in ('top','left','bottom','right'):
+                node=OxmlElement('w:'+kant);node.set(qn('w:w'),'75');node.set(qn('w:type'),'dxa');margins.append(node)
+            props.append(margins)
+            if nr==0:
+                shade=OxmlElement('w:shd');shade.set(qn('w:fill'),'DCE6F1');props.append(shade)
+            for p in cell.paragraphs:
+                p.paragraph_format.space_after=Pt(2)
+                p.paragraph_format.line_spacing=1.02
+                for run in p.runs:
+                    run.font.name='Arial';run.font.size=Pt(9.5)
+                    run.font.color.rgb=RGBColor(0,0,0)

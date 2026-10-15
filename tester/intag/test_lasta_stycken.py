@@ -184,7 +184,13 @@ def test_inga_falt_id_i_tjanstavsnittets_lasta_stycken(tmp_path, rb_intag, klar)
     texter = [s.text for s in avsnitt.stycken]
     assert [x for n, x in enumerate(texter, 1) if faltid_fel(n, x)] == []
     assert not [x for x in texter if "SEKTOR-" in x or " >= " in x or " == " in x]
-    assert texter[0].count("Antal kunder i tjänsten") == 1
+    # H6 visar omfattningen i den gemensamma tjänstetabellen, inte i varje inledning.
+    assert texter[0].count("Antal kunder i tjänsten") == 0
+    from riskanalys.dokument.tabeller import bygg_tjansteoversikt
+    b=bedom(rb_intag,valj(rb_intag,klar.byra.regelpaket,DAG,klar.byra.lan),klar)
+    oversikt=bygg_tjansteoversikt(rb_intag,klar,b)
+    assert 'Kunder och period' in oversikt.kolumner
+    assert any(row.celler[0].text==rb_intag.tjanster[t.tjanst].namn for row in oversikt.rader)
     assert ": Antal " not in texter[0] and ": Andel " not in texter[0]
 
 

@@ -48,14 +48,16 @@ MODULER = {
         "en belagd effekt, och hög inneboende risk kan inte elimineras helt med kontroller."
     ),
     "risknivaer": (
-        "Skriv motiveringen under Risknivåer och motivering. Programmet skriver nivåmeningarna och sektorsreferensen "
-        "på källans egen skala lokalt; du ser inte motorns nivåer och anger inga nivåer själv. Förklara riskbilden som en "
-        "kedja: vilka hot som kan utnyttja vilka sårbarheter, hur tjänstens omfattning påverkar sannolikheten och vilken "
-        "konsekvensen blir. Pröva tjänstens egna förhållanden mot sektorsreferensen i faktabladet, utan att likställa skalorna; "
-        "motivera skillnader med det belagda underlaget, eftersom föreskrifterna kräver att risknivåerna motiveras. "
-        "Sårbarheter med utfallet prövas lokalt beskriver du inte som gällande eller inte gällande.\n"
-        "Använd de maskinellt validerade delarna som underlag och upprepa dem inte. Minst ett stycke ska ha typen "
-        "motivering och hänvisa till minst ett hot och en sårbarhet eller uppgift."
+        "Skriv en kort kvalitativ syntes under Scenarier och osäkerheter. Programmet skriver den lokala "
+        "beräkningstabellen; du ser inte motorns nivåer och anger inga nivåer själv. Förklara inte varför en viss nivå är riktig "
+        "eller avviker från sektorns nivå. Den lokala tabellen ensam beskriver basnivå, faktorer, tak, konsekvens, "
+        "kontrollreduktion och utfall.\n"
+        "Beskriv endast samband som stöds av faktabladet eller uttryckligt villkorliga scenarier: hur ett hot kan "
+        "utnyttja en sårbarhet och vilka osäkerheter som behöver prövas lokalt. Gör inte obelagda antaganden om att "
+        "faktorer gäller samma kunder. Sårbarheter med utfallet prövas lokalt beskriver du inte som gällande eller inte gällande.\n"
+        "Använd de maskinellt validerade delarna som underlag utan att upprepa hotdelens scenariobeskrivningar. "
+        "Minst ett stycke ska ha typen motivering och hänvisa till minst ett hot och en sårbarhet eller uppgift. "
+        "Stycketypen motivering avser här kvalitativt resonemang, inte nivåmotivering."
     ),
     "slutsatser": (
         "Skriv delen Slutsatser för tjänsten. Förklara vad riskbilden betyder för just den här tjänsten: vilken "

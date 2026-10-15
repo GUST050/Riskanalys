@@ -32,7 +32,7 @@ def test_v3_har_sex_delar_och_lasta_stycken_pa_plats(v3):
     rb, p, t, res, avsnitt_id = v3
     a = bygg_tjanstavsnitt_v3(rb, p, t, res, avsnitt_id)
     assert [u.rubrik for u in a.underrubriker] == ["Beskrivning och omfattning", "Hot och egna erfarenheter",
-        "Sårbarheter och motivering", "Kontroller och effekt", "Risknivåer och motivering", "Slutsatser"]
+        "Sårbarheter och motivering", "Kontroller och effekt", "Scenarier och osäkerheter", "Slutsatser"]
     texter = [s.text for s in a.stycken]
     assert any(x.startswith("Egen erfarenhet i hotanalysen") for x in texter)
     assert texter[-1].startswith("Byrån beslutar ansvariga")
@@ -102,8 +102,11 @@ def test_nivaer_ar_kodskrivna_men_inte_tillgangliga_for_ai(v3):
     assert res.faktablad.sektorsreferens.skala==ref.skala
     a=bygg_tjanstavsnitt_v3(rb,p,t,res,id)
     start,slut=[u.fore_stycke for u in a.underrubriker[4:]]
-    assert any(t.inneboende.risk in s.text and s.text.startswith("Sannolikheten bedöms som") for s in a.stycken[start:slut])
-    assert any('Källans skala är separat' in s.text and ref.kalla in s.referenser for s in a.stycken[start:slut])
+    tab=next(tab for tab in a.tabeller if tab.id.endswith('-utfall'))
+    assert tab.fore_stycke==start
+    assert t.inneboende.risk in tab.rader[0].celler[2].text
+    assert any('Byråns prövning mot sektorsbilden' in s.text for s in a.stycken[start:slut])
+    assert not any(s.text.startswith('Sannolikheten bedöms som') for s in a.stycken[start:slut])
 
 
 def test_flyttad_last_mening_ger_blockerande_fynd(v3,tmp_path):

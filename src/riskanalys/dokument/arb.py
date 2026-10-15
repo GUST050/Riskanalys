@@ -39,6 +39,10 @@ def bygg_arb(
 ) -> Dokument:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
+    from riskanalys.dokument.delskrivning import Tjanstresultat
+    if regelbas.metod.omfattning and any(isinstance(r, Tjanstresultat) and r.formatversion == "D-ARB-tjanst-v5" for r in utkast.values()):
+        from riskanalys.dokument.arb_v5 import bygg_arb_v5
+        return bygg_arb_v5(regelbas, profil, bedomning, utkast, historik, gransindex=gransindex)
     erbjudna = [tjanst for tjanst in bedomning.tjanster if tjanst.inneboende is not None]
     if regelbas.metod.omfattning:
         return _bygg_tjanstvis(regelbas, profil, bedomning, utkast, historik, gransindex=gransindex)

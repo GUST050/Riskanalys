@@ -44,12 +44,19 @@ def granska(
         *_b12(regelbas, dokument),
         *_b16(regelbas, historik),
         *sektorsfynd(regelbas, bedomning, profil),
-        *analysfynd(regelbas, bedomning, profil, dokument, skrivresultat),
+        *_analys(regelbas, bedomning, profil, dokument, historik, skrivresultat),
     ]
     return tuple(
         Fynd(id=f"F-{granskningsdatum.isoformat()}-{nummer:03d}", **falt)
         for nummer, falt in enumerate(utkast, start=1)
     )
+
+
+def _analys(rb, b, p, d, historik, resultat):
+    if d.formatversion == "D-ARB-tjanst-v5":
+        from riskanalys.granskning.dokument_v5 import analysfynd_v5
+        return analysfynd_v5(rb, b, p, d, historik, resultat)
+    return analysfynd(rb, b, p, d, resultat)
 
 
 def _tackning(regelbas: Regelbas, urval: Urval, profil: Profil, dokument: Dokument) -> list[dict[str, Any]]:
@@ -133,7 +140,8 @@ def _sparbarhet(regelbas: Regelbas, dokument: Dokument) -> list[dict[str, Any]]:
             "atgard": "Ta bort hänvisningen eller rätta regelbasen.",
         }
         for avsnitt in dokument.avsnitt
-        for ref in sorted({ref for stycke in avsnitt.stycken for ref in stycke.referenser} - kanda)
+        for ref in sorted(({ref for stycke in avsnitt.stycken for ref in stycke.referenser}
+                           | {ref for tab in avsnitt.tabeller for rad in tab.rader for cell in rad.celler for ref in cell.referenser}) - kanda)
     ]
 
 

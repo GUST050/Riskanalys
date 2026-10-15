@@ -156,3 +156,29 @@ def test_inget_anrop_kommenterar_vad_ai_far_se(tmp_path, rb_intag, klar):
     _skriv(lev, rb_intag, klar, t, avsnitt_id)
     texter = [a.system for a in lev.delanrop] + [b["text"] for a in lev.delanrop for b in a.innehall]
     assert not [x for x in texter if re.search(r"\b(?:till|för|åt)\s+AI\b", x)]
+
+
+def test_h6_aldre_format_kan_lasas_men_inte_ateranvandas(tmp_path,rb_intag,klar):
+    from riskanalys.dokument.delskrivning import Tjanstresultat,kontrollera_resultat
+    from riskanalys.fel import RiskanalysFel
+    avsnitt,t=tjanst_for_prov(tmp_path,rb_intag,klar)
+    res=_skriv(Testleverantor([godkant_delsvar(d,t) for d in DELAR]),rb_intag,klar,t,avsnitt)
+    data=res.model_dump(mode='json')
+    data['formatversion']='D-ARB-tjanst-v4'
+    gammalt=Tjanstresultat.model_validate(data)
+    with pytest.raises(RiskanalysFel,match='identitet'):
+        kontrollera_resultat(rb_intag,klar,t,gammalt,avsnitt)
+    assert res.formatversion=='D-ARB-tjanst-v5'
+
+
+def test_h6_gammal_promptidentitet_kraver_omskrivning(tmp_path,rb_intag,klar):
+    from riskanalys.dokument.delskrivning import kontrollera_resultat
+    from riskanalys.fel import RiskanalysFel
+    avsnitt,t=tjanst_for_prov(tmp_path,rb_intag,klar)
+    res=_skriv(Testleverantor([godkant_delsvar(d,t) for d in DELAR]),rb_intag,klar,t,avsnitt)
+    del_=res.delar[0]
+    forsok=del_.forsok[-1]
+    gammalt=forsok.model_copy(update={'anrop':forsok.anrop.model_copy(update={'prompt_kontrollsumma':'gammal-prompt'})})
+    res=res.model_copy(update={'delar':(del_.model_copy(update={'forsok':(gammalt,)}),*res.delar[1:])})
+    with pytest.raises(RiskanalysFel,match='prompt'):
+        kontrollera_resultat(rb_intag,klar,t,res,avsnitt)

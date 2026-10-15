@@ -101,23 +101,62 @@ class Underrubrik(Last):
     rubrik: str = Field(min_length=1)
 
 
+class Tabellcell(Last):
+    text: str
+    referenser: tuple[str, ...] = ()
+
+
+class Tabellrad(Last):
+    celler: tuple[Tabellcell, ...]
+
+
+class Dokumenttabell(Last):
+    id: str = Field(min_length=1)
+    rubrik: str = Field(min_length=1)
+    kolumner: tuple[str, ...]
+    rader: tuple[Tabellrad, ...]
+    fore_stycke: int = Field(ge=0)
+
+    @model_validator(mode="after")
+    def giltig_bredd(self):
+        if not self.kolumner or any(not k.strip() for k in self.kolumner):
+            raise ValueError("Tabellen ska ha namngivna kolumner.")
+        if any(len(rad.celler) != len(self.kolumner) for rad in self.rader):
+            raise ValueError("Varje tabellrad ska ha lika många celler som kolumner.")
+        return self
+
+
 class Avsnitt(Last):
     id: str
     rubrik: str
     kalla: Literal["regelbas", "ai"]
     stycken: tuple[Textstycke, ...]
     underrubriker: tuple[Underrubrik, ...] = ()
-    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4"] | None = None
+    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4", "D-ARB-tjanst-v5"] | None = None
+
+    tabeller: tuple[Dokumenttabell, ...] = ()
+    visningsnummer: str | None = None
 
     @model_serializer(mode="wrap")
     def serialisera(self, handler):
         data = handler(self)
         if self.formatversion is None:
             data.pop("formatversion", None)
+        if self.formatversion != "D-ARB-tjanst-v5":
+            if not self.tabeller:
+                data.pop("tabeller", None)
+            if self.visningsnummer is None:
+                data.pop("visningsnummer", None)
         return data
 
     @model_validator(mode="after")
     def giltiga_positioner(self):
+        if (self.tabeller or self.visningsnummer is not None) and self.formatversion != "D-ARB-tjanst-v5":
+            raise ValueError("Tabeller och visningsnummer kräver dokumentformat v5.")
+        if len({t.id for t in self.tabeller}) != len(self.tabeller):
+            raise ValueError("Tabell-ID ska vara unika inom avsnittet.")
+        if any(t.fore_stycke > len(self.stycken) for t in self.tabeller):
+            raise ValueError("Tabellens position ska ligga mellan noll och antalet stycken.")
         positioner = [u.fore_stycke for u in self.underrubriker]
         if positioner != sorted(set(positioner)) or any(p >= len(self.stycken) for p in positioner):
             raise ValueError("Underrubriker ska ha unika ordnade positioner inom styckena.")
@@ -135,7 +174,7 @@ class Dokument(Last):
 
     @property
     def formatversion(self) -> str:
-        for version in ("D-ARB-tjanst-v4", "D-ARB-tjanst-v3"):
+        for version in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v4", "D-ARB-tjanst-v3"):
             if any(a.formatversion == version for a in self.avsnitt):
                 return version
         return "D-ARB-tjanst-v2" if any(a.underrubriker for a in self.avsnitt) else "D-ARB-v1"

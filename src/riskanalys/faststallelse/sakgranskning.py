@@ -31,8 +31,18 @@ def granskad_summa(avsnitt: Avsnitt, profil: Profil) -> str:
     return renderat_avsnitt(avsnitt, profil).kontrollsumma()
 
 
+def _har_struktur(dokument: Dokument) -> bool:
+    return dokument.formatversion == "D-ARB-tjanst-v5" or any(a.underrubriker for a in dokument.avsnitt)
+
+
 def struktur_summa(dokument: Dokument) -> str:
     """Titel, format och faktisk avsnittsordning i det granskade dokumentet."""
+    if dokument.formatversion == "D-ARB-tjanst-v5":
+        return for_text(json.dumps({"titel": dokument.titel, "format": dokument.formatversion,
+            "avsnitt": [(a.id, a.rubrik, a.visningsnummer,
+                         [(u.fore_stycke, u.rubrik) for u in a.underrubriker],
+                         [(t.id, t.fore_stycke, t.rubrik, t.kolumner) for t in a.tabeller])
+                        for a in dokument.avsnitt]}, ensure_ascii=False, separators=(',', ':')))
     return for_text(json.dumps({'titel': dokument.titel, 'avsnitt': [
         (a.id, a.rubrik, [(u.fore_stycke, u.rubrik) for u in a.underrubriker])
         for a in dokument.avsnitt]}, ensure_ascii=False, separators=(',', ':')))
@@ -72,7 +82,7 @@ def registrera_sakgranskning(
     post = Sakgranskning(
         avsnitt=avsnitt.id,
         kontrollsumma=granskad_summa(avsnitt, profil),
-        dokumentstruktur=struktur_summa(dokument) if any(a.underrubriker for a in dokument.avsnitt) else None,
+        dokumentstruktur=struktur_summa(dokument) if _har_struktur(dokument) else None,
         godkand=godkand,
         roll=roll,
         namn=namn.strip(),
@@ -87,7 +97,7 @@ def galler_sakgranskning(
 ) -> Sakgranskning | None:
     """Den senaste sakgranskningen av avsnittet i exakt den lydelse som exporten skulle få."""
     summa = granskad_summa(avsnitt, profil)
-    ny_struktur = bool(dokument and any(a.underrubriker for a in dokument.avsnitt))
+    ny_struktur = bool(dokument and _har_struktur(dokument))
     giltiga = [post for post in sakgranskningar if post.avsnitt == avsnitt.id and post.kontrollsumma == summa
                and (post.dokumentstruktur == struktur_summa(dokument) if post.dokumentstruktur and dokument
                     else not post.dokumentstruktur and not ny_struktur)]
