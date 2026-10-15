@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 
 from riskanalys.bedomning.korning import BEDOMNINGAR, kontrollera_aktuell, las_bedomning, las_bedomningsprofil
 from riskanalys.dokument.delskrivning import Tjanstresultat, Delforsok, skriv_tjanst, FORMATVERSION, EFFORTSTEG
-from riskanalys.dokument.leverantor import Anropsdata, Leveranssvar, LeverantorFel, Textleverantor
+from riskanalys.dokument.leverantor import Anropsdata, Leveranssvar, LeverantorFel, Testleverantor, Textleverantor
 from riskanalys.dokument.modeller import Avsnittsunderlag, AvsnittsUtkast
 from riskanalys.dokument.aischema import tolka_ai_svar
 from riskanalys.dokument.underlag import bygg_underlag, tjanster_med_avsnitt
@@ -23,6 +23,8 @@ from riskanalys.regelverk.modeller import Regelbas
 MAX_FORSOK = 3
 UTKAST = "utkast"
 UNDERLAGSFIL = "underlag.json"
+ALDRE_SKRIVVAG_STANGD = ("Den äldre skrivvägen skyddar inte AI-begäran och är stängd för riktiga AI-anrop. "
+                         "Använd en regelbas med omfattningsmetod (spec 8.4.10 punkt 5).")
 
 
 class Forsok(BaseModel):
@@ -55,6 +57,12 @@ def _spara_inte(forsok: Forsok) -> None:
     """Standard för skriv_avsnitt när anroparen inte vill spara försöken."""
 
 
+def kontrollera_aldre_skrivvag(leverantor: Textleverantor) -> None:
+    """Den äldre skrivvägen skickar nivåer och regelspår till AI. Bara testleverantören får gå den (spec 8.4.10 punkt 5)."""
+    if leverantor.namn != Testleverantor.namn:
+        raise LeverantorFel(ALDRE_SKRIVVAG_STANGD)
+
+
 def skriv_avsnitt(
     leverantor: Textleverantor,
     underlag: Avsnittsunderlag,
@@ -62,7 +70,9 @@ def skriv_avsnitt(
     spara: Callable[[Forsok], None] = _spara_inte,
     max_forsok: int = MAX_FORSOK,
 ) -> Skrivresultat:
-    """Skriver ett avsnitt med omförsök. Varje försök lämnas till spara innan nästa anrop görs."""
+    """Skriver ett avsnitt med omförsök. Varje försök lämnas till spara innan nästa anrop görs.
+    Den äldre skrivvägen är stängd för riktiga AI-anrop och vägrar innan något anrop görs."""
+    kontrollera_aldre_skrivvag(leverantor)
     forsok: tuple[Forsok, ...] = ()
     aterkoppling: list[str] = []
     for nummer in range(1, max_forsok + 1):
@@ -94,10 +104,16 @@ def _bedom_leverans(
 
 
 def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor, *, effort: str | None = None) -> Path:
-    """Skriver ett riskavsnitt per bedömd tjänst utifrån den senaste bedömningen."""
+    """Skriver ett riskavsnitt per bedömd tjänst utifrån den senaste bedömningen.
+
+    Med omfattningsmetod skrivs varje tjänst i analysdelar med skyddad AI-begäran (skriv_tjanst). Utan
+    omfattningsmetod används den äldre skrivvägen. Den skyddar inte begäran och vägras därför för riktiga
+    AI-leverantörer innan något anrop görs; bara testleverantören får gå den (spec 8.4.10 punkt 5)."""
     effort = effort if effort is not None else getattr(leverantor, "effort", "high") or "high"
     if effort not in EFFORTSTEG:
         raise LeverantorFel("Ogiltig effort. Välj low, medium, high, xhigh eller max.")
+    if not regelbas.metod.omfattning:
+        kontrollera_aldre_skrivvag(leverantor)
     bedomningsmapp = senaste_korning(byramapp, BEDOMNINGAR, f"bedom {byramapp.name}")
     kontrollera_aktuell(byramapp, bedomningsmapp, regelbas)
     bedomning = las_bedomning(bedomningsmapp)

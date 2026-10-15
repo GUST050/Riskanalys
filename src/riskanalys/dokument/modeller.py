@@ -41,7 +41,7 @@ class UnderlagHot(Last):
 class UnderlagSarbarhet(Last):
     id: str
     namn: str
-    galler: Literal["ja", "nej", "okänt"]
+    galler: Literal["ja", "nej", "okänt", "prövas lokalt"]
     motivering: str = ""
 
 

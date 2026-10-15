@@ -36,31 +36,32 @@ MODULER = {
         "Om faktabladet säger att en faktor förekommer men ligger under metodens gräns, skriver du det utan att ange "
         "gränsens värde; andelen skrivs som {tal:ID}. Skriv inte att faktorn saknas eller att sårbarheten inte berör "
         "byrån.\n"
+        "Om en sårbarhets utfall är prövas lokalt skriver du att den prövas lokalt, utan att säga om den gäller.\n"
         "Programmet har redan skrivit underlagsstycket för geografin. Bygg vidare på det."
     ),
     "kontroller": (
         "Skriv delen Kontroller och effekt för tjänsten. Programmet har redan skrivit varje kontrolls status och belägg. "
-        "Förklara vilken risk varje kontroll riktar sig mot och vad belägget visar. Om effekten inte är belagd ska det "
-        "framgå att kontrollen inte sänker risknivån, eftersom vägledningen kräver att effekten bedöms innan riskerna "
-        "vägs samman.\n"
-        "Skriv bara att en kontroll minskar, begränsar eller reducerar risk när faktabladet visar en belagd effekt. En "
-        "beskriven kontroll, någon annans kundkännedom eller ett system ersätter inte en belagd effekt, och hög "
-        "inneboende risk kan inte elimineras helt med kontroller."
+        "Förklara vilken risk varje kontroll riktar sig mot och vad utformning, genomförande och bedömd effekt innebär "
+        "för tjänsten, eftersom vägledningen kräver att effekten bedöms innan riskerna vägs samman.\n"
+        "Om en kontroll räknas som riskreducerande avgör programmet lokalt. Skriv därför aldrig att en kontroll minskar, "
+        "begränsar, reducerar eller sänker risk. En beskriven kontroll, någon annans kundkännedom eller ett system ersätter inte "
+        "en belagd effekt, och hög inneboende risk kan inte elimineras helt med kontroller."
     ),
     "risknivaer": (
-        "Skriv motiveringen under Risknivåer och motivering. Programmet har redan skrivit nivåmeningarna och sektorsreferensen "
-        "på källans egen skala; ange inga nivåer själv. Förklara nivån som en kedja: vilka hot som kan utnyttja vilka "
-        "sårbarheter, hur tjänstens omfattning påverkar sannolikheten och vilken konsekvensen blir. Pröva tjänstens egna förhållanden "
-        "mot sektorsreferensen i faktabladet, utan att likställa skalorna; motivera skillnader med det belagda underlaget, "
-        "eftersom föreskrifterna kräver att risknivåerna motiveras.\n"
+        "Skriv motiveringen under Risknivåer och motivering. Programmet skriver nivåmeningarna och sektorsreferensen "
+        "på källans egen skala lokalt; du ser inte motorns nivåer och anger inga nivåer själv. Förklara riskbilden som en "
+        "kedja: vilka hot som kan utnyttja vilka sårbarheter, hur tjänstens omfattning påverkar sannolikheten och vilken "
+        "konsekvensen blir. Pröva tjänstens egna förhållanden mot sektorsreferensen i faktabladet, utan att likställa skalorna; "
+        "motivera skillnader med det belagda underlaget, eftersom föreskrifterna kräver att risknivåerna motiveras. "
+        "Sårbarheter med utfallet prövas lokalt beskriver du inte som gällande eller inte gällande.\n"
         "Använd de maskinellt validerade delarna som underlag och upprepa dem inte. Minst ett stycke ska ha typen "
         "motivering och hänvisa till minst ett hot och en sårbarhet eller uppgift."
     ),
     "slutsatser": (
-        "Skriv delen Slutsatser för tjänsten. Förklara vad motorns nivå betyder för just den här tjänsten: vilken "
+        "Skriv delen Slutsatser för tjänsten. Förklara vad riskbilden betyder för just den här tjänsten: vilken "
         "kundkännedom som behövs, vad övervakningen ska fokusera på och vad utbildningen ska innehålla, kopplat till de "
         "identifierade hoten. Penningtvättslagen kräver att riskbedömningen ligger till grund för rutiner och utbildning, "
-        "och tillsynen kritiserar slutsatser som bara upprepar nivån eller lovar allmänt att rutinerna ska anpassas.\n"
+        "och tillsynen kritiserar slutsatser som bara upprepar riskbilden eller lovar allmänt att rutinerna ska anpassas.\n"
         "Programmet har redan skrivit meningen om byråns ansvar och beslut. Skriv inte att kundkännedom kan utelämnas."
     ),
 }

@@ -1,4 +1,6 @@
 """Infoga lokala fakta; fri text ingår aldrig i AI-underlag eller automatiska riskbeslut."""
+
+from riskanalys.regelverk.granser import metodgransindex
 from riskanalys.dokument.modeller import Dokument, Textstycke, Avsnitt
 from riskanalys.profil.hantering import visa_varde
 from riskanalys.profil.omfattning import aktivt
@@ -38,8 +40,10 @@ def med_intagsunderlag(dokument: Dokument, rb, profil, bedomning) -> Dokument:
     return dokument.model_copy(update={'avsnitt':tuple(avsnitt)})
 
 
-def bygg_underlagsbilaga(rb, profil):
+def bygg_underlagsbilaga(rb, profil, *, gransindex: dict[str, tuple[float, ...]] | None = None):
     """Alla lokala intagsbelägg granskas i samma dokument; inga råsvar till AI."""
+    if gransindex is None:
+        gransindex = metodgransindex(rb)
     from riskanalys.bedomning.erfarenheter import belagd_uppgift
     from riskanalys.dokument.klartext import VERIFIERA, faltnamn, gemen, uppgiftstext
     stycken=[]
@@ -55,7 +59,7 @@ def bygg_underlagsbilaga(rb, profil):
             text=(f'{faltnamn(rb,f.id)} ({f.id}): kan inte härledas; bekräfta {gemen(faltnamn(rb,f.antalfalt))} '
                   f'och {gemen(faltnamn(rb,f.basfalt))} för samma period. {VERIFIERA}')
         else:
-            text=uppgiftstext(rb,profil,f.id,med_id=True)
+            text=uppgiftstext(rb,profil,f.id,med_id=True, gransindex=gransindex)
         stycken.append(Textstycke(typ='beskrivning',text=text,referenser=[f.id]))
     for k in rb.kallor.values():
         text=f'{k.id}: {k.titel}. Utgivare: {k.utgivare}; hämtad: {k.hamtad}; källa: {k.url}; kontrollsumma: {k.kontrollsumma or "ingen registrerad originalsumma"}. Registrering är inte byråns genomförda omvärldsbevakning.'

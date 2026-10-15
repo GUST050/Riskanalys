@@ -4,7 +4,7 @@ from riskanalys.profil.hantering import skapa_profil,bekrafta
 from riskanalys.profil.modeller import Byra,Uppgift,Period
 from riskanalys.regelverk.tillsyn import rattlig_omfattning
 from riskanalys.bedomning.motor import bedom_tjanst
-from riskanalys.dokument.underlag import bygg_underlag
+from riskanalys.dokument.underlag import SKYDDAD_VISNING, bygg_underlag
 from riskanalys.dokument.arb import bygg_arb
 from riskanalys.bedomning.motor import bedom
 from riskanalys.regelverk.urval import valj
@@ -44,7 +44,7 @@ def test_underlag_filtrerar_inaktiva_uppgifter_och_doljer_liten_andel(regelbas_v
  p=harled_andelar(p,regelbas_v1)
  t=bedom_tjanst(regelbas_v1,regelbas_v1.tjanster['T-RED-01'],p)
  a=bygg_underlag(regelbas_v1,p,t,'D-ARB.6.1');f={v.id:v for v in a.uppgifter}
- assert f['P-KUND.andel_riskbransch'].varde=='färre än 5' and f['P-KUND.andel_riskbransch'].bas is None
+ assert f['P-KUND.andel_riskbransch'].varde==SKYDDAD_VISNING and f['P-KUND.andel_riskbransch'].bas is None
  assert not any(k.startswith('P-TJ.bolag01_') and k!='P-TJ.bolag01_erbjuds' for k in f)
 
 def test_ffr_ej_tillamplig_kraver_belagt_ansvar_men_skapar_inte_falsk_verifiera(regelbas_v1):
@@ -66,8 +66,8 @@ def test_tjansteintakt_i_liten_kundgrupp_doljs(regelbas_v1):
  p=komplett_profil(regelbas_v1,profil(regelbas_v1))
  t=bedom_tjanst(regelbas_v1,regelbas_v1.tjanster['T-BOLAG-01'],p)
  a=bygg_underlag(regelbas_v1,p,t,'D-ARB.6.1');f={v.id:v for v in a.uppgifter}
- assert f['P-TJ.bolag01_omsattning'].varde=='färre än 5'
- assert f['P-TJ.bolag01_andel_omsattning'].varde=='färre än 5'
+ assert f['P-TJ.bolag01_omsattning'].varde==SKYDDAD_VISNING
+ assert f['P-TJ.bolag01_andel_omsattning'].varde==SKYDDAD_VISNING
 
 def test_harledning_skriver_inte_aliasvyn_till_profil(regelbas_v1):
  from riskanalys.profil.omfattning import harled_andelar

@@ -1,4 +1,6 @@
 """Sex sammanhängande analysdelar per tjänst; AI skriver endast riskmotiveringen."""
+
+from riskanalys.regelverk.granser import metodgransindex
 from riskanalys.dokument.modeller import Avsnitt, Textstycke, Underrubrik
 from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
 from riskanalys.dokument.analysunderlag import _belagg, erfarenhetsstycke, sarbarhetsstycke
@@ -12,7 +14,9 @@ from riskanalys.regelverk.modeller import Regelbas
 def stycke(text: str, refs: Iterable[str], typ: str='analys') -> Textstycke:
     return Textstycke(typ=typ, text=text, referenser=list(refs))
 
-def kontrollstycken(rb: Regelbas, p: Profil, t: Tjanstbedomning) -> tuple[Textstycke, ...]:
+def kontrollstycken(rb: Regelbas, p: Profil, t: Tjanstbedomning, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> tuple[Textstycke, ...]:
+    if gransindex is None:
+        gransindex = metodgransindex(rb)
     kontroller = list(t.kontroller)
     if t.sanktionsrisk and t.sanktionsrisk.kontroll:
         kontroller.append(t.sanktionsrisk.kontroll)
@@ -25,7 +29,7 @@ def kontrollstycken(rb: Regelbas, p: Profil, t: Tjanstbedomning) -> tuple[Textst
         for id in (post.effekt_falt, post.utfall_falt):
             if id:
                 refs.append(id)
-                text += _belagg(rb, p, id) + ' '
+                text += _belagg(rb, p, id, gransindex=gransindex) + ' '
         text += 'Noll upptäckta avvikelser bevisar inte effektivitet. Bedömningen kräver sakgranskning av verkan och vilka hot kontrollen täcker.'
         resultat.append(stycke(text, refs))
     return tuple(resultat) or (stycke('Ingen relevant kontroll är dokumenterad. [VERIFIERA]', [t.tjanst]),)
@@ -55,7 +59,9 @@ def scenarier(rb: Regelbas, t: Tjanstbedomning) -> tuple[Textstycke, ...]:
         valda = list(rb.tjanster[t.tjanst].sarbarheter[:1])
     return tuple((stycke(f'Möjligt scenario att pröva i {rb.tjanster[t.tjanst].namn}: {rb.hot[h].beskrivning} Samverkan med {rb.sarbarheter[s].namn} ska prövas mot tjänstens faktiska underlag. Scenariot är hypotetiskt.', [t.tjanst, h, s], typ='scenario') for h, s in zip(t.hot[:len(valda)], valda)))
 
-def bygg_tjanstavsnitt(rb: Regelbas, p: Profil, t: Tjanstbedomning, utkast: AvsnittsUtkast, avsnitt_id: str, *, utokad: bool=False) -> Avsnitt:
+def bygg_tjanstavsnitt(rb: Regelbas, p: Profil, t: Tjanstbedomning, utkast: AvsnittsUtkast, avsnitt_id: str, *, utokad: bool=False, gransindex: dict[str, tuple[float, ...]] | None = None) -> Avsnitt:
+    if gransindex is None:
+        gransindex = metodgransindex(rb)
     tj = rb.tjanster[t.tjanst]
     slug = tj.erbjuds_falt.removesuffix('_erbjuds')
     refs = [t.tjanst, tj.erbjuds_falt]
@@ -64,8 +70,8 @@ def bygg_tjanstavsnitt(rb: Regelbas, p: Profil, t: Tjanstbedomning, utkast: Avsn
         id = slug + suffix
         if id in rb.falt:
             refs.append(id)
-            text += uppgiftstext(rb, p, id, namn=label) + ' '
-    delar = [('Beskrivning och omfattning', (stycke(text, refs, typ='beskrivning'),)), ('Hot och egna erfarenheter', tuple((stycke(f'{rb.hot[id].namn}: {rb.hot[id].beskrivning}', [t.tjanst, id, *rb.hot[id].kallor]) for id in t.hot)) + (erfarenhetsstycke(rb, p, t),)), ('Sårbarheter och motivering', tuple((sarbarhetsstycke(rb, p, t.tjanst, id) for id in tj.sarbarheter)) + (scenarier(rb, t) if utokad else ())), ('Kontroller och effekt', kontrollstycken(rb, p, t)), ('Risknivåer och motivering', (*nivastycken(t), *utkast.stycken)), ('Slutsatser', slutsatsstycken(rb, t))]
+            text += uppgiftstext(rb, p, id, namn=label, gransindex=gransindex) + ' '
+    delar = [('Beskrivning och omfattning', (stycke(text, refs, typ='beskrivning'),)), ('Hot och egna erfarenheter', tuple((stycke(f'{rb.hot[id].namn}: {rb.hot[id].beskrivning}', [t.tjanst, id, *rb.hot[id].kallor]) for id in t.hot)) + (erfarenhetsstycke(rb, p, t, gransindex=gransindex),)), ('Sårbarheter och motivering', tuple((sarbarhetsstycke(rb, p, t.tjanst, id, gransindex=gransindex) for id in tj.sarbarheter)) + (scenarier(rb, t) if utokad else ())), ('Kontroller och effekt', kontrollstycken(rb, p, t, gransindex=gransindex)), ('Risknivåer och motivering', (*nivastycken(t), *utkast.stycken)), ('Slutsatser', slutsatsstycken(rb, t))]
     stycken = []
     rubriker = []
     for rubrik, texter in delar:
@@ -79,12 +85,14 @@ def _ai_stycken(svar, numeriska: dict[str, str], perioder: dict[str, str]) -> tu
     return tuple(stycke(ersatt_tal(s.text, numeriska, perioder), s.referenser, typ=s.typ) for s in svar.stycken)
 
 
-def bygg_tjanstavsnitt_v3(rb: Regelbas, p: Profil, t: Tjanstbedomning, resultat, avsnitt_id: str) -> Avsnitt:
+def bygg_tjanstavsnitt_v3(rb: Regelbas, p: Profil, t: Tjanstbedomning, resultat, avsnitt_id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Avsnitt:
     """Låsta stycken byggs om ur profil och bedömning; AI-stycken kommer från maskinellt validerade delar (spec 8.4.6)."""
+    if gransindex is None:
+        gransindex = metodgransindex(rb)
     from riskanalys.dokument.delskrivning import ANSVARSMENING, FORMATVERSION
     from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
     from riskanalys.dokument.delskrivning import kontrollera_resultat
-    kontrollera_resultat(rb, p, t, resultat, avsnitt_id)
+    kontrollera_resultat(rb, p, t, resultat, avsnitt_id, gransindex=gransindex)
     tj = rb.tjanster[t.tjanst]
     fb = resultat.faktablad  # grinden har jämfört denna frysta kopia med aktuellt underlag
 
@@ -92,18 +100,18 @@ def bygg_tjanstavsnitt_v3(rb: Regelbas, p: Profil, t: Tjanstbedomning, resultat,
         svar = resultat.del_(del_id).godkant_svar
         return _ai_stycken(svar, fb.numeriska(), fb.perioder()) if svar else mall
 
-    gammal = bygg_tjanstavsnitt(rb, p, t, AvsnittsUtkast(avsnitt=avsnitt_id, stycken=[], oklarheter=[]), avsnitt_id)
+    gammal = bygg_tjanstavsnitt(rb, p, t, AvsnittsUtkast(avsnitt=avsnitt_id, stycken=[], oklarheter=[]), avsnitt_id, gransindex=gransindex)
     beskrivning = gammal.stycken[:gammal.underrubriker[1].fore_stycke]
     hotmall = tuple(stycke(f'{rb.hot[id].namn}: {rb.hot[id].beskrivning}', [t.tjanst, id, *rb.hot[id].kallor]) for id in t.hot)
-    geo = tuple(sarbarhetsstycke(rb, p, t.tjanst, id) for id in tj.sarbarheter if rb.sarbarheter[id].omrade == "geo")
-    sarmall = tuple(sarbarhetsstycke(rb, p, t.tjanst, id) for id in tj.sarbarheter if rb.sarbarheter[id].omrade != "geo")
+    geo = tuple(sarbarhetsstycke(rb, p, t.tjanst, id, gransindex=gransindex) for id in tj.sarbarheter if rb.sarbarheter[id].omrade == "geo")
+    sarmall = tuple(sarbarhetsstycke(rb, p, t.tjanst, id, gransindex=gransindex) for id in tj.sarbarheter if rb.sarbarheter[id].omrade != "geo")
     mallmotivering = (stycke("Motiveringen kunde inte skrivas maskinellt och behöver kompletteras i sakgranskningen. [VERIFIERA]",
                              [t.tjanst], typ="motivering"),)
     delar = [
         ("Beskrivning och omfattning", tuple(beskrivning)),
-        ("Hot och egna erfarenheter", (*ai("hot", hotmall), erfarenhetsstycke(rb, p, t))),
+        ("Hot och egna erfarenheter", (*ai("hot", hotmall), erfarenhetsstycke(rb, p, t, gransindex=gransindex))),
         ("Sårbarheter och motivering", (*geo, *ai("sarbarheter", sarmall))),
-        ("Kontroller och effekt", (*kontrollstycken(rb, p, t), *ai("kontroller", ()))),
+        ("Kontroller och effekt", (*kontrollstycken(rb, p, t, gransindex=gransindex), *ai("kontroller", ()))),
         ("Risknivåer och motivering", (*nivastycken(t), *sektorsstycken(rb,t), *ai("risknivaer", mallmotivering))),
         ("Slutsatser", (*ai("slutsatser", slutsatsstycken(rb, t)), stycke(ANSVARSMENING, [t.tjanst], typ="beskrivning"))),
     ]

@@ -46,6 +46,9 @@ def kor_skriv(args: argparse.Namespace) -> int:
             for d in post.delar:
                 status = "godkänt" if d.godkant_svar else "mall, blockerar fastställelse"
                 print(f"{post.avsnitt}/{d.del_id}: {status} efter {len(d.forsok)} försök.")
+            from riskanalys.granskning.analys import mallfynd
+            for fynd in mallfynd(post):
+                print(f"  - {fynd['beskrivning']} {fynd['atgard']}")
             continue
         status = "godkänt" if post.godkant_utkast else "underkänt"
         print(f"{post.underlag.avsnitt} {post.underlag.rubrik}: {status} efter {len(post.forsok)} försök.")

@@ -4,7 +4,8 @@ from html import escape as e
 from urllib.parse import urlencode
 from riskanalys.fel import RiskanalysFel
 from riskanalys.intag.fragor import fragor
-from riskanalys.profil.hantering import visa_varde
+from riskanalys.profil.hantering import visa_varde_klartext
+from riskanalys.regelverk.granser import metodgranser, metodgransindex
 from riskanalys.profil.modeller import Uppgift
 from riskanalys.profil.omfattning import kompatibilitetsvy
 from riskanalys.regelverk.tillsyn import LAN_PER_OMRADE
@@ -53,7 +54,7 @@ def grund(s,data=None,fel=''):
     counties=sorted(l for ls in LAN_PER_OMRADE.values() for l in ls)
     html='<h1>Börja med byråns grunduppgifter</h1>'+leverans()+'<p>Programmet frågar sedan efter tjänster, kunder, arbetssätt, riskförhållanden och kontrollbelägg. Du kan avbryta och återuppta när som helst.</p>'
     from riskanalys.intag.registervy import hamtform
-    html+=hamtform(s,d)+'<details><summary>Börja med egna grunduppgifter</summary>'
+    html+=hamtform(s,data)+'<details><summary>Börja med egna grunduppgifter</summary>'
     html+=f'<form method="post" action="{s.prefix}skapa" autocomplete="off">'+dold('csrf',s.csrf)+dold('revision','')
     html+=val('lan','Byråns sätes- eller folkbokföringslän',[(l,l) for l in counties],d.get('lan',''))
     html+=val('filial','Är detta en filial till ett utländskt företag?',[('ja','Ja'),('nej','Nej')],d.get('filial',''))
@@ -68,7 +69,8 @@ def fragesida(s,id=None,data=None,fel=''):
     q=next((q for q in qs if q.falt.id==id),None) if id else next((q for q in qs if q.falt.intag.obligatorisk and not q.besvarad and p.uppgifter.get(q.falt.id,Uppgift()).status!='föreslagen'),None)
     if not q:return oversikt(s,fel,p,qs)
     f=q.falt;u=kompatibilitetsvy(p,s.tjanst.rb).uppgifter.get(f.id,Uppgift());d=data if data is not None else {}
-    value=d.get('text',visa_varde(f,u.varde) if u.varde is not None else '')
+    gransindex=metodgransindex(s.tjanst.rb)
+    value=d.get('text',visa_varde_klartext(f,u.varde,metodgranser(s.tjanst.rb,f.id,gransindex)) if u.varde is not None else '')
     t=s.tjanst.oversikt(p)
     nu=sum(q.falt.intag.obligatorisk and not q.besvarad and p.uppgifter.get(q.falt.id,Uppgift()).status!='föreslagen' for q in qs)
     html=f'<p class="eyebrow">3. Komplettera verksamheten</p><p class="hint">{t.besvarade} uppgifter bekräftade · {nu} frågor att besvara nu. Följdfrågor anpassas efter dina tjänster; okända svar finns i översikten.</p><progress value="{t.besvarade}" max="{max(t.antal,1)}"></progress><h1>{e(f.fraga)}</h1><p class="hint">{e(f.varfor)}</p>'
@@ -126,9 +128,10 @@ def oversikt(s,fel='',profil=None,qs=None):
     if t.hinder:
         html+=f'<details {"open" if not t.saknade else ""}><summary>Kontroller som behöver hanteras</summary><ul>'+''.join(f'<li>{e(h)}</li>' for h in t.hinder)+'</ul></details>'
     html+='<h2>Dina svar</h2><table><thead><tr><th>Fråga</th><th>Svar och status</th><th></th></tr></thead><tbody>'
+    gransindex=metodgransindex(s.tjanst.rb)
     for q in qs:
         u=vy.uppgifter.get(q.falt.id,Uppgift())
-        value=visa_varde(q.falt,u.varde) if u.varde is not None else 'Saknas'
+        value=visa_varde_klartext(q.falt,u.varde,metodgranser(s.tjanst.rb,q.falt.id,gransindex)) if u.varde is not None else 'Saknas'
         status='Behöver kontrolleras igen' if u.inaktuell else u.status
         if not q.falt.intag.obligatorisk:status += ' (frivilligt inför utkast)'
         html+=f'<tr><td>{e(q.falt.fraga)}</td><td>{e(value)}<br><small>{e(status)}; {e(u.kalla or u.motivering or "")}</small></td><td><a href="{s.prefix}?{urlencode({"falt":q.falt.id})}">Ändra<span class="hint"> svar</span></a></td></tr>'

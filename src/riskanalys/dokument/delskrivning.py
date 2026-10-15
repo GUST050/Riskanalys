@@ -1,4 +1,6 @@
-"""Anropsflöde per tjänst: ett anrop per analysdel, kedjat, med omförsök och mallreserv (spec 8.4.3, 8.4.5)."""
+"""Anropsflöde per tjänst: ett anrop per analysdel från skyddat faktablad, med omförsök och mallreserv (spec 8.4.3, 8.4.5)."""
+
+from riskanalys.regelverk.granser import metodgransindex
 
 from collections.abc import Callable
 from typing import Literal
@@ -8,7 +10,7 @@ from pydantic import ValidationError
 
 from riskanalys.dokument.aischema import ai_schema, tolka_delsvar
 from riskanalys.dokument.analysunderlag import erfarenhetsstycke, sarbarhetsstycke
-from riskanalys.dokument.delvalidering import validera_del
+from riskanalys.dokument.delvalidering import innehaller_personnamn, validera_del
 from riskanalys.dokument.faktablad import Faktablad, bygg_faktablad
 from riskanalys.dokument.leverantor import Anropsdata, Delanrop, LeverantorFel, Leveranssvar
 from riskanalys.dokument.modeller import AISvar, Last
@@ -38,6 +40,7 @@ class Delresultat(Last):
     del_id: str
     forsok: tuple[Delforsok, ...]
     mall: bool
+    lokal_sparr: Literal["personnamn"] | None = None
 
     @property
     def godkant_svar(self) -> AISvar | None:
@@ -62,16 +65,18 @@ class Tjanstresultat(Last):
         return next(d for d in self.delar if d.del_id == del_id)
 
 
-def lasta_texter(regelbas, profil, t, del_id: str) -> tuple[str, ...]:
+def lasta_texter(regelbas, profil, t, del_id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> tuple[str, ...]:
     """Kodens låsta stycken i delen. De används endast lokalt för validering (spec 8.4.1)."""
+    if gransindex is None:
+        gransindex = metodgransindex(regelbas)
     if del_id == "hot":
-        return (erfarenhetsstycke(regelbas, profil, t).text,)
+        return (erfarenhetsstycke(regelbas, profil, t, gransindex=gransindex).text,)
     if del_id == "sarbarheter":
         tj = regelbas.tjanster[t.tjanst]
-        return tuple(sarbarhetsstycke(regelbas, profil, t.tjanst, id).text
+        return tuple(sarbarhetsstycke(regelbas, profil, t.tjanst, id, gransindex=gransindex).text
                      for id in tj.sarbarheter if regelbas.sarbarheter[id].omrade == "geo")
     if del_id == "kontroller":
-        return tuple(s.text for s in kontrollstycken(regelbas, profil, t))
+        return tuple(s.text for s in kontrollstycken(regelbas, profil, t, gransindex=gransindex))
     if del_id == "risknivaer":
         return tuple(s.text for s in (*nivastycken(t),*sektorsstycken(regelbas,t)))
     return (ANSVARSMENING,)
@@ -87,7 +92,7 @@ def skyddade_lasta_texter(fb: Faktablad, t, del_id: str) -> tuple[str, ...]:
     if del_id == "kontroller":
         return tuple(f"Programmet återger {k.namn}: {k.status}." for k in fb.kontroller)
     if del_id == "risknivaer":
-        return tuple(s.text for s in nivastycken(t))
+        return ("Programmet skriver nivåmeningarna och sektorsreferensen lokalt. Du ser inte motorns nivåer och anger inga nivåer.",)
     return (ANSVARSMENING,)
 
 def _tolka(text: str, fb: Faktablad) -> tuple[AISvar | None, tuple[str, ...]]:
@@ -97,9 +102,11 @@ def _tolka(text: str, fb: Faktablad) -> tuple[AISvar | None, tuple[str, ...]]:
         return None, (f"Svaret följde inte schemat ({fel.error_count()} fel). Svara bara med JSON enligt schemat.",)
 
 
-def skriv_del(leverantor, fb: Faktablad, regelbas, profil, t, del_id: str, validerat: tuple[str, ...], *,
-              effort: str, personnamn: tuple[str, ...], spara: Callable[[str, Delforsok], None]) -> Delresultat:
-    lasta = lasta_texter(regelbas, profil, t, del_id)
+def skriv_del(leverantor, fb: Faktablad, t, del_id: str, validerat: tuple[str, ...], *,
+              effort: str, spara: Callable[[str, Delforsok], None]) -> Delresultat:
+    # Valideringen får bara jämföra mot det AI faktiskt har sett. De riktiga låsta texterna och personnamnen
+    # prövas bara lokalt (spec 8.4.10 punkt 1, 2 och 7).
+    lasta = skyddade_lasta_texter(fb, t, del_id)
     schema = ai_schema(fb.tillatna_id(), fb.uppgift_id())
     forsok: tuple[Delforsok, ...] = ()
     aterkoppling: tuple[str, ...] = ()
@@ -107,7 +114,7 @@ def skriv_del(leverantor, fb: Faktablad, regelbas, profil, t, del_id: str, valid
         klippt = any(f.anrop.stop_reason == "max_tokens" for f in forsok)
         niva = effort if nummer <= MAX_OMFORSOK or klippt else EFFORTSTEG[effort]
         anrop = Delanrop(del_id=del_id, system=systemprompt(leverantor.modell),
-                         innehall=bygg_innehall(fb, del_id, skyddade_lasta_texter(fb, t, del_id), validerat, aterkoppling), schema=schema,
+                         innehall=bygg_innehall(fb, del_id, lasta, validerat, aterkoppling), schema=schema,
                          effort=niva, max_tokens=MAX_TOKENS, promptsumma=promptsumma(leverantor.modell, del_id))
         try:
             leverans = leverantor.skriv_del(anrop)
@@ -123,7 +130,7 @@ def skriv_del(leverantor, fb: Faktablad, regelbas, profil, t, del_id: str, valid
                 text="", avbrott="Leverantören kunde inte leverera något svar; försök igen eller använd mall.")
         svar, fel = (None, (leverans.avbrott,)) if leverans.avbrott else _tolka(leverans.text,fb)
         if svar is not None:
-            fel = tuple(validera_del(del_id, svar, fb, personnamn, lasta))
+            fel = tuple(validera_del(del_id, svar, fb, (), lasta))
         post = Delforsok(nummer=nummer, effort=niva, anrop=leverans.anrop, text=leverans.text, svar=svar, fel=fel)
         spara(del_id, post)
         forsok = (*forsok, post)
@@ -131,6 +138,15 @@ def skriv_del(leverantor, fb: Faktablad, regelbas, profil, t, del_id: str, valid
             return Delresultat(del_id=del_id, forsok=forsok, mall=False)
         aterkoppling = fel
     return Delresultat(del_id=del_id, forsok=forsok, mall=True)
+
+
+def _utan_personnamn(d: Delresultat, personnamn: tuple[str, ...]) -> Delresultat:
+    """Namnen prövas först när tjänstens alla AI-anrop är gjorda, så att varken återkoppling eller antal anrop
+    beror på dem (spec 8.4.10 punkt 7). En del med namn ersätts av mallen."""
+    svar = d.godkant_svar
+    if svar is None or not innehaller_personnamn(svar, personnamn):
+        return d
+    return d.model_copy(update={"mall": True, "lokal_sparr": "personnamn"})
 
 
 def skriv_tjanst(leverantor, regelbas, profil, t, avsnitt_id: str, *, design: Literal["A", "B"] = "B", effort: str,
@@ -143,23 +159,26 @@ def skriv_tjanst(leverantor, regelbas, profil, t, avsnitt_id: str, *, design: Li
     def validerad(*ids: str) -> tuple[str, ...]:
         return tuple(s.text for id in ids if (svar := delar[id].godkant_svar) for s in svar.stycken)
 
+    # Godkänd AI-text får följa kedjan; lokal namnkontroll påverkar aldrig nästa anrop (spec 8.4.10.9).
     for del_id in DELAR:
         underlag = (validerad("hot", "sarbarheter", "kontroller") if del_id == "risknivaer"
                     else validerad("risknivaer") if del_id == "slutsatser" else ())
-        delar[del_id] = skriv_del(leverantor, fb, regelbas, profil, t, del_id, underlag,
-                                  effort=effort, personnamn=personnamn, spara=spara)
-    return Tjanstresultat(avsnitt=avsnitt_id, tjanst=t.tjanst, design=design, faktablad=fb, delar=tuple(delar.values()))
+        delar[del_id] = skriv_del(leverantor, fb, t, del_id, underlag, effort=effort, spara=spara)
+    return Tjanstresultat(avsnitt=avsnitt_id, tjanst=t.tjanst, design=design, faktablad=fb,
+                         delar=tuple(_utan_personnamn(d, personnamn) for d in delar.values()))
 
 
-def kontrollera_resultat(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str) -> None:
+def kontrollera_resultat(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> None:
     """Kontrollera fryst indata och varje godkänt råsvar på nytt före dokumentbygget."""
+    if gransindex is None:
+        gransindex = metodgransindex(rb)
     from riskanalys.fel import RiskanalysFel
     from riskanalys.profil.hantering import personnamn
     if (resultat.avsnitt != avsnitt_id or resultat.tjanst != t.tjanst or resultat.design != "B"
             or tuple(d.del_id for d in resultat.delar) != DELAR
             or resultat.formatversion != FORMATVERSION):
         raise RiskanalysFel("Tjänstresultatets identitet eller analysdelar är ogiltiga. Skriv om utkastet.")
-    if resultat.faktablad != bygg_faktablad(rb, p, t, avsnitt_id):
+    if resultat.faktablad != bygg_faktablad(rb, p, t, avsnitt_id, gransindex=gransindex):
         raise RiskanalysFel("Skrivningens faktablad avviker från aktuellt underlag. Skriv och sakgranska på nytt.")
     for d in resultat.delar:
         if d.mall:
@@ -169,6 +188,6 @@ def kontrollera_resultat(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str) ->
         svar, fel = _tolka(d.forsok[-1].text,resultat.faktablad)
         if svar != d.godkant_svar or fel:
             raise RiskanalysFel("Analysdelens råsvar avviker från det sparade svaret. Skriv om delen.")
-        fel = validera_del(d.del_id, svar, resultat.faktablad, personnamn(p, rb), lasta_texter(rb, p, t, d.del_id))
+        fel = validera_del(d.del_id, svar, resultat.faktablad, personnamn(p, rb), lasta_texter(rb, p, t, d.del_id, gransindex=gransindex))
         if fel:
             raise RiskanalysFel("Analysdelen klarar inte valideringen. Skriv om delen: " + "; ".join(fel))

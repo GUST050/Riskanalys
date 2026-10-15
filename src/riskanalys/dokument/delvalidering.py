@@ -4,6 +4,7 @@ import re
 
 from riskanalys.dokument.faktablad import Faktablad
 from riskanalys.dokument.modeller import AISvar
+from riskanalys.dokument.rendering import ROLLER
 from riskanalys.dokument.platshallare import faltid_fel, platshallarfel
 from riskanalys.dokument.validering import FORBJUDNA_FORMULERINGAR, VERIFIERA, har_nivasprak
 
@@ -19,7 +20,22 @@ _INGEN_BELAGD = re.compile(
 _TILLATNA_SIFFROR = re.compile(r"\{[^{}]*\}|\[VERIFIERA\]")
 # Kommentarer om vad AI har fått se hör inte hemma i riskbedömningen; "AI-verktyg" och "tolkas av AI" godtas.
 _AI_KOMMENTAR = re.compile(r"\b(?i:till|för|åt)\s+AI\b(?![-–])")
-_BELAGD_EFFEKT = "belagd riskreducerande verkan enligt metodvillkor"
+
+
+def _har_namn(text: str, personnamn: tuple[str, ...]) -> bool:
+    """Hela namn med Unicode-ordgränser och valfri genitiv; rollplatshållare är inte namn."""
+    utan_roller = text
+    for roll in ROLLER:
+        utan_roller = utan_roller.replace(f"{{roll:{roll}}}", " ")
+    return any(re.search(r"(?<!\w)" + re.escape(namn.strip()) + r"s?(?!\w)",
+                         utan_roller, re.IGNORECASE)
+               for namn in personnamn if namn.strip())
+
+
+def innehaller_personnamn(svar: AISvar, personnamn: tuple[str, ...]) -> bool:
+    """Lokal namnkontroll efter tjänstens alla AI-anrop (spec 8.4.10 punkt 7)."""
+    texter = (*(s.text for s in svar.stycken), *(o.fraga for o in svar.oklarheter))
+    return any(_har_namn(text, personnamn) for text in texter)
 
 
 def _stycke(n: int, s, fb: Faktablad, numeriska: dict[str, str], okanda: set[str], personnamn, lasta) -> list[str]:
@@ -37,7 +53,7 @@ def _stycke(n: int, s, fb: Faktablad, numeriska: dict[str, str], okanda: set[str
     if set(s.referenser) & okanda and VERIFIERA not in s.text:
         fel.append(f"Stycke {n} bygger på obekräftade uppgifter men saknar {VERIFIERA}.")
     fel += [f'Stycke {n} innehåller den förbjudna formuleringen "{f}".' for f in FORBJUDNA_FORMULERINGAR if f in liten]
-    if any(namn.lower() in liten for namn in personnamn):
+    if _har_namn(s.text, personnamn):
         fel.append(f"Stycke {n} innehåller ett personnamn. Skriv {{roll:FfR}} i stället.")
     fel += [f"Stycke {n} upprepar en låst mening. Bygg vidare på den i stället." for last in lasta if last and last in s.text]
     return fel
@@ -53,7 +69,7 @@ def _gemensamma(svar: AISvar, fb: Faktablad, personnamn, lasta) -> list[str]:
     for n,o in enumerate(svar.oklarheter,1):
         if not o.fraga.strip():
             fel.append(f"Oklarhet {n} saknar fråga.")
-        if any(namn.lower() in o.fraga.lower() for namn in personnamn):
+        if _har_namn(o.fraga, personnamn):
             fel.append(f"Oklarhet {n} innehåller ett personnamn.")
     for n, s in enumerate(svar.stycken, 1):
         if re.search(r"\[VERIFIERA[^\]]*\]",s.text) and re.search(r"\[VERIFIERA(?!\])",s.text):
@@ -85,9 +101,11 @@ def _per_del(del_id: str, svar: AISvar, fb: Faktablad) -> list[str]:
                 if s.typ == "analys" and _SAMVERKAN.search(_INGEN_BELAGD.sub("", s.text)) and
                     len(set(s.referenser) & faktorer) >= 2]
     if del_id == "kontroller":
-        belagda = {k.id for k in fb.kontroller if _BELAGD_EFFEKT in k.status}
-        fel += [f"Stycke {n} säger att risken minskar utan hänvisning till en kontroll med belagd effekt."
-                for n, s in enumerate(svar.stycken, 1) if _pastaende_om_minskning(s.text) and not set(s.referenser) & belagda]
+        # AI får inte veta om en kontroll har belagd effekt (spec 8.4.10 punkt 4), så inget påstående om minskning
+        # kan vara tillåtet; programmet avgör det lokalt.
+        fel += [f"Stycke {n} säger att risken minskar. Programmet avgör lokalt om en kontroll räknas som "
+                "riskreducerande; använd inte orden minskar, begränsar, reducerar eller sänker i den här delen."
+                for n, s in enumerate(svar.stycken, 1) if _pastaende_om_minskning(s.text)]
     if del_id == "risknivaer" and not any(
             s.typ == "motivering" and any(r.startswith("H-") for r in s.referenser)
             and any(r.startswith(("S-", "P-")) for r in s.referenser) for s in svar.stycken):

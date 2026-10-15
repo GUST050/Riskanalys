@@ -12,15 +12,16 @@ from riskanalys.dokument.modeller import (
     UnderlagUppgift,
 )
 from riskanalys.fel import RiskanalysFel
-from riskanalys.profil.hantering import visa_varde
+from riskanalys.profil.hantering import visa_varde, visa_varde_klartext, visa_grans, visa_andel_begransad
 from riskanalys.profil.modeller import Profil, Uppgift
+from riskanalys.regelverk.granser import metodgranser, metodgransindex
 from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.regelverk.villkor import Sanning, tolka_villkor, utvardera
 
 AVSNITTSTYP = "risk_per_tjanst"
 SMA_GRUPPER_GRANS = 5
-# Visningar som betyder att ett värde är maskat. Faktabladet och gränsmeningen utgår från samma konstant.
-SKYDDADE_VISNINGAR = ("färre än", "undertryckt")
+SKYDDAD_VISNING = "skyddat värde, prövas lokalt"  # samma text för liten grupp och liten restgrupp (spec 8.4.10 punkt 8)
+LOKALT_UTFALL = "Utfallet redovisas inte i faktabladet; sårbarheten prövas lokalt."
 NIVANYCKLAR = (
     "inneboende_sannolikhet",
     "inneboende_konsekvens",
@@ -63,6 +64,21 @@ def sarbarhet_status(regelbas: Regelbas, profil: Profil, sarbarhet_id: str) -> L
     return _STATUS[utvardera(villkor, profil.faltvarden()).sanning]
 
 
+def provas_lokalt(regelbas: Regelbas, profil: Profil, sarbarhet_id: str, tillatna: tuple[str, ...], *, gransindex: dict | None = None) -> bool:
+    """Sant när villkoret läser en uppgift som AI inte får se exakt: utanför tillåtelselistan, eller ett
+    smågruppsfält som visas maskerat eller okänt. Avgörs ur den synliga vyn (spec 8.4.10)."""
+    from riskanalys.regelverk.villkor import falt_i
+    villkor = tolka_villkor(regelbas.sarbarheter[sarbarhet_id].villkor, regelbas.faltdefinitioner())
+    for falt_id in falt_i(villkor):
+        if falt_id not in tillatna:
+            return True
+        if regelbas.falt[falt_id].smagrupp:
+            visning = _uppgift(regelbas, profil, falt_id, gransindex=gransindex).varde
+            if visning in (SKYDDAD_VISNING, "okänt"):
+                return True
+    return False
+
+
 def kontrollstatus(kontroll: Kontrollbedomning) -> str:
     if kontroll.effekt_belagd is not None:
         text = f"utformning {kontroll.utformning or 'okänd'}, genomförande {kontroll.genomforande or 'okänt'}, effekt {kontroll.effekt or 'okänd'}"
@@ -79,20 +95,39 @@ def kontrollstatus(kontroll: Kontrollbedomning) -> str:
     return "finns i rutinerna men är inte belagd"
 
 
-def visa_for_ai(regelbas: Regelbas, falt_id: str, uppgift: Uppgift, antal: int | None = None) -> str:
+def kontrollstatus_for_ai(kontroll: Kontrollbedomning) -> str:
+    """Kontrollens status för AI, byggd enbart av tillåtna kategorifält. Huruvida riskreduktionen är belagd
+    bygger också på utfallsfältet och avgörs därför lokalt (spec 8.4.10 punkt 4)."""
+    return (f"utformning {kontroll.utformning or 'okänd'}, genomförande {kontroll.genomforande or 'okänt'}, "
+            f"bedömd effekt {kontroll.effekt or 'okänd'}; om kontrollen räknas som riskreducerande avgör programmet lokalt")
+
+
+def _begransad_precision(regelbas: Regelbas, falt_id: str) -> bool:
+    """En andel vars antal eller bas inte är tillåtna visas med begränsad precision (spec 8.4.9 punkt 11)."""
+    falt = regelbas.falt[falt_id]
+    tillatna = regelbas.tillatelselistor[AVSNITTSTYP].falt
+    return bool(regelbas.utokade_krav and falt.typ == "andel" and
+                any(ref and ref not in tillatna for ref in (falt.antalfalt, falt.basfalt)))
+
+
+def visa_for_ai(regelbas: Regelbas, falt_id: str, uppgift: Uppgift, antal: int | None = None, *, gransindex: dict | None = None) -> str:
     falt = regelbas.falt[falt_id]
     if uppgift.status == "ej_tillämplig":
         return "ej tillämplig"
     if uppgift.status != "bekräftad" or uppgift.inaktuell:
         return "okänt"
     if falt.smagrupp and ((falt.typ == "heltal" and uppgift.varde < SMA_GRUPPER_GRANS) or (antal is not None and antal < SMA_GRUPPER_GRANS)):
-        return f"färre än {SMA_GRUPPER_GRANS}"
-    return visa_varde(falt, uppgift.varde)
+        return SKYDDAD_VISNING
+    if _begransad_precision(regelbas, falt_id):
+        return visa_andel_begransad(falt, uppgift.varde, metodgranser(regelbas, falt_id, gransindex))
+    return visa_varde_klartext(falt, uppgift.varde, metodgranser(regelbas, falt_id, gransindex))
 
 
 def bygg_underlag(
     regelbas: Regelbas, profil: Profil, tjanstbedomning: Tjanstbedomning, avsnitt_id: str
-) -> Avsnittsunderlag:
+, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Avsnittsunderlag:
+    if gransindex is None:
+        gransindex = metodgransindex(regelbas)
     from riskanalys.profil.omfattning import kompatibilitetsvy, aktivt
     profil = kompatibilitetsvy(profil, regelbas)
     lista = regelbas.tillatelselistor[AVSNITTSTYP]
@@ -115,7 +150,7 @@ def bygg_underlag(
                 id=sarbarhet_id,
                 namn=regelbas.sarbarheter[sarbarhet_id].namn,
                 galler=sarbarhet_status(regelbas, profil, sarbarhet_id),
-                motivering=_sarbarhetsmotivering(regelbas, profil, sarbarhet_id, lista.falt),
+                motivering=_sarbarhetsmotivering(regelbas, profil, sarbarhet_id, lista.falt, gransindex=gransindex),
             )
             for sarbarhet_id in tjanst.sarbarheter
         ),
@@ -124,13 +159,13 @@ def bygg_underlag(
             for kontroll in (*tjanstbedomning.kontroller,
                 *((tjanstbedomning.sanktionsrisk.kontroll,) if tjanstbedomning.sanktionsrisk and tjanstbedomning.sanktionsrisk.kontroll else ()))
         ),
-        uppgifter=tuple(_uppgift(regelbas, profil, falt_id) for falt_id in lista.falt if aktivt(regelbas.falt[falt_id], profil, regelbas)),
+        uppgifter=tuple(_uppgift(regelbas, profil, falt_id, gransindex=gransindex) for falt_id in lista.falt if aktivt(regelbas.falt[falt_id], profil, regelbas)),
         regelspar=tjanstbedomning.regelspar + (tjanstbedomning.sanktionsrisk.regelspar if tjanstbedomning.sanktionsrisk else ()),
         undvik=tuple(UnderlagBrist(id=brist_id, namn=regelbas.bristmonster[brist_id].namn) for brist_id in lista.undvik),
     )
 
 
-def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna: tuple[str, ...]) -> str:
+def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna: tuple[str, ...], *, gransindex: dict | None = None) -> str:
     from riskanalys.dokument.klartext import faltnamn, gemen, gransmening_text, under_grans
     from riskanalys.profil.omfattning import kompatibilitetsvy
     from riskanalys.regelverk.villkor import falt_i
@@ -142,17 +177,17 @@ def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna:
         if ref not in tillatna:
             rader.append(f"{faltnamn(regelbas, ref)}: underlaget finns i byråns lokala belägg; motiveringen behöver granskas lokalt.")
             continue
-        u = _uppgift(regelbas, profil, ref)
+        u = _uppgift(regelbas, profil, ref, gransindex=gransindex)
         period = f" Period: {'–'.join(u.period)}." if u.period else ""
         rader.append(f"{faltnamn(regelbas, ref)} ({ref}): {u.varde}.{period}")
     for g in under_grans(kompatibilitetsvy(profil, regelbas), s.villkor):
         if g.falt_id not in tillatna:
             continue
-        visning = _uppgift(regelbas, profil, g.falt_id).varde
+        visning = _uppgift(regelbas, profil, g.falt_id, gransindex=gransindex).varde
         # Bara den skyddade vyn styr: ett maskat värde ger ingen mening alls, så att 0 och 3 kunder ser likadana ut.
-        if visning.startswith(SKYDDADE_VISNINGAR) or visning == "okänt":
+        if visning in (SKYDDAD_VISNING, "okänt"):
             continue
-        grans = visa_varde(regelbas.falt[g.falt_id], g.grans)
+        grans = visa_grans(regelbas.falt[g.falt_id], g.grans)
         rader.append(gransmening_text(gemen(faltnamn(regelbas, g.falt_id)), visning, grans))
     return f"Det registrerade villkorets utfall är {status}. " + " ".join(rader)
 
@@ -213,7 +248,7 @@ def _litet_komplement(regelbas: Regelbas, profil: Profil, antal_id: str | None) 
     return False
 
 
-def _uppgift(regelbas: Regelbas, profil: Profil, falt_id: str) -> UnderlagUppgift:
+def _uppgift(regelbas: Regelbas, profil: Profil, falt_id: str, *, gransindex: dict | None = None) -> UnderlagUppgift:
     """Visa tillåtna uppgifter utan exakta små grupper eller små komplement."""
     uppgift = profil.uppgifter.get(falt_id, Uppgift())
     falt = regelbas.falt[falt_id]
@@ -227,9 +262,9 @@ def _uppgift(regelbas: Regelbas, profil: Profil, falt_id: str) -> UnderlagUppgif
     basuppgift = profil.uppgifter.get(falt.basfalt)
     visa_bas = (basuppgift and basuppgift.status == "bekräftad" and not basuppgift.inaktuell
                 and not undertryckt and not saknad_bas and not komplement)
-    varde = "okänt" if saknad_bas else visa_for_ai(regelbas, falt_id, uppgift, antal)
+    varde = "okänt" if saknad_bas else visa_for_ai(regelbas, falt_id, uppgift, antal, gransindex=gransindex)
     if komplement and uppgift.status == "bekräftad" and not uppgift.inaktuell:
-        varde = "undertryckt (litet komplement)"
+        varde = SKYDDAD_VISNING
     return UnderlagUppgift(
         id=falt_id, fraga=falt.fraga, varde=varde,
         period=(uppgift.period.fran.isoformat(), uppgift.period.till.isoformat()) if uppgift.period else None,

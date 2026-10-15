@@ -6,13 +6,16 @@ from pydantic import Field
 
 from riskanalys.dokument.modeller import Last, UnderlagHot, UnderlagKontroll, UnderlagSarbarhet
 from riskanalys.dokument.klartext import faltnamn
-from riskanalys.dokument.underlag import SKYDDADE_VISNINGAR, bygg_underlag
+from riskanalys.regelverk.granser import metodgransindex
+from riskanalys.dokument.underlag import (
+    AVSNITTSTYP, LOKALT_UTFALL, SKYDDAD_VISNING, bygg_underlag, kontrollstatus_for_ai, provas_lokalt)
 from riskanalys.profil.modeller import Profil, Uppgift
 from riskanalys.profil.omfattning import HARLEDNING
 from riskanalys.regelverk.modeller import Falt, Regelbas, Sektorsreferens
 
 Kalltyp = Literal["register", "intern_statistik", "egen_kannedom", "dokument", "harledning"]
 _NUMERISKA = ("heltal", "tal", "andel")
+_INTERVALLVISNINGAR = ("mindre än ", "mer än ", "strax under ", "strax över ", "minst ")
 
 
 class Faktapost(Last):
@@ -23,6 +26,7 @@ class Faktapost(Last):
     kalltyp: Kalltyp | None
     status: Literal["bekräftad", "okänd", "skyddad"]
     tal: float | None = None
+    intervall: bool = False
 
 
 class Faktablad(Last):
@@ -47,8 +51,8 @@ class Faktablad(Last):
         return frozenset(p.id for p in self.poster)
 
     def numeriska(self) -> dict[str, str]:
-        """Värden som AI får hänvisa till med {tal:ID}; skyddade och okända värden saknas."""
-        return {p.id: p.visningsvarde for p in self.poster if p.tal is not None}
+        """Värden som AI får hänvisa till med {tal:ID}, även intervall som 'mindre än 1 %'; skyddade och okända värden saknas."""
+        return {p.id: p.visningsvarde for p in self.poster if p.tal is not None or p.intervall}
 
     def perioder(self) -> dict[str, str]:
         """Perioder från tillåtna faktaposter, aldrig datum som AI hittar på."""
@@ -82,34 +86,49 @@ def kalltyp(uppgift: Uppgift, falt: Falt) -> Kalltyp | None:
 def _post(regelbas: Regelbas, profil: Profil, u) -> Faktapost:
     falt = regelbas.falt[u.id]
     uppgift = profil.uppgifter.get(u.id, Uppgift())
-    skyddad = u.varde.startswith(SKYDDADE_VISNINGAR)
+    skyddad = u.varde == SKYDDAD_VISNING
+    # Ett intervall som 'mindre än 1 %' lagras som intervall och aldrig som ett exakt tal (spec 8.4.9 punkt 7).
+    intervall = not skyddad and u.bekraftad and falt.typ in _NUMERISKA and u.varde.startswith(_INTERVALLVISNINGAR)
     tal = None
-    if not skyddad and u.bekraftad and falt.typ in _NUMERISKA:
+    if not skyddad and not intervall and u.bekraftad and falt.typ in _NUMERISKA:
         # Använd bara värdet som redan passerat underlagets maskning och kompatibilitetsvy.
         try:
             tal = float(u.varde.replace("%", "").replace(" ", "").replace("\u00a0", "").replace("\u202f", "").replace(",", "."))
         except ValueError:
             tal = None
-    visning = (visa_tal(tal) + (" %" if falt.typ == "andel" else "")) if tal is not None else u.varde
+    visning = (u.varde if falt.typ == "andel" else visa_tal(tal)) if tal is not None else u.varde
     return Faktapost(
         id=u.id, etikett=faltnamn(regelbas, u.id), visningsvarde=visning,
         period=f"{u.period[0]}–{u.period[1]}" if u.period else None,
         kalltyp=kalltyp(uppgift, falt),
         status="skyddad" if skyddad else "bekräftad" if u.bekraftad and u.varde != "okänt" else "okänd",
-        tal=tal,
+        tal=tal, intervall=intervall,
     )
 
 
-def bygg_faktablad(regelbas: Regelbas, profil: Profil, tjanstbedomning, avsnitt_id: str) -> Faktablad:
-    underlag = bygg_underlag(regelbas, profil, tjanstbedomning, avsnitt_id)
+def bygg_faktablad(regelbas: Regelbas, profil: Profil, tjanstbedomning, avsnitt_id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Faktablad:
+    if gransindex is None:
+        gransindex = metodgransindex(regelbas)
+    underlag = bygg_underlag(regelbas, profil, tjanstbedomning, avsnitt_id, gransindex=gransindex)
     ref=regelbas.sektorsreferenser.get(regelbas.tjanster[tjanstbedomning.tjanst].sektorreferens)
+    tillatna = regelbas.tillatelselistor[AVSNITTSTYP].falt
+    sanktion = tjanstbedomning.sanktionsrisk
+    bedomda = {k.id: k for k in (*tjanstbedomning.kontroller, *((sanktion.kontroll,) if sanktion and sanktion.kontroll else ()))}
     return Faktablad(
-        nivaer=underlag.nivaer, sektorsreferens=ref,
+        # Motorns nivåer och regelspår skickas aldrig till AI (spec 8.4.10).
+        nivaer={}, sektorsreferens=ref,
         avsnitt=avsnitt_id, tjanst_id=underlag.tjanst_id, tjanst_namn=underlag.tjanst_namn,
         poster=tuple(_post(regelbas, profil, u) for u in underlag.uppgifter),
         sarbarhetsomraden={s.id:regelbas.sarbarheter[s.id].omrade for s in underlag.sarbarheter},
         tf_hot=tuple(h.id for h in underlag.hot if regelbas.hot[h.id].galler_tf),
-        hot=underlag.hot, sarbarheter=underlag.sarbarheter, kontroller=underlag.kontroller, regelspar=underlag.regelspar,
+        hot=underlag.hot, regelspar=(),
+        # Status byggs av kategorifälten; om kontrollen räknas som riskreducerande avgörs lokalt (spec 8.4.10 punkt 4).
+        kontroller=tuple(k.model_copy(update={"status": kontrollstatus_for_ai(bedomda[k.id])}) for k in underlag.kontroller),
+        # Utfallet visas bara när AI ser exakt de uppgifter villkoret läser (spec 8.4.10).
+        sarbarheter=tuple(
+            s.model_copy(update={"galler": "prövas lokalt", "motivering": LOKALT_UTFALL})
+            if provas_lokalt(regelbas, profil, s.id, tillatna, gransindex=gransindex) else s
+            for s in underlag.sarbarheter),
     )
 
 

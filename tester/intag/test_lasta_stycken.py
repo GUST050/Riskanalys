@@ -1,11 +1,14 @@
+import re
 from datetime import date
+
+import pytest
 
 from riskanalys.bedomning.motor import bedom
 from riskanalys.dokument.analysunderlag import sarbarhetsstycke
 from riskanalys.dokument.arb import bygg_arb
 from riskanalys.dokument.delskrivning import skriv_tjanst
 from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
-from riskanalys.dokument.klartext import faltnamn, gemen
+from riskanalys.dokument.klartext import faltnamn, gemen, paketnamn
 from riskanalys.dokument.leverantor import Testleverantor
 from riskanalys.dokument.nivatext import sektorsmening, sektorsstycken
 from riskanalys.dokument.platshallare import faltid_fel
@@ -269,3 +272,92 @@ def test_sektorsmeningen_delas_av_sektorsstycket_och_metodavsnittet(tmp_path, rb
     assert f"sida {ref.sida}." in mening and "SEKTOR-" not in mening and "SRC-" not in mening
     (s,) = sektorsstycken(rb_intag, t)
     assert s.text == f"{mening} Motiveringen ska pröva tjänstens egna förhållanden mot denna sektorsreferens."
+
+
+_KATALOGKOD = re.compile(r"\b(?:RP|SRC|EU)-[A-Z0-9]")
+BEVAKADE_KALLOR = ("SRC-TS-2026-14", "SRC-VAGL-2025-03")
+
+
+def _hela_dokumentet(tmp_path, rb, profil):
+    """Hela D-ARB för den kompletta syntetiska profilen, med ett tjänsteavsnitt och bevakade källor."""
+    profil = _andrat(profil, "P-BEVAKNING.kallor", varde=", ".join(BEVAKADE_KALLOR))
+    avsnitt_id, t = tjanst_for_prov(tmp_path, rb, profil)
+    lev = Testleverantor([godkant_delsvar(d, t) for d in DELAR])
+    res = skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None)
+    b = bedom(rb, valj(rb, profil.byra.regelpaket, DAG, profil.byra.lan), profil)
+    return bygg_arb(rb, profil, b, {avsnitt_id: res}, Historik())
+
+
+def test_loptexten_saknar_katalogkoder_och_kontrollsummor_utom_i_bilaga_b1(tmp_path, rb_intag, klar):
+    dokument = _hela_dokumentet(tmp_path, rb_intag, klar)
+    assert any(a.id == "D-ARB.B1" for a in dokument.avsnitt)
+    lopande = [(a.id, s) for a in dokument.avsnitt if a.id != "D-ARB.B1" for s in a.stycken]
+    assert lopande
+    assert [(i, s.text) for i, s in lopande if _KATALOGKOD.search(s.text)] == []
+    assert [(i, s.text) for i, s in lopande if "sha256:" in s.text] == []
+
+
+def test_bevakningsavsnittet_namnger_kallorna_och_behaller_kall_id_som_referenser(tmp_path, rb_intag, klar):
+    dokument = _hela_dokumentet(tmp_path, rb_intag, klar)
+    (stycke,) = dokument.avsnitt_med_id()["D-ARB.11"].stycken
+    assert set(BEVAKADE_KALLOR) <= set(stycke.referenser)
+    assert "Lästa källor: " in stycke.text and "Version och kontrollsumma för varje källa redovisas i bilaga B1." in stycke.text
+    for id in BEVAKADE_KALLOR:
+        assert rb_intag.kallor[id].titel in stycke.text
+
+
+def test_syftet_namnger_regelpaketet_utan_kod(rb_intag, klar):
+    b = bedom(rb_intag, valj(rb_intag, klar.byra.regelpaket, DAG, klar.byra.lan), klar)
+    text = bygg_arb(rb_intag, klar, b, {}, Historik()).avsnitt_med_id()["D-ARB.1"].stycken[1].text
+    assert text.startswith(f"Bedömningen följer regelpaketet {paketnamn(rb_intag.regelpaket[klar.byra.regelpaket])} för ")
+    assert not _KATALOGKOD.search(text)
+
+
+def test_myndighetsunderlaget_namnger_kallorna_men_refererar_till_kall_id(rb_intag, klar):
+    b = bedom(rb_intag, valj(rb_intag, klar.byra.regelpaket, DAG, klar.byra.lan), klar)
+    (stycke,) = bygg_arb(rb_intag, klar, b, {}, Historik()).avsnitt_med_id()["D-ARB.4"].stycken
+    assert stycke.referenser and all(id in rb_intag.kallor for id in stycke.referenser)
+    assert all(rb_intag.kallor[id].titel in stycke.text for id in stycke.referenser)
+    assert not _KATALOGKOD.search(stycke.text)
+
+
+def test_metodavsnittets_hinder_namnger_regelpaketen_utan_kod(rb_intag, klar):
+    # Utländsk filial hör till Stockholms tillsynsområde, så det manuellt valda paketet RP-RED-VG är fel.
+    _, avsnitt = _metodavsnitt(rb_intag, _andrat(klar, "P-ORG.utlandsk_filial", varde=True))
+    text = avsnitt.stycken[0].text
+    assert "Manuellt regelpaket " in text and "stämmer inte med tillsynsområdet" in text
+    assert "Västra Götaland" in text and "Stockholm" in text
+    assert not _KATALOGKOD.search(text)
+
+
+def _bevakning(rb, profil, svar):
+    profil = _andrat(profil, "P-BEVAKNING.kallor", varde=svar)
+    b = bedom(rb, valj(rb, profil.byra.regelpaket, DAG, profil.byra.lan), profil)
+    (stycke,) = bygg_arb(rb, profil, b, {}, Historik()).avsnitt_med_id()["D-ARB.11"].stycken
+    return stycke
+
+
+def test_bevakning_med_kalla_utan_src_prefix_visar_titeln_och_inte_koden(rb_intag, klar):
+    stycke = _bevakning(rb_intag, klar, "EU-269-2014")
+    assert rb_intag.kallor["EU-269-2014"].titel in stycke.text
+    assert "EU-269-2014" not in stycke.text and "sha256:" not in stycke.text
+    assert "EU-269-2014" in stycke.referenser
+
+
+def test_bevakning_behaller_okand_kod_bredvid_verifiera(rb_intag, klar):
+    stycke = _bevakning(rb_intag, klar, "SRC-OKAND")
+    assert "SRC-OKAND" in stycke.text and "[VERIFIERA]" in stycke.text
+
+
+def test_kontrollsumma_i_byransvaret_blir_hanvisning_till_bilagan(rb_intag, klar):
+    stycke = _bevakning(rb_intag, klar, "SRC-TS-2026-14 sha256:0123abcd")
+    assert "sha256:" not in stycke.text and "0123abcd" not in stycke.text
+    assert "(kontrollsumma i bilaga B1)" in stycke.text and "[VERIFIERA]" in stycke.text
+
+
+@pytest.mark.parametrize("svar", ["SRC-TS-2026-14", "SRC-TS-2026-14, SRC-VAGL-2025-03", "SRC-VAGL-2025-03, SRC-TS-2026-14", "SRC-OKAND"])
+def test_bevakningens_referenser_ar_unika_och_i_ordning(rb_intag, klar, svar):
+    refs = _bevakning(rb_intag, klar, svar).referenser
+    assert refs == list(dict.fromkeys(refs)), refs
+    assert refs.count("SRC-TS-2026-14") == 1
+    assert refs[:4] == ["P-BEVAKNING.kallor", "P-BEVAKNING.datum", "P-BEVAKNING.ansvarig", "P-BEVAKNING.relevans"]

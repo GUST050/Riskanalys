@@ -3,7 +3,7 @@ from datetime import date
 import pytest
 
 from riskanalys.bedomning.motor import bedom
-from riskanalys.dokument.underlag import NIVANYCKLAR, UnderlagsFel, bygg_underlag, tjanster_med_avsnitt
+from riskanalys.dokument.underlag import NIVANYCKLAR, SKYDDAD_VISNING, UnderlagsFel, bygg_underlag, tjanster_med_avsnitt
 from riskanalys.regelverk.modeller import Tillatelselista
 from riskanalys.regelverk.urval import valj
 
@@ -53,7 +53,7 @@ def test_underlaget_innehaller_inga_personuppgifter_eller_byranamn(real_underlag
 def test_sma_grupper_visas_inte_exakt(underlag_fabrik, regelbas, profil_fabrik, real_varden):
     underlag = underlag_fabrik(profil_fabrik(regelbas, {**real_varden, "P-ORG.antal_anstallda": 3}))
     anstallda = next(uppgift for uppgift in underlag.uppgifter if uppgift.id == "P-ORG.antal_anstallda")
-    assert anstallda.varde == "färre än 5"
+    assert anstallda.varde == SKYDDAD_VISNING
 
 
 def test_okand_uppgift_skickas_som_okand(underlag_fabrik, regelbas, profil_fabrik, real_varden):
@@ -90,4 +90,4 @@ def test_smagruppsandel_och_antal_undertrycks_tillsammans(regelbas,profil_fabrik
     t=bedom(rb,valj(rb,p.byra.regelpaket,p.byra.datum,p.byra.lan),p).tjanster[0]
     a=bygg_underlag(rb,p,t,"D-ARB.6.1")
     value=next(u.varde for u in a.uppgifter if u.id==f.id)
-    assert value==("färre än 5" if antal<5 else "5 %")
+    assert value==(SKYDDAD_VISNING if antal<5 else "5 %")

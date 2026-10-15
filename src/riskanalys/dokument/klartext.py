@@ -1,14 +1,17 @@
 """Svensk klartext för låsta stycken: fältnamn, uppgifter och villkor utan fält-ID (spec 8.4.9)."""
 
+from riskanalys.regelverk.granser import metodgransindex
+
+import re
 from dataclasses import dataclass
-from re import Match
 
 from riskanalys.bedomning.erfarenheter import belagd_uppgift
 from riskanalys.dokument.platshallare import _FALTID
-from riskanalys.profil.hantering import visa_varde
+from riskanalys.profil.hantering import visa_varde, visa_varde_klartext, visa_grans
 from riskanalys.profil.modeller import Profil
 from riskanalys.profil.omfattning import HARLEDNING
-from riskanalys.regelverk.modeller import Regelbas
+from riskanalys.regelverk.granser import metodgranser
+from riskanalys.regelverk.modeller import Regelbas, Regelpaket
 
 VERIFIERA = "[VERIFIERA]"
 
@@ -26,6 +29,7 @@ _KONTROLLFALT = {
     "effekt": "Dokumenterad verkan av",
     "utfall": "Prov och utfall för",
 }
+_KONTROLLSUMMA = re.compile(r"sha256:\S*[^\s.,;:!?)\]}”»’'\"]")  # skiljetecken efter summan står kvar
 _JAMFORELSE = {">=": "är minst", ">": "är större än", "<": "är mindre än", "<=": "är högst", "==": "är", "!=": "inte är"}
 
 
@@ -78,8 +82,10 @@ def _kalltext(kalla: str) -> str:
 
 
 def uppgiftstext(regelbas: Regelbas, profil: Profil, falt_id: str, *, namn: str | None = None,
-                 med_id: bool = False) -> str:
+                 med_id: bool = False, gransindex: dict[str, tuple[float, ...]] | None = None) -> str:
     """'Kortnamn: värde (period …; källa: …; bekräftad …).' Fält-ID och källan som den är lagrad visas bara i bilagan (med_id)."""
+    if gransindex is None:
+        gransindex = metodgransindex(regelbas)
     rubrik = namn or faltnamn(regelbas, falt_id)
     if med_id:
         rubrik = f"{rubrik} ({falt_id})"
@@ -88,7 +94,7 @@ def uppgiftstext(regelbas: Regelbas, profil: Profil, falt_id: str, *, namn: str 
     u = profil.uppgifter[falt_id]
     delar = [f"period {u.period.fran}–{u.period.till}"] if u.period else []
     delar += [f"källa: {u.kalla if med_id else _kalltext(u.kalla)}", f"bekräftad {u.datum}"]
-    varde = str(visa_varde(regelbas.falt[falt_id], u.varde)).rstrip(".")
+    varde = str(visa_varde_klartext(regelbas.falt[falt_id], u.varde, metodgranser(regelbas, falt_id, gransindex))).rstrip(".")
     return f"{rubrik}: {varde} ({'; '.join(delar)})."
 
 
@@ -105,7 +111,7 @@ def _jamforelsetext(data: dict, regelbas: Regelbas) -> str:
         return f"uppgiften ”{faltnamn(regelbas, falt.id)}” är {'ja' if ja else 'nej'}"
     if op == "i":
         return f"{namn} är något av {', '.join(str(visa_varde(falt, v)) for v in data['varde'])}"
-    return f"{namn} {_JAMFORELSE[op]} {visa_varde(falt, data['varde'])}"
+    return f"{namn} {_JAMFORELSE[op]} {visa_grans(falt, data['varde'])}"
 
 
 def villkorstext(data: dict, regelbas: Regelbas) -> str:
@@ -134,16 +140,18 @@ def under_grans(profil: Profil, data: dict) -> tuple[UnderGrans, ...]:
 
 
 def gransmening_text(namn: str, visning: str, grans: str) -> str:
-    """Den enda mallen för gränsmeningen. En andel som visas som '0 %' men är över noll skrivs 'mindre än 1 %'."""
-    visat = "mindre än 1 %" if visning == "0 %" else visning
-    return (f"Faktorn förekommer: {namn} är {visat}, men det ligger under metodens gräns på {grans} "
+    """Den enda mallen för gränsmeningen. Visningen kommer färdig från visa_varde_klartext."""
+    return (f"Faktorn förekommer: {namn} är {visning}, men det ligger under metodens gräns på {grans} "
             "för automatiskt riskpåslag.")
 
 
-def gransmening(regelbas: Regelbas, profil: Profil, g: UnderGrans) -> str:
+def gransmening(regelbas: Regelbas, profil: Profil, g: UnderGrans, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> str:
+    if gransindex is None:
+        gransindex = metodgransindex(regelbas)
     falt = regelbas.falt[g.falt_id]
-    return gransmening_text(gemen(faltnamn(regelbas, g.falt_id)), visa_varde(falt, profil.uppgifter[g.falt_id].varde),
-                            visa_varde(falt, g.grans))
+    return gransmening_text(gemen(faltnamn(regelbas, g.falt_id)),
+                            visa_varde_klartext(falt, profil.uppgifter[g.falt_id].varde, metodgranser(regelbas, g.falt_id, gransindex)),
+                            visa_grans(falt, g.grans))
 
 
 def _idnamn(regelbas: Regelbas, id_: str) -> str | None:
@@ -167,7 +175,7 @@ def id_till_namn(regelbas: Regelbas, text: str) -> str:
 
     Ett namn mitt i en mening skrivs med liten begynnelsebokstav; först i texten och efter '. ' behålls stor.
     """
-    def namn(traff: Match[str]) -> str:
+    def namn(traff: re.Match[str]) -> str:
         id_ = traff.group(0)
         klartext = _idnamn(regelbas, id_)
         if klartext is None:
@@ -177,6 +185,38 @@ def id_till_namn(regelbas: Regelbas, text: str) -> str:
         return gemen(klartext)
 
     return _FALTID.sub(namn, text)
+
+
+def paketnamn(paket: Regelpaket) -> str:
+    """Regelpaketets namn utan avslutande kod."""
+    return paket.namn.removesuffix(f": {paket.id}")
+
+
+def _paketnamn_med_lan(paket: Regelpaket) -> str:
+    """Alla regelpaket i en regelbas kan heta lika; länen skiljer dem åt."""
+    return f"{paketnamn(paket)} ({', '.join(paket.lan)})" if paket.lan else paketnamn(paket)
+
+
+def _katalogkoder(regelbas: Regelbas) -> re.Pattern[str] | None:
+    """De regelpaket- och käll-ID som regelbasen registrerar, som hela ord (längst först)."""
+    koder = sorted({*regelbas.regelpaket, *regelbas.kallor}, key=lambda kod: (-len(kod), kod))
+    if not koder:
+        return None
+    return re.compile(r"(?<![\w-])(?:" + "|".join(map(re.escape, koder)) + r")(?![\w-])")
+
+
+def kod_till_namn(regelbas: Regelbas, text: str) -> str:
+    """Ersätt registrerade regelpaket- och käll-ID med namn och titlar och kontrollsummor med en hänvisning
+    till bilagan; okända koder lämnas (spec 8.4.9 punkt 8)."""
+    def namn(traff: re.Match[str]) -> str:
+        kod = traff.group(0)
+        if kod in regelbas.regelpaket:
+            return _paketnamn_med_lan(regelbas.regelpaket[kod])
+        return regelbas.kallor[kod].titel
+
+    text = _KONTROLLSUMMA.sub("(kontrollsumma i bilaga B1)", text)
+    koder = _katalogkoder(regelbas)
+    return koder.sub(namn, text) if koder else text
 
 
 def punkttext(punkter: tuple[int, ...]) -> str:

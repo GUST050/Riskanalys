@@ -4,6 +4,7 @@ import math
 import re
 from collections.abc import Callable
 from datetime import date
+from decimal import Decimal
 from typing import Any
 
 from riskanalys.fel import RiskanalysFel
@@ -56,6 +57,60 @@ def visa_varde(falt: Falt, varde: Any) -> str:
     if isinstance(varde, date):
         return varde.isoformat()
     return str(varde)
+
+
+MAX_DECIMALER_VID_GRANS = 2  # metodval (spec 8.4.9 punkt 10)
+
+
+def visa_grans(falt: Falt, varde: Any) -> str:
+    """Metodgränsen återges exakt även när procenttalet innehåller decimaler."""
+    if falt.typ == "andel":
+        # Ta endast bort nollor efter decimaltecknet.
+        tal = format(Decimal(str(varde)) * 100, "f")
+        if "." in tal:
+            tal = tal.rstrip("0").rstrip(".")
+        return tal.replace(".", ",") + " %"
+    return visa_varde(falt, varde)
+
+
+def visa_varde_klartext(falt: Falt, varde: Any, granser: tuple[float, ...] = ()) -> str:
+    """Bevara sidan om samtliga metodgränser; äldre visa_varde behåller sitt format."""
+    text = visa_varde(falt, varde)
+    if falt.typ != "andel" or type(varde) not in (int, float):
+        return text
+    if text == "0 %" and varde > 0:
+        return "mindre än 1 %"
+    if text == "100 %" and varde < 1:
+        return "mer än 99 %"
+    if varde in granser:
+        return visa_grans(falt, varde)
+    procent = Decimal(str(varde)) * 100
+    procentgranser = tuple(Decimal(str(g)) * 100 for g in granser)
+    if not any(abs(procent - g) <= Decimal("0.5") for g in procentgranser):
+        return text
+    for decimaler in range(1, MAX_DECIMALER_VID_GRANS + 1):
+        tal = round(procent, decimaler)
+        if all(tal != g and (tal < g) == (procent < g) for g in procentgranser):
+            return format(tal, f".{decimaler}f").replace(".", ",") + " %"
+    grans = min(granser, key=lambda g: abs(varde - g))
+    return f"strax {'under' if varde < grans else 'över'} {visa_grans(falt, grans)}"
+
+
+HALV_PROCENTENHET = Decimal("0.5")  # metodval (spec 8.4.9 punkt 11)
+
+
+def visa_andel_begransad(falt: Falt, varde: float, granser: tuple[float, ...]) -> str:
+    """Hela procent och bara sidan nära metodgränsen när antal eller bas inte är tillåtna."""
+    text = visa_varde(falt, varde)
+    if text == "0 %" and varde > 0:
+        return "mindre än 1 %"
+    if text == "100 %" and varde < 1:
+        return "mer än 99 %"
+    procent = Decimal(str(varde)) * 100
+    for grans in granser:
+        if abs(procent - Decimal(str(grans)) * 100) <= HALV_PROCENTENHET:
+            return f"{'strax under' if varde < grans else 'minst'} {visa_grans(falt, grans)}"
+    return text
 
 
 def beskriv_uppgift(falt: Falt, uppgift: Uppgift) -> str:
@@ -224,12 +279,12 @@ def saknade_kritiska(profil: Profil, regelbas: Regelbas, urval: Urval) -> tuple[
 
 
 def personnamn(profil: Profil, regelbas: Regelbas) -> tuple[str, ...]:
-    """Bekräftade personuppgifter i textform. De får aldrig förekomma i AI-text."""
+    """Bekräftade värden i regelbasens namnfält; ansvarsfunktionens rolltext är inte ett namn."""
     return tuple(
         str(uppgift.varde)
         for falt_id, uppgift in profil.uppgifter.items()
         if falt_id in regelbas.falt
-        and regelbas.falt[falt_id].personuppgift
+        and regelbas.falt[falt_id].namnfalt
         and uppgift.status == "bekräftad"
         and uppgift.varde
     )

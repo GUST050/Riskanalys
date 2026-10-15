@@ -1,4 +1,6 @@
 """Lokala motiveringar med källor; fritext skickas aldrig vidare till AI."""
+
+from riskanalys.regelverk.granser import metodgransindex
 from riskanalys.bedomning.erfarenheter import ERFARENHETSFALT
 from riskanalys.bedomning.modeller import Tjanstbedomning
 from riskanalys.dokument.klartext import VERIFIERA, gransmening, under_grans, uppgiftstext, villkorstext
@@ -9,14 +11,18 @@ from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.regelverk.villkor import falt_i, tolka_villkor, utvardera, Sanning
 
 
-def _belagg(regelbas: Regelbas, profil: Profil, id: str) -> str:
-    return uppgiftstext(regelbas, profil, id)
+def _belagg(regelbas: Regelbas, profil: Profil, id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> str:
+    if gransindex is None:
+        gransindex = metodgransindex(regelbas)
+    return uppgiftstext(regelbas, profil, id, gransindex=gransindex)
 
 
-def erfarenhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: Tjanstbedomning) -> Textstycke:
+def erfarenhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: Tjanstbedomning, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Textstycke:
+    if gransindex is None:
+        gransindex = metodgransindex(regelbas)
     e = tjanst.egen_erfarenhet
     text = f"Egen erfarenhet i hotanalysen för {regelbas.tjanster[tjanst.tjanst].namn}. "
-    text += " ".join(_belagg(regelbas, profil, id) for id in ERFARENHETSFALT)
+    text += " ".join(_belagg(regelbas, profil, id, gransindex=gransindex) for id in ERFARENHETSFALT)
     if e is None or not e.belagd:
         text += f" Rapporteringens underlag är ofullständigt och kan inte bedömas. {VERIFIERA}"
     elif e.rapporter == "inga":
@@ -33,11 +39,13 @@ def erfarenhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: Tjanstbedomnin
         if id not in regelbas.falt:
             continue
         refs.append(id)
-        text += " " + uppgiftstext(regelbas, profil, id, namn=rubrik)
+        text += " " + uppgiftstext(regelbas, profil, id, namn=rubrik, gransindex=gransindex)
     return Textstycke(typ="analys", text=text, referenser=refs)
 
 
-def sarbarhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: str, id: str) -> Textstycke:
+def sarbarhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: str, id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Textstycke:
+    if gransindex is None:
+        gransindex = metodgransindex(regelbas)
     profil = kompatibilitetsvy(profil, regelbas)
     s = regelbas.sarbarheter[id]
     villkor = tolka_villkor(s.villkor, regelbas.faltdefinitioner())
@@ -46,8 +54,8 @@ def sarbarhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: str, id: str) -
     text = (f"{s.namn} ({regelbas.tjanster[tjanst].namn}): Sårbarheten gäller om {villkorstext(s.villkor, regelbas)}. "
             f"Villkoret är {status}. ")
     refs = [tjanst, id, *sorted(falt_i(villkor))]
-    meningar = [gransmening(regelbas, profil, g) for g in under_grans(profil, s.villkor)]
-    meningar += [_belagg(regelbas, profil, ref) for ref in sorted(falt_i(villkor))]
+    meningar = [gransmening(regelbas, profil, g, gransindex=gransindex) for g in under_grans(profil, s.villkor)]
+    meningar += [_belagg(regelbas, profil, ref, gransindex=gransindex) for ref in sorted(falt_i(villkor))]
     text += " ".join(meningar)
     if s.beskrivning:
         text += f" Betydelse för tjänsten: {s.beskrivning} {s.metodmotivering}"
@@ -59,5 +67,5 @@ def sarbarhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: str, id: str) -
         for ref in ("P-BESK.geografi", slug + "_geografi"):
             if ref in regelbas.falt:
                 refs.append(ref)
-                text += " " + _belagg(regelbas, profil, ref)
+                text += " " + _belagg(regelbas, profil, ref, gransindex=gransindex)
     return Textstycke(typ="analys", text=text, referenser=refs)

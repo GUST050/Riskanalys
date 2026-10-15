@@ -72,6 +72,46 @@
   - P-TJ.bolag03_andel_kunder
   - P-TJ.bolag03_omsattning
   - P-TJ.bolag03_andel_omsattning
+  # Kontrollernas kategorifält (fasta val, ingen fritext); beslut 2026-10-13, spec 8.4.10 punkt 4.
+  - P-KONTROLL.C-07.utformning
+  - P-KONTROLL.C-07.genomforande
+  - P-KONTROLL.C-07.effekt
+  - P-KONTROLL.C-TJ-01.utformning
+  - P-KONTROLL.C-TJ-01.genomforande
+  - P-KONTROLL.C-TJ-01.effekt
+  - P-KONTROLL.C-TJ-02.utformning
+  - P-KONTROLL.C-TJ-02.genomforande
+  - P-KONTROLL.C-TJ-02.effekt
+  - P-KONTROLL.C-TJ-03.utformning
+  - P-KONTROLL.C-TJ-03.genomforande
+  - P-KONTROLL.C-TJ-03.effekt
+  - P-KONTROLL.C-TJ-04.utformning
+  - P-KONTROLL.C-TJ-04.genomforande
+  - P-KONTROLL.C-TJ-04.effekt
+  - P-KONTROLL.C-TJ-05.utformning
+  - P-KONTROLL.C-TJ-05.genomforande
+  - P-KONTROLL.C-TJ-05.effekt
+  - P-KONTROLL.C-TJ-06.utformning
+  - P-KONTROLL.C-TJ-06.genomforande
+  - P-KONTROLL.C-TJ-06.effekt
+  - P-KONTROLL.C-TJ-07.utformning
+  - P-KONTROLL.C-TJ-07.genomforande
+  - P-KONTROLL.C-TJ-07.effekt
+  - P-KONTROLL.C-TJ-08.utformning
+  - P-KONTROLL.C-TJ-08.genomforande
+  - P-KONTROLL.C-TJ-08.effekt
+  - P-KONTROLL.C-TJ-09.utformning
+  - P-KONTROLL.C-TJ-09.genomforande
+  - P-KONTROLL.C-TJ-09.effekt
+  - P-KONTROLL.C-TJ-10.utformning
+  - P-KONTROLL.C-TJ-10.genomforande
+  - P-KONTROLL.C-TJ-10.effekt
+  - P-KONTROLL.C-TJ-11.utformning
+  - P-KONTROLL.C-TJ-11.genomforande
+  - P-KONTROLL.C-TJ-11.effekt
+  - P-KONTROLL.C-SANK.utformning
+  - P-KONTROLL.C-SANK.genomforande
+  - P-KONTROLL.C-SANK.effekt
   undvik:
   - B-02
   - B-03

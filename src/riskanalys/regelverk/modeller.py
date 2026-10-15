@@ -42,6 +42,7 @@ class Falt(Strikt):
     fraga: str
     varfor: str
     personuppgift: bool = False
+    namnfalt: bool = False  # Namn som prövas lokalt (spec 8.4.10 punkt 7).
     kritisk: bool = False
     smagrupp: bool = False
     smagruppsantal: str | None = None
@@ -57,11 +58,19 @@ class Falt(Strikt):
 
     @model_serializer(mode="wrap")
     def serialisera(self, handler):
-        """Utelämna saknat kortnamn, så att historiska innehålls- och attestsummor består."""
+        """Utelämna saknat kortnamn och osatt namnfält, så att historiska innehålls- och attestsummor består."""
         data = handler(self)
         if self.etikett is None:
             data.pop("etikett", None)
+        if not self.namnfalt:
+            data.pop("namnfalt", None)
         return data
+
+    @model_validator(mode="after")
+    def _namnfalt_ar_personuppgift(self):
+        if self.namnfalt and not (self.personuppgift and self.typ == "text"):
+            raise ValueError(f"{self.id}: ett namnfält måste vara en personuppgift av typen text.")
+        return self
 
 
 class Kalla(Strikt):

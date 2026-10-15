@@ -70,3 +70,22 @@ def test_sarbarhetsmodulen_styr_formuleringen_under_gransen():
     assert "förekommer men ligger under metodens gräns" in delmodul("sarbarheter")
     assert "utan att ange gränsens värde" in delmodul("sarbarheter")
     assert "andelen skrivs som {tal:ID}" in delmodul("sarbarheter")
+
+
+def test_risknivamodulen_sager_att_ai_inte_ser_nivaerna():
+    assert "du ser inte motorns nivåer" in delmodul("risknivaer")
+    assert "motorns nivå" not in delmodul("slutsatser")
+
+
+def test_modulerna_beskriver_utfallet_provas_lokalt():
+    assert "prövas lokalt" in delmodul("sarbarheter")
+    assert "prövas lokalt" in delmodul("risknivaer")
+
+
+def test_kontrollmodulen_sager_att_riskreduktion_avgors_lokalt():
+    assert "avgör programmet lokalt" in delmodul("kontroller")
+
+
+def test_kontrollmodulen_forbjuder_alla_fyra_verben():
+    # Samma verb som valideringen i kontrolldelen underkänner (delvalidering._MINSKNING).
+    assert "minskar, begränsar, reducerar eller sänker risk" in " ".join(delmodul("kontroller").split())

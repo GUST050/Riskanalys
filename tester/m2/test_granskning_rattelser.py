@@ -11,7 +11,7 @@ import pytest
 import yaml
 
 from riskanalys.bedomning.motor import bedom
-from riskanalys.dokument.underlag import bygg_underlag
+from riskanalys.dokument.underlag import SKYDDAD_VISNING, bygg_underlag
 from riskanalys.profil.hantering import bekrafta, skapa_profil
 from riskanalys.profil.modeller import Byra, Uppgift
 from riskanalys.regelverk.laddning import STANDARD_REGELBAS, ladda_regelbas
@@ -147,5 +147,5 @@ def test_litet_komplement_avslojas_inte_via_antal_andel_eller_intakt(regelbas_v1
         idn += ['P-TJ.red01_omsattning', 'P-TJ.red01_andel_omsattning']
     for id in idn:
         u = _uppgift(regelbas_v1, p, id)
-        assert u.varde == 'undertryckt (litet komplement)'
+        assert u.varde == SKYDDAD_VISNING
         assert u.bas is None

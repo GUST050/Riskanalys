@@ -3,7 +3,9 @@ from datetime import date
 import pytest
 
 from riskanalys.dokument.klartext import (faltnamn, gemen, gransmening, gransmening_text, id_till_namn, kanda_id,
-                                          punkttext, under_grans, uppgiftstext, villkorstext)
+                                          kod_till_namn, paketnamn, punkttext, under_grans, uppgiftstext,
+                                          villkorstext)
+from riskanalys.profil.hantering import visa_varde_klartext
 from riskanalys.profil.modeller import Byra, Period, Profil, Uppgift
 
 PER = Period(fran=date(2025, 1, 1), till=date(2025, 12, 31))
@@ -71,10 +73,11 @@ def test_gransmeningens_mall_ar_gemensam():
         "på 20 % för automatiskt riskpåslag.")
 
 
-def test_gransmeningen_skriver_mindre_an_en_procent_i_stallet_for_noll_procent():
-    # En andel som avrundas till 0 % men är över noll får inte se ut som noll.
-    text = gransmening_text("andel kunder i riskbranscher", "0 %", "20 %")
-    assert "är mindre än 1 %, men det ligger under" in text and "är 0 %" not in text
+def test_gransmeningens_mall_skriver_visningen_som_den_ar():
+    # Intervallet "mindre än 1 %" kommer färdigt från visa_varde_klartext; mallen gör ingen egen omskrivning.
+    text = gransmening_text("andel kunder i riskbranscher", "mindre än 1 %", "20 %")
+    assert "är mindre än 1 %, men det ligger under" in text
+    assert "är 0 %, men" in gransmening_text("andel kunder i riskbranscher", "0 %", "20 %")
 
 
 def test_gransmeningen_for_en_andel_som_avrundas_till_noll(rb_intag):
@@ -173,3 +176,70 @@ def test_punkttext_skriver_punkterna_i_ord():
     assert punkttext((19,)) == "punkt 19"
     assert punkttext((19, 20)) == "punkterna 19 och 20"
     assert punkttext((19, 20, 21)) == "punkterna 19, 20 och 21"
+
+
+@pytest.mark.parametrize("varde,text", [
+    (0.0, "0 %"), (0.0049, "mindre än 1 %"), (0.005, "mindre än 1 %"), (0.0051, "1 %"),
+    (0.9949, "99 %"), (0.995, "mer än 99 %"), (0.9951, "mer än 99 %"), (1.0, "100 %"), (0.15, "15 %"),
+])
+def test_visa_varde_klartext_for_andelar(rb_intag, varde, text):
+    assert visa_varde_klartext(rb_intag.falt["P-KUND.andel_riskbransch"], varde) == text
+
+
+def test_paketnamn_utan_kod(rb_intag):
+    assert paketnamn(rb_intag.regelpaket["RP-RED-VG"]) == "Bokföring, skatterådgivning och bolagstjänster"
+
+
+def test_kod_till_namn(rb_intag):
+    titel = rb_intag.kallor["SRC-PTL"].titel
+    assert kod_till_namn(rb_intag, "Lästa: SRC-PTL och SRC-OKAND.") == f"Lästa: {titel} och SRC-OKAND."
+
+
+def test_kod_till_namn_byter_regelpaket_mot_paketnamn_med_lan(rb_intag):
+    # Alla tre regelpaketen heter lika; länen skiljer dem åt.
+    paket = rb_intag.regelpaket["RP-RED-VG"]
+    namn = f"{paketnamn(paket)} ({', '.join(paket.lan)})"
+    assert "Västra Götaland" in namn
+    assert kod_till_namn(rb_intag, "Regelpaketet RP-RED-VG, men inte RP-OKANT.") == f"Regelpaketet {namn}, men inte RP-OKANT."
+
+
+def test_kod_till_namn_ger_olika_text_for_olika_regelpaket(rb_intag):
+    text = kod_till_namn(rb_intag, "RP-RED-VG och RP-RED-STHLM")
+    assert "RP-" not in text and "Västra Götaland" in text and "Stockholm" in text
+
+
+def test_kod_till_namn_byter_registrerad_kalla_utan_src_prefix(rb_intag):
+    assert "EU-269-2014" in rb_intag.kallor
+    assert kod_till_namn(rb_intag, "Källa EU-269-2014.") == f"Källa {rb_intag.kallor['EU-269-2014'].titel}."
+
+
+def test_kod_till_namn_byter_bara_hela_koder(rb_intag):
+    text = "SRC-PTL-X, XSRC-PTL, SRC-PTLX, EU-269-2014-X"
+    assert kod_till_namn(rb_intag, text) == text
+
+
+def test_kod_till_namn_byter_kontrollsumma_mot_hanvisning_till_bilagan(rb_intag):
+    summa = rb_intag.kallor["SRC-PTL"].kontrollsumma
+    assert summa.startswith("sha256:")
+    assert kod_till_namn(rb_intag, f"Version {summa} lästes.") == "Version (kontrollsumma i bilaga B1) lästes."
+
+
+@pytest.mark.parametrize("skrivet", ["sha256:xyz", "sha256:0123abcdöö", "sha256:ÖÄÅ-123", "sha256:0123abcd_!?x", "sha256:"])
+def test_kod_till_namn_byter_ogiltig_text_efter_sha256_mot_hanvisning_till_bilagan(rb_intag, skrivet):
+    # Byrån kan skriva vad som helst efter "sha256:"; ingenting av det får stå kvar i löptexten.
+    text = kod_till_namn(rb_intag, f"Version {skrivet} lästes.")
+    if skrivet == "sha256:":
+        assert text == "Version sha256: lästes."  # utan något efter kolonet finns ingen kontrollsumma att dölja
+    else:
+        assert text == "Version (kontrollsumma i bilaga B1) lästes."
+
+
+@pytest.mark.parametrize(("skrivet", "vantat"), [
+    ("Version sha256:0123abcd.", "Version (kontrollsumma i bilaga B1)."),
+    ("Version (sha256:0123abcd), lästes.", "Version ((kontrollsumma i bilaga B1)), lästes."),
+    ("Är det sha256:xyz?", "Är det (kontrollsumma i bilaga B1)?"),
+    ("Värdet ”sha256:abc”.", "Värdet ”(kontrollsumma i bilaga B1)”."),
+    ("Värdet 'sha256:abc'.", "Värdet '(kontrollsumma i bilaga B1)'."),
+])
+def test_kod_till_namn_behaller_skiljetecken_efter_kontrollsumman(rb_intag, skrivet, vantat):
+    assert kod_till_namn(rb_intag, skrivet) == vantat

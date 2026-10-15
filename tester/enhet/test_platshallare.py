@@ -13,9 +13,9 @@ def test_giltig_platshallare_godtas():
 
 @pytest.mark.parametrize("text,refs,del_av_fel", [
     ("{tal:P-OKAND.x} kunder", ["P-OKAND.x"], "okänt eller skyddat"),
-    ("{tal:P-KUND.antal_aktiva} kunder", ["T-RED-01"], "saknas bland styckets referenser"),
+    ("{tal:P-KUND.antal_aktiva} kunder", ["T-RED-01"], "platshållare nummer 1 saknar sitt ID bland styckets referenser"),
     ("{tal:P-KUND.antal_aktiva kunder", ["P-KUND.antal_aktiva"], "felskriven"),
-    ("{antal} kunder", [], "otillåten platshållare"),
+    ("{antal} kunder", [], "platshållare nummer 1 är inte tillåten"),
 ])
 def test_otillatna_platshallare_underkanns(text, refs, del_av_fel):
     assert any(del_av_fel in f for f in platshallarfel(1, text, refs, NUM))

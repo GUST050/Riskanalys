@@ -31,13 +31,14 @@ def sammanfatta(resultat: Iterable) -> Skrivsammanfattning:
     poster = [p for f in forsok for p in f.anrop.anvandning]
     return Skrivsammanfattning(
         avsnitt=len(delar),
-        godkanda_forsta_forsoket=sum(1 for r in delar if r.forsok and not r.forsok[0].fel),
+        godkanda_forsta_forsoket=sum(1 for r in delar if r.forsok and not r.forsok[0].fel and not getattr(r, "mall", False)),
         anrop=len(forsok),
         indata_token=sum(p.indata_token for p in poster),
         utdata_token=sum(p.utdata_token for p in poster),
         cache_lasning_token=sum(p.cache_lasning_token for p in poster),
         cache_skrivning_token=sum(p.cache_skrivning_token for p in poster),
-        felklasser=dict(Counter(felklass(fel) for f in forsok for fel in f.fel)),
+        felklasser=dict(Counter(felklass(fel) for f in forsok for fel in f.fel)
+                       + Counter(r.lokal_sparr for r in delar if getattr(r, "lokal_sparr", None))),
     )
 
 

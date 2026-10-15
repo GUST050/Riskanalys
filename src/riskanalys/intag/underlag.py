@@ -53,7 +53,7 @@ def tidigare_underlag(rb, profil, falt):
         if (not f or not f.intag or f.alias_for or not profil.ar_bekraftad(id)
                 or kategori(f) != kategori(falt) or not u.kalla):
             continue
-        if u.kalla.startswith(('SCB AFR API;', 'Lokalt importerat SCB-format')):
+        if u.kalla.startswith(('SCB AFR API;', 'Lokalt importerat SCB-format', 'Bolagsverket HVD;')):
             continue
         if u.kalla == EGEN_KANNEDOM and not egen_kannedom_tillaten(falt):
             continue
@@ -68,6 +68,10 @@ def periodforslag(rb, profil, falt):
         return None
     bas = 'P-VERK.omsattning' if kategori(falt) == 'ekonomistatistik' else 'P-KUND.antal_aktiva'
     u = profil.uppgifter.get(bas)
+    if (not u or not profil.ar_bekraftad(bas)) and falt.id.startswith(('P-KUND.', 'P-TJ.')):
+        oms = profil.uppgifter.get('P-VERK.omsattning')
+        if oms and profil.ar_bekraftad('P-VERK.omsattning') and oms.kalla.startswith('Bolagsverket HVD;'):
+            return oms.period
     return u.period if u and profil.ar_bekraftad(bas) else None
 
 

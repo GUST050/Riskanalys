@@ -85,13 +85,24 @@ def test_mall_del_ger_blockerande_fynd(v3):
     assert len(fynd) == 1 and fynd[0]["allvar"] == "blockerande" and "hot" in fynd[0]["beskrivning"]
 
 
-def test_nivaer_och_sektorskala_ar_kodskrivna_och_tillgangliga_for_ai(v3):
+def test_mall_del_med_personnamn_ger_eget_fynd(v3):
+    rb, p, t, res, avsnitt_id = v3
+    mall = res.model_copy(update={"delar": tuple(
+        d.model_copy(update={"mall": True, "lokal_sparr": "personnamn"}) if d.del_id == "hot" else d
+        for d in res.delar)})
+    fynd = mallfynd(mall)
+    assert len(fynd) == 1 and fynd[0]["allvar"] == "blockerande"
+    assert "innehöll ett bekräftat personnamn" in fynd[0]["beskrivning"]
+
+
+def test_nivaer_ar_kodskrivna_men_inte_tillgangliga_for_ai(v3):
     rb,p,t,res,id=v3
     ref=rb.sektorsreferenser[rb.tjanster[t.tjanst].sektorreferens]
-    assert res.faktablad.nivaer['inneboende_risk']==t.inneboende.risk
+    assert res.faktablad.nivaer=={} and res.faktablad.regelspar==()
     assert res.faktablad.sektorsreferens.skala==ref.skala
     a=bygg_tjanstavsnitt_v3(rb,p,t,res,id)
     start,slut=[u.fore_stycke for u in a.underrubriker[4:]]
+    assert any(t.inneboende.risk in s.text and s.text.startswith("Sannolikheten bedöms som") for s in a.stycken[start:slut])
     assert any('Källans skala är separat' in s.text and ref.kalla in s.referenser for s in a.stycken[start:slut])
 
 

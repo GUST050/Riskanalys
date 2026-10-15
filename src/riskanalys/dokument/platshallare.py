@@ -17,28 +17,28 @@ def platshallarfel(nummer: int, text: str, referenser: list[str], numeriska: dic
     fel = []
     if _OPPEN.search(text) or any(c in _KLAMMER.sub("", text) for c in "{}"):
         fel.append(f"Stycke {nummer} har en felskriven platshållare. Skriv {{tal:ID}} med ett ID från faktabladet.")
-    for traff in _KLAMMER.finditer(text):
+    for nr, traff in enumerate(_KLAMMER.finditer(text), 1):
         hel = traff.group(0)
         tal = _TAL.fullmatch(hel)
         roll = _ROLL.fullmatch(hel)
         if roll and roll.group(1) in ROLLER:
             continue
         if not tal:
-            fel.append(f"Stycke {nummer} innehåller en otillåten platshållare {hel}. Tillåtna är {{tal:ID}}, {{period:ID}} och {{roll:FfR}}.")
+            fel.append(f"Stycke {nummer}: platshållare nummer {nr} är inte tillåten. Tillåtna är {{tal:ID}}, {{period:ID}} och {{roll:FfR}}.")
             continue
         id = tal.group(2)
         varden = numeriska if tal.group(1) == "tal" else (perioder or {})
         if id not in varden:
-            fel.append(f"Stycke {nummer}: {hel} är okänt eller skyddat. Använd bara {tal.group(1)}-ID som finns i faktabladet.")
+            fel.append(f"Stycke {nummer}: platshållare nummer {nr} har ett okänt eller skyddat värde. Använd bara {tal.group(1)}-ID som finns i faktabladet.")
         elif id not in referenser:
-            fel.append(f"Stycke {nummer}: {id} i {hel} saknas bland styckets referenser.")
+            fel.append(f"Stycke {nummer}: platshållare nummer {nr} saknar sitt ID bland styckets referenser.")
     return fel
 
 
 def faltid_fel(nummer: int, text: str) -> list[str]:
     utan = _KLAMMER.sub(" ", text)
-    return [f"Stycke {nummer} innehåller ID:t {id} i löptexten. Lägg ID:n i referenser och skriv klartext."
-            for id in dict.fromkeys(_FALTID.findall(utan))]
+    return [f"Stycke {nummer}: fält-ID nummer {k} i löptexten ska bort. Lägg ID:n i referenser och skriv klartext."
+            for k, id in enumerate(dict.fromkeys(_FALTID.findall(utan)), 1)]
 
 
 def ersatt_tal(text: str, numeriska: dict[str, str], perioder: dict[str, str] | None = None) -> str:

@@ -27,6 +27,7 @@ class Intagsserver(HTTPServer):
         self.url=self.origin+self.prefix
         self.leverantor=leverantor
         self.foretagsleverantor=foretagsleverantor
+        self.bolagsverksleverantor=None
         self.utkast=None
         self.utkastrevision=None
         self.kompletteringar=()
@@ -126,7 +127,7 @@ class Hantera(BaseHTTPRequestHandler):
         hanterare={k:getattr(self,'post_'+k) for k in ('skapa','svar','skriv','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster')}
         if path not in hanterare or query:
             self.svara(404,'Sidan finns inte.');return
-        data=self.formulardata(32 if path=='tjanster' else 16)
+        data=self.formulardata(32 if path in ('tjanster','skapa','registersamlat') else 16)
         if data is None:return
         try:
             hanterare[path](data)
@@ -169,6 +170,10 @@ class Hantera(BaseHTTPRequestHandler):
         nyckel=data.get('nyckel','').strip()
         provider=SCBLeverantor(nyckel=nyckel) if nyckel else (s.foretagsleverantor or SCBLeverantor())
         bild=provider.hamta(data.get('orgnr',''))
+        if data.get('bolagsverket') == 'ja':
+            from riskanalys.foretagsdata.bolagsverket import BolagsverketLeverantor
+            from riskanalys.foretagsdata.samlad import komplettera_bolagsverket
+            bild=komplettera_bolagsverket(bild,s.bolagsverksleverantor or BolagsverketLeverantor(),s.tjanst.mapp)
         spara_bild(s.tjanst.mapp,bild)
         if nyckel:s.foretagsleverantor=provider
 
@@ -196,10 +201,10 @@ class Hantera(BaseHTTPRequestHandler):
         s.utkast=None;s.kompletteringar=()
 
     def post_skapa(self,data):
-        if data.get('filial') not in ('ja','nej'):raise RiskanalysFel('Välj ja eller nej för utländsk filial.')
         s=self.server
         dag=formulardatum(data,'datum')
         if not data.get('bildsumma'):
+            if data.get('filial') not in ('ja','nej'):raise RiskanalysFel('Välj ja eller nej för utländsk filial.')
             s.tjanst.skapa(data.get('lan',''),data['filial']=='ja',dag,data.get('kalla',''),data.get('roll',''))
             return
         from riskanalys.foretagsdata.lagring import registerlas,las_bild
@@ -209,13 +214,20 @@ class Hantera(BaseHTTPRequestHandler):
             if data.get('ratt_byra')!='ja':raise RiskanalysFel('Kontrollera och bekräfta att detta är rätt byrå och uppgifterna gäller nu.')
             if dag<bild.hamtningsdag:raise RiskanalysFel('En aktuell registerbild kan inte styrka historisk bedömning. Börja manuellt med historiskt underlag.')
             if not bild.lan:raise RiskanalysFel('Säteslän saknas i registret. Börja intaget manuellt.')
-            if not data.get('filialkalla','').strip():raise RiskanalysFel('Ange eget underlag för filialsvaret. SCB-bilden styrker inte detta.')
             from riskanalys.intag.register import valda_falt,registersvar
             ids=valda_falt(data,bild)
             if 'P-ORG.sateslan' not in ids:
                 raise RiskanalysFel('Godkänn säteslänet för att starta med registeruppgifter, eller börja manuellt.')
-            svar=registersvar(bild,tuple(id for id in ids if id!='P-ORG.sateslan'),data.get('roll',''),date.today())
-            s.tjanst.skapa(bild.lan,data['filial']=='ja',dag,bild.hanvisning(),data.get('roll',''),filialkalla=data['filialkalla'],svar=svar)
+            if 'P-ORG.utlandsk_filial' in ids:
+                filial=bild.forslag()['P-ORG.utlandsk_filial']
+                filialkalla=bild.faltkalla('P-ORG.utlandsk_filial')
+            else:
+                if data.get('filial') not in ('ja','nej'):raise RiskanalysFel('Välj ja eller nej för utländsk filial, eller godkänn registerförslaget.')
+                if not data.get('filialkalla','').strip():raise RiskanalysFel('Ange eget underlag för filialsvaret. SCB-bilden styrker inte detta.')
+                filial=data['filial']=='ja'
+                filialkalla=data['filialkalla']
+            svar=registersvar(bild,tuple(id for id in ids if id not in ('P-ORG.sateslan','P-ORG.utlandsk_filial')),data.get('roll',''),date.today(),data)
+            s.tjanst.skapa(bild.lan,filial,dag,bild.hanvisning(),data.get('roll',''),filialkalla=filialkalla,svar=svar)
 
     def post_tjanster(self,data):
         if data.get('hela_listan')!='ja':

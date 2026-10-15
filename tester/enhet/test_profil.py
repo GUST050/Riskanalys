@@ -148,8 +148,11 @@ def test_saknade_kritiska_uppgifter(regelbas, profil_fabrik, real_varden):
     assert saknade_kritiska(profil_fabrik(regelbas, real_varden), regelbas, _urval(regelbas)) == ()
 
 
-def test_personnamn_hamtas_ur_bekraftade_personuppgifter(regelbas, profil_fabrik, real_varden):
-    assert personnamn(profil_fabrik(regelbas, real_varden), regelbas) == ("Testa Testsson",)
+def test_personnamn_hamtas_ur_bekraftade_namnfalt(regelbas_v1, profil_fabrik, real_varden):
+    # Den aktuella regelbasen deklarerar namnfalt; den historiska v0-basen ändras inte.
+    assert personnamn(profil_fabrik(regelbas_v1, real_varden), regelbas_v1) == ("Testa Testsson",)
+    okand = profil_fabrik(regelbas_v1, real_varden, okanda=("P-ROLL.ffr_namn",))
+    assert personnamn(okand, regelbas_v1) == ()
 
 
 def test_profilen_sparas_och_lases_oforandrad(datamapp, regelbas, profil_fabrik, real_varden):

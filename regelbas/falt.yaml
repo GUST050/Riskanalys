@@ -62,6 +62,8 @@
     beroenden: []
     grund: metodval
 - id: P-ROLL.ffr_namn
+  # Namnfält som prövas lokalt i AI-text; beslut 2026-10-14, spec 8.4.10 punkt 7.
+  namnfalt: true
   typ: text
   personuppgift: true
   kritisk: true

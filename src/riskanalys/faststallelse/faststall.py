@@ -12,6 +12,8 @@ from datetime import date
 from pathlib import Path
 
 from riskanalys.bedomning.korning import BEDOMNINGAR, aktualitetshinder, las_bedomning, las_bedomningsprofil
+from riskanalys.dokument.delskrivning import FORMATVERSION
+from riskanalys.dokument.modeller import Avsnitt, Dokument
 from riskanalys.dokument.rendering import faststalld_status, rendera_docx
 from riskanalys.dokument.skrivning import UTKAST
 from riskanalys.drift.historik import Handelse, Historik, historikens_kontrollsumma, las_historik, spara_historik
@@ -111,7 +113,29 @@ def kedjehinder(byramapp: Path, regelbas_rot: Path, regelbas: Regelbas, granskni
         if regelbasens_kontrollsumma(regelbas_rot) != regelbas.kontrollsumma
         else []
     )
-    return [*aktualitetshinder(byramapp, senaste, regelbas), *redan, *historik, *regelbas_hinder]
+    return [
+        *aktualitetshinder(byramapp, senaste, regelbas),
+        *redan,
+        *historik,
+        *regelbas_hinder,
+        *formathinder(regelbas, las_granskning(granskningsmapp)[0]),
+    ]
+
+
+def _formatbeskrivning(avsnitt: Avsnitt) -> str:
+    return f"har formatet {avsnitt.formatversion}" if avsnitt.formatversion else "saknar formatmarkering"
+
+
+def formathinder(regelbas: Regelbas, dokument: Dokument) -> list[str]:
+    """Varje tjänsteavsnitt ska ha aktuellt format före ny fastställelse; äldre paket läses som förut (spec 8.4.9 punkt 9)."""
+    if not regelbas.metod.omfattning:
+        return []
+    return [
+        f"Tjänsteavsnittet {a.id} {_formatbeskrivning(a)}, men aktuellt format är "
+        f"{FORMATVERSION}. Skriv om utkastet och granska på nytt."
+        for a in dokument.avsnitt
+        if a.id.startswith("D-ARB.6.") and a.formatversion != FORMATVERSION
+    ]
 
 
 def faststall(byramapp: Path, regelbas_rot: Path, regelbas: Regelbas, beslut: Beslut) -> Path:

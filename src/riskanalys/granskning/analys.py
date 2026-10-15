@@ -83,11 +83,19 @@ def analysfynd(regelbas, bedomning, profil, dokument, utkast=None):
     return resultat
 
 
+_MALLORSAK = {
+    None: "kunde inte skrivas maskinellt och består av programmets mall",
+    "personnamn": "innehöll ett bekräftat personnamn och har ersatts av programmets mall",
+}
+
+
 def mallfynd(resultat) -> list[dict]:
     """En del som skrivits av mallen är inget analysutkast; den ska skrivas om före fastställelse (spec 8.4.5)."""
     return [dict(typ="tackning", allvar="blockerande", grund="metodval", avsnitt=resultat.avsnitt,
-                 beskrivning=f"{resultat.tjanst}: delen {d.del_id} kunde inte skrivas maskinellt och består av programmets mall.",
-                 atgard="Komplettera underlaget eller skriv om delen och sakgranska den.")
+                 beskrivning=f"{resultat.tjanst}: delen {d.del_id} {_MALLORSAK[d.lokal_sparr]}.",
+                 atgard=("Skriv om delen utan personnamn; använd rollplatshållare som {roll:FfR}. "
+                         "Sakgranska den nya texten före fastställelse." if d.lokal_sparr == "personnamn"
+                         else "Komplettera underlaget eller skriv om delen och sakgranska den."))
             for d in resultat.delar if d.mall]
 
 

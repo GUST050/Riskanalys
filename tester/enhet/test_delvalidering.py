@@ -1,5 +1,8 @@
-from riskanalys.dokument.delvalidering import validera_del
-from riskanalys.dokument.modeller import AIStycke, AISvar
+import pytest
+
+from riskanalys.dokument.delvalidering import innehaller_personnamn, validera_del
+from riskanalys.dokument.modeller import AIOklarhet, AIStycke, AISvar
+from riskanalys.dokument.underlag import SKYDDAD_VISNING
 
 FYLLNAD = " Byrån konterar kundernas underlag och stämmer av dem mot bankens uppgifter varje månad." * 10
 
@@ -46,17 +49,50 @@ from riskanalys.dokument.underlag import kontrollstatus
 from riskanalys.bedomning.modeller import Kontrollbedomning
 
 
-def test_riskminskning_kraver_belagd_refererad_kontroll(faktablad_exempel):
+def _minskningsfel(n):
+    return (f"Stycke {n} säger att risken minskar. Programmet avgör lokalt om en kontroll räknas som riskreducerande; "
+            "använd inte orden minskar, begränsar, reducerar eller sänker i den här delen.")
+
+
+def _kontrollfb(faktablad_exempel, k):
+    return faktablad_exempel.model_copy(update={'kontroller': (UnderlagKontroll(id=k.id, namn='Kontroll', status=kontrollstatus(k)),)})
+
+
+def test_riskminskning_underkanns_i_kontrolldelen(faktablad_exempel):
     k = Kontrollbedomning(id='C-07', utformning='finns', genomforande='belagt', fungerar_och_ar_belagd=False)
-    fb = faktablad_exempel.model_copy(update={'kontroller': (UnderlagKontroll(id=k.id, namn='Kontroll', status=kontrollstatus(k)),)})
     text = 'Kontrollen minskar risken för osanna fakturor.' + FYLLNAD
-    assert any('belagd effekt' in f for f in validera_del('kontroller', _svar(('analys', ['C-07'], text)), fb, (), ()))
+    fel = validera_del('kontroller', _svar(('analys', ['C-07'], text)), _kontrollfb(faktablad_exempel, k), (), ())
+    assert _minskningsfel(1) in fel
 
 
-def test_belagd_kontroll_fran_motorn_far_beskrivas(faktablad_exempel):
+def test_belagd_kontroll_fran_motorn_far_inte_heller_beskrivas_som_riskminskande(faktablad_exempel):
+    # Programmet avgör lokalt om en kontroll räknas som riskreducerande; en belagd effekt ändrar inte det för AI.
     k = Kontrollbedomning(id='C-07', utformning='finns', genomforande='belagt', effekt='effektiv', effekt_belagd=True, fungerar_och_ar_belagd=True)
-    fb = faktablad_exempel.model_copy(update={'kontroller': (UnderlagKontroll(id=k.id, namn='Kontroll', status=kontrollstatus(k)),)})
-    assert not validera_del('kontroller', _svar(('analys', ['C-07'], 'Kontrollen minskar risken för osanna fakturor.' + FYLLNAD)), fb, (), ())
+    fb = _kontrollfb(faktablad_exempel, k)
+    assert 'belagd riskreducerande verkan' in fb.kontroller[0].status
+    fel = validera_del('kontroller', _svar(('analys', ['C-07'], 'Kontrollen minskar risken för osanna fakturor.' + FYLLNAD)), fb, (), ())
+    assert _minskningsfel(1) in fel
+
+
+@pytest.mark.parametrize('verb', ['minskar', 'begränsar', 'reducerar', 'sänker'])
+def test_varje_riskminskande_verb_underkanns_oavsett_referens(verb, faktablad_exempel):
+    for referenser in (['C-07'], ['T-RED-01'], ['T-RED-01', 'H-01']):
+        fel = validera_del('kontroller', _svar(('analys', referenser, f'Rutinen {verb} risken för osanna fakturor.' + FYLLNAD)),
+                           faktablad_exempel, (), ())
+        assert _minskningsfel(1) in fel, (verb, referenser)
+
+
+def test_varje_stycke_med_riskminskning_far_eget_fel(faktablad_exempel):
+    svar = _svar(('analys', ['T-RED-01'], 'Rutinen är dokumenterad.' + FYLLNAD),
+                 ('analys', ['T-RED-01'], 'Rutinen reducerar risken.'))
+    fel = validera_del('kontroller', svar, faktablad_exempel, (), ())
+    assert _minskningsfel(2) in fel and _minskningsfel(1) not in fel
+
+
+def test_riskminskning_underkanns_bara_i_kontrolldelen(faktablad_exempel):
+    fel = validera_del('hot', _svar(('analys', ['T-RED-01', 'H-01', 'H-02'], 'Rutinen minskar risken.' + FYLLNAD)),
+                       faktablad_exempel, (), ())
+    assert _minskningsfel(1) not in fel
 
 
 def test_kombination_utan_belagt_overlapp_maste_vara_scenario(faktablad_exempel):
@@ -96,8 +132,6 @@ def test_obelagd_kontroll_far_beskrivas_som_att_den_inte_sanker_nivan(faktablad_
     fb=faktablad_exempel.model_copy(update={'kontroller':(k,)})
     svar=_svar(('analys',['C-07'],'Kontrollen sänker inte risknivån eftersom effekten inte är belagd.'+FYLLNAD))
     assert not validera_del('kontroller',svar,fb,(),())
-
-import pytest
 
 @pytest.mark.parametrize('text',['Hög risk för penningtvätt finns bland dessa kunder.','Konsekvenserna är allvarliga.','En låg sannolikhet för penningtvätt föreligger.','Riskerna är höga.','Höga risker finns bland kunderna.'])
 def test_ai_far_inte_satta_niva_med_annan_ordfoljd(text,faktablad_exempel):
@@ -146,7 +180,7 @@ def test_samverkansord_kraver_scenario_aven_med_nej(samverkan, faktablad_exempel
 
 def test_skyddad_bekraftad_faktapost_kraver_inte_verifiera_eller_oklarhet(faktablad_exempel):
     fb = faktablad_exempel.model_copy(update={'poster': tuple(
-        p.model_copy(update={'status': 'skyddad', 'tal': None, 'visningsvarde': 'färre än 5'})
+        p.model_copy(update={'status': 'skyddad', 'tal': None, 'visningsvarde': SKYDDAD_VISNING})
         for p in faktablad_exempel.poster)})
     svar = _svar(('analys', ['H-01', 'H-02', 'P-KUND.antal_aktiva'],
         'Byrån beskriver omfattningen genom maskerad statistik.' + FYLLNAD))
@@ -155,7 +189,7 @@ def test_skyddad_bekraftad_faktapost_kraver_inte_verifiera_eller_oklarhet(faktab
 
 def test_skyddat_tal_far_fortfarande_inte_anvandas_i_platshallare(faktablad_exempel):
     fb = faktablad_exempel.model_copy(update={'poster': tuple(
-        p.model_copy(update={'status': 'skyddad', 'tal': None, 'visningsvarde': 'färre än 5'})
+        p.model_copy(update={'status': 'skyddad', 'tal': None, 'visningsvarde': SKYDDAD_VISNING})
         for p in faktablad_exempel.poster)})
     svar = _svar(('analys', ['H-01', 'H-02', 'P-KUND.antal_aktiva'],
         'Byrån har {tal:P-KUND.antal_aktiva} kunder.' + FYLLNAD))
@@ -238,3 +272,29 @@ def test_interna_kommentarer_om_ai_underkanns(text, faktablad_exempel):
 ])
 def test_beskrivning_av_teknik_med_ai_godtas(text, faktablad_exempel):
     assert _ai_kommentarfel(faktablad_exempel, text) == []
+
+
+def test_innehaller_personnamn_fangar_genitiv_skiftlage_och_oklarheter():
+    stycke = AIStycke(typ="analys", referenser=["T-RED-01"], text="ANNA SVENSSONS rutin följs.")
+    assert innehaller_personnamn(AISvar(stycken=[stycke], oklarheter=[]), ("Anna Svensson",))
+    fraga = AISvar(stycken=[stycke.model_copy(update={"text": "Rutinen följs."})],
+                   oklarheter=[AIOklarhet(uppgift_id="P-KUND.antal_aktiva", fraga="Har Anna Svensson bekräftat?")])
+    assert innehaller_personnamn(fraga, ("Anna Svensson",))
+    assert not innehaller_personnamn(fraga, ("Bertil Berg",))
+    assert not innehaller_personnamn(fraga, ())
+
+
+@pytest.mark.parametrize(("namn", "text", "vantat"), [
+    ("Bo", "Byrån sköter bokföring.", False),
+    ("Eva", "En evaluering görs.", False),
+    ("VD", "Kunden yrkar avdrag.", False),
+    ("Bo", "Bos rutin följs.", True),
+    ("Åsa", "Åsas rutin följs.", True),
+    ("Anna Svensson", "(ANNA SVENSSONS), rutin följs.", True),
+    ("Anna Svensson", "Anna Svenssonberg följer rutinen.", False),
+    ("FfR", "Ansvarig är {roll:FfR}.", False),
+    ("Ansvarsfunktion", "Ansvarig är {roll:Ansvarsfunktion}.", False),
+])
+def test_personnamn_matchar_hela_namn_och_genitiv(namn, text, vantat):
+    svar = _svar(("analys", ["T-RED-01"], text))
+    assert innehaller_personnamn(svar, (namn,)) is vantat

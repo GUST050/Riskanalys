@@ -30,6 +30,11 @@ def besvara(rb: Regelbas, profil: Profil, svar: IntagSvar) -> Profil:
     else:
         if not svar.roll.strip():
             raise RiskanalysFel('Ange vem eller vilken funktion som bekräftar uppgiften.')
+        oms = profil.uppgifter.get('P-VERK.omsattning')
+        if (f.id.startswith(('P-KUND.', 'P-TJ.')) and svar.period and oms
+                and profil.ar_bekraftad('P-VERK.omsattning')
+                and oms.kalla.startswith('Bolagsverket HVD;') and svar.period != oms.period):
+            raise RiskanalysFel('Statistikperioden skiljer sig från den godkända årsredovisningen. Använd samma period eller uppdatera omsättningen med underlag för den nya perioden först.')
         p = bekrafta(profil, rb, f.id, svar.text, svar.kalla, svar.roll, svar.datum, svar.period)
     tidigare = profil.uppgifter.get(f.id, Uppgift())
     nytt = p.uppgifter[f.id]

@@ -5,7 +5,7 @@ import pytest
 from riskanalys.bedomning.motor import bedom
 from riskanalys.dokument.arb import bygg_arb
 from riskanalys.dokument.modeller import AvsnittsUtkast
-from riskanalys.dokument.underlag import bygg_underlag, tjanster_med_avsnitt
+from riskanalys.dokument.underlag import SKYDDAD_VISNING, bygg_underlag, tjanster_med_avsnitt
 from riskanalys.drift.historik import Handelse, Historik
 from riskanalys.granskning.kontroller import granska
 from riskanalys.profil.hantering import skapa_profil
@@ -64,7 +64,7 @@ def test_ai_far_skyddade_antal_men_inte_kalla_namn_eller_fritext(regelbas_v1, pr
     for id, t in tjanster_med_avsnitt(b):
         underlag = bygg_underlag(regelbas_v1, p, t, id)
         uppgifter = {v.id: v for v in underlag.uppgifter}
-        assert uppgifter[RAPPORTER].varde == "färre än 5"
+        assert uppgifter[RAPPORTER].varde == SKYDDAD_VISNING
         assert uppgifter[AVBOJANDEN].period == (str(PERIOD.fran), str(PERIOD.till))
         assert all(text not in underlag.model_dump_json() for text in ("HEMLIG_KALLA", "HEMLIG_PERSON", "LOKAL_HEMLIG_ERFARENHET"))
 
@@ -138,5 +138,5 @@ def test_ai_sarbarhetsmotivering_skyddar_sma_grupper(regelbas_v1, profil):
     id, t = tjanster_med_avsnitt(b)[0]
     u = bygg_underlag(regelbas_v1, p, t, id)
     s = next(s for s in u.sarbarheter if s.id == "S-GEO-01")
-    assert "färre än 5" in s.motivering and "2 %" not in s.motivering
+    assert SKYDDAD_VISNING in s.motivering and "2 %" not in s.motivering
     assert "HEMLIG_KALLA" not in u.model_dump_json()
