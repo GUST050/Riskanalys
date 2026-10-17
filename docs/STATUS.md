@@ -1,6 +1,52 @@
 # Status och framsteg
 
-Senast uppdaterad 2026-10-15.
+Senast uppdaterad 2026-10-17.
+
+## A + B tekniskt slutfört, 2026-10-17
+
+Claude slutförde A + B med subagenter efter att Codex nått sin användningsgräns; Codex granskade två gånger. Rättat: äldre utkast ger tydligt fel i stället för krasch, låsta stycken om egen rapportering och geografi med B-09/B-10/B-15, omfattningens motivering och D-ARB.9 i v6, lokal prövning av AI-text mot v6:s låsta stycken utan ändrad AI-begäran, framtidsdaterat stöd för analysgodkännande, symlänkade mappar vid beläggsimport, v6-layout och B1-delrubriker i dokumentmodellen. 81 regelkontraktsprov körs mot v6.
+
+Användarens beslut 2026-10-17: realistiskt läsprov 3 500–5 000 huvudord (riktbudget 4 700), AI-maxprov med synlig längdvarning och bevarad analys; ett underkännande får dokumentera felaktigt daterat stöd; B1-rubriker i modellen.
+
+**Verifiering:** fullsvit **2 107 passerade, ett bortvalt livetest, 1 147,52 s**, exitkod 0. Regelbas 1.5.0 validerar; `git diff --check` passerar. Demo 4 510 huvudord på 15 LibreOffice-sidor (sidmålet 9–12 nås inte), AI-max 5 239 med längdvarning, B1 cirka 12 700 ord. Ogranskat tekniskt modellrapportpaket verifierat i `~/.local/share/riskanalys/provkorningar/ab-modellrapport-20261017/`.
+
+**Kvarstår:** verklig sakkunnig metodvalidering och M1–M4, namngiven modellansvarig och byråbeslutsansvarig, medarbetarläsprov, kontroll i Microsoft Word, commit. Detaljer i [D-ARB-planen](superpowers/plans/2026-10-11-d-arb-tjanststruktur.md#slutförande-och-verifiering-2026-1016–17) och spec revision 34.
+
+## A + B: implementation med subagenter pågår, 2026-10-15
+
+Användaren beställde genomförande av hela planen med subagenter. Färsk baslinje: **1 632 passerade, ett bortvalt livetest, 729,80 s**; 573 program-/regel-/testfiler var oförändrade under körningen. Arbete sker på `codex/m0-m1`, utan commit eller push. De tre tidigare dokumentationsändringarna är säkerhetskopierade och `research_notes/` lämnas orört.
+
+AB1 har infört beskrivande räckvidd, korsreferenser och egna innehållsbundna sakkunnigobjekt; regelbas 1.4.0 validerar. Riktad verifiering: 83 passerade, samt 32 efter rättad aktuell versionsförväntan. En ny granskare har godkänt AB1. Faktisk scenariotäckning är fortfarande okänd för de generiska kontrollerna; inga nya riskfaktorer eller numeriska regler införs.
+
+AB4a har infört dokumentformat v5.1 med risköversikt först, beräkningar i B1, interna Word-länkar och läsbara käll-/kontrollbeskrivningar. Historiska v5-summor bevaras. Granskningen hittade saknad explicit M1–M4-status och interna ID:n i ny löptext; båda rättades och återgranskades. Efter rättning: **122 riktade tester passerade**, inklusive syntetisk CLI-kedja genom fastställelse/verifiering/återställning. Färsk steg 1-fullsvit: **1 677 passerade, ett bortvalt livetest, 730,04 s**; alla 576 program-/regel-/testfiler var oförändrade under körningen. Regelbasvalidering och diffkontroll passerar. Exakt testat steg är sparat separat före fortsatt arbete. Tretjänstprovet blev längre av beskrivningarna, så längdmålet är inte uppnått genom läsordningen ensam.
+
+Steg 2 har kompletterat räckvidden med typad beskrivningsstatus och regelbas 1.5.0, utan numerisk ändring; 99 riktade tester och separat granskning passerar. AB7:s modellidentitet, rapportpaket och lokala modellriskunderlag är implementerade. Separat granskning hittade tre fel i installationsformat, historisk rapportläsning och importkontroll; dessa rättades med RED→GREEN. Återgranskning godkänner rättningarna, 92 riktade tester passerar. AB2:s modeller, privata CAS-lagring, belägg och låsta beslut är byggda. Granskningens två fel i kontrollvärdesprövning och destinationsvägens symlänksskydd rättades med RED→GREEN; återgranskningen godkänner och 130 riktade tester tillsammans med AB7 passerar. AB3:s typade CLI/webbguide är implementerad och godkänd i separat granskning: 67 färska prov, inklusive kompletta formulär-POST för alla 16 block. AB4b:s fulla v6-dokumentbyggare är också godkänd; maxproven ger 4 892 respektive 5 628 huvudord med 1 520 AI-ord. B1 är fortsatt omfattande och ingen sidlayout är ännu verifierad. AB5:s frysta attest-/paketkedja klarar 135 riktade och elva M2-prov; separat granskning hittade ett kronologifel som rättats med RED→GREEN. 143 riktade prov och separat återgranskning med åtta datumprov godkänner rättningen. AB6:s helkedja och artefaktprov pågår. Projektets tekniska rapport har ännu inte levererats. Dessa preciseringar tillför inga nya sakfrågor eller riskvikter. Sakkunnig metodprövning/M1 och verklig byrågranskning kvarstår.
+
+## A + B: avgränsad efter Claudes granskning, 2026-10-15
+
+[Befintlig plan](superpowers/plans/2026-10-11-d-arb-tjanststruktur.md#avgränsning-efter-claudes-granskning-2026-10-15) och spec revision 32 preciserar sex omfattningsbeslut: redigerbara ogranskade förslag och delade scenarier med samma/avviker per tjänst; endast hot/sårbarheter från AI i v6; två leveranssteg; logg/synlig märkning när författare och godkännare är samma person; M1 avgörs i metodens sakkunniggranskning; modellidentitet av motor/beräkningsberoenden/regelbas med miljöversioner separat och projektlevererad valideringsrapport som byrån bedömer och godkänner.
+
+Steg 1 är AB1 + AB4a (v5.1-läsordning, risköversikt först, beräkningar i B1), granskat och fulltestat före eventuell separat beställd commit. Steg 2 är AB7 → AB2 → AB3 → AB4b → AB5 → AB6. Arbetsbördeprovet specificerar 40 alltid obligatoriska + 24 villkorade blockbedömningar och 12 unika scenarier i fyrtjänstfallet, med förifyllnad/återanvändning; det är inte uppmätt tidsåtgång eller 64 nya fritextsvar. AI-max blir 1 520 ord för fyra tjänster; huvudtextens riktbudget är 4 700 ord och måste provas vid implementationen.
+
+Tidigare fem och sex källkompletteringar behålls. Endast tre befintliga Markdownfiler ändras. Kod, regelbas och sakkunnigstatus är oförändrade; inget är implementerat, committat eller pushat i detta steg. Dokumentkontroll görs; fullsvit körs inte för denna dokumentändring. Senast uppmätta kodtestresultat står i commitverifieringen nedan. `research_notes/` lämnas orört.
+
+## A + B: sex ytterligare kompletteringar inarbetade, 2026-10-15
+
+På användarens beställning har [befintlig D-ARB-plan](superpowers/plans/2026-10-11-d-arb-tjanststruktur.md#inarbetad-fortsättningsgranskning--sex-kompletteringar-2026-10-15) skrivits om med tjänstedetalj/delanalyser, faktisk betalningsinsyn, uppdragshanterbarhet, lokal leverantörsprövning, plattforms-/PSP-prov och löpande modellriskhantering. De fem tidigare kraven är bevarade och tilläggen ingår i modeller, frågor, bindningsmatris, dokumentkrav och acceptansprov. Ny AB7 preciserar spec §7.8; beroendeordningen är AB1 → AB7 → AB2 → AB3 → AB4 → AB5 → AB6. Designspec revision 31 är synkroniserad.
+
+Planen skiljer delanalyser från nya risknivåer, uppdragsbeslut från dokumentattest samt grön programtestning från faktisk modellvalidering/feluppföljning. Befintliga katalogposter om kundrelationer, kundberoende, leverantörer och TF återanvänds. Endast plan/spec/STATUS ändras; ingen implementation, fullsvit, risk-/AI-regeländring, sakkunnigattest, commit eller push. Privat underlag och `research_notes/` lämnas orörda.
+
+## A + B: fem källkompletteringar inarbetade i planen, 2026-10-15
+
+På användarens beställning har den befintliga [D-ARB-planen](superpowers/plans/2026-10-11-d-arb-tjanststruktur.md#inarbetad-källgranskning--fem-bindande-plankrav-2026-10-15) kompletterats inom datamodell, granskningsfrågor, ändringsmatris, dokumentinnehåll och AB2–AB6. Kraven gäller sårbarhetsprövning per tjänst, faktorernas samverkan, konkret rutinlänk, egna rapporterings-/bevakningslärdomar och skilda utvärderings-/uppdateringsdatum samt blockerande lokal prövning av redovisad reduktion mot kontrollräckvidd. Designspec revision 30 är synkroniserad.
+
+Den tidigare hänvisningen till research 11 §10 saknar motsvarande avsnitt i den aktuella arbetskopian; källstödet och det privata datumprovet hänvisas därför direkt i planen. Befintlig research är oförändrad. Endast plan/spec/STATUS ändras i detta steg. Kompletteringarna är ännu inte implementerade; kod, riskregler, AI-gräns, historiska paket och sakkunnigstatus är oförändrade. Ingen fullsvit, commit eller push; `research_notes/` lämnas utanför.
+
+## A + B: datakontrakt och genomförande preciserade, 2026-10-15
+
+Efter den inklistrade granskningen av trecommitskedjan har den befintliga [D-ARB-planen](superpowers/plans/2026-10-11-d-arb-tjanststruktur.md#a--b--konkret-kontrakt-inför-nästa-revision-2026-10-15) kompletterats med A + B:s datamodell, åtta frågor per tjänst, bindnings-/ändringsmatris och sex genomförandeuppgifter med acceptansprov. Designspec revision 29 beskriver samma planerade kontrakt. Separat lokal analysattest föregår sakgranskning av dokumentet, så att bindningen inte blir cirkulär. Kontrollräckvidd ska vara beskrivande och källbunden; motor och AI-gräns förblir oförändrade.
+
+**Inte implementerat:** privat analysregister, formulär/CLI, nya räckviddsposter och dokumentformat v6. Aktuell leverans är fortfarande H6/v5. Sakkunnig/beslutsansvarig för M1–M4 är inte utsedd här. Endast tre befintliga Markdownfiler ändras i denna planrevision; ingen fullsvit körs om för den. Senast uppmätta kodläge är fortsatt 1 632 passerade och ett bortvalt livetest enligt commitverifieringen nedan, inte en ny körning. Ingen commit eller push; den inklistrade granskarens pushfråga räknas inte som beställning. `research_notes/` lämnas utanför.
 
 ## Godkänd uppdelning i tre commits, 2026-10-15
 
