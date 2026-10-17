@@ -150,3 +150,22 @@ def test_b1_utan_sanktionssvar_saknar_omformuleringsnotis(v6underlag):
     bilaga = bygg_underlagsbilaga(rb, utan)
     assert [s for s in bilaga.stycken if s.referenser == [SANKTIONSFALT]]
     assert not any('omformulerades' in s.text for s in bilaga.stycken)
+
+
+def _sanktionsrad(rb, p, **andring):
+    from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
+    u = p.uppgifter[SANKTIONSFALT].model_copy(update=andring)
+    profil = p.model_copy(update={'uppgifter': {**p.uppgifter, SANKTIONSFALT: u}})
+    return next(s.text for s in bygg_underlagsbilaga(rb, profil).stycken if s.referenser == [SANKTIONSFALT])
+
+
+@pytest.mark.parametrize(('andring', 'notis'), [
+    ({'varde': False, 'datum': date(2026, 10, 10)}, True),
+    ({'varde': False, 'datum': date(2026, 10, 17)}, True),
+    ({'varde': False, 'datum': None}, True),
+    ({'varde': False, 'datum': date(2026, 10, 18)}, False),
+    ({'varde': True, 'datum': date(2026, 10, 10)}, False),
+])
+def test_sanktionsnotisen_galler_bara_aldre_nej_svar(v6underlag, andring, notis):
+    rb, p, *_ = v6underlag
+    assert _sanktionsrad(rb, p, **andring).endswith(SANKTIONSNOTIS) is notis

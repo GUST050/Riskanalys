@@ -1,5 +1,7 @@
 """Infoga lokala fakta; fri text ingår aldrig i AI-underlag eller automatiska riskbeslut."""
 
+from datetime import date
+
 from riskanalys.regelverk.granser import metodgransindex
 from riskanalys.dokument.delvalidering import SANKTION_OMFORMULERAD
 from riskanalys.dokument.modeller import Dokument, Textstycke, Avsnitt
@@ -11,10 +13,15 @@ SANKTIONSNOTIS = (f'Frågan omformulerades {SANKTION_OMFORMULERAD}. '
                   'Tidigare svar läses som att ingen anknytning har identifierats.')
 
 
+def _aldre_nej_svar(u) -> bool:
+    """Bara ett nej som kan ha getts på den gamla frågan; datum saknas eller är senast omformuleringsdagen."""
+    return (u is not None and u.varde is False
+            and (u.datum is None or u.datum <= date.fromisoformat(SANKTION_OMFORMULERAD)))
+
+
 def _med_omformuleringsnotis(text: str, profil, falt_id: str) -> str:
-    """Ett sparat svar på sanktionsfrågan läses med den snävare betydelsen; notisen visar det i B1."""
-    u = profil.uppgifter.get(falt_id)
-    if falt_id != SANKTIONSFALT or u is None or u.varde is None:
+    """Ett äldre nej på sanktionsfrågan läses med den snävare betydelsen; notisen visar det i B1."""
+    if falt_id != SANKTIONSFALT or not _aldre_nej_svar(profil.uppgifter.get(falt_id)):
         return text
     return f'{text} {SANKTIONSNOTIS}'
 
