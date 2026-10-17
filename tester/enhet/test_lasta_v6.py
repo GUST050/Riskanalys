@@ -7,6 +7,7 @@ from riskanalys.dokument.arb_v6 import bygg_arb_v6
 from riskanalys.dokument.lasta_v6 import erfarenhetsstycke_v6, geografistycke_v6
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
 from riskanalys.regelverk.granser import metodgransindex
+from tester.fixturer.m2 import PERIOD
 from tester.fixturer.arb_kedja import HISTORIK, andrat, bedom_kedja, granska_kedja, med_avsnitt, syntetisk_profil, v6_kedja
 
 RAPPORTER = "P-VERK.antal_rapporter"
@@ -70,3 +71,50 @@ def test_mall_for_sarbarheter_har_geografin_en_gang_i_det_lasta_stycket(regelbas
     geo = [s for s in d.avsnitt_med_id()[id].stycken if "S-GEO-01" in s.referenser and "Sårbarheten gäller om" in s.text]
     assert len(geo) == 1 and geo[0].proveniens == "regelbas"
     assert bygg_arb_v6(regelbas_v1, profil, k.bedomning, resultat, HISTORIK, analys=None) == d
+
+
+GEO_BYRA = "P-BESK.geografi"
+GEO_RED = "P-TJ.red01_geografi"
+GEO_TEXT = "Kundernas verksamheter finns i Västra Götaland och Halland."
+
+
+@pytest.fixture
+def profil_med_lika_geografi(profil):
+    return andrat(andrat(profil, GEO_BYRA, varde=GEO_TEXT), GEO_RED, varde=GEO_TEXT)
+
+
+@pytest.fixture
+def profil_med_olika_geografi(profil):
+    return andrat(andrat(profil, GEO_BYRA, varde=GEO_TEXT), GEO_RED, varde="Tjänstens kunder finns i Skåne.")
+
+
+def geo(rb, p, tjanst="T-RED-01"):
+    (s,) = geografistycke_v6(rb, p, tjanst, gransindex=metodgransindex(rb))
+    return s
+
+
+def test_identisk_tjanstegeografi_skrivs_en_gang(regelbas_v1, profil_med_lika_geografi):
+    s = geo(regelbas_v1, profil_med_lika_geografi)
+    assert s.text.count("Kundernas verksamheter finns") == 1
+    assert "Byråns geografibeskrivning" in s.text and "Tjänstens geografi" not in s.text
+    assert {GEO_BYRA, GEO_RED} <= set(s.referenser)
+
+
+def test_olika_tjanstegeografi_skrivs_ut(regelbas_v1, profil_med_olika_geografi):
+    s = geo(regelbas_v1, profil_med_olika_geografi)
+    assert "Tjänstens geografi" in s.text and "Skåne" in s.text
+    assert {GEO_BYRA, GEO_RED} <= set(s.referenser)
+
+
+@pytest.mark.parametrize("falt, uppdatering", [
+    ("kalla", {"kalla": "Annan syntetisk källa"}),
+    ("period", {"period": PERIOD}),
+])
+def test_samma_text_med_annan_kalla_eller_period_skrivs_ut(regelbas_v1, profil_med_lika_geografi, falt, uppdatering):
+    p = andrat(profil_med_lika_geografi, GEO_RED, **uppdatering)
+    assert "Tjänstens geografi" in geo(regelbas_v1, p).text
+
+
+def test_tjanstegeografi_utan_underlag_skrivs_ut_som_saknad(regelbas_v1, profil_med_lika_geografi):
+    p = andrat(profil_med_lika_geografi, GEO_RED, status="saknas")
+    assert "Tjänstens geografi: aktuellt bekräftat underlag saknas" in geo(regelbas_v1, p).text

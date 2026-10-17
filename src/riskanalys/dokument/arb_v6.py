@@ -155,6 +155,14 @@ def utvarderingsavsnitt_v6(historik: Historik) -> Avsnitt:
     ), kalla='lokal')
 
 
+def _oppna_metodfragor(fragor: tuple[str, ...]) -> str:
+    """En mening för alla öppna metodfrågor. Ingen per-fråga-status finns (en objektattest avgör inte frågan), så alla är öppna."""
+    gemena = [f[0].lower() + f[1:] if not f.startswith('TF ') else f for f in fragor]
+    uppraknade = f"{', '.join(gemena[:-1])} samt {gemena[-1]}"
+    return (f'Öppna metodfrågor: {uppraknade}. Ingen av dem är sakkunnigprövad; '
+            'risköversikten visar vad det betyder för nivåerna.')
+
+
 def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspaket | None, gransindex=None, modellrapport: Modellvalidering | None = None) -> Dokument:
     from riskanalys.dokument.arb import _syfte, _metod
     from riskanalys.dokument.uppfoljning import bevakningsavsnitt, kort_omfattningsstycke, uppfoljningsstycken
@@ -177,7 +185,7 @@ def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspake
         stycke('PT avser penningtvätt och TF finansiering av terrorism. Faktisk scenariotäckning prövas lokalt.'),
         *(stycke(sektorsmening(rb, rb.sektorsreferenser[id]), [id, rb.sektorsreferenser[id].kalla]) for id in sektorer),
         kort_omfattningsstycke(rb, profil, bedomning, gransindex=index),
-        *(stycke(f'{fraga}: metodprövning och rapportstatus anges i risköversikten.') for fraga in METODFRAGOR),
+        stycke(_oppna_metodfragor(METODFRAGOR)),
     ), (bygg_metodmatris(rb),))
     tjanster = avsnitt('D-ARB.3', 'Byråns tjänster', (stycke('Kundantal överlappar mellan tjänster och summeras inte till unika kunder.'),),
         (bygg_tjansteoversikt(rb, profil, bedomning, gransindex=index),))

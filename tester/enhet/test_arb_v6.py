@@ -169,3 +169,24 @@ def _sanktionsrad(rb, p, **andring):
 def test_sanktionsnotisen_galler_bara_aldre_nej_svar(v6underlag, andring, notis):
     rb, p, *_ = v6underlag
     assert _sanktionsrad(rb, p, **andring).endswith(SANKTIONSNOTIS) is notis
+
+
+OPPNA_METODFRAGOR = ('Öppna metodfrågor: kontrollernas räckvidd, TF som egen dimension, enstaka exponering kontra omfattning '
+                     'samt summering, tak och dubbelräkning. Ingen av dem är sakkunnigprövad; risköversikten visar vad det betyder för nivåerna.')
+
+
+def test_metodfragor_samlas_i_en_mening(v6underlag):
+    metod = bygg(v6underlag).avsnitt_med_id()['D-ARB.2']
+    assert sum('metodprövning och rapportstatus' in s.text for s in metod.stycken) == 0
+    oppna = [s.text for s in metod.stycken if s.text.startswith('Öppna metodfrågor:')]
+    assert oppna == [OPPNA_METODFRAGOR]
+
+
+def test_objektattester_stanger_inga_metodfragor(v6underlag):
+    from riskanalys.regelverk.modeller import Sakkunnig
+    rb, *resten = v6underlag
+    metod = rb.metod.model_copy(update={
+        namn: post.model_copy(update={'sakkunnig': Sakkunnig(status='verifierad')})
+        for namn, post in rb.metod if hasattr(post, 'sakkunnig')})
+    d = bygg((rb.model_copy(update={'metod': metod}), *resten))
+    assert [s.text for s in d.avsnitt_med_id()['D-ARB.2'].stycken if s.text.startswith('Öppna metodfrågor:')] == [OPPNA_METODFRAGOR]

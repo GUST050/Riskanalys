@@ -17,6 +17,7 @@ from riskanalys.regelverk.villkor import Sanning, falt_i, tolka_villkor, utvarde
 
 Gransindex = dict[str, tuple[float, ...]]
 UTFALL = {Sanning.SANT: 'uppfyllt', Sanning.FALSKT: 'inte uppfyllt', Sanning.OKANT: 'okänt'}
+_GEMENSAMT_NAMN = 'geografibeskrivning'
 GEOGRAFIBESKRIVNINGAR = (('P-BESK.geografi', 'Byråns geografibeskrivning'), ('{slug}_geografi', 'Tjänstens geografi'))
 
 
@@ -108,12 +109,25 @@ def geografistycke_v6(rb: Regelbas, profil: Profil, tjanst: str, *,
     text += _ovriga(rb, vy, ids[1:]) + ' Villkoren utesluter inte andra geografiska risker, även inom Sverige.'
     refs = [tjanst, *ids, *falt]
     slug = rb.tjanster[tjanst].erbjuds_falt.removesuffix('_erbjuds')
+    skrivet: list[str] = []
     for mall, namn in GEOGRAFIBESKRIVNINGAR:
         ref = mall.format(slug=slug)
-        if ref in rb.falt:
-            refs.append(ref)
-            text += ' ' + uppgiftstext(rb, vy, ref, namn=namn, gransindex=gransindex)
+        if ref not in rb.falt:
+            continue
+        refs.append(ref)
+        if _upprepar_beskrivning(rb, vy, ref, skrivet, gransindex):
+            continue
+        skrivet.append(uppgiftstext(rb, vy, ref, namn=_GEMENSAMT_NAMN, gransindex=gransindex))
+        text += ' ' + uppgiftstext(rb, vy, ref, namn=namn, gransindex=gransindex)
     return (last_stycke(text, refs),)
+
+
+def _upprepar_beskrivning(rb: Regelbas, profil: Profil, ref: str, skrivet: list[str], index: Gransindex) -> bool:
+    """Sant när en belagd beskrivning har samma visade värde, källa och period som en redan skriven.
+
+    Referensen behålls av anroparen, så granskningsreglerna B-09 och B-10 ser bindningen ändå."""
+    return (belagd_uppgift(rb, profil, ref)
+            and uppgiftstext(rb, profil, ref, namn=_GEMENSAMT_NAMN, gransindex=index) in skrivet)
 
 
 def lasta_stycken_v6(rb: Regelbas, profil: Profil, t: Tjanstbedomning, del_id: str, *,
