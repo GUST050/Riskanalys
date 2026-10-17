@@ -23,6 +23,14 @@ _INGEN_BELAGD = re.compile(
     r"\b(?:ingen\s+belagd\s+kombination|inga\s+belagda\s+kombinationer|ingen\s+kombination\s+är\s+belagd)\b",
     re.IGNORECASE)
 _TILLATNA_SIFFROR = re.compile(r"\{[^{}]*\}|\[VERIFIERA\]")
+# Sanktionsfrågan gäller sedan detta datum identifierad anknytning; ett nej befriar inte från prövning.
+SANKTION_OMFORMULERAD = '2026-10-17'
+# Negation och "behöver ... prövas ... sanktion" i samma mening, med negationen före eller efter "behöver".
+_SANKTIONSUNDANTAG = re.compile(
+    r"(?:\b(?:ingen|inte|inga)\b[^.!?]*\bbehöver\b|\bbehöver\b[^.!?]*\b(?:ingen|inte|inga)\b)"
+    r"[^.!?]*\bprövas\b[^.!?]*sanktion",
+    re.IGNORECASE)
+SANKTIONSFEL = 'Texten påstår att sanktioner inte behöver prövas. Skriv att ingen anknytning har identifierats.'
 # Kommentarer om vad AI har fått se hör inte hemma i riskbedömningen; "AI-verktyg" och "tolkas av AI" godtas.
 _AI_KOMMENTAR = re.compile(r"\b(?i:till|för|åt)\s+AI\b(?![-–])")
 
@@ -79,6 +87,8 @@ def _gemensamma(svar: AISvar, fb: Faktablad, personnamn, lasta) -> list[str]:
     for n, s in enumerate(svar.stycken, 1):
         if re.search(r"\[VERIFIERA[^\]]*\]",s.text) and re.search(r"\[VERIFIERA(?!\])",s.text):
             fel.append(f"Stycke {n} har felskriven [VERIFIERA].")
+        if _SANKTIONSUNDANTAG.search(s.text):
+            fel.append(f"Stycke {n}: {SANKTIONSFEL}")
         for id in (set(s.referenser) & okanda) - oklarhetsid:
             fel.append(f"Oklarhet saknas för obekräftad uppgift {id}.")
         fel += _stycke(n, s, fb, numeriska, okanda, personnamn, lasta)

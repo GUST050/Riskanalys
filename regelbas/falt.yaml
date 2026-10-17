@@ -799,8 +799,11 @@
     grund: metodval
 - id: P-GEO.sanktionsanknytning
   typ: bool
-  fraga: Finns kund-, ägar- eller transaktionsanknytning som behöver prövas mot internationella sanktioner?
-  varfor: Riskindikator, inte bekräftad listträff. Inga kundidentiteter eller listintegration i M2.
+  fraga: Har byrån identifierat kund-, ägar- eller transaktionsanknytning till länder, personer eller företag
+    som omfattas av internationella sanktioner?
+  etikett: Identifierad sanktionsanknytning
+  varfor: Ett nej betyder att ingen sådan anknytning har identifierats i underlaget. Sanktionsreglerna gäller
+    ändå och prövas enligt byråns rutin.
   kritisk: true
   intag:
     grupp: P-GEO
@@ -813,6 +816,7 @@
     kallor:
     - SRC-PTL
     - SRC-VAGL-2025-03
+    - SRC-FI-SANKTIONER
     beroenden: []
     grund: metodval
 - id: P-ORG.sarskilda_funktioner

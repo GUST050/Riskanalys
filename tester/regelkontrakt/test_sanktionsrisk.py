@@ -28,3 +28,10 @@ def test_ai_far_inte_andra_sanktionsniva(giltigt_utkast,real_underlag,text):
  underlag=real_underlag.model_copy(update={"nivaer":{**real_underlag.nivaer,"sanktioner_risk":"hög","kvarstaende_sanktioner_risk":"hög"}})
  u=giltigt_utkast.model_copy(update={"stycken":[*giltigt_utkast.stycken,Textstycke(typ="analys",text=text,referenser=["H-01"])]})
  assert any("sanktion" in f.lower() and "Programmet skriver alla nivåmeningar" in f for f in validera_utkast(u,underlag,()))
+
+def test_sanktionsfaltets_fraga_galler_identifierad_anknytning(regelbas_v1):
+ falt=regelbas_v1.falt["P-GEO.sanktionsanknytning"]
+ assert "identifierat" in falt.fraga and "behöver prövas" not in falt.fraga
+ assert falt.etikett=="Identifierad sanktionsanknytning"
+ assert falt.varfor.startswith("Ett nej betyder att ingen sådan anknytning har identifierats i underlaget.")
+ assert "SRC-FI-SANKTIONER" in falt.intag.kallor and "SRC-FI-SANKTIONER" in regelbas_v1.kallor

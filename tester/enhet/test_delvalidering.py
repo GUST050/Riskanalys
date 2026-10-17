@@ -298,3 +298,30 @@ def test_innehaller_personnamn_fangar_genitiv_skiftlage_och_oklarheter():
 def test_personnamn_matchar_hela_namn_och_genitiv(namn, text, vantat):
     svar = _svar(("analys", ["T-RED-01"], text))
     assert innehaller_personnamn(svar, (namn,)) is vantat
+
+
+def _sanktionsfel(text, faktablad_exempel):
+    fel = validera_del('sarbarheter', _svar(('analys', ['T-RED-01'], text + FYLLNAD)), faktablad_exempel, (), ())
+    return [f for f in fel if 'sanktion' in f.lower()]
+
+
+def test_ai_text_som_avstar_sanktionsprovning_underkanns(faktablad_exempel):
+    fel = _sanktionsfel('Ingen anknytning behöver prövas mot internationella sanktioner.', faktablad_exempel)
+    assert fel == ['Stycke 1: Texten påstår att sanktioner inte behöver prövas. Skriv att ingen anknytning har identifierats.']
+
+
+@pytest.mark.parametrize('text', [
+    'Kunderna behöver inte prövas mot sanktionslistor.',
+    'Inga transaktioner behöver därför prövas mot sanktioner.',
+])
+def test_andra_negationer_av_sanktionsprovning_underkanns(text, faktablad_exempel):
+    assert _sanktionsfel(text, faktablad_exempel)
+
+
+def test_ingen_identifierad_anknytning_godkanns(faktablad_exempel):
+    assert not _sanktionsfel('Ingen aktuell sanktionsanknytning har identifierats i underlaget.', faktablad_exempel)
+
+
+def test_negation_i_annan_mening_ger_inget_sanktionsfel(faktablad_exempel):
+    text = 'Ingen avvikelse har noterats. Varje kund behöver prövas mot sanktioner enligt byråns rutin.'
+    assert not _sanktionsfel(text, faktablad_exempel)

@@ -1,9 +1,22 @@
 """Infoga lokala fakta; fri text ingår aldrig i AI-underlag eller automatiska riskbeslut."""
 
 from riskanalys.regelverk.granser import metodgransindex
+from riskanalys.dokument.delvalidering import SANKTION_OMFORMULERAD
 from riskanalys.dokument.modeller import Dokument, Textstycke, Avsnitt
 from riskanalys.profil.hantering import visa_varde
 from riskanalys.profil.omfattning import aktivt
+
+SANKTIONSFALT = 'P-GEO.sanktionsanknytning'
+SANKTIONSNOTIS = (f'Frågan omformulerades {SANKTION_OMFORMULERAD}. '
+                  'Tidigare svar läses som att ingen anknytning har identifierats.')
+
+
+def _med_omformuleringsnotis(text: str, profil, falt_id: str) -> str:
+    """Ett sparat svar på sanktionsfrågan läses med den snävare betydelsen; notisen visar det i B1."""
+    u = profil.uppgifter.get(falt_id)
+    if falt_id != SANKTIONSFALT or u is None or u.varde is None:
+        return text
+    return f'{text} {SANKTIONSNOTIS}'
 
 
 def med_intagsunderlag(dokument: Dokument, rb, profil, bedomning) -> Dokument:
@@ -59,7 +72,7 @@ def bygg_underlagsbilaga(rb, profil, *, gransindex: dict[str, tuple[float, ...]]
             text=(f'{faltnamn(rb,f.id)} ({f.id}): kan inte härledas; bekräfta {gemen(faltnamn(rb,f.antalfalt))} '
                   f'och {gemen(faltnamn(rb,f.basfalt))} för samma period. {VERIFIERA}')
         else:
-            text=uppgiftstext(rb,profil,f.id,med_id=True, gransindex=gransindex)
+            text=_med_omformuleringsnotis(uppgiftstext(rb,profil,f.id,med_id=True, gransindex=gransindex),profil,f.id)
         stycken.append(Textstycke(typ='beskrivning',text=text,referenser=[f.id]))
     for k in rb.kallor.values():
         text=f'{k.id}: {k.titel}. Utgivare: {k.utgivare}; hämtad: {k.hamtad}; källa: {k.url}; kontrollsumma: {k.kontrollsumma or "ingen registrerad originalsumma"}. Registrering är inte byråns genomförda omvärldsbevakning.'

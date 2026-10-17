@@ -490,3 +490,9 @@
   url: https://polisen.se/3c258ab8120fc2de94f6a7f11f2f774c/siteassets/dokument/finanspolisen/fipo-informerar/2026_risk-for-penningtvatt-och-tf_digitala-plattformar.pdf
   hamtad: '2026-10-15'
   kontrollsumma: sha256:212fab5ec3fe6cf7e79e9ee8bbbc9aad7db0130a0ef66eaccb9e91313a969532
+- id: SRC-FI-SANKTIONER
+  titel: Internationella sanktioner
+  typ: vägledning
+  utgivare: Finansinspektionen
+  url: https://www.fi.se/sv/forsakring/internationella-sanktioner/
+  hamtad: '2026-10-17'

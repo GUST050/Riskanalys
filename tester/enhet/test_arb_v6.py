@@ -121,3 +121,32 @@ def test_v6_namnsparrat_hot_bevarar_katalogunderlag_utan_ai_text(v6underlag):
     d = bygg((rb, p, b, resultat, h))
     stycken = d.avsnitt_med_id()[id].stycken
     assert any(rb.hot[t.hot[0]].beskrivning in s.text and s.proveniens == 'regelbas' for s in stycken)
+
+
+SANKTIONSFALT = 'P-GEO.sanktionsanknytning'
+SANKTIONSNOTIS = 'Frågan omformulerades 2026-10-17. Tidigare svar läses som att ingen anknytning har identifierats.'
+
+
+def b1_text(dokument):
+    return ' '.join(s.text for s in dokument.avsnitt_med_id()['D-ARB.B1'].stycken)
+
+
+@pytest.fixture(scope='module')
+def v6_dokument_med_nej_svar(v6underlag):
+    assert v6underlag[1].uppgifter[SANKTIONSFALT].varde is False
+    return bygg(v6underlag)
+
+
+def test_b1_visar_att_sanktionsfragan_omformulerats(v6_dokument_med_nej_svar):
+    assert 'omformulerades 2026-10-17' in b1_text(v6_dokument_med_nej_svar)
+    rad = next(s.text for s in v6_dokument_med_nej_svar.avsnitt_med_id()['D-ARB.B1'].stycken if s.referenser == [SANKTIONSFALT])
+    assert rad.startswith('Identifierad sanktionsanknytning') and rad.endswith(SANKTIONSNOTIS)
+
+
+def test_b1_utan_sanktionssvar_saknar_omformuleringsnotis(v6underlag):
+    from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
+    rb, p, *_ = v6underlag
+    utan = p.model_copy(update={'uppgifter': {k: u for k, u in p.uppgifter.items() if k != SANKTIONSFALT}})
+    bilaga = bygg_underlagsbilaga(rb, utan)
+    assert [s for s in bilaga.stycken if s.referenser == [SANKTIONSFALT]]
+    assert not any('omformulerades' in s.text for s in bilaga.stycken)
