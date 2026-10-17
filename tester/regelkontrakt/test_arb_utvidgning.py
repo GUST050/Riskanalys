@@ -30,9 +30,9 @@ from tester.fixturer.m2 import DAG
 from tester.regelkontrakt.test_arb_erfarenhet_motivering import profil  # noqa: F401  pytest-fixtur
 
 FAKTORER = ('nara_relation','pep','komplex_agare','utlandsk_agare','ideell','kortlivad','overtagen','utan_mote','ombud','extern_kyc','hogrisktredjeland','korruption','svagt_aml','utsatt_omrade','utan_utbildning','ensam_roller','kundberoende','utkontraktering')
-# Historiska v5-tjänstavsnitt har sex underrubriker; v6 har två AI-delar och en lokal del.
+# Historiska v5-tjänstavsnitt har sex underrubriker; v6 har två AI-delar, en lokal del och en nivådel.
 RUBRIKER_V5 = ('Beskrivning och omfattning','Hot och egna erfarenheter','Sårbarheter och motivering','Kontroller och effekt','Scenarier och osäkerheter','Slutsatser')
-RUBRIKER_V6 = ('Hot','Sårbarheter','Lokal analys och slutsats')
+RUBRIKER_V6 = ('Hot','Sårbarheter','Lokal analys och slutsats','Risknivå och motivering')
 DELNAMN = ['Sårbarheter och motivering','Kontroller och effekt','Slutsatser','underrubrik']
 PASTAENDE_UTAN_BELAGG = 'Den inneboende risken är låg. Ett påstående utan belägg.'
 

@@ -3,11 +3,24 @@ from riskanalys.dokument.analystabeller import nummerintervall
 from riskanalys.dokument.tjanstavsnitt_v6 import lokaltext
 
 
+def _delbar(s):
+    """Byråns nivåmotivering (typ motivering) står alltid kvar i sin tjänst och delas aldrig."""
+    return (s.proveniens == 'lokal' and s.typ != 'motivering' and ':' in s.text and len(s.text.split()) >= 10
+            and '[VERIFIERA]' not in s.text)
+
+
+def _flytta_positioner(a, nya):
+    """Underrubriker och tabeller pekar på samma innehåll efter att delade stycken ersatts."""
+    return a.model_copy(update={
+        'underrubriker': tuple(u.model_copy(update={'fore_stycke': nya[u.fore_stycke]}) for u in a.underrubriker),
+        'tabeller': tuple(t.model_copy(update={'fore_stycke': nya[t.fore_stycke]}) for t in a.tabeller)})
+
+
 def sammanfor_identisk_lokaltext(avsnitt):
     grupper = {}
     for a in avsnitt:
         for s in a.stycken:
-            if s.proveniens == 'lokal' and ':' in s.text and len(s.text.split()) >= 10 and '[VERIFIERA]' not in s.text:
+            if _delbar(s):
                 grupper.setdefault(s.text, []).append((a, s))
     delade = {text: poster for text, poster in grupper.items() if len({a.id for a, _ in poster}) > 1}
     nummer = {text: n for n, text in enumerate(delade, 1)}
@@ -18,11 +31,13 @@ def sammanfor_identisk_lokaltext(avsnitt):
     resultat = []
     kartposter = []
     for a in avsnitt:
-        valda = [s for s in a.stycken if s.text in delade]
+        valda = [s for s in a.stycken if _delbar(s) and s.text in delade]
         stycken = []
+        nya = []
         infogad = False
         for s in a.stycken:
-            if s.text not in delade:
+            nya.append(len(stycken))
+            if not _delbar(s) or s.text not in delade:
                 stycken.append(s)
                 continue
             if not infogad:
@@ -32,7 +47,8 @@ def sammanfor_identisk_lokaltext(avsnitt):
                 infogad = True
             kartposter.append(lokaltext(a.rubrik+'. '+s.text.split(':', 1)[0]+': gemensamt resonemang '+str(nummer[s.text])+'.',
                 (*s.referenser, a.id, 'D-ARB.5')))
-        resultat.append(a.model_copy(update={'stycken': tuple(stycken)}))
+        nya.append(len(stycken))
+        resultat.append(_flytta_positioner(a, nya).model_copy(update={'stycken': tuple(stycken)}))
     return tuple(resultat), tuple(gemensamt), tuple(kartposter)
 
 

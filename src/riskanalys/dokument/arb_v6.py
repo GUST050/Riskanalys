@@ -174,7 +174,8 @@ def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspake
     status = f'Metodstatus: {sum(_sakkunnigstatus(r) == "verifierad" for r in metodposter)} av {len(metodposter)} regelobjekt har giltig sakkunnigverifiering. Objektattester avgör inte i sig öppna metodfrågor.'
     syfte = _syfte(rb, profil, bedomning).model_copy(update={'formatversion': V6})
     oversikt = avsnitt('D-ARB.8', 'Tjänstevis risksammanställning', (
-        stycke('Nivåerna är motorns oförändrade utfall. Fullständig beräkning finns i bilaga B1. Ingen sammanvägd byrånivå beräknas.', ['D-ARB.B1']),
+        stycke('Nivåerna är motorns utfall. Varje tjänsteavsnitt förklarar vilka faktorer som avgör nivån och byråns egen bedömning. '
+              'Hela beräkningen finns i bilaga B1. Ingen sammanvägd byrånivå beräknas.', ['D-ARB.B1']),
         stycke(status),
         *analysstatus(rb, bedomning, analys, brister),
         *modellstatus(analys, modellrapport),
@@ -195,7 +196,8 @@ def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspake
     for id, t in tjanster_med_avsnitt(bedomning):
         a = analyser.get(t.tjanst)
         lokal, tabeller = bygg_lokaltext(a, analys, rb, refindex) if a is not None else (None, ())
-        risk.append(bygg_tjanstavsnitt_v6(rb, profil, t, resultat.get(id), id, gransindex=index, lokal=lokal, tabeller=tabeller))
+        risk.append(bygg_tjanstavsnitt_v6(rb, profil, t, resultat.get(id), id, gransindex=index, lokal=lokal,
+                                          tabeller=tabeller, analys=a))
     risk, gemensamma_resonemang, tillampningskarta = sammanfor_identisk_lokaltext(risk)
     myndighetskallor = sorted({k for t in bedomning.tjanster if t.inneboende for id in t.hot for k in rb.hot[id].kallor})
     gemensamt = avsnitt('D-ARB.4', 'Gemensamma scenarier', (

@@ -3,6 +3,7 @@ from riskanalys.dokument.analysunderlag import sarbarhetsstycke
 from riskanalys.dokument.delskrivning import kontrollera_resultat
 from riskanalys.dokument.lasta_v6 import lasta_stycken_v6
 from riskanalys.dokument.modeller import Avsnitt, Textstycke, Underrubrik
+from riskanalys.dokument.nivamotivering_v6 import nivamotivering_stycken
 from riskanalys.dokument.skrivversion import V6
 from riskanalys.dokument.tjanstavsnitt import _ai_stycken
 
@@ -36,7 +37,7 @@ def _ai_del(rb, profil, t, resultat, del_id, rubrik, gransindex):
     return (*text, *lasta_stycken_v6(rb, profil, t, del_id, gransindex=gransindex))
 
 
-def bygg_tjanstavsnitt_v6(rb, profil, t, resultat, avsnitt_id, *, gransindex, lokal=None, tabeller=()):
+def bygg_tjanstavsnitt_v6(rb, profil, t, resultat, avsnitt_id, *, gransindex, lokal=None, tabeller=(), analys=None):
     poster = []
     rubriker = []
     if resultat is not None:
@@ -44,11 +45,13 @@ def bygg_tjanstavsnitt_v6(rb, profil, t, resultat, avsnitt_id, *, gransindex, lo
     for del_id, rubrik in AI_DELAR:
         rubriker.append(Underrubrik(fore_stycke=len(poster), rubrik=rubrik))
         poster.extend(_ai_del(rb, profil, t, resultat, del_id, rubrik, gransindex))
-    rubriker.append(Underrubrik(fore_stycke=len(poster), rubrik='Lokal analys och slutsats'))
+    lokalstart = len(poster)
+    rubriker.append(Underrubrik(fore_stycke=lokalstart, rubrik='Lokal analys och slutsats'))
     poster.extend(lokal or (lokaltext(
         'Lokal analys saknas. Komplettera scenarier, sårbarheternas betydelse och samverkan, egna lärdomar, '
         'kontrolltäckning, separata PT- och TF-motiveringar samt slutsats och rutinåtgärder. [VERIFIERA]', [t.tjanst]),))
-    poster.append(lokaltext('Motorns beräkning och fullständiga regelspår finns i bilaga B1.', ['D-ARB.B1']))
+    rubriker.append(Underrubrik(fore_stycke=len(poster), rubrik='Risknivå och motivering'))
+    poster.extend(nivamotivering_stycken(rb, t, analys))
     return Avsnitt(id=avsnitt_id, rubrik='Analys av ' + rb.tjanster[t.tjanst].namn.lower(), kalla='lokal',
         stycken=tuple(poster), underrubriker=tuple(rubriker),
-        tabeller=tuple(t.model_copy(update={'fore_stycke': rubriker[-1].fore_stycke}) for t in tabeller), formatversion=V6)
+        tabeller=tuple(t.model_copy(update={'fore_stycke': lokalstart}) for t in tabeller), formatversion=V6)

@@ -253,14 +253,15 @@ def test_v6_byggarens_b1_far_rubriker_och_tjanstens_lank_landar_pa_dess_beraknin
     assert {'Profiluppgifter', 'Källversioner', 'Lokal analys och belägg', 'Beräkningsunderlag', 'Källregister'} <= set(delrubriker)
     brodtext = [_text(p.runs[0]._r) for p in i_b1 if p.style.name == 'Normal']
     assert brodtext == [s.text for s in b1.stycken]
-    # Varje tjänsts hänvisning till "beräkning ... i bilaga B1" landar på tjänstens eget beräkningsunderlag.
+    # Varje tjänsts nivåmotivering med hänvisning till bilaga B1 landar på tjänstens eget beräkningsunderlag.
     berakning = {s.referenser[0]: i for i, s in enumerate(b1.stycken) if s.text.startswith('Beräkningsunderlag för ')}
-    hanvisning = 'Motorns beräkning och fullständiga regelspår finns i bilaga B1.'
-    tjanster = [a.id for a in d.avsnitt if any(s.text == hanvisning for s in a.stycken)]
-    assert tjanster and set(tjanster) <= set(berakning)
-    i_word = [p for p in stycken if p.runs and _text(p.runs[0]._r) == hanvisning]
+    nivastart = {a.id: a.stycken[a.underrubriker[-1].fore_stycke].text for a in d.avsnitt
+                 if a.underrubriker and a.underrubriker[-1].rubrik == 'Risknivå och motivering'}
+    assert nivastart and set(nivastart) <= set(berakning)
+    assert all(text.startswith('Penningtvättsrisk före kontroller: ') for text in nivastart.values())
+    i_word = [p for text in nivastart.values() for p in stycken if p.runs and _text(p.runs[0]._r) == text]
     ankare = [x.get(qn('w:anchor')) for p in i_word for x in p._p.iter(qn('w:hyperlink'))]
-    assert ankare == [f'arb_b1_{berakning[id]}' for id in tjanster]
+    assert ankare == [f'arb_b1_{berakning[id]}' for id in nivastart]
     bokmarken = _bokmarken(word)
     assert all(x.get(qn('w:anchor')) in bokmarken for x in word.element.body.iter(qn('w:hyperlink')))
     assert all(r.find(qn('w:trPr') + '/' + qn('w:cantSplit')) is not None for r in word.element.body.iter(qn('w:tr')))

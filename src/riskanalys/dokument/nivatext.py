@@ -2,7 +2,10 @@
 
 from riskanalys.bedomning.modeller import Tjanstbedomning
 from riskanalys.dokument.modeller import Dokumenttabell, Tabellcell, Tabellrad, Textstycke
-from riskanalys.regelverk.modeller import Regelbas, Sektorsreferens
+from riskanalys.regelverk.modeller import Regelbas, Sarbarhet, Sektorsreferens
+
+PT_OMRADEN = frozenset({'penningtvatt', 'bada'})
+TF_OMRADEN = frozenset({'terrorfinansiering', 'bada'})
 
 
 def nivastycken(t: Tjanstbedomning) -> tuple[Textstycke, ...]:
@@ -39,6 +42,11 @@ def sektorsstycken(rb: Regelbas, t: Tjanstbedomning) -> tuple[Textstycke, ...]:
     return (Textstycke(typ="beskrivning", text=text, referenser=[t.tjanst, ref.id, ref.kalla]),)
 
 
+def tillampade_faktorer(t: Tjanstbedomning, rb: Regelbas, omraden: frozenset[str]) -> tuple[Sarbarhet, ...]:
+    """Sparade tillämpade sårbarheter som gäller riskområdet, i resultatets ordning."""
+    return tuple(rb.sarbarheter[s] for s in t.tillampade_sarbarheter if rb.sarbarheter[s].galler in omraden)
+
+
 def _sparbegransning(t: Tjanstbedomning, rb: Regelbas) -> str:
     """Kräv identifierbara regler innan en beräkningsförklaring lämnas."""
     m = rb.metod
@@ -72,8 +80,8 @@ def utfallsforklaring(t: Tjanstbedomning, regelbas: Regelbas) -> Dokumenttabell:
     katalog = rb.tjanster.get(t.tjanst)
     rader = []
     for namn, delrisk, grund, omraden in (
-        ('Penningtvätt', t.inneboende, katalog.grund_sannolikhet if katalog else None, {'penningtvatt', 'bada'}),
-        ('Terrorfinansiering', t.terrorfinansiering, katalog.grund_tf_sannolikhet if katalog else None, {'terrorfinansiering', 'bada'}),
+        ('Penningtvätt', t.inneboende, katalog.grund_sannolikhet if katalog else None, PT_OMRADEN),
+        ('Terrorfinansiering', t.terrorfinansiering, katalog.grund_tf_sannolikhet if katalog else None, TF_OMRADEN),
     ):
         if delrisk is None:
             berakning, utfall = 'Inget sparat motorutfall.', 'Ej bedömt'
@@ -81,7 +89,7 @@ def utfallsforklaring(t: Tjanstbedomning, regelbas: Regelbas) -> Dokumenttabell:
             berakning = begransning or 'Begränsning: tjänstens basnivå saknas i regelbasen.'
             utfall = _reduktion(delrisk.risk, t.kvarstaende) if namn == 'Penningtvätt' else delrisk.risk
         else:
-            faktorer = [rb.sarbarheter[s] for s in t.tillampade_sarbarheter if rb.sarbarheter[s].galler in omraden]
+            faktorer = tillampade_faktorer(t, rb, omraden)
             faktortext = '; '.join(f'{s.namn} +{s.effekt.sannolikhet}' for s in faktorer) or 'inga tillämpade faktorer'
             berakning = (f'Bas {grund}; {faktortext}; tak hög. Sparad sannolikhet {delrisk.sannolikhet}; '
                          f'konsekvens {delrisk.konsekvens}. Metodval, inte en rättsligt föreskriven riskvikt.')
