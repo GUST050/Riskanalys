@@ -190,3 +190,60 @@ def test_objektattester_stanger_inga_metodfragor(v6underlag):
         for namn, post in rb.metod if hasattr(post, 'sakkunnig')})
     d = bygg((rb.model_copy(update={'metod': metod}), *resten))
     assert [s.text for s in d.avsnitt_med_id()['D-ARB.2'].stycken if s.text.startswith('Öppna metodfrågor:')] == [OPPNA_METODFRAGOR]
+
+
+M1_RUBRIK = 'Förslag till sakkunnig, M1'
+M1_TEXT = ('Förslag till sakkunnig, M1 (inte beslutat): kvarstående risk sänks först när relevant räckvidd för tjänstens '
+           'scenarier och kontrollens faktiska effekt under perioden är belagda lokalt. Länsstyrelsens vägledning anger att '
+           'åtgärdernas effektivitet ska bedömas innan riskerna vägs samman. Dokumentets nivåer beräknas fortfarande med '
+           'nuvarande regel tills sakkunnig har prövat metoden.')
+M1_REFERENSER = ['SRC-LST-GOR-ARB', 'BT-KVAR-01', 'BT-KVAR-02', 'D-ARB.B1']
+
+
+def _m1_stycken(avsnitt):
+    return [s for s in avsnitt.stycken if s.text.startswith(M1_RUBRIK)]
+
+
+def test_m1_forslaget_star_bara_i_b1(v6underlag):
+    d = bygg(v6underlag)
+    assert M1_RUBRIK in b1_text(d)
+    for a in d.avsnitt:
+        if a.id != 'D-ARB.B1':
+            assert not _m1_stycken(a), a.id
+            assert 'ingen reduktion utan belagd' not in ' '.join(s.text for s in a.stycken)
+            assert M1_RUBRIK not in ' '.join(c.text for t in a.tabeller for r in t.rader for c in r.celler)
+
+
+def test_m1_forslaget_har_exakt_text_och_hanvisar_till_vagledningen(v6underlag):
+    import re
+    d = bygg(v6underlag)
+    (s,) = _m1_stycken(d.avsnitt_med_id()['D-ARB.B1'])
+    assert s.referenser == M1_REFERENSER
+    assert 'SRC-LST-GOR-ARB' in s.referenser
+    träff = re.fullmatch(re.escape(M1_TEXT) + r' Källor: ((?:\[\d+(?:, s\. [\d, ]+)?\](?:, )?)+)\.', s.text)
+    assert träff, s.text
+
+
+def test_m1_forslagets_kalla_finns_i_kallregistret(v6underlag):
+    import re
+    rb = v6underlag[0]
+    b1 = bygg(v6underlag).avsnitt_med_id()['D-ARB.B1']
+    (m1,) = _m1_stycken(b1)
+    register = {s.referenser[0]: s.text for s in b1.stycken if s.text.startswith('Källregister [')}
+    assert 'SRC-LST-GOR-ARB' in register
+    nummer = re.match(r'Källregister \[(\d+)\]', register['SRC-LST-GOR-ARB']).group(1)
+    assert register['SRC-LST-GOR-ARB'].endswith(rb.kallor['SRC-LST-GOR-ARB'].url)
+    assert f'[{nummer}' in m1.text
+
+
+def test_de_nya_kallorna_ar_registrerade_med_tillsynsbeslutets_kontrollsumma(regelbas_v1):
+    kallor = regelbas_v1.kallor
+    assert kallor['SRC-LST-GOR-ARB'].typ == 'vägledning'
+    beslut = kallor['SRC-LST-SK-3647-2026']
+    assert beslut.typ == 'beslut' and 'Forvis Mazars' in beslut.titel and '3647-2026' in beslut.titel
+    assert beslut.kontrollsumma == 'sha256:05328ec72451ef4cdb6fed529e729196d1a14dfcbcaca03246df00fb99afd0dc'
+
+
+def test_m1_forslaget_andrar_inga_nivaer(v6underlag):
+    rb, p, b, *_ = v6underlag
+    assert bedom(rb, valj(rb, p.byra.regelpaket, DAG, p.byra.lan), p) == b

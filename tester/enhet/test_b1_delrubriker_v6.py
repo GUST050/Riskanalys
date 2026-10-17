@@ -47,7 +47,7 @@ TILLHOR = {
     'Delanalyser och analysblock': _analysblock,
     'Kompletteringspunkter': lambda s, rb: s.text.startswith('Kompletteringspunkt: '),
     'Beräkningsunderlag': lambda s, rb: s.text.startswith('Beräkningsunderlag för '),
-    'Regelvis sakkunnigstatus': lambda s, rb: s.text.startswith('Regelvis sakkunnigstatus: '),
+    'Regelvis sakkunnigstatus': lambda s, rb: s.text.startswith(('Regelvis sakkunnigstatus: ', 'Förslag till sakkunnig, M1')),
     'Källregister': lambda s, rb: s.text.startswith('Källregister ['),
 }
 
@@ -105,6 +105,23 @@ def test_byggaren_skriver_b1_delarna_som_underrubriker_pa_ratt_stycken(v6underla
         assert b1.stycken[tabell.fore_stycke].referenser == [avsnitt_for[tabell.id.removesuffix('-utfall')]]
     # Positionerna håller modellens validering även efter lagring.
     assert Dokument.model_validate_json(d.model_dump_json()) == d
+
+
+@pytest.mark.parametrize('med_analys', [True, False])
+def test_m1_forslaget_star_under_b1s_sakkunnigdel_efter_statusstycket(v6underlag, lokal, med_analys):
+    b1 = _b1(bygg_arb_v6(*v6underlag, analys=lokal if med_analys else None))
+    start, slut = _delar(b1)['Regelvis sakkunnigstatus']
+    delen = [s.text for s in b1.stycken[start:slut]]
+    assert delen[0].startswith('Regelvis sakkunnigstatus: ')
+    assert [t.startswith('Förslag till sakkunnig, M1 (inte beslutat):') for t in delen] == [False, True]
+
+
+def test_m1_forslaget_visas_aldrig_utanfor_b1_med_lokal_analys(v6underlag, lokal):
+    d = bygg_arb_v6(*v6underlag, analys=lokal)
+    for a in d.avsnitt:
+        if a.id != B1:
+            texter = [*(s.text for s in a.stycken), *(c.text for t in a.tabeller for r in t.rader for c in r.celler)]
+            assert not [t for t in texter if 'Förslag till sakkunnig, M1' in t or 'ingen reduktion utan belagd' in t], a.id
 
 
 def test_analysblock_utan_delanalyser_far_ingen_delanalysrubrik(v6underlag, lokal):

@@ -17,7 +17,8 @@ from riskanalys.dokument.foljder_v6 import bygg_foljder_v6
 from riskanalys.dokument.tabeller import tabell
 from riskanalys.drift.modellrapport import Modellvalidering
 from riskanalys.dokument.arb_v5_1 import METODFRAGOR, _rackviddsstycken, _sakkunnigstatus
-from riskanalys.dokument.kallhanvisningar import med_kallhanvisningar
+from riskanalys.dokument.kallhanvisningar import med_kallhanvisningar, utan_kallhanvisning
+from riskanalys.dokument.m1_forslag import m1_forslag
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Underrubrik
 from riskanalys.dokument.nivatext import utfallsforklaring, sektorsmening
 from riskanalys.dokument.skrivversion import V6
@@ -125,7 +126,7 @@ def bilaga_b1_v6(rb, profil, bedomning, analys, *, refindex, brister, tillampnin
         (KONTROLLRACKVIDD, _rackviddsstycken(rb, bedomning), ()),
         *_analysdelar(analys, analysbilaga(analys, profil, rb, refindex, brister), brister),
         (BERAKNINGSUNDERLAG, berakning, utfall),
-        (SAKKUNNIGSTATUS, (status,), ()),
+        (SAKKUNNIGSTATUS, (status, m1_forslag()), ()),
     ))
     return avsnitt(underlag.id, underlag.rubrik, stycken, tabeller, kalla=underlag.kalla, underrubriker=rubriker)
 
@@ -135,7 +136,8 @@ def med_kallregisterrubrik(dokument: Dokument, bilaga: Avsnitt) -> Dokument:
     def med_rubrik(a: Avsnitt) -> Avsnitt:
         if a.id != B1_ID:
             return a
-        if a.stycken[:len(bilaga.stycken)] != bilaga.stycken or a.underrubriker != bilaga.underrubriker:
+        ofarglagda = tuple(s.model_copy(update={'text': utan_kallhanvisning(s.text)}) for s in a.stycken[:len(bilaga.stycken)])
+        if ofarglagda != bilaga.stycken or a.underrubriker != bilaga.underrubriker:
             raise ValueError(_DRIFT.format(delnamn='källregister'))
         if len(a.stycken) == len(bilaga.stycken):
             return a

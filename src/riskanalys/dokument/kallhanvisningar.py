@@ -2,11 +2,16 @@
 
 import re
 
+from riskanalys.dokument.m1_forslag import ar_m1_forslag
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Textstycke
 from riskanalys.regelverk.modeller import Regelbas
 
 _SUFFIX = re.compile(r'(?: Källor: (?:\[\d+(?:, s\. [\d, ]+)?\](?:, )?)+\.)?(?: Profilbelägg: bilaga B1\.)?$')
 _REGISTER = 'Källregister ['
+
+
+def utan_kallhanvisning(text: str) -> str:
+    return _SUFFIX.sub('', text)
 
 
 def _poster(rb: Regelbas, *, rackvidd: bool = False) -> dict:
@@ -66,6 +71,9 @@ def bygg_kallregister(dokument: Dokument, regelbas: Regelbas) -> dict[str, str]:
         if avsnitt.id == 'D-ARB.B1':
             # B1:s inventarium är inte användning av källan. Flyttade beräkningar är det.
             texter = [cell for tabell in avsnitt.tabeller for rad in tabell.rader for cell in rad.celler] if ny else []
+            # M1-förslaget använder sin källa, till skillnad från inventariets källversionsrader.
+            if dokument.formatversion == 'D-ARB-tjanst-v6':
+                texter.extend(s for s in avsnitt.stycken if ar_m1_forslag(s.text))
         else:
             texter = [*avsnitt.stycken, *(cell for tabell in avsnitt.tabeller for rad in tabell.rader for cell in rad.celler)]
         for text in texter:
@@ -83,6 +91,7 @@ def med_kallhanvisningar(dokument: Dokument, regelbas: Regelbas) -> Dokument:
         return dokument
     register = bygg_kallregister(dokument, regelbas)
     ny = dokument.formatversion in ('D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6')
+    v6 = dokument.formatversion == 'D-ARB-tjanst-v6'
     poster = _poster(regelbas, rackvidd=ny)
 
     def med_hanvisning(text):
@@ -120,7 +129,8 @@ def med_kallhanvisningar(dokument: Dokument, regelbas: Regelbas) -> Dokument:
             tabeller = tuple(t.model_copy(update={
                 'fore_stycke': sum(i < t.fore_stycke for i in behall),
                 'rader': med_tabellhanvisningar(t).rader}) for t in a.tabeller) if ny else a.tabeller
-            avsnitt.append(a.model_copy(update={'stycken': tuple(a.stycken[i] for i in behall), 'tabeller': tabeller}))
+            stycken = tuple(med_hanvisning(a.stycken[i]) if v6 and ar_m1_forslag(a.stycken[i].text) else a.stycken[i] for i in behall)
+            avsnitt.append(a.model_copy(update={'stycken': stycken, 'tabeller': tabeller}))
             continue
         tabeller = tuple(med_tabellhanvisningar(tabell) for tabell in a.tabeller)
         avsnitt.append(a.model_copy(update={'stycken': tuple(med_hanvisning(s) for s in a.stycken), 'tabeller': tabeller}))

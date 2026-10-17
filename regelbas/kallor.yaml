@@ -244,6 +244,20 @@
   url: https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism.html
   hamtad: 2026-10-09
   beslutad: 2026-09-10
+- id: SRC-LST-GOR-ARB
+  titel: Gör en allmän riskbedömning
+  typ: vägledning
+  utgivare: Länsstyrelsen i Skåne län
+  url: https://www.lansstyrelsen.se/skane/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism/gor-en-allman-riskbedomning.html
+  hamtad: 2026-10-17
+- id: SRC-LST-SK-3647-2026
+  titel: Beslut om sanktionsavgift, diarienummer 3647-2026 (Forvis Mazars Accounting Int AB, se docs/research/11-kallkontroll-allman-riskbedomning.md)
+  typ: beslut
+  utgivare: Länsstyrelsen i Skåne län
+  url: https://www.lansstyrelsen.se/download/18.31e7edd71a116040fbd1597b/1791528260807/Beslut%20om%20sanktionsavgift%20-%20Forvis%20Mazars%20Accounting%20Int%20AB.pdf
+  hamtad: 2026-10-17
+  beslutad: 2026-08-14
+  kontrollsumma: sha256:05328ec72451ef4cdb6fed529e729196d1a14dfcbcaca03246df00fb99afd0dc
 - id: SRC-PTF
   titel: Förordning (2009:92) om åtgärder mot penningtvätt och finansiering av terrorism
   typ: förordning
