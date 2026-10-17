@@ -482,3 +482,135 @@ De 24 raderna är separata publikationer/sidor, inte antalet sökträffar. PDF-s
 ### 9.9 Vad som faktiskt gjorts
 
 Endast research, STATUS och en kort hänvisning i befintlig H6-plan har ändrats genom detta strukturarbete. Inga programfiler, riskregler, AI-tillåtelselistor eller exporter har ändrats. Ingen full testsvit har körts om; arbetet består av källäsning, dokumentmätning, manifestkontroll och visuell läsning av sparat Word-prov. Mätartefakter och hämtade original ligger privat i `~/.local/share/riskanalys/provkorningar/strukturresearch-20261014/`. Rekommendationerna är ännu inte implementerade. Riktig AI-text, faktisk byråeffekt, sakkunnig metodprövning och den föreslagna läsbarhetsutvärderingen är fortsatt oprövade.
+
+## 10. Verksamhetsanpassad AI och sammanhängande dokument, 2026-10-17
+
+**Status: källgranskning och designförslag inför beslut, inte en genomförd programändring.** Detta avsnitt kompletterar den befintliga forskningen efter det manuella AI-provet och ersätter inte A+B:s beslut eller historiska verifiering. Användarens mål är en färdig, lättläst och verksamhetsanpassad bedömning med bibehållen analys och spårbarhet. Ett framtida tillsynsgodkännande kan inte garanteras av programmet eller av denna research.
+
+### 10.1 Vad som faktiskt behöver förbättras
+
+Det påhittade fyrtjänstprovet med verkliga AI-anrop blev 5 670 huvudord och 16 huvudsidor i LibreOffice. Full export blev 73 sidor inklusive B1 och granskningsfynd. Det visar att dagens riktbudget inte säkert nås med verklig AI och lokala analysutkast. Det är ett prov, inte en generell prestandamätning. Underlag och separat dokumentgranskning finns privat i `~/.local/share/riskanalys/provkorningar/lindviken-ai-20261017/`.
+
+Tre förklaringar är synliga i koden:
+
+- `faktablad.py` lämnar avsiktligt risknivåer och regelspår utanför AI-underlaget. Privat beskrivning av arbetssätt skickas inte heller. AI kan därför inte skriva en fullständig lokal nivåmotivering utifrån dagens underlag.
+- `promptar/delar.py` beställer två separata textdelar och kräver kategoritäckning och hänvisningar. Det uppmuntrar återkommande formeltext även när ett sammanhängande resonemang vore tydligare. Ett faktum behöver dessutom uttryckligt omfång: byråns kundandel är inte automatiskt samma andel inom en viss tjänst.
+- `gemensam_analys.py` ersätter upprepningar med numrerade resonemang. Det sparar ord men tvingar läsaren att leta. `foljder_v6.py` kan kontrollera att vissa ämnen nämns, men det bevisar inte att de praktiska följderna är tillräckligt konkreta.
+
+Slutsatsen är att ändra underlag, skrivuppdrag och läsordning tillsammans. Att enbart be modellen att skriva mindre generellt löser inte saknad information. Någon empiriskt bevisad, absolut bästa disposition har inte identifierats.
+
+### 10.2 Källor som styr förslaget
+
+Svensk lag och tillämpliga regionala föreskrifter styr kraven. Svenska myndighetsvägledningar och tillsynsbeslut hjälper till att tolka innehållet. Internationella exempel används för scenarier och metodjämförelse. Språk- och AI-dokumentation styr föreslagen utformning och teknisk verifiering, inte svenska rättskrav.
+
+| Källa och kontrollerad del | Betydelse för nästa version |
+|---|---|
+| [PTL 2017:630](https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/lag-2017630-om-atgarder-mot-penningtvatt-och_sfs-2017-630/), särskilt 2 kap. 1–3 §§ och 6 kap. 1 §; [14FS 2024:11](https://www.lansstyrelsen.se/download/18.74c322ef18f9ee08a2929/1716358223326/2024-11%20Penningtv%C3%A4tt%20Dalarnas%20l%C3%A4n%20G%C3%A4vleborgs%20l%C3%A4n%20Hallands%20l%C3%A4n%20V%C3%A4rmlands%20l%C3%A4n%20V%C3%A4stra%20G%C3%B6talands%20l%C3%A4n%20%C3%96rebro%20l%C3%A4n.pdf), 2 kap. | Verksamhetsanpassad, dokumenterad och aktuell bedömning; rätt regionalt regelpaket och ikraftträdandedatum. Ingen föreskriven ordmängd eller viss tabellmall har identifierats i dessa bestämmelser. |
+| [Länsstyrelsens vägledning](https://www.lansstyrelsen.se/vastra-gotaland/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism/gor-en-allman-riskbedomning.html), delarna om analys och bedömning; [tillsynsrapport 2026:14](https://www.lansstyrelsen.se/download/18.51b8c30c19d05558bd82e18e/1774259142687/Erfarenheter%20fr%C3%A5n%20l%C3%A4nsstyrelsernas%20penningtv%C3%A4ttstillsyn.pdf), s. 5–10. | Beskriv hur faktorer samverkar i det verkliga uppdraget och varför det påverkar bedömningen. En kontroll får inte räknas som effektiv bara för att den finns. |
+| [Jas, 2025-08-22](https://www.lansstyrelsen.se/download/18.1b56e98e19913b46efa36a6c/1757400897908/Beslut%20om%20sanktionsavgift%20-%20Jas%20Redovisningsbyr%C3%A5%20AB.pdf), s. 3–4; [Y-ekonomi, 2026-01-29](https://www.lansstyrelsen.se/download/18.4d207a9019c47c545ea238c6/1770992429802/Beslut%20om%20sanktionsavgift%20Y-ekonomi.pdf), s. 3–6. | Tabeller, tjänstebeskrivningar och angivna risknivåer ersätter inte analys. Läsaren måste förstå sambandet mellan uppdrag, kunder, geografi, distributionskanaler och utnyttjande. Besluten gäller sina respektive omständigheter. |
+| [Alexander Karlsson, 2026-06-10](https://www.lansstyrelsen.se/download/18.888fba919ed43ce64360ffc/1782377713996/Beslut%20om%20sanktionsavgift%20-%20Alexander%20Karlsson%20Redovisning%20AB.pdf), s. 3–5. | Kontrollernas verkan behöver förklaras och prövas innan den används i bedömningen. Beslutet anges som **överklagat** på [myndighetens beslutssida](https://www.lansstyrelsen.se/skane/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism/ingripanden-och-sanktioner-penningtvatt.html); det behandlas inte som lagakraftvunnen dom. |
+| [Ekobrottsmyndigheten/FAR/Srf, guide uppdaterad oktober 2025](https://www.ekobrottsmyndigheten.se/wp-content/uploads/2025/12/en-guide-inom-ekobrottsomradet-riktat-till-redovisningskonsulter.pdf), avsnitt 4.2–4.3 och 6.6, s. 12 och 22. | Konkret stöd för arbetsmetodik, varningssignaler och osanna fakturor. Ett underlag som går att bokföra är inte därmed belagt som sann affär. Guidens bredare ekobrottsfrågor ska inte automatiskt klassas som penningtvätt. Reko/Rex-original i medlemsmaterial har inte granskats genom denna källa. |
+| [NRA 2026: juridiska personer och konstruktioner](https://polisen.se/f2584f47e56bfafc9c9a5a43b3350951/siteassets/dokument/om-polisen/penningtvatt/nationell-riskbedomning-2026-juridiska-personer-och-konstruktioner.pdf), sammanfattning, avgränsning och 5.7. | Relevant ny källkandidat för ägarstrukturer och redovisningens legitimerande funktion. Rapportens samhällsbedömning är inte en automatisk kundklassning eller en ny numerisk regel. |
+| [FATF:s redovisningsvägledning, 2019](https://www.fatf-gafi.org/content/dam/fatf-gafi/guidance/RBA-Accounting-Profession.pdf), punkterna 21 och 60–70; [HMRC:s tjänsterisker, uppdaterade 2026-01-09](https://www.gov.uk/government/publications/anti-money-laundering-guidance-for-the-accountancy-sector/risks-common-to-accountancy-service-providers), löneavsnittet. | Jämförelsestöd för proportionerlig analys. HMRC anger direkt betalning från kundens konto som förhöjd risk; slutsatsen att skilja betalningsmandat från enbart löneberäkning är vår tillämpning, inte HMRC:s uttryckliga tvådelade modell. Brittiska rättskrav och risknivåer förs inte över till Sverige. |
+| [Språkrådet, Myndigheternas skrivregler](https://www.isof.se/utforska/vagledningar/myndigheternas-skrivregler), 1.5.3, 3.9.2 och 14.1–14.2, lästa i sparat original. | Det viktigaste tidigt, tolkande löptext kring centrala tabeller och korta källhänvisningar med fullständig förteckning. Valet att använda noter är en redaktionell rekommendation, inte ett lagkrav. |
+
+Källorna om företagsmiljö, betalningskedjor, TF och digitala plattformar i avsnitt 8–9 kvarstår. Civilsamhällesrapportens original gick inte att öppna på nytt i denna kontroll; tidigare läsning räknas inte som en färsk verifiering. Relevans för respektive byrå ska prövas, inte alla katalogscenarier läggas in i varje rapport.
+
+### 10.3 Tre möjliga lösningar
+
+**Rekommendation: ett sammanhängande AI-uppdrag per tjänst med tydligt avgränsade verksamhetsfakta.** Modellen får förstå vad byrån gör och var insynen slutar. Den returnerar sammanhängande text med strukturerade beläggshänvisningar bakom texten. Lokala riskbeslut och privata motiveringar fogas in lokalt. Hypotesen om ett anrop per tjänst ska jämföras med dagens delanrop i riktiga skrivprov; antal anrop är inte ett rättskrav eller ett redan bevisat kvalitetsval.
+
+Två alternativ har övervägts: enbart språkputs inom dagens två delar är billigare men lämnar kontextbristen; en avslutande AI-omskrivning av hela rapporten kan förbättra flytet men skulle kräva en annan integritets- och granskningslösning när rapporten innehåller privata uppgifter. Det senare rekommenderas inte inom detta bygge.
+
+Det rekommenderade användarflödet är nedan. Byggordningen behöver däremot börja med sakfel och nivåmotivering före utökad AI-text, enligt preciseringen i 10.8.
+
+1. **Bekräfta verksamheten.** Återanvänd redan bekräftade strukturerade fakta. Fråga bara efter saknade eller motstridiga uppgifter som påverkar analysen. Några fasta val beskriver tjänstens mandat, underlag, insyn och kontroller. Befintliga 16 granskningsblock blir inte 16 nya obligatoriska fritextfrågor ovanpå detta.
+2. **Bygg ett avgränsat skrivunderlag.** Varje faktum har omfång, period, källa och status: exempelvis hela byrån, löneuppdrag eller ett visst delmoment. Fördelningar mellan tjänster får inte gissas från totaler. Fråga riktat efter tjänstefördelning när en byråövergripande faktor är relevant för flera tjänster; skyddade uppgifter stannar lokalt även efter komplettering. Okänd uppgift är inte nekande svar. Geografi är bredare än enbart sanktioner.
+3. **Skriv analysen sammanhängande.** Utgå från uppdraget, förklara relevant utnyttjande och koppla till kund-/kanal-/geografifaktorer när underlaget stöder sambandet. Skilj möjliga scenarier från faktiskt iakttagna händelser. Förklara penningtvätt och TF efter deras respektive relevans; lägg inte in ett mekaniskt identiskt TF-stycke i varje tjänst.
+4. **Pröva lokala slutsatser.** Programmet visar vad som stöder resonemanget och vad som saknas. Byrån bekräftar eller ändrar förslag och bedömer kontrollernas faktiska tillämpning. Den lokala riskmotiveringen och följder för kundkännedom, övervakning, kompetens och uppdragens hanterbarhet måste vara konkreta.
+5. **Granska och exportera.** Först när tillämpliga sak- och metodkrav är uppfyllda kan dokumentet fastställas. Ett välskrivet utkast får inte få status som godkänt därför att texten låter övertygande.
+
+### 10.4 Vad AI får och inte får göra i förslaget
+
+De tillkommande verksamhetsuppgifterna är i första hand fasta, uttryckligt bekräftade val om byråns arbete: exempelvis löneberäkning kontra betalningsmandat, vem som attesterar underlag och vilka flöden som är synliga. Det är en föreslagen ändring av AI-kontraktet som måste specificeras och godkännas före implementation.
+
+Skydden i spec 8.4.10 behålls: inga personuppgifter, privat profil-/analysfritext, faktiska kontrollutfall, motorresultat eller härledda privata regelspår skickas. Fria svar får inte automatiskt sammanfattas och skickas som en genväg runt tillåtelselistan. Skyddade smågrupper och komplement skyddas även i nya fält och i återförsök. Två underlag som endast skiljer sig i privata uppgifter ska ge samma externa begäran, inklusive antal och innehåll i omförsök.
+
+AI:n kan beskriva ett möjligt missbruk och vad en katalogbeskriven kontroll normalt prövar. Den får inte hävda att byrån utfört kontrollen, att den varit effektiv, att en viss kund är misstänkt eller att en nivå är rätt. Sådana påståenden behöver lokala belägg och behörig granskning. Saknad information visas där den påverkar ett beslut; tekniska maskeringsmeddelanden ska inte fylla den färdiga löptexten.
+
+Ett versionsbundet källunderlag innehåller relevanta originalutdrag med källroll: rättskrav, myndighetsvägledning, scenario eller metodval. AI:n hänvisar till tillåtna käll-ID:n och byråfakta i metadata. Programmet framställer korta hänvisningar och källförteckning; modellen hittar inte på länkar. Word-fotnoter är inget krav och väljs inte utan separat teknisk prövning, se 10.8.
+
+Anthropics [promptvägledning](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices) stöder tydlig kontext, relevanta exempel och ett precist skrivuppdrag. [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) säkrar formatet, inte att påståenden är sanna. Därför behövs sakprövning utöver schema- och ordkontroller. [Leverantörens evalvägledning](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) används för uppgiftsspecifika prov, inte som intyg om juridisk kvalitet.
+
+### 10.5 Föreslagen läsordning och skrivexempel
+
+Huvudrapporten börjar med bedömning, viktigaste exponeringar, beslut/åtgärder och aktuell granskningsstatus. Därefter följer en kort byråbeskrivning och metodavgränsning, sammanhängande tjänsteanalyser, en samlad åtgärdstabell samt uppdatering och källnyckel. Varje tjänst har få stycken och en kompakt tabell där den tillför överblick. Nivåmotiveringen ligger nära nivån; den göms inte enbart i B1.
+
+Förslaget behåller en Wordfil med navigerbar B1. Beräkningar, full källmetadata och detaljerade kontroll-/granskningsspår hör hemma där. Kravtäckning följs i en intern matris i stället för att samtliga kategorier räknas upp i varje stycke. Gemensam metod beskrivs en gång, medan väsentliga tjänstespecifika förklaringar står kvar vid tjänsten. Befintliga låsta stycken och granskningsregler får inte försvinna enbart för att spara ord; deras placering och eventuell samordning måste prövas uttryckligen och historisk verifiering bevaras.
+
+Korta källhänvisningar placeras vid materiella påståenden, normalt samlade per stycke; en kompakt förteckning och fullständiga versioner/sidhänvisningar i B1 bevarar spårbarheten. Detta ersätter återkommande källuppräkningar i löptexten. Huvudtextens 3 500–5 000 ord och 9–12 sidor är redaktionella mål som ska mätas tillsammans, inte skäl att skära bort nödvändig analys eller krympa texten oläsligt. Fynd kan grupperas i presentationen med full täckning bevarad i granskningsunderlaget.
+
+**Illustrativt skrivexempel, inte ett nytt AI-resultat eller en godkänd riskmotivering.** Det tidigare exemplet blandade AI-möjlig text och privat fritext utan att visa deras ursprung. Här görs gränsen uttrycklig. Märkningarna nedan är för designgranskningen; den färdiga rapporten ska kunna läsas sammanhängande med proveniensen bevarad i modellen.
+
+Lokalt infogad uppdragsbeskrivning från det påhittade privata underlaget:
+
+> Vi beräknar löner och upprättar arbetsgivardeklarationer för 22 företagskunder utifrån underlag som kunden har attesterat. Kunden verkställer betalningarna. Vår möjlighet att upptäcka ett utnyttjande ligger därför främst i vilka löneuppgifter vi får och hur avvikelser följs upp.
+>
+AI-möjligt scenarioutkast från tillåtna verksamhetsval och källunderlag:
+
+> En kund kan lämna uppgifter om fiktiva anställningar eller arbetstid som inte motsvarar utfört arbete. Lönebesked och deklarationer kan då ge osanna utbetalningar ett trovärdigt underlag.
+
+Lokalt infogad uppgift om genomförande, som behöver sakgranskas och inte bevisar effekt:
+
+> Vi kontrollerar ändringar av mottagarkonton mot behörig kontaktperson.
+
+AI-möjlig beskrivning av kontrolltypens begränsning, om den stöds av det godkända beskrivningsunderlaget:
+
+> En behörighetskontroll prövar vem som lämnar instruktionen, men visar inte att anställningen eller arbetstiden är verklig.
+
+Scenariostöd: HMRC:s löneavsnitt ovan; kontrollbegränsningen är ett uttryckligt analytiskt resonemang. Exemplet är inte hela tjänsteavsnittet och bedömer inte TF, risknivå eller kontrollens verifierade effekt. Dessa delar behöver egna underlag. Om en annan byrå verkställer betalningar måste texten ändras i sak till att också analysera mandat och genomförande, inte bara byta byrånamn eller kundantal.
+
+### 10.6 Vad som ska vara klart före leverans
+
+| Område | Föreslaget färdigkrav |
+|---|---|
+| Saklig täckning | Spårbar matris från tillämpligt krav och relevant scenario till fakta, analys, lokal prövning och dokumentplats. Ny källsignal prövas för relevans; den blir inte automatiskt en ny riskfaktor. |
+| Riskmetod | M1–M4 och kontrollernas räckvidd/effekt behandlas med sakkunnig. Dagens generella kontrollavdrag och TF-konstruktion blir inte validerade genom bättre språk. Metodändringar kräver källstöd eller märkning som metodval, expertprövning och regressionsprov. |
+| AI-kvalitet | Verkliga skrivprov på kontrasterande syntetiska byråer och uppdrag: bland annat beräkning kontra betalning, god kontra begränsad insyn samt relevanta TF-/utlands-/plattformsscenarier. Kontrollera stödda påståenden, omfång, begriplighet, skillnader mellan tjänster och avsaknad av uppdiktade kontroller. En AI-granskare kan hjälpa, men är inte godkännandeinstans. |
+| Säkerhet och återanvändning | Automatiska prov av hela externa begäran, privata variationer, smågrupper, käll-ID:n, otillåtna påståenden och omförsök. Ändrade sakuppgifter, analys, källversioner eller dokumentinnehåll ogiltigförklarar berörda godkännanden; gamla exporter ska fortfarande kunna verifieras. |
+| Verkligt arbetsflöde | Genomför från intag till läsbar export och försök till fastställelse, både med komplett underlag och verkliga luckor. Mät arbetsbörda efter återanvändning och förifyllnad; ersätt inte generisk text med fler onödiga frågor. |
+| Läsbarhet och användning | Mät huvudord, sidor och bilaga med normal/maximal text. Kontrollera tabeller, noter, innehållsförteckning och navigering i Word. Medarbetare ska kunna hitta bedömning, skäl och nästa åtgärd; detta prov är ännu inte genomfört. |
+
+Teknisk leverans kan bli färdig inom ett avgränsat bygge. Verklig byråbekräftelse, modellansvar, sakkunnig metodvalidering och myndighetens bedömning kan inte ersättas med programtester. Inget i detta avsnitt sätter en sakkunnigstatus eller utlovar godkännande.
+
+### 10.7 Genomfört i denna researchomgång
+
+Källor, aktuellt programflöde och det sparade manuella AI-provet har jämförts. Endast detta befintliga researchdokument har kompletterats. Ingen tillåtelselista, regelbas, prompt, beräkning eller export har ändrats; inga nya AI-anrop eller fullständiga testkörningar har gjorts. Förslaget behöver ett designbeslut innan befintlig spec och därefter genomförandeplan ändras. Det är inte en ny godkänd plan eller implementation.
+
+### 10.8 Kontroll av Claudes granskning och reviderad prioritering, 2026-10-17
+
+Claudes bifogade granskning har kontrollerats mot kod, sparade sidtexter och primärkällor. Textens föreslagna svar ”Godkänt som riktning” är ett citat från granskaren, inte ett designgodkännande från användaren. Nedan korrigeras och preciseras vårt förslag; inga programändringar genomförs genom detta.
+
+**Nivåmotiveringen prioriteras före mer AI-text.** [Forvis Mazars, 2026-08-14, dnr 3647-2026](https://www.lansstyrelsen.se/download/18.31e7edd71a116040fbd1597b/1791528260807/Beslut%20om%20sanktionsavgift%20-%20Forvis%20Mazars%20Accounting%20Int%20AB.pdf), s. 3–4, bekräftar problemet: relevanta rubriker och ett omfattande riskverktyg ersätter inte analysen av avgörande faktorer och betydelsen för tjänsten. Viktig avgränsning: myndigheten accepterar samtidigt kund-, kanal- och geografidelarna lästa tillsammans med verktyget. Beslutet förbjuder inte bilagor eller riskverktyg. [Hanko, 2026-05-18, dnr 38008-2025](https://www.lansstyrelsen.se/download/18.6116caf819eafe53201127c/1781080645537/Beslut%20om%20sanktionsavgift%20-%20Hanko%20Redovisning%20AB.pdf), s. 3, och [Stella, 2026-05-29, dnr 47923-2025](https://www.lansstyrelsen.se/download/18.458c24da19eafd61165d49d/1781178296864/Beslut%20om%20sanktionsavgift%20Stella%20Redovisning%20AB.pdf), s. 5–6, ger motsvarande stöd. Här bedöms sakmotiveringen, inte besluten som domstolspraxis. Forvis-originalet kunde inte läsas i webbverktyget men hämtades direkt från myndigheten och textlästes lokalt, s. 1–4; SHA-256 `05328ec72451ef4cdb6fed529e729196d1a14dfcbcaca03246df00fb99afd0dc`.
+
+Nivån behöver två skilda underlag nära varandra i huvudtexten: programmets verifierbara beräkningsförklaring och byråns sakliga bedömning av varför exponeringen, sannolikheten, konsekvensen och eventuella kontroller motiverar slutsatsen. En mening som enbart återger antal faktorer eller en tabellräkning räcker inte som den senare. Ingen textgenerator får välja några godtyckliga ”viktigaste faktorer” som motorn inte faktiskt prioriterar; vid tak eller likvärdiga bidrag ska det framgå. Ogranskade metodval ska beskrivas som sådana.
+
+**Lokala utfall ska synas utan att lämna datorn.** Granskningens absoluta formulering att huvudrapporten aldrig visar kundutfall är för stark: där finns bland annat 100 procent juridiska personer, digital andel och sex utlandskunder. Men flera skyddade faktorer blir kvar som ”prövas lokalt” och får ingen konkret lokal slutsats vid analysen. En typad plats för ett lokalt utfallsstycke är därför ett relevant designförslag. Den ska kunna visa gäller, gäller inte, under metodgräns, okänt, inaktuellt och motstridigt underlag, med rätt omfång och period. Ett falskt regelvillkor får inte formuleras som frånvaro av risk.
+
+Detta är mer än att ersätta ett ord med ja eller nej. Den omgivande AI-texten måste hålla för samtliga privata utfall; AI får annars inte skriva den meningen. Välj i första hand hela lokalt genererade meningar/stycken med kända fakta och uttrycklig lokal bedömning. Typade ID:n och tillåten placering valideras innan lokal infogning. Fel efter lokal infogning får inte ge ett privatvärdesberoende omförsök till AI. Säkerhetsprovet ska jämföra hela anropskedjan för privata variationer. Fler tjänstefördelningar får inte kringgå smågrupps- eller komplementsskyddet.
+
+**Sakfel och överflöd verifierade.** `falt.yaml` frågar om anknytning som ”behöver prövas” mot sanktioner. I tre tjänsteavsnitt gör AI-texten avsaknad av sådan uppgift till påståendet att ingen anknytning behöver prövas. Ett fjärde uttrycker samma problem som en registreringsuppgift. Fråga, förklaring, visningsnamn, prompt och validator behöver behandlas tillsammans med källstöd: ingen identifierad riskindikator betyder inte att sanktionsprövning kan avstås. Gamla nej-svar får inte tyst få en ny betydelse efter en frågeändring; kompatibilitet eller ny bekräftelse måste definieras.
+
+`lasta_v6.py` lägger till både byråns och tjänstens geografibeskrivning. I provet är deras innehåll identiskt. Samordning ska bevara båda beläggskopplingarna och bara göras när omfång, period och källa är förenliga; lika text är inte i sig bevis för lika tjänsteexponering. Metodens fyra upprepade hänvisningsrader på s. 2 bör visa faktisk status och relevant begränsning, samlat, utan att granskningsstopp döljs.
+
+Färsk kontroll av de 16 huvudsidorna ger 17 ”prövas lokalt”, 51 ”öppna bilaga B1” vid skiftlägesokänslig sökning, 84 ”Källor:” och 29 ”Tabellresonemang”. Det stöder att ta bort upprepad programtext före ökad textbudget. Uppgifterna 1 355 AI-ord och cirka 800 ordagranna dubblettord har inte verifierats med en jämförbar mätmetod här. Att ordmålet säkert kan nås trots mer AI-text återstår att mäta; besparingar får inte dubbelräknas.
+
+**M1 får ett tydligt beslutsalternativ.** Förslaget ”ingen riskreduktion innan relevant räckvidd och faktisk effekt är belagda lokalt” är förenligt med vägledningens krav på effektbedömning före sammanvägning. Det är fortfarande ett föreslaget metodval, inte ett infört lagkrav eller sakkunnigbeslut. Även när ett avdrag inte kan göras kan underlaget vara för ofullständigt för fastställelse; ett försiktigt beräknat utfall är inte automatiskt ett komplett dokument. [Länsstyrelsens vägledning, avsnitt om riskreducerande åtgärder](https://www.lansstyrelsen.se/skane/samhalle/betalning-ekonomi-och-pengar/forhindra-penningtvatt-och-finansiering-av-terrorism/gor-en-allman-riskbedomning.html).
+
+**Tekniska förbehåll beaktas.** [Anthropics dokumentation](https://platform.claude.com/docs/en/build-with-claude/structured-outputs#feature-compatibility) bekräftar att inbyggda citations inte fungerar med `output_config.format`; käll-ID:n i vårt schema behålls. [python-docx-projektets öppna fotnotsärende](https://github.com/python-openxml/python-docx/issues/1) stöder att inte förutsätta ett färdigt fotnots-API. Korta styckehänvisningar blir förstahandsförslag. Löneexemplets proveniens och HMRC-tolkningen är rättade ovan.
+
+AMLA:s [instrumentöversikt, uppdaterad 7 oktober 2026](https://www.amla.europa.eu/policy/regulatory-instruments_en), och [samrådssida för artikel 10.4](https://www.amla.europa.eu/policy/public-consultations/consultation-draft-guidelines-business-wide-risk-assessment_en) anger avslutat samråd, med resultat att följa. Någon slutlig riktlinje har inte identifierats där i denna kontroll. Det är mer precist än att säkert slå fast en kommande publicering under fjärde kvartalet. Utkast ska inte behandlas som gällande svenska regler. Versions-/ikraftträdandekontroll görs igen när specen låses.
+
+**Reviderad byggordning inför designbeslut:** (1) sanktionssemantik, geografidubblett och överflödig metodtext; (2) lokal nivåförklaring plus sakmotivering och M1-alternativ; (3) lokal visning av skyddade utfall; (4) riktade tjänstefördelningar och verksamhetsval; (5) sammanhängande AI-text med tydlig proveniens; (6) läsordning och korta hänvisningar; (7) kontrasterande AI-prov, säkerhetsprov och dokumentläsning. En eventuell kategoritabell är presentationsstöd, inte ett nytt lagkrav på en viss layout. Grunddata måste också vara rimliga: korrekt återgivning av provets nollvärde för riskbranscher löser inte en möjlig motsägelse mot dess beskrivna kundbranscher.
+
+Endast researchdokumentet har ändrats vid denna återgranskning. Inga produktfixar, metodbeslut eller nya AI-anrop har gjorts, och full testsvit har inte körts. Befintliga privata exporter och `research_notes/` är oförändrade; ett myndighetsoriginal har lagts i den privata källmappen.
