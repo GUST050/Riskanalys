@@ -41,3 +41,13 @@ def test_aldre_svar_med_avsnittsfalt_godtas(giltigt_utkast):
 def test_ogiltigt_svar_kastar_valideringsfel():
     with pytest.raises(ValidationError):
         tolka_ai_svar('{"stycken": "fel"}', "D-ARB.6.1", TILLATNA)
+
+
+@pytest.mark.parametrize('stycken', [None, 0, False, 'fel form', {'text': 'fel form'}])
+@pytest.mark.parametrize('med_avsnitt', [False, True])
+def test_felformat_styckesamling_ger_valideringsfel(stycken, med_avsnitt):
+    data = {'stycken': stycken, 'oklarheter': []}
+    if med_avsnitt:
+        data['avsnitt'] = 'D-ARB.6.1'
+    with pytest.raises(ValidationError):
+        tolka_ai_svar(json.dumps(data), 'D-ARB.6.1', TILLATNA)

@@ -87,3 +87,17 @@ def test_utvardera_kommandot(datamapp, capsys):
     argv = ["utvardera", "testbyra", "--beskrivning", "Första riskbedömningen.", "--datum", "2026-11-01"]
     assert main(argv) == 0
     assert "Nästa genomgång senast 2027-11-01." in capsys.readouterr().out
+
+
+def test_senaste_separata_uppdatering_bevarar_utvarderingsfrist_och_payload():
+    historik = Historik(handelser=(
+        Handelse(datum=date(2026, 10, 1), typ='utvärdering', beskrivning='Prövning.'),
+        Handelse(datum=date(2027, 11, 1), typ='uppdatering', beskrivning='Sen uppdatering.'),
+        Handelse(datum=date(2026, 10, 8), typ='uppdatering', beskrivning='Tidigare.'),
+        Handelse(datum=date(2028, 1, 1), typ='fastställelse', beskrivning='Beslut.'),
+    ))
+    payload = historik.model_dump_json()
+    assert historik.senaste_uppdatering() == date(2027, 11, 1)
+    assert historik.nasta_genomgang() == date(2027, 10, 1)
+    assert historik.model_dump_json() == payload
+    assert Historik().senaste_uppdatering() is None

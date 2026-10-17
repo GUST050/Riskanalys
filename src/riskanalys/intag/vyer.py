@@ -26,6 +26,7 @@ def foreslagen_roll(profil,sessionsroll=''):
 
 def sida(s, innehall, fel=''):
     tjanstelank=f'<a href="{s.prefix}tjanster">Byråns tjänster</a>' if s.tjanst.finns() else ''
+    if s.tjanst.finns():tjanstelank+=f'<a href="{s.prefix}analys">Lokal verksamhetsanalys</a>'
     varning=f'<div class="error" role="alert"><h2>Kontrollera svaret</h2>{e(str(fel))}</div>' if fel else ''
     return f'<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Riskanalys – intag</title><style>{CSS}</style></head><body><main><nav><a href="{s.prefix}">Fortsätt intaget</a><a href="{s.prefix}?oversikt=1">Svar och kompletteringar</a><a href="{s.prefix}register">Företagsuppgifter</a>{tjanstelank}</nav>{varning}{innehall}<hr><small>Uppgifter sparas på den här datorn. Namn och fritext skickas inte till AI. Stäng terminalen med Ctrl+C när du är klar.</small></main></body></html>'
 

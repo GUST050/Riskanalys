@@ -1,0 +1,349 @@
+"""Rena innehållsprövningar; kontrollerar inte levande filer eller modellkod."""
+import json
+import re
+from datetime import date
+from riskanalys.fel import RiskanalysFel
+from riskanalys.lagring.kontrollsumma import for_text
+from riskanalys.analys.modeller import Analysbeslut, Analyspaket
+
+ALLTID = frozenset({1,2,4,6,7,8,9,13,14,16})
+BLOCKFALT = {
+    1:('exponering','exponeringsbelagg'), 2:('delningsmotivering','delanalyser'),
+    3:('betalningsinsyn',), 4:('uppdragsprovning',),
+    5:('leverantorsmotivering','leverantorer'), 6:('scenarier','scenariokopplingar'),
+    7:('sarbarhetsprovningar',), 8:('samverkan',),
+    9:('erfarenhetsprovning','erfarenhetsbelagg'), 10:('kontroller',),
+    11:('kontroller','gap'), 12:('reduktionsprovning','reduktionsmotivering','kontroller','gap'),
+    13:('pt_motivering',), 14:('tf_motivering',),
+    15:('sektorsjamforelse','sanktioner'), 16:('slutsats','rutinatgarder','gap'),
+}
+_MARKOR = re.compile(r'\[(?:VERIFIERA|KOMPLETTERA|FYLL I)[^\]]*\]',re.I)
+
+
+def summa(data) -> str:
+    if hasattr(data,'model_dump'):
+        data=data.model_dump(mode='json')
+    return for_text(json.dumps(data,ensure_ascii=False,sort_keys=True,separators=(',',':')))
+
+
+def scenariosumma(scenario) -> str:
+    return summa(scenario)
+
+
+def underlagssumma(paket: Analyspaket) -> str:
+    return summa(paket.bindning)
+
+
+def svarssumma(paket: Analyspaket) -> str:
+    return summa(paket.model_dump(mode='json',exclude={'beslut','revision'}))
+
+
+def registersumma(paket: Analyspaket) -> str:
+    return summa(paket)
+
+
+def blocksumma(paket: Analyspaket, tjanst: str, nummer: int) -> str:
+    t=next(t for t in paket.tjanster if t.tjanst==tjanst)
+    data=t.model_dump(mode='json')
+    block=next((b for b in t.block if b.nummer==nummer),None)
+    innehall={f:data[f] for f in BLOCKFALT[nummer]}
+    # Dependencies are included, not only the visible prose. Never include confirmations themselves.
+    ids={k.scenario for k in t.scenariokopplingar}
+    gemensamma=[s.model_dump(mode='json') for s in paket.gemensamma_scenarier if s.id in ids]
+    scenarioblock={2,4,6,7,8,9,10,11,12,13,14,16}
+    beroenden={}
+    if nummer in (8,13,14,16):
+        beroenden['sarbarhetsprovningar']=data['sarbarhetsprovningar']
+    if nummer in (13,14,16):
+        for f in ('samverkan','kontroller','betalningsinsyn','uppdragsprovning'):
+            beroenden[f]=data[f]
+    if nummer in (4,10,11,12):
+        beroenden['betalningsinsyn']=data['betalningsinsyn']
+    return summa(dict(underlag=paket.bindning.model_dump(mode='json'),tjanst=tjanst,
+        nummer=nummer,innehall=innehall,beroenden=beroenden,
+        aktivering=block.aktivering if block else None,
+        motivering=block.motivering if block else None,
+        belagg=[b.model_dump(mode='json') for b in paket.belagg],
+        scenarier=([*gemensamma,*[s.model_dump(mode='json') for s in t.scenarier]] if nummer in scenarioblock else [])))
+
+
+def stoddatum(paket: Analyspaket, tjanst: str) -> tuple[tuple[str,date],...]:
+    """Daterade poster som ett godkännande vilar på.
+
+    Frister och uppföljningsdatum (rutinåtgärdens uppföljning, gapets tidsfrist och
+    nästa modellgenomgång) är framåtblickande och ingår därför inte.
+    """
+    t=next((t for t in paket.tjanster if t.tjanst==tjanst),None)
+    u=t.uppdragsprovning if t else None
+    uppdrag=(('uppdragsbeslutet',u.datum),) if u and u.beslutsstatus=='beslutad' and u.datum else ()
+    m=paket.modellrisk
+    modell=(('modellutvärderingen',m.utvarderad),('modellriskbeslutet',m.beslutsdatum),
+            *((f'modellfelet {f.id}',f.datum) for f in m.fel)) if m else ()
+    return (('bedömningen',paket.bindning.bedomningsdatum),
+            *((f'belägget {b.id}',b.datum) for b in paket.belagg),*uppdrag,*modell)
+
+
+def senare_stod(paket: Analyspaket, tjanst: str, godkannande: date) -> tuple[str,...]:
+    """Underlag daterat efter godkännandet kan inte ha burit godkännandet."""
+    return tuple(f'{tjanst}: {namn} har datum {datum.isoformat()}, efter analysgodkännandet '
+        f'{godkannande.isoformat()}. Underlag för ett godkännande får inte vara senare än godkännandet. '
+        'Rätta datumet eller godkänn först när underlaget finns.'
+        for namn,datum in stoddatum(paket,tjanst) if datum>godkannande)
+
+
+def registrera_beslut(paket: Analyspaket, beslut: Analysbeslut) -> Analyspaket:
+    t=next((t for t in paket.tjanster if t.tjanst==beslut.tjanst),None)
+    if t is None or not t.forfattare:
+        raise RiskanalysFel('Identifiera författaren till tjänstens svar före beslut.')
+    if (beslut.revision!=paket.revision or beslut.underlagssumma!=underlagssumma(paket)
+            or beslut.svarssumma!=svarssumma(paket)):
+        raise RiskanalysFel('Analysen har ändrats. Läs om svaren före beslut.')
+    tidigast=max([paket.bindning.bedomningsdatum,*[b.datum for b in paket.belagg]])
+    if beslut.datum<tidigast:
+        raise RiskanalysFel('Beslutsdatum får inte föregå bedömningen eller beläggen.')
+    # Underkännande får dokumentera felaktiga datum; bara godkännande kräver burande underlag.
+    senare=senare_stod(paket,beslut.tjanst,beslut.datum) if beslut.godkand else ()
+    if senare:
+        raise RiskanalysFel(' '.join(senare))
+    nytt=beslut.model_copy(update={'forfattare':t.forfattare,
+        'egen_granskning':t.forfattare.strip().casefold()==beslut.namn.strip().casefold()})
+    return paket.model_copy(update={'beslut':(*paket.beslut,nytt)})
+
+
+def gallande_beslut(paket: Analyspaket, tjanst: str) -> Analysbeslut | None:
+    senaste=next((b for b in reversed(paket.beslut) if b.tjanst==tjanst),None)
+    if senaste and (senaste.revision,senaste.underlagssumma,senaste.svarssumma)==(
+            paket.revision,underlagssumma(paket),svarssumma(paket)):
+        return senaste
+    return None
+
+
+def faktisk_reduktion(t) -> bool:
+    from riskanalys.bedomning.motor import RISKNIVAER
+    return bool(t.inneboende and t.kvarstaende and
+                RISKNIVAER.index(t.kvarstaende)<RISKNIVAER.index(t.inneboende.risk))
+
+
+def _saktext(text):
+    return isinstance(text,str) and bool(text.strip()) and not _MARKOR.search(text)
+
+
+def analysbrister(rb, profil, bedomning, paket: Analyspaket) -> tuple[str,...]:
+    from riskanalys.profil.lagring import profilrevision
+    fel=[]
+    def krav(villkor,text):
+        if not villkor:
+            fel.append(text)
+    krav(paket.bindning.byra==profil.byra.id==bedomning.byra,'Byråbindningen stämmer inte.')
+    krav(paket.bindning.profilrevision==profilrevision(profil),'Profilen har ändrats; förnya analysunderlaget.')
+    krav(paket.bindning.regelbas==rb.kontrollsumma==bedomning.regelbas_kontrollsumma,'Regelbasbindningen stämmer inte.')
+    krav(paket.bindning.bedomningsdatum==bedomning.datum,'Bedömningsdatum stämmer inte.')
+    belagg={b.id:b for b in paket.belagg}
+    for b in paket.belagg:
+        for f in b.profilfalt:
+            krav(f in rb.falt and profil.ar_bekraftad(f),f'{b.id}: profilbelägget {f} är inte aktuellt bekräftat.')
+            u=profil.uppgifter.get(f)
+            if u:
+                krav(bool(u.kalla and u.datum and u.bekraftad_av),f'{b.id}: profiluppgiftens belägg är ofullständiga.')
+                krav(b.period==u.period,f'{b.id}: beläggets period skiljer sig från {f}.')
+                krav(b.datum==u.datum,f'{b.id}: beläggets datum skiljer sig från {f}.')
+    gem={s.id:s for s in paket.gemensamma_scenarier}
+    from riskanalys.bedomning.sektorsrisk import sektorsavvikelser
+    sektorer={s.tjanst for s in sektorsavvikelser(rb,bedomning,profil)}
+    analyser={t.tjanst:t for t in paket.tjanster}
+    for t in bedomning.tjanster:
+        katalog=rb.tjanster[t.tjanst]
+        if t.erbjuds is None:
+            fel.append(f'{t.tjanst}: komplettera tjänsteutbudet i intaget.')
+        if t.erbjuds is False:
+            krav(profil.ar_bekraftad(katalog.erbjuds_falt),f'{t.tjanst}: ej erbjuden tjänst saknar aktuellt profilbelägg.')
+            continue
+        a=analyser.get(t.tjanst)
+        if a is None:
+            fel.append(f'{t.tjanst}: tjänsteanalys saknas.')
+            continue
+        _tjanstbrister(rb,profil,t,a,paket,gem,belagg,krav,t.tjanst in sektorer)
+        g=gallande_beslut(paket,t.tjanst)
+        # Även ett tidigare sparat godkännande prövas, så att dokument och fastställelse stoppas.
+        if g is not None and g.godkand:
+            fel.extend(senare_stod(paket,t.tjanst,g.datum))
+    for id in analyser:
+        krav(id in {t.tjanst for t in bedomning.tjanster},f'{id}: tjänsten saknas i bedömningen.')
+    return tuple(dict.fromkeys(fel))
+
+
+def _tjanstbrister(rb,profil,t,a,paket,gem,belagg,krav,sektorsavvikelse):
+    prefix=f'{a.tjanst}: '
+    def k(v,text):krav(v,prefix+text)
+    def text(v,namn):k(_saktext(v),f'{namn} saknar ett färdigt svar.')
+    def refs(ids,namn,kravs=True):
+        k(bool(ids) or not kravs,f'{namn} saknar belägg.')
+        for id in ids:k(id in belagg,f'{namn} hänvisar till okänt belägg {id}.')
+    katalog=rb.tjanster[a.tjanst]
+    k(bool(a.forfattare),'Författare saknas.')
+    if t.egen_erfarenhet is not None:
+        k(t.egen_erfarenhet.belagd,'Aktuellt underlag för egen erfarenhet saknas.')
+    lokala={s.id:s for s in a.scenarier}
+    scenarier=dict(lokala)
+    for kop in a.scenariokopplingar:
+        s=gem.get(kop.scenario)
+        k(s is not None,f'Okänt gemensamt scenario {kop.scenario}.')
+        if s is None:continue
+        k(kop.bekraftad and kop.scenariosumma==scenariosumma(s),f'Scenariokopplingen {s.id} är inte aktuellt bekräftad.')
+        if kop.tillampning=='samma':
+            k(not kop.lokal_scenario,f'Samma-kopplingen {s.id} får inte dölja en lokal variant.')
+            if kop.bekraftad and kop.scenariosumma==scenariosumma(s):scenarier[s.id]=s
+        else:
+            k(kop.lokal_scenario in lokala and _saktext(kop.motivering),f'Avvikelsen från {s.id} saknar lokal variant/motivering.')
+            if kop.lokal_scenario in lokala:
+                k(set(s.hot)<=set(lokala[kop.lokal_scenario].hot),f'Lokalt scenario tappar hot från {s.id}.')
+    hot=set()
+    delids={d.id for d in a.delanalyser}
+    anvanda_delar=set()
+    for s in scenarier.values():
+        hot.update(s.hot)
+        k(set(s.hot)<=set(katalog.hot),f'{s.id} har hot utanför tjänsten.')
+        k(s.relevans!='okant',f'{s.id}: scenariots relevans är okänd.')
+        text(s.motivering,f'{s.id} relevansmotivering')
+        text(s.rubrik,f'{s.id} rubrik')
+        text(s.handelseforlopp,f'{s.id} händelseförlopp')
+        refs(s.belagg,s.id)
+        k(set(s.delanalyser)<=delids,f'{s.id} hänvisar till annan eller okänd delanalys.')
+        if a.delanalyser and s.relevans=='relevant':
+            k(s.id in lokala and bool(s.delanalyser),f'{s.id} kräver lokal koppling till arbetsmoment.')
+            anvanda_delar.update(s.delanalyser)
+    k(set(katalog.hot)<=hot,'Varje kataloghot kräver uttrycklig scenarioprövning.')
+    text(a.delningsmotivering,'Delningsmotivering')
+    k(delids<=anvanda_delar,'Varje delanalys behöver ett relevant lokalt scenario.')
+    for d in a.delanalyser:
+        text(d.rubrik,d.id);text(d.arbetsmoment_och_befogenheter,d.id);refs(d.belagg,d.id)
+    relevanta={id for id,s in scenarier.items() if s.relevans=='relevant'}
+    block={b.nummer:b for b in a.block}
+    k(set(block)==set(range(1,17)),'Alla 16 guideblock ska ha aktivering eller avgränsning.')
+    for n,b in block.items():
+        if n in ALLTID:k(b.aktivering=='aktiv',f'Block {n} är alltid obligatoriskt.')
+        k(b.aktivering!='okand',f'Block {n} har okänd aktivering.')
+        text(b.motivering,f'Block {n} aktiveringsskäl')
+        if b.aktivering=='aktiv':k(b.bekraftad_summa==blocksumma(paket,a.tjanst,n),f'Block {n} är inte aktuellt bekräftat.')
+    def aktiv(n):return n in block and block[n].aktivering=='aktiv'
+    extern=[]
+    for f in ('P-RISK.extern_kyc','P-RISK.utkontraktering'):
+        if f in rb.falt:
+            u=profil.uppgifter.get(f)
+            extern.append(u.varde if profil.ar_bekraftad(f) else None)
+    if extern and any(v is None for v in extern):k(False,'Extern KYC/utkontraktering är okänd; rätta intaget.')
+    if extern and all(v is False for v in extern):
+        k(not a.leverantorer,'Lokal leverantörsprövning motsäger profilens nej till extern KYC/utkontraktering; rätta intaget.')
+    if any(v is True for v in extern):k(aktiv(5),'Leverantörsblocket måste aktiveras vid extern KYC/utkontraktering.')
+    if relevanta:
+        k(aktiv(10) and aktiv(11),'Relevanta scenarier kräver kontroll- och luckprövning.')
+    reduktion=faktisk_reduktion(t)
+    if reduktion:k(aktiv(12),'Faktisk motorreduktion kräver reduktionsprövning.')
+    if sektorsavvikelse:
+        k(aktiv(15),'Relevant sektorsavvikelse kräver aktiverad sektor-/sanktionsprövning.')
+    if t.sanktionsrisk and any(profil.ar_bekraftad(f) and profil.uppgifter[f].varde is True
+                              for f in ('P-GEO.sanktionsanknytning',)):
+        k(aktiv(15),'Sanktionsanknytning kräver sektor-/sanktionsprövning.')
+    for namn in ('exponering','samverkan','erfarenhetsprovning','pt_motivering','tf_motivering','slutsats'):
+        text(getattr(a,namn),namn)
+    refs(a.exponeringsbelagg,'Exponering');refs(a.erfarenhetsbelagg,'Erfarenhetsprövning')
+    _insyn_uppdrag(a,aktiv,text,refs,k)
+    _sarbarheter(a,rb,katalog,scenarier,relevanta,text,refs,k)
+    _kontroller_rutiner(a,rb,profil,katalog,scenarier,relevanta,belagg,text,refs,k)
+    if aktiv(15):text(a.sektorsjamforelse,'Sektorsjämförelse');text(a.sanktioner,'Sanktionsprövning')
+    k(a.reduktionsprovning not in ('okand','metodkonflikt'),'Reduktionsprövningen har okänd effekt eller metodkonflikt.')
+    k((a.reduktionsprovning=='ej_reduktion')== (not reduktion),'Reduktionsprövningen stämmer inte med motorns faktiska reduktion.')
+    if reduktion:
+        k(bool(relevanta),'Faktisk reduktion saknar relevant stöd i lokal scenarioprövning.')
+        text(a.reduktionsmotivering,'Reduktionsmotivering')
+        for id in relevanta:
+            k(any(c.scenario==id and c.tackning in ('bedomd_tillracklig','delvis') for c in a.kontroller),
+              f'{id}: faktisk reduktion saknar belagd scenariotäckning; registrera metodkonflikt.')
+    for g in a.gap:
+        text(g.beskrivning,g.id);text(g.motivering,g.id);refs(g.belagg,g.id,kravs=g.status=='atgardat')
+        if g.status=='accepterad_kvarstaende_risk':
+            k(g.typ=='kontrollbrist' and bool(g.ansvar and g.tidsfrist),f'{g.id}: bara känd kontrollbrist med ansvar/frist får accepteras.')
+        elif g.status=='oppet':
+            k(False,f'{g.id}: öppet {g.typ} hindrar attest.')
+
+
+def _insyn_uppdrag(a,aktiv,text,refs,k):
+    insyn=a.betalningsinsyn
+    if aktiv(3):
+        k(insyn.status=='bedomd','Betalningsinsynen behöver bedömas.')
+        for n in ('synliga_floden','insynsluckor','avsandare_och_mottagare','underlagens_tillforlitlighet','motivering'):
+            text(getattr(insyn,n),'Betalningsinsyn '+n)
+        refs(insyn.belagg,'Betalningsinsyn')
+    else:
+        k(insyn.status=='ej_tillamplig','Betalningsinsyn måste uttryckligen avgränsas när blocket inte är aktivt.')
+        text(insyn.motivering,'Avgränsad betalningsinsyn')
+    u=a.uppdragsprovning
+    k(u.status!='okant','Uppdragets hanterbarhet är okänd.')
+    text(u.kompetens_och_insyn,'Kompetens och insyn');text(u.motivering,'Uppdragsprövning');refs(u.belagg,'Uppdragsprövning')
+    if u.beslutsstatus=='beslutad':k(bool(u.ansvar and u.datum),'Uppdragsbeslut saknar ansvar/datum.')
+    if u.status=='kan_inte_hanteras':k(u.handlingsalternativ in ('begransa','avboj','avsluta') and u.beslutsstatus=='beslutad',
+                                  'Ohanterbart uppdrag får inte fortsätta oförändrat.')
+    if u.status=='kraver_atgard':
+        k(u.handlingsalternativ!='fortsatt' and u.beslutsstatus=='beslutad' and bool(u.ansvar and u.datum and u.belagg),
+          'Åtgärdskrävande uppdrag saknar belagd beslutad åtgärd/avgränsning.')
+    if aktiv(5):
+        text(a.leverantorsmotivering,'Leverantörsmotivering');k(bool(a.leverantorer),'Leverantörsprövning saknas.')
+        for l in a.leverantorer:
+            for n in ('omfattning','leverantorens_kontroller','egen_verifiering','brister_och_motstridigheter','ansvar'):
+                text(getattr(l,n),l.id+' '+n)
+            refs(l.belagg,l.id)
+
+
+def _sarbarheter(a,rb,katalog,scenarier,relevanta,text,refs,k):
+    for omrade in ('kund','kanal','geo','verk'):
+        k(any(s.omrade==omrade for s in a.sarbarhetsprovningar),f'Sårbarhetsområdet {omrade} saknas.')
+    for s in a.sarbarhetsprovningar:
+        k(s.relevans!='okant',f'{s.id}: sårbarhetens relevans är okänd.')
+        text(s.motivering,s.id);refs(s.belagg,s.id)
+        for id in s.sarbarheter:
+            k(id in katalog.sarbarheter and id in rb.sarbarheter,f'{s.id}: okänd sårbarhet {id}.')
+            if id in rb.sarbarheter:k(('tjanst' if rb.sarbarheter[id].omrade=='tj' else rb.sarbarheter[id].omrade)==s.omrade,f'{s.id}: sårbarheten hör till annat område.')
+        k(set(s.scenarier)<=set(scenarier),f'{s.id}: okänd scenarioreferens.')
+        if s.relevans=='relevant':k(bool(set(s.scenarier)&relevanta),f'{s.id}: relevant sårbarhet saknar relevant scenario.')
+
+
+def _kontroller_rutiner(a,rb,profil,katalog,scenarier,relevanta,belagg,text,refs,k):
+    for id in relevanta:k(any(c.scenario==id for c in a.kontroller),f'{id}: kontrollprövning saknas.')
+    for c in a.kontroller:
+        k(c.scenario in scenarier,f'Okänt scenario {c.scenario} i kontrollprövningen.')
+        k(c.kontroll in katalog.kontroller and c.kontroll in rb.kontroller,f'Kontrollen {c.kontroll} hör inte till tjänsten.')
+        text(c.tillampning,'Kontrolltillämpning');text(c.utfall,'Kontrollutfall');text(c.kvarstar,'Kvarstående risk')
+        k(c.tackning!='okand',f'{c.scenario}: kontrollens effekt är okänd.')
+        refs(c.belagg,'Kontrollprövning',kravs=c.tackning!='saknas')
+        kontroll=rb.kontroller.get(c.kontroll)
+        rack={r.id:r for r in kontroll.rackvidd} if kontroll else {}
+        for id in c.rackvidd:k(id in rack,f'Okänd räckvidd {id} för kontrollen.')
+        if c.tackning in ('bedomd_tillracklig','delvis'):
+            s=scenarier.get(c.scenario)
+            relevanta_r=[rack[id] for id in c.rackvidd if id in rack and rack[id].tjanst==a.tjanst
+                        and getattr(rack[id],'beskrivningsstatus',None)=='beskriven'
+                        and s and bool(set(rack[id].hot)&set(s.hot))]
+            k(bool(relevanta_r),f'{c.scenario}: positiv täckning saknar beskriven relevant källräckvidd.')
+            # A catalog source or ordinary profile total cannot prove execution of this control.
+            from riskanalys.bedomning.erfarenheter import belagd_uppgift
+            f=kontroll.genomforande_falt if kontroll else None
+            u=profil.uppgifter.get(f)
+            faktiskt_belagt=bool(f and belagd_uppgift(rb,profil,f) and u and u.varde=='belagt')
+            k(faktiskt_belagt,f'{c.scenario}: positivt genomförande motsäger profilens värde eller saknar aktuellt belagt genomförande; rätta intaget.')
+            genomfort=bool(faktiskt_belagt and any(id in belagg and (belagg[id].dokument or
+                f in belagg[id].profilfalt) for id in c.belagg))
+            k(genomfort,f'{c.scenario}: aktuellt genomförandebelägg för kontrollen saknas.')
+        if c.tackning=='saknas':
+            k(any(g.typ=='kontrollbrist' for g in a.gap),f'{c.scenario}: saknad kontroll kräver dokumenterad kontrollbrist.')
+    k(bool(a.rutinatgarder),'Slutsatsen kräver konkret rutin/åtgärd eller motiverad oförändrad rutin.')
+    for r in a.rutinatgarder:
+        k(bool(r.scenarier) and set(r.scenarier)<=set(scenarier),f'{r.id}: konkret giltig scenariokoppling saknas.')
+        text(r.atgard,r.id);text(r.utlosare_eller_frekvens,r.id)
+        rutin=(r.rutin_id,r.rutin_version,r.rutinbelagg)
+        k(all(rutin) or not any(rutin),f'{r.id}: rutin-ID/version/belägg måste anges tillsammans.')
+        if all(rutin):
+            b=belagg.get(r.rutinbelagg)
+            k(bool(b and b.dokument and b.kontrollsumma),f'{r.id}: rutinen kräver privat dokumentkopia.')
+        if r.status in ('beslutad','genomford'):k(bool(r.ansvar and r.uppfoljning),f'{r.id}: beslut kräver ansvar och uppföljning.')
+        refs(r.belagg,r.id,kravs=r.status=='genomford')
+        if r.status=='genomford':k(all(rutin),f'{r.id}: genomförd åtgärd kräver aktuell rutin.')

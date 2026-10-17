@@ -41,6 +41,10 @@ class Historik(BaseModel):
         """Datum för den senaste utvärderingen. Fastställelser och uppdateringar räknas inte."""
         return max((handelse.datum for handelse in self.handelser if handelse.typ == UTVARDERING), default=None)
 
+    def senaste_uppdatering(self) -> date | None:
+        """Senaste separata uppdatering, utan att flytta utvärderingsfristen."""
+        return max((h.datum for h in self.handelser if h.typ == "uppdatering"), default=None)
+
     def nasta_genomgang(self) -> date | None:
         senaste = self.senaste_utvardering()
         return None if senaste is None else lagg_till_manader(senaste, GENOMGANG_MANADER)

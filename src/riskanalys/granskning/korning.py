@@ -1,5 +1,6 @@
 """Granskningskörning: bygger dokumentet, granskar det och sparar resultatet med manifest."""
 
+from contextlib import nullcontext
 from datetime import date
 from pathlib import Path
 
@@ -74,6 +75,13 @@ def oppna_fragor(utkast: dict[str, AvsnittsUtkast]) -> tuple[tuple[str, Oklarhet
 
 
 def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *, bedomningsmapp: Path | None = None, utkastmapp: Path | None = None) -> Path:
+    from riskanalys.analys.lagring import analyslas
+    # Som fastställelsen: bara omfattningsmetoden läser det lokala analysregistret.
+    with analyslas(byramapp) if regelbas.metod.omfattning else nullcontext():
+        return _kor_granskning_last(byramapp,regelbas,granskningsdatum,bedomningsmapp=bedomningsmapp,utkastmapp=utkastmapp)
+
+
+def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *, bedomningsmapp: Path | None = None, utkastmapp: Path | None = None) -> Path:
     bedomningsmapp = bedomningsmapp or senaste_korning(byramapp, BEDOMNINGAR, f"bedom {byramapp.name}")
     kontrollera_aktuell(byramapp, bedomningsmapp, regelbas)
     bedomning = las_bedomning(bedomningsmapp)
@@ -81,8 +89,19 @@ def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *
     urval = valj(regelbas, bedomning.regelpaket, bedomning.datum, bedomning.lan)
     utkast, utkastmapp = godkanda_utkast(byramapp, bedomningsmapp, utkastmapp=utkastmapp)
     historik = las_historik(byramapp)
-    dokument = bygg_arb(regelbas, profil, bedomning, utkast, historik)
-    fynd = granska(regelbas, urval, profil, bedomning, dokument, historik, granskningsdatum, oppna_fragor(utkast), skrivresultat=utkast)
+    snapshot = None
+    rapport = None
+    if regelbas.metod.omfattning:
+        from riskanalys.analys.lagring import las_analyssnapshot_last, Analyssnapshot
+        from riskanalys.granskning.analysunderlag import fryst_modellrapport
+        from riskanalys.dokument.arb_v6 import bygg_arb_v6
+        snapshot = (las_analyssnapshot_last(byramapp,regelbas,granskningsdatum,bedomningsmapp=bedomningsmapp,utkastmapp=utkastmapp)
+                    if utkastmapp else Analyssnapshot(None,'',('Skrivresultat och lokal analys saknas.',),()))
+        rapport = fryst_modellrapport(snapshot)
+        dokument = bygg_arb_v6(regelbas,profil,bedomning,utkast,historik,analys=snapshot.paket,modellrapport=rapport)
+    else:
+        dokument = bygg_arb(regelbas, profil, bedomning, utkast, historik)
+    fynd = granska(regelbas, urval, profil, bedomning, dokument, historik, granskningsdatum, oppna_fragor(utkast), skrivresultat=utkast, analys=snapshot.paket if snapshot else None, modellrapport=rapport, analysbrister_filer=snapshot.brister if snapshot else ())
     mapp = ny_korningsmapp(byramapp, GRANSKNING)
     (mapp / DOKUMENTFIL).write_text(dokument.model_dump_json(indent=2), encoding="utf-8")
     (mapp / FYNDFIL).write_text(_FYNDLISTA.dump_json(fynd, indent=2).decode("utf-8"), encoding="utf-8")
@@ -95,6 +114,11 @@ def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *
         "blockerande": str(sum(1 for post in fynd if post.allvar == "blockerande")),
         "datum": granskningsdatum.isoformat(),
     }
+    if snapshot is not None:
+        from riskanalys.granskning.analysunderlag import spara_fryst_analys
+        spara_fryst_analys(mapp,snapshot)
+        (mapp / "historik.json").write_text(historik.model_dump_json(indent=2), encoding="utf-8")
+        metadata['analysbindning'] = snapshot.registersumma
     skriv_manifest(mapp, metadata)
     return mapp
 

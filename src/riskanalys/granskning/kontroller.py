@@ -31,7 +31,7 @@ def granska(
     historik: Historik,
     granskningsdatum: date,
     oklarheter: tuple[tuple[str, Oklarhet], ...] = (),
-    *, skrivresultat=None,
+    *, skrivresultat=None, analys=None, modellrapport=None, analysbrister_filer=(),
 ) -> tuple[Fynd, ...]:
     """Fynd för dokumentet. oklarheter är AI-utkastens öppna frågor per avsnitt; var och en blir ett fynd."""
     utkast = [
@@ -39,12 +39,14 @@ def granska(
         *_preliminar(bedomning),
         *_verifiera(dokument, profil),
         *_oppna_fragor(oklarheter),
-        *_sparbarhet(regelbas, dokument),
+        *_sparbarhet(regelbas, dokument, analys),
         *_b04(regelbas, bedomning, dokument),
-        *_b12(regelbas, dokument),
+        # V6:s lokala PT/TF-, scenario- och sårbarhetsprövningar valideras och
+        # återbyggs nedan; den äldre AI-motiveringens stycketyp finns inte där.
+        *(_b12(regelbas, dokument) if dokument.formatversion != "D-ARB-tjanst-v6" else []),
         *_b16(regelbas, historik),
         *sektorsfynd(regelbas, bedomning, profil),
-        *_analys(regelbas, bedomning, profil, dokument, historik, skrivresultat),
+        *_analys(regelbas, bedomning, profil, dokument, historik, skrivresultat, analys, modellrapport, analysbrister_filer, granskningsdatum=granskningsdatum),
     ]
     return tuple(
         Fynd(id=f"F-{granskningsdatum.isoformat()}-{nummer:03d}", **falt)
@@ -52,8 +54,11 @@ def granska(
     )
 
 
-def _analys(rb, b, p, d, historik, resultat):
-    if d.formatversion == "D-ARB-tjanst-v5":
+def _analys(rb, b, p, d, historik, resultat, analys=None, modellrapport=None, analysbrister_filer=(), *, granskningsdatum=None):
+    if d.formatversion == "D-ARB-tjanst-v6":
+        from riskanalys.granskning.dokument_v6 import analysfynd_v6
+        return analysfynd_v6(rb,b,p,d,historik,resultat,analys=analys,modellrapport=modellrapport,analysbrister_filer=analysbrister_filer,granskningsdatum=granskningsdatum)
+    if d.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1"):
         from riskanalys.granskning.dokument_v5 import analysfynd_v5
         return analysfynd_v5(rb, b, p, d, historik, resultat)
     return analysfynd(rb, b, p, d, resultat)
@@ -128,8 +133,13 @@ def _oppna_fragor(oklarheter: tuple[tuple[str, Oklarhet], ...]) -> list[dict[str
     ]
 
 
-def _sparbarhet(regelbas: Regelbas, dokument: Dokument) -> list[dict[str, Any]]:
+def _sparbarhet(regelbas: Regelbas, dokument: Dokument, analys=None) -> list[dict[str, Any]]:
     kanda = regelbas.alla_id()
+    if dokument.formatversion in ("D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"):
+        kanda = kanda | set(dokument.avsnitt_med_id())
+    if dokument.formatversion == "D-ARB-tjanst-v6":
+        from riskanalys.dokument.analysreferenser import bygg_analysreferenser
+        kanda = kanda | set(bygg_analysreferenser(analys).etiketter)
     return [
         {
             "typ": "sparbarhet",

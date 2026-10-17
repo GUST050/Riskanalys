@@ -3,6 +3,7 @@
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator, model_serializer
+from pydantic.json_schema import SkipJsonSchema
 
 from riskanalys.lagring.kontrollsumma import for_text
 
@@ -17,6 +18,14 @@ class Textstycke(Last):
     typ: Literal["beskrivning", "analys", "motivering", "scenario"]
     text: str
     referenser: list[str]
+    proveniens: SkipJsonSchema[Literal["ai", "regelbas", "lokal"] | None] = None
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        data = handler(self)
+        if self.proveniens is None:
+            data.pop("proveniens", None)
+        return data
 
 
 class Oklarhet(Last):
@@ -30,6 +39,15 @@ class AvsnittsUtkast(Last):
     avsnitt: str
     stycken: list[Textstycke]
     oklarheter: list[Oklarhet]
+
+    @model_validator(mode="before")
+    @classmethod
+    def ingen_lokal_ai_proveniens(cls, data):
+        stycken = data.get("stycken") if isinstance(data, dict) else None
+        # Låt Pydantic avvisa fel samlingsform; iterera inte null eller skalärer här.
+        if isinstance(stycken, (list, tuple)) and any(isinstance(s, dict) and "proveniens" in s for s in stycken):
+            raise ValueError("AI-utkast får inte ange lokal proveniens.")
+        return data
 
 
 class UnderlagHot(Last):
@@ -104,6 +122,14 @@ class Underrubrik(Last):
 class Tabellcell(Last):
     text: str
     referenser: tuple[str, ...] = ()
+    proveniens: SkipJsonSchema[Literal["ai", "regelbas", "lokal"] | None] = None
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        data = handler(self)
+        if self.proveniens is None:
+            data.pop("proveniens", None)
+        return data
 
 
 class Tabellrad(Last):
@@ -129,10 +155,10 @@ class Dokumenttabell(Last):
 class Avsnitt(Last):
     id: str
     rubrik: str
-    kalla: Literal["regelbas", "ai"]
+    kalla: Literal["regelbas", "ai", "lokal"]
     stycken: tuple[Textstycke, ...]
     underrubriker: tuple[Underrubrik, ...] = ()
-    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4", "D-ARB-tjanst-v5"] | None = None
+    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4", "D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"] | None = None
 
     tabeller: tuple[Dokumenttabell, ...] = ()
     visningsnummer: str | None = None
@@ -142,7 +168,7 @@ class Avsnitt(Last):
         data = handler(self)
         if self.formatversion is None:
             data.pop("formatversion", None)
-        if self.formatversion != "D-ARB-tjanst-v5":
+        if self.formatversion not in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"):
             if not self.tabeller:
                 data.pop("tabeller", None)
             if self.visningsnummer is None:
@@ -151,7 +177,7 @@ class Avsnitt(Last):
 
     @model_validator(mode="after")
     def giltiga_positioner(self):
-        if (self.tabeller or self.visningsnummer is not None) and self.formatversion != "D-ARB-tjanst-v5":
+        if (self.tabeller or self.visningsnummer is not None) and self.formatversion not in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"):
             raise ValueError("Tabeller och visningsnummer kräver dokumentformat v5.")
         if len({t.id for t in self.tabeller}) != len(self.tabeller):
             raise ValueError("Tabell-ID ska vara unika inom avsnittet.")
@@ -174,7 +200,7 @@ class Dokument(Last):
 
     @property
     def formatversion(self) -> str:
-        for version in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v4", "D-ARB-tjanst-v3"):
+        for version in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v5", "D-ARB-tjanst-v4", "D-ARB-tjanst-v3"):
             if any(a.formatversion == version for a in self.avsnitt):
                 return version
         return "D-ARB-tjanst-v2" if any(a.underrubriker for a in self.avsnitt) else "D-ARB-v1"

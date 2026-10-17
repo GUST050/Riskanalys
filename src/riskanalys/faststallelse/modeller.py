@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_serializer
 
 
 class Fryst(BaseModel):
@@ -20,6 +20,14 @@ class Sakgranskning(Fryst):
     datum: date
     kommentar: str | None = None
     dokumentstruktur: str | None = None
+    analysbindning: str | None = None
+
+    @model_serializer(mode="wrap")
+    def _historiskt_format(self, handler):
+        data = handler(self)
+        if self.analysbindning is None:
+            data.pop("analysbindning", None)
+        return data
 
 
 class Beslut(Fryst):

@@ -15,8 +15,8 @@ def _avsnitt(version):
                    formatversion=version)
 
 
-def test_aktuellt_format_ar_v5():
-    assert FORMATVERSION == "D-ARB-tjanst-v5"
+def test_aktuellt_skrivformat_ar_v6():
+    assert FORMATVERSION == "D-ARB-tjanst-v6"
 
 
 def test_dokument_i_v3_kan_fortfarande_lasas():
@@ -32,7 +32,7 @@ def test_ny_formatversion_ger_ny_kontrollsumma():
 def test_utkast_i_v3_maste_skrivas_om(tmp_path, rb_intag, klar):
     avsnitt_id, t = tjanst_for_prov(tmp_path, rb_intag, klar)
     lev = Testleverantor([godkant_delsvar(d, t) for d in DELAR])
-    res = skriv_tjanst(lev, rb_intag, klar, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None)
+    res = skriv_tjanst(lev, rb_intag, klar, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v5")
     gammal = type(res).model_validate_json(res.model_copy(update={"formatversion": "D-ARB-tjanst-v3"}).model_dump_json())
     with pytest.raises(RiskanalysFel, match="Skriv om"):
-        kontrollera_resultat(rb_intag, klar, t, gammal, avsnitt_id)
+        kontrollera_resultat(rb_intag, klar, t, gammal, avsnitt_id, formatversion="D-ARB-tjanst-v5")

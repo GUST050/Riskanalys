@@ -7,6 +7,8 @@
   kallor:
   - SRC-TS-2026-14
   - SRC-NRA-2024-25
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-PLATTFORM-2026
   grund: metodval
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
@@ -14,6 +16,48 @@
     sida: 123
   effekt_falt: P-KONTROLL.C-07.effekt
   utfall_falt: P-KONTROLL.C-07.utfall
+  rackvidd:
+  - id: KR-C-07-T-RED-01
+    beskrivningsstatus: beskriven
+    tjanst: T-RED-01
+    hot:
+    - H-TJ-01
+    - H-03
+    - H-01
+    - H-02
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-04
+    - H-TF-01
+    - H-TF-02
+    kan_belagga: 'Metodval: avstämning av tillgängliga kontoutdrag mot bokfört underlag kan synliggöra
+      differenser och transaktioner som saknar förklaring. Detta kan vara observationsunderlag för
+      vidare utredning, inte bevis för en verklig affär.'
+    begransningar: En matchande faktura styrker inte ensam att affären är verklig; underlag kan vara
+      fabricerade. Avstämningen omfattar bara tillgängliga konton och led, inte automatiskt parallella
+      bankengagemang. PSP kan dölja den faktiska mottagaren och syftet; plattformars fragmenterade
+      information medger inte antagen full täckning. Räckvidden för osynliga flöden är okänd och måste
+      kompletteras lokalt.
+    forutsattningar: Tillgång till de konton, perioder och transaktionsunderlag som faktiskt omfattas
+      samt förståelse för kundens verksamhet. Dokumentera insynsluckor och pröva underlagens tillförlitlighet
+      och bakomliggande parter separat. Beskrivningen bekräftar inget utfört arbete eller uppnådd effekt.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.19: bristande kundkännedom, osanna fakturor och klientmedelskonton'
+      sida: 123
+    - kalla: SRC-FIPO-FORETAG-2026
+      avsnitt: Parallella bankengagemang och fabricerade underlag
+      sida: 2
+    - kalla: SRC-FIPO-PLATTFORM-2026
+      avsnitt: 'Ökad rapportering: faktisk mottagare vid PSP-betalningar'
+      sida: 2
+    - kalla: SRC-FIPO-PLATTFORM-2026
+      avsnitt: Bristande insyn och transparens är en sårbarhet
+      sida: 3
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-01
   namn: Kontroll av löpande bokföring
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -30,6 +74,36 @@
     sida: 123
   effekt_falt: P-KONTROLL.C-TJ-01.effekt
   utfall_falt: P-KONTROLL.C-TJ-01.utfall
+  rackvidd:
+  - id: KR-C-TJ-01-T-RED-01
+    beskrivningsstatus: okand
+    tjanst: T-RED-01
+    hot:
+    - H-TJ-01
+    - H-03
+    - H-01
+    - H-02
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-04
+    - H-TF-01
+    - H-TF-02
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.19'
+      sida: 123
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-02
   namn: Kontroll av bokslut och årsredovisning
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -46,6 +120,36 @@
     sida: 123
   effekt_falt: P-KONTROLL.C-TJ-02.effekt
   utfall_falt: P-KONTROLL.C-TJ-02.utfall
+  rackvidd:
+  - id: KR-C-TJ-02-T-RED-02
+    beskrivningsstatus: okand
+    tjanst: T-RED-02
+    hot:
+    - H-TJ-02
+    - H-03
+    - H-01
+    - H-02
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-04
+    - H-TF-01
+    - H-TF-02
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.19'
+      sida: 123
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-03
   namn: Kontroll av deklarationer och deklarationsombud
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -62,6 +166,36 @@
     sida: 123
   effekt_falt: P-KONTROLL.C-TJ-03.effekt
   utfall_falt: P-KONTROLL.C-TJ-03.utfall
+  rackvidd:
+  - id: KR-C-TJ-03-T-RED-03
+    beskrivningsstatus: okand
+    tjanst: T-RED-03
+    hot:
+    - H-TJ-03
+    - H-03
+    - H-01
+    - H-02
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-04
+    - H-TF-01
+    - H-TF-02
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.19'
+      sida: 123
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-04
   namn: Kontroll av lönehantering
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -78,6 +212,36 @@
     sida: 123
   effekt_falt: P-KONTROLL.C-TJ-04.effekt
   utfall_falt: P-KONTROLL.C-TJ-04.utfall
+  rackvidd:
+  - id: KR-C-TJ-04-T-RED-04
+    beskrivningsstatus: okand
+    tjanst: T-RED-04
+    hot:
+    - H-TJ-04
+    - H-03
+    - H-01
+    - H-02
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-04
+    - H-TF-01
+    - H-TF-02
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.19'
+      sida: 123
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-05
   namn: Kontroll av betalningar och attest i kundens namn
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -94,6 +258,36 @@
     sida: 123
   effekt_falt: P-KONTROLL.C-TJ-05.effekt
   utfall_falt: P-KONTROLL.C-TJ-05.utfall
+  rackvidd:
+  - id: KR-C-TJ-05-T-RED-05
+    beskrivningsstatus: okand
+    tjanst: T-RED-05
+    hot:
+    - H-TJ-05
+    - H-03
+    - H-01
+    - H-02
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-04
+    - H-TF-01
+    - H-TF-02
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.19'
+      sida: 123
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-06
   namn: Kontroll av klientmedelskonto
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -110,6 +304,36 @@
     sida: 123
   effekt_falt: P-KONTROLL.C-TJ-06.effekt
   utfall_falt: P-KONTROLL.C-TJ-06.utfall
+  rackvidd:
+  - id: KR-C-TJ-06-T-RED-06
+    beskrivningsstatus: okand
+    tjanst: T-RED-06
+    hot:
+    - H-TJ-06
+    - H-03
+    - H-01
+    - H-02
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-04
+    - H-TF-01
+    - H-TF-02
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.19'
+      sida: 123
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-07
   namn: Kontroll av ekonomisk rådgivning och ekonomichefstjänster
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -126,6 +350,36 @@
     sida: 123
   effekt_falt: P-KONTROLL.C-TJ-07.effekt
   utfall_falt: P-KONTROLL.C-TJ-07.utfall
+  rackvidd:
+  - id: KR-C-TJ-07-T-RED-07
+    beskrivningsstatus: okand
+    tjanst: T-RED-07
+    hot:
+    - H-TJ-07
+    - H-03
+    - H-01
+    - H-02
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-04
+    - H-TF-01
+    - H-TF-02
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.19'
+      sida: 123
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-08
   namn: Kontroll av skatterådgivning utöver deklarationer
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -142,6 +396,32 @@
     sida: 126
   effekt_falt: P-KONTROLL.C-TJ-08.effekt
   utfall_falt: P-KONTROLL.C-TJ-08.utfall
+  rackvidd:
+  - id: KR-C-TJ-08-T-SKATT-01
+    beskrivningsstatus: okand
+    tjanst: T-SKATT-01
+    hot:
+    - H-TJ-08
+    - H-03
+    - H-MOD-03
+    - H-TF-03
+    - H-TF-01
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.20'
+      sida: 126
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-09
   namn: Kontroll av bolagsbildning, lagerbolag och bolagsförmedling
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -158,6 +438,32 @@
     sida: 144
   effekt_falt: P-KONTROLL.C-TJ-09.effekt
   utfall_falt: P-KONTROLL.C-TJ-09.utfall
+  rackvidd:
+  - id: KR-C-TJ-09-T-BOLAG-01
+    beskrivningsstatus: okand
+    tjanst: T-BOLAG-01
+    hot:
+    - H-TJ-09
+    - H-03
+    - H-MOD-03
+    - H-TF-03
+    - H-TF-01
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.25'
+      sida: 144
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-10
   namn: Kontroll av registrerad adress eller postadress
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -174,6 +480,32 @@
     sida: 147
   effekt_falt: P-KONTROLL.C-TJ-10.effekt
   utfall_falt: P-KONTROLL.C-TJ-10.utfall
+  rackvidd:
+  - id: KR-C-TJ-10-T-BOLAG-02
+    beskrivningsstatus: okand
+    tjanst: T-BOLAG-02
+    hot:
+    - H-TJ-10
+    - H-03
+    - H-MOD-03
+    - H-TF-03
+    - H-TF-01
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.26'
+      sida: 147
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-TJ-11
   namn: Kontroll av styrelseuppdrag eller bolagsrättsligt ansvar
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -190,6 +522,32 @@
     sida: 144
   effekt_falt: P-KONTROLL.C-TJ-11.effekt
   utfall_falt: P-KONTROLL.C-TJ-11.utfall
+  rackvidd:
+  - id: KR-C-TJ-11-T-BOLAG-03
+    beskrivningsstatus: okand
+    tjanst: T-BOLAG-03
+    hot:
+    - H-TJ-11
+    - H-03
+    - H-MOD-03
+    - H-TF-03
+    - H-TF-01
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
+      ett öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
+      dokumentera kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar:
+    - kalla: SRC-NRA-2024-25
+      avsnitt: '7.25'
+      sida: 144
+    sakkunnig:
+      status: ej_granskad
+
 - id: C-SANK
   namn: Kontroll av sanktionsanknytning
   beskrivning: Utred identitet, ägande/kontroll, tillämpliga förbud och eventuella tillstånd.

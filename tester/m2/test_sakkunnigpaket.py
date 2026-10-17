@@ -169,3 +169,33 @@ def test_konflikt_om_inaktivt_gemensamt_krav_stoppar_bada_paketen(regelbas_v1, a
         urval = valj(rb, id, dag, lan)
         u = SimpleNamespace(regelbas=rb, profil=p, urval=urval, bedomning=bedom(rb, urval, p))
         assert any(krav in h for h in _m2(u, dag))
+
+
+def test_rackvidd_exporteras_och_importeras_med_egen_attest(kopia, tmp_path):
+    from riskanalys.regelverk.sakkunnig import granskningsobjekt
+    from riskanalys.regelverk.validering_m2 import attesthinder
+    import json
+
+    fil = beslut(kopia, tmp_path / 'rackvidd')
+    rb = ladda_regelbas(kopia)
+    post = rb.kontroller['C-07'].rackvidd[0]
+    mall = yaml.safe_load(fil.read_text())
+    assert post.id in mall['objekt'] and post.id in rb.alla_id()
+    underlag = json.loads((fil.parent / 'underlag.json').read_text())
+    assert underlag['kontroller']['C-07']['rackvidd'][0]['id'] == post.id
+    assert 'sakkunnig' not in underlag['kontroller']['C-07']['rackvidd'][0]
+    tillampa_granskning(kopia, las_granskningsfil(fil, rb, 'RP-RED-VG'))
+    nytt = ladda_regelbas(kopia)
+    assert nytt.kontroller['C-07'].rackvidd[0].sakkunnig.galler(granskningsobjekt(nytt, 'RP-RED-VG')[post.id])
+    assert not attesthinder(nytt, 'RP-RED-VG')
+    assert post.sakkunnig.status == 'ej_granskad'
+
+
+def test_andrad_rackvidd_i_fil_avvisar_gammal_import(kopia, tmp_path):
+    fil = beslut(kopia, tmp_path / 'rackvidd-andring')
+    p = kopia / 'kataloger/kontroller.yaml'
+    data = yaml.safe_load(p.read_text())
+    data[0]['rackvidd'][0]['begransningar'] += ' Ny begränsning i syntetiskt prov.'
+    p.write_text(yaml.safe_dump(data, allow_unicode=True))
+    with pytest.raises(RiskanalysFel, match='innehållssumma'):
+        las_granskningsfil(fil, ladda_regelbas(kopia), 'RP-RED-VG')

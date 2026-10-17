@@ -12,7 +12,7 @@ from datetime import date
 from pathlib import Path
 
 from riskanalys.bedomning.korning import BEDOMNINGAR, aktualitetshinder, las_bedomning, las_bedomningsprofil
-from riskanalys.dokument.delskrivning import FORMATVERSION
+from riskanalys.dokument.skrivversion import V6 as FORMATVERSION
 from riskanalys.dokument.modeller import Avsnitt, Dokument
 from riskanalys.dokument.rendering import faststalld_status, rendera_docx
 from riskanalys.dokument.skrivning import UTKAST
@@ -23,7 +23,8 @@ from riskanalys.faststallelse.sakgranskning import las_sakgranskningar, spara_sa
 from riskanalys.fel import RiskanalysFel
 from riskanalys.granskning.korning import GRANSKNING, andrade_kallor, granskningens_metadata, las_granskning
 from riskanalys.lagring.korningar import senaste_korning
-from riskanalys.lagring.manifest import las_manifest, skriv_manifest, verifiera_manifest
+from riskanalys.lagring.manifest import MANIFESTNAMN, las_manifest, skriv_manifest, verifiera_manifest
+from riskanalys.lagring.kontrollsumma import for_fil
 from riskanalys.lagring.yamlfil import las_yaml, spara_yaml
 from riskanalys.regelverk.laddning import regelbasens_kontrollsumma
 from riskanalys.regelverk.modeller import Regelbas
@@ -139,11 +140,27 @@ def formathinder(regelbas: Regelbas, dokument: Dokument) -> list[str]:
 
 
 def faststall(byramapp: Path, regelbas_rot: Path, regelbas: Regelbas, beslut: Beslut) -> Path:
+    from riskanalys.analys.lagring import analyslas
+    from contextlib import nullcontext
+    with analyslas(byramapp) if regelbas.metod.omfattning else nullcontext():
+        return _faststall_last(byramapp,regelbas_rot,regelbas,beslut)
+
+
+def _faststall_last(byramapp: Path, regelbas_rot: Path, regelbas: Regelbas, beslut: Beslut) -> Path:
     """Fastställer den senaste granskningen och publicerar den som en ny, låst version."""
     granskningsmapp = senaste_korning(byramapp, GRANSKNING, f"granska {byramapp.name}")
     hinder = kedjehinder(byramapp, regelbas_rot, regelbas, granskningsmapp)
     if hinder:
         raise FaststallelseFel(hinder)
+    metadata = granskningens_metadata(granskningsmapp)
+    kallor = {'bedomning': byramapp / BEDOMNINGAR / metadata['bedomning'], 'granskning': granskningsmapp}
+    if metadata['utkast']:
+        kallor['utkast'] = byramapp / UTKAST / metadata['utkast']
+    kallsummor = {namn: for_fil(kalla/MANIFESTNAMN) for namn,kalla in kallor.items()}
+    if regelbas.metod.omfattning:
+        from riskanalys.granskning.analysunderlag import aktuell_analys_hinder
+        hinder = aktuell_analys_hinder(byramapp,regelbas,granskningsmapp,beslut.datum)
+        if hinder:raise FaststallelseFel(list(hinder))
     underlag = _underlag(byramapp, regelbas, granskningsmapp)
     hinder = hinder_for_faststallelse(underlag, beslut.datum)
     if hinder:
@@ -151,7 +168,32 @@ def faststall(byramapp: Path, regelbas_rot: Path, regelbas: Regelbas, beslut: Be
     version = nasta_version(byramapp)
     pagaende = _tom_arbetsmapp(byramapp, version)
     _bygg_paket(pagaende, byramapp, regelbas_rot, granskningsmapp, underlag, beslut, version)
+    for namn,kalla in kallor.items():
+        if for_fil(pagaende/namn/MANIFESTNAMN)!=kallsummor[namn]:
+            raise FaststallelseFel([f'Kopian av {namn} motsvarar inte det granskade källmanifestet.'])
+    # Kontrollera även efter rendering: paketmanifestet får inte legitimera en
+    # kopia som ändrats efter den första kontrollen.
+    for namn in ('bedomning','granskning',*(['utkast'] if granskningens_metadata(granskningsmapp)['utkast'] else [])):
+        fel = verifiera_manifest(pagaende/namn)
+        if fel:raise FaststallelseFel([f'Kopian av {namn} har ändrats: {rad}' for rad in fel])
+    if regelbasens_kontrollsumma(pagaende/'regelbas')!=regelbas.kontrollsumma:
+        raise FaststallelseFel(['Den kopierade regelbasen har ändrats.'])
+    if underlag.analys is not None:
+        from riskanalys.granskning.analysunderlag import las_fryst_analys
+        kopia = las_fryst_analys(pagaende)
+        if kopia.paket != underlag.analys:
+            raise FaststallelseFel(['Den kopierade analysen avviker från det granskade underlaget.'])
     skriv_manifest(pagaende, _metadata(underlag, beslut, version, granskningsmapp))
+    # Kontrollera källor och faktisk kopia sist, under samma profil→analys→drift-lås.
+    hinder = kedjehinder(byramapp,regelbas_rot,regelbas,granskningsmapp)
+    if regelbas.metod.omfattning:
+        hinder.extend(aktuell_analys_hinder(byramapp,regelbas,granskningsmapp,beslut.datum))
+    for namn,kalla in kallor.items():
+        if for_fil(kalla/MANIFESTNAMN)!=kallsummor[namn]:
+            hinder.append(f'Källmanifestet för {namn} har ändrats under paketeringen.')
+    if hinder:raise FaststallelseFel(hinder)
+    fel = verifiera_manifest(pagaende)
+    if fel:raise FaststallelseFel([f'Paketet har ändrats före publicering: {rad}' for rad in fel])
     return _publicera(pagaende, byramapp / FASTSTALLDA / f"v{version}")
 
 
@@ -177,7 +219,13 @@ def _underlag(byramapp: Path, regelbas: Regelbas, granskningsmapp: Path) -> Fast
     bedomningsmapp = byramapp / BEDOMNINGAR / metadata["bedomning"]
     bedomning = las_bedomning(bedomningsmapp)
     dokument, fynd = las_granskning(granskningsmapp)
+    snapshot = None
+    if regelbas.metod.omfattning:
+        from riskanalys.granskning.analysunderlag import las_fryst_analys
+        snapshot = las_fryst_analys(granskningsmapp)
     return Faststallelseunderlag(
+        analys=snapshot.paket if snapshot else None,
+        analysbindning=snapshot.registersumma if snapshot else None,
         regelbas=regelbas,
         urval=valj(regelbas, bedomning.regelpaket, bedomning.datum, bedomning.lan),
         profil=las_bedomningsprofil(bedomningsmapp),
@@ -215,6 +263,18 @@ def _bygg_paket(
     if metadata["utkast"]:
         shutil.copytree(byramapp / UTKAST / metadata["utkast"], pagaende / "utkast")
     shutil.copytree(regelbas_rot, pagaende / "regelbas", ignore=_IGNORERA)
+    # Varje kopierad källa måste fortfarande stämma med sitt sparade manifest.
+    for namn in ('bedomning','granskning',*(['utkast'] if metadata['utkast'] else [])):
+        fel=verifiera_manifest(pagaende/namn)
+        if fel:raise FaststallelseFel([f'Kopian av {namn} har ändrats: {rad}' for rad in fel])
+    if regelbasens_kontrollsumma(pagaende/'regelbas')!=underlag.regelbas.kontrollsumma:
+        raise FaststallelseFel(['Den kopierade regelbasen har ändrats. Granska igen.'])
+    if underlag.analys is not None:
+        from riskanalys.granskning.analysunderlag import las_fryst_analys,spara_fryst_analys
+        snapshot=las_fryst_analys(pagaende/'granskning')
+        if snapshot.registersumma!=underlag.analysbindning:
+            raise FaststallelseFel(['Den kopierade analysen avviker från det granskade underlaget.'])
+        spara_fryst_analys(pagaende,snapshot)
     spara_sakgranskningar(pagaende, underlag.sakgranskningar)
     spara_historik(pagaende, underlag.historik.med(_faststallelse(beslut, version)))
     spara_yaml(pagaende / BESLUTSFIL, beslut.model_dump(mode="python"))
@@ -224,6 +284,7 @@ def _bygg_paket(
 
 def _metadata(underlag: Faststallelseunderlag, beslut: Beslut, version: int, granskningsmapp: Path) -> dict[str, str]:
     return {
+        **({"analysbindning": underlag.analysbindning} if underlag.analysbindning is not None else {}),
         "typ": "faststallt_paket",
         "dokumentformat": underlag.dokument.formatversion,
         "version": str(version),

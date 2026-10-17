@@ -28,10 +28,21 @@ def test_faktisk_bokforing_kan_inte_kombineras_med_falsk_roll(regelbas_v1):
 def test_deterministiskt_dokument_visar_metod_tre_dimensioner_sektorreferens(regelbas_v1):
  p=profil(regelbas_v1);p=p.model_copy(update={'uppgifter':{**p.uppgifter,'P-TJ.red01_erbjuds':u(True)}})
  b=bedom(regelbas_v1,valj(regelbas_v1,p.byra.regelpaket,p.byra.datum,p.byra.lan),p)
+ from riskanalys.dokument.rendering import renderat_avsnitt,synliga_texter
  d=bygg_arb(regelbas_v1,p,b,{},Historik())
- text=' '.join(s.text for a in d.avsnitt for s in a.stycken)
- assert 'D-ARB.2' in d.avsnitt_med_id()
- assert 'Sanktionsrisk' in text and 'för sektorn' in text
+ avsnitt=d.avsnitt_med_id()
+ # V6 visar nivåerna i tabeller; prova det läsaren ser, inklusive tabellceller.
+ synligt={id:' '.join(synliga_texter(renderat_avsnitt(a,p))) for id,a in avsnitt.items()}
+ text=' '.join(synligt.values())
+ assert 'D-ARB.2' in avsnitt
+ assert 'Sanktionsrisk' in text and 'för sektorn' in synligt['D-ARB.2']
+ # Risköversikten har en kolumn per dimension och visar motorns sanktionsnivå för tjänsten.
+ t=next(t for t in b.tjanster if t.tjanst=='T-RED-01')
+ (risk,)=[tab for tab in avsnitt['D-ARB.8'].tabeller if any(k.startswith('Sanktionsrisk') for k in tab.kolumner)]
+ assert {'PT före kontroll','PT efter kontroll','TF'} <= set(risk.kolumner)
+ kolumn=next(i for i,k in enumerate(risk.kolumner) if k.startswith('Sanktionsrisk'))
+ (rad,)=[r for r in risk.rader if t.tjanst in r.celler[0].referenser]
+ assert rad.celler[kolumn].text==t.sanktionsrisk.kvarstaende
 
 def test_underlag_filtrerar_inaktiva_uppgifter_och_doljer_liten_andel(regelbas_v1):
  p=profil(regelbas_v1)

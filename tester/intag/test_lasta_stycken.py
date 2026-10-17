@@ -179,7 +179,7 @@ def test_sektorsreferensen_anges_med_kallans_titel(tmp_path, rb_intag, klar):
 def test_inga_falt_id_i_tjanstavsnittets_lasta_stycken(tmp_path, rb_intag, klar):
     avsnitt_id, t = tjanst_for_prov(tmp_path, rb_intag, klar)
     lev = Testleverantor([godkant_delsvar(d, t) for d in DELAR])
-    res = skriv_tjanst(lev, rb_intag, klar, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None)
+    res = skriv_tjanst(lev, rb_intag, klar, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v5")
     avsnitt = bygg_tjanstavsnitt_v3(rb_intag, klar, t, res, avsnitt_id)
     texter = [s.text for s in avsnitt.stycken]
     assert [x for n, x in enumerate(texter, 1) if faltid_fel(n, x)] == []
@@ -196,7 +196,8 @@ def test_inga_falt_id_i_tjanstavsnittets_lasta_stycken(tmp_path, rb_intag, klar)
 
 def _metodavsnitt(rb, profil):
     b = bedom(rb, valj(rb, profil.byra.regelpaket, DAG, profil.byra.lan), profil)
-    return b, bygg_arb(rb, profil, b, {}, Historik()).avsnitt_med_id()["D-ARB.2"]
+    from riskanalys.dokument.arb import _metod
+    return b, _metod(rb, b)
 
 
 def _andrat(profil, falt, **uppdatering):
@@ -288,7 +289,7 @@ def _hela_dokumentet(tmp_path, rb, profil):
     """Hela D-ARB för den kompletta syntetiska profilen, med ett tjänsteavsnitt och bevakade källor."""
     profil = _andrat(profil, "P-BEVAKNING.kallor", varde=", ".join(BEVAKADE_KALLOR))
     avsnitt_id, t = tjanst_for_prov(tmp_path, rb, profil)
-    lev = Testleverantor([godkant_delsvar(d, t) for d in DELAR])
+    lev = Testleverantor([godkant_delsvar(d, t) for d in ("hot", "sarbarheter")])
     res = skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None)
     b = bedom(rb, valj(rb, profil.byra.regelpaket, DAG, profil.byra.lan), profil)
     return bygg_arb(rb, profil, b, {avsnitt_id: res}, Historik())

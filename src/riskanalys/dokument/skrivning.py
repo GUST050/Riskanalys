@@ -144,7 +144,7 @@ def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor
         "bedomning": bedomningsmapp.name,
     }
     if regelbas.metod.omfattning:
-        metadata.update(dokumentformat=FORMATVERSION, format=FORMATVERSION, design="B", effort=effort)
+        metadata.update(dokumentformat=FORMATVERSION, skrivformat=FORMATVERSION, format=FORMATVERSION, design="B", effort=effort)
     skriv_manifest(mapp, metadata)
     return mapp
 

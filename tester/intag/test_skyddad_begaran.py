@@ -31,7 +31,7 @@ def begaran(rb, profil, svar=None, bedomd=None):
         avsnitt_id, t = tjanst_for_prov(Path(mapp), rb, bedomd or profil)
         svarslista = svar(t) if svar else [godkant_delsvar(d, t) for d in DELAR]
         lev = Testleverantor(svarslista)
-        skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=personnamn(profil, rb), spara=lambda d, f: None)
+        skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=personnamn(profil, rb), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v5")
         return [a.model_dump(mode="json") for a in lev.delanrop]
 
 
@@ -178,7 +178,7 @@ def test_motorns_nivaer_och_regelspar_paverkar_inte_begaran(tmp_path, rb_intag, 
 
     def kor(tj):
         lev = Testleverantor(svar)
-        skriv_tjanst(lev, rb_intag, klar, tj, avsnitt_id, effort="medium", personnamn=personnamn(klar, rb_intag), spara=lambda d, f: None)
+        skriv_tjanst(lev, rb_intag, klar, tj, avsnitt_id, effort="medium", personnamn=personnamn(klar, rb_intag), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v5")
         return [a.model_dump(mode="json") for a in lev.delanrop]
 
     kord = kor(t)
@@ -232,7 +232,7 @@ def _skriv_med_namn(rb, profil, svar):
         avsnitt_id, t = tjanst_for_prov(Path(mapp), rb, profil)
         lev = Testleverantor(svar(t))
         res = skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=personnamn(profil, rb),
-                           spara=lambda d, f: None)
+                           spara=lambda d, f: None, formatversion="D-ARB-tjanst-v5")
         return [a.model_dump(mode="json") for a in lev.delanrop], res
 
 

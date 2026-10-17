@@ -1,8 +1,9 @@
 """En modul per analysdel: mål, krav med skäl och fällor med skäl (spec 8.4.4)."""
 
 from riskanalys.dokument.delvalidering import LANGD
+from riskanalys.dokument.skrivversion import V5, V6, DELAR_V5, delar_for_version
 
-DELAR = ("hot", "sarbarheter", "kontroller", "risknivaer", "slutsatser")
+DELAR = DELAR_V5  # Historiskt offentligt femdelarskontrakt. Ny skrivning väljer version explicit.
 
 MODULER = {
     "hot": (
@@ -69,7 +70,10 @@ MODULER = {
 }
 
 
-def modultext(del_id: str) -> str:
+def modultext(del_id: str, *, formatversion: str = V5) -> str:
     """Modulen med delens längdintervall. Gränsen kommer från valideringen så att de inte glider isär."""
+    if del_id not in delar_for_version(formatversion):
+        raise ValueError("Analysdelen ingår inte i skrivformatet.")
     lagst, hogst = LANGD[del_id]
-    return f"{MODULER[del_id]}\nSkriv {lagst}–{hogst} ord i delen. Text utanför intervallet underkänns och måste skrivas om."
+    versionstext = "Skrivformat v6: endast hot och sårbarheter genereras. Övrig analys skrivs lokalt.\n" if formatversion == V6 else ""
+    return f"{versionstext}{MODULER[del_id]}\nSkriv {lagst}–{hogst} ord i delen. Text utanför intervallet underkänns och måste skrivas om."

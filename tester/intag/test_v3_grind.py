@@ -14,7 +14,7 @@ from tester.fixturer.m2 import godkant_delsvar, tjanst_for_prov
 def v3(tmp_path, rb_intag, klar):
     avsnitt_id, t = tjanst_for_prov(tmp_path, rb_intag, klar)
     res = skriv_tjanst(Testleverantor([godkant_delsvar(d, t) for d in DELAR]), rb_intag, klar, t, avsnitt_id,
-                       design="B", effort="high", personnamn=(), spara=lambda d, f: None)
+                       design="B", effort="high", personnamn=(), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v5")
     return rb_intag, klar, t, res, avsnitt_id
 
 
@@ -60,12 +60,12 @@ def test_ny_profil_efter_skrivning_stoppar_sammanstallningen(v3):
         bygg_tjanstavsnitt_v3(rb, andrad, t, res, avsnitt_id)
 
 
-def test_aktuellt_format_sparas_och_skild_fran_v2(v3):
+def test_historiskt_v5_format_sparas_och_skild_fran_v2(v3):
     from riskanalys.dokument.modeller import Avsnitt, Dokument
     rb, p, t, res, avsnitt_id = v3
     a = bygg_tjanstavsnitt_v3(rb, p, t, res, avsnitt_id)
-    assert Dokument(id="D-ARB", titel="Prov", avsnitt=(a,)).formatversion == FORMATVERSION
-    assert Avsnitt.model_validate_json(a.model_dump_json()).formatversion == FORMATVERSION
+    assert Dokument(id="D-ARB", titel="Prov", avsnitt=(a,)).formatversion == "D-ARB-tjanst-v5"
+    assert Avsnitt.model_validate_json(a.model_dump_json()).formatversion == "D-ARB-tjanst-v5"
 
 
 def test_felmarkering_far_inte_ersatta_omvalidering(v3):

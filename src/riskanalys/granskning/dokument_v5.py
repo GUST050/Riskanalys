@@ -18,7 +18,11 @@ def analysfynd_v5(rb,b,p,d,historik,resultat):
         lagg('D-ARB','Validerade skrivdelar saknas för en erbjuden tjänst.')
         return fynd
     try:
-        expected=bygg_arb_v5(rb,p,b,resultat,historik)
+        if d.formatversion == "D-ARB-tjanst-v5.1":
+            from riskanalys.dokument.arb_v5_1 import bygg_arb_v5_1
+            expected=bygg_arb_v5_1(rb,p,b,resultat,historik)
+        else:
+            expected=bygg_arb_v5(rb,p,b,resultat,historik)
     except RiskanalysFel as error:
         lagg('D-ARB',str(error))
         return fynd

@@ -98,6 +98,7 @@ def attesthinder(rb: Regelbas, paket_id: str) -> list[str]:
 
     summor = granskningsobjekt(rb, paket_id)
     objekt = [post for samling in (rb.hot, rb.sarbarheter, rb.kontroller, rb.tjanster) for post in samling.values()]
+    objekt += [r for kontroll in rb.kontroller.values() for r in kontroll.rackvidd]
     # Paketets granskning omfattar även krav som inte gäller just denna profil.
     # Ett ändringskrav på gemensamt innehåll får inte döljas av galler_om.
     objekt += [rb.krav[id] for id in rb.regelpaket[paket_id].krav]

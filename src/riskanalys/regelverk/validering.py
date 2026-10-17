@@ -30,6 +30,7 @@ def validera(regelbas: Regelbas) -> list[str]:
         *_tjanster(regelbas),
         *_sarbarheter(regelbas),
         *_kontroller(regelbas),
+        *_kontrollrackvidd(regelbas),
         *_tillatelselistor(regelbas),
         *_regelpaket(regelbas),
         *_sakkunnig(regelbas),
@@ -145,6 +146,35 @@ def _kontroller(regelbas: Regelbas) -> list[str]:
     return fel
 
 
+def _kontrollrackvidd(rb: Regelbas) -> list[str]:
+    """Pröva räckvidd inom sin föräldrakontroll och tjänstens kataloghot."""
+    poster = [r for kontroll in rb.kontroller.values() for r in kontroll.rackvidd]
+    antal = Counter(r.id for r in poster)
+    utan = rb.model_copy(update={"kontroller": {
+        id: kontroll.model_copy(update={"rackvidd": ()}) for id, kontroll in rb.kontroller.items()
+    }})
+    befintliga = utan.alla_id()
+    fel: list[str] = []
+    for kontroll in rb.kontroller.values():
+        for post in kontroll.rackvidd:
+            if antal[post.id] > 1 or post.id in befintliga:
+                fel.append(f"{post.id}: räckvidds-ID måste vara globalt unikt.")
+            tjanst = rb.tjanster.get(post.tjanst)
+            if tjanst is None:
+                fel.append(f"{post.id}: okänd tjänst {post.tjanst}.")
+            else:
+                if kontroll.id not in tjanst.kontroller:
+                    fel.append(f"{post.id}: kontrollen {kontroll.id} hör inte till tjänsten {tjanst.id}.")
+                fel += _saknas(post.id, post.hot, tjanst.hot, "hotet i tjänsten ")
+            fel += _saknas(post.id, post.hot, rb.hot, "hotet ")
+            for ref in post.kallhanvisningar:
+                if ref.kalla not in rb.kallor or ref.kalla not in kontroll.kallor:
+                    fel.append(f"{post.id}: okänd/obunden källhänvisning {ref.kalla}.")
+                if not ref.avsnitt.strip():
+                    fel.append(f"{post.id}: ange exakt källavsnitt.")
+    return fel
+
+
 def _tillatelselistor(regelbas: Regelbas) -> list[str]:
     fel: list[str] = []
     for lista in regelbas.tillatelselistor.values():
@@ -231,6 +261,9 @@ def _sakkunnig(regelbas: Regelbas) -> list[str]:
         for paket in regelbas.regelpaket.values()
     ]
     fel = []
+    from riskanalys.regelverk.modeller import _summa, utan_granskningsmetadata
+    poster += [(r.id, r.sakkunnig, _summa(utan_granskningsmetadata(r.model_dump(mode="json"))))
+               for kontroll in regelbas.kontroller.values() for r in kontroll.rackvidd]
     for namn, sakkunnig, summa in poster:
         if sakkunnig.status != "verifierad":
             continue

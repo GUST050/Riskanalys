@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from datetime import date
 
+from riskanalys.analys.modeller import Analyspaket
 from riskanalys.bedomning.modeller import Bedomning
 from riskanalys.dokument.modeller import Dokument
 from riskanalys.dokument.rendering import har_verifiera
@@ -36,6 +37,8 @@ class Faststallelseunderlag:
     sakgranskningar: tuple[Sakgranskning, ...]
     historik: Historik
     granskningsdatum: date
+    analys: Analyspaket | None = None
+    analysbindning: str | None = None
 
 
 def hinder_for_faststallelse(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]:
@@ -48,6 +51,7 @@ def hinder_for_faststallelse(underlag: Faststallelseunderlag, beslutsdatum: date
         *_sakkunnig(underlag),
         *_paragrafkarta(underlag),
         *(rad for post in underlag.fynd for rad in fyndhinder(post)),
+        *_analys(underlag),
         *_sakgranskning(underlag),
         *_drift(underlag, beslutsdatum),
         *_kronologi(underlag, beslutsdatum),
@@ -139,7 +143,7 @@ def _paragrafkarta(underlag: Faststallelseunderlag) -> list[str]:
 def _sakgranskning(underlag: Faststallelseunderlag) -> list[str]:
     hinder = []
     for avsnitt in underlag.dokument.avsnitt:
-        galler = galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument)
+        galler = galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument, analysbindning=underlag.analysbindning)
         if galler is None:
             hinder.append(f"Avsnitt {avsnitt.id} är inte sakgranskat i nuvarande lydelse.")
         elif not galler.godkand:
@@ -161,7 +165,7 @@ def _kronologi(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]
     sakgranskade = [
         galler.datum
         for avsnitt in underlag.dokument.avsnitt
-        if (galler := galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument)) is not None
+        if (galler := galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument, analysbindning=underlag.analysbindning)) is not None
     ]
     faststallda = [handelse.datum for handelse in underlag.historik.handelser if handelse.typ == FASTSTALLELSE]
     tidigare = (
@@ -170,10 +174,12 @@ def _kronologi(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]
         ("den senaste utvärderingen", underlag.historik.senaste_utvardering()),
         ("den senaste fastställelsen", max(faststallda, default=None)),
     )
+    from riskanalys.granskning.dokument_v6 import analyskronologihinder
     return [
-        f"Beslutsdatum {beslutsdatum.isoformat()} är före {namn} {datum.isoformat()}."
-        for namn, datum in tidigare
-        if datum is not None and beslutsdatum < datum
+        *(f"Beslutsdatum {beslutsdatum.isoformat()} är före {namn} {datum.isoformat()}."
+          for namn, datum in tidigare
+          if datum is not None and beslutsdatum < datum),
+        *analyskronologihinder(underlag.bedomning,underlag.analys,beslutsdatum),
     ]
 
 
@@ -208,4 +214,14 @@ def _m2(u: Faststallelseunderlag, datum: date) -> list[str]:
     for t in u.bedomning.tjanster:
         if t.erbjuds is not False and (t.sanktionsrisk is None or t.sanktionsrisk.inneboende is None or t.sanktionsrisk.kvarstaende is None):
             hinder.append(f"{t.tjanst}: sanktionsdimension saknas. Kör bedom igen.")
+    return hinder
+
+
+def _analys(underlag: Faststallelseunderlag) -> list[str]:
+    if not underlag.regelbas.metod.omfattning:return []
+    from riskanalys.analys.provning import registersumma
+    from riskanalys.granskning.dokument_v6 import analyshinder
+    hinder=list(analyshinder(underlag.regelbas,underlag.profil,underlag.bedomning,underlag.analys))
+    if underlag.analys is None or underlag.analysbindning!=registersumma(underlag.analys):
+        hinder.append('Dokumentet saknar korrekt bindning till den frysta analysen.')
     return hinder

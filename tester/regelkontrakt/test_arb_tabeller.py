@@ -1,6 +1,7 @@
 """H6: presentation får inte byta riskutfall eller dölja underlagsbrister."""
 import pytest
 from riskanalys.dokument.arb import bygg_arb
+from riskanalys.dokument.arb_v5 import bygg_arb_v5
 from riskanalys.dokument.delskrivning import skriv_tjanst
 from riskanalys.dokument.leverantor import Testleverantor
 from riskanalys.dokument.promptar import DELAR
@@ -18,9 +19,9 @@ def h6(regelbas_v1):
     p=komplett_profil(rb,skapa_profil(rb,Byra(id='h6',regelpaket='RP-RED-VG',lan='Västra Götaland',datum=DAG)))
     u=valj(rb,p.byra.regelpaket,DAG,p.byra.lan); b=bedom(rb,u,p)
     resultat={a:skriv_tjanst(Testleverantor([godkant_delsvar(d,t) for d in DELAR]),rb,p,t,a,
-                  design='B',effort='high',personnamn=(),spara=lambda *args:None) for a,t in tjanster_med_avsnitt(b)}
+                  design='B',effort='high',personnamn=(),spara=lambda *args:None, formatversion="D-ARB-tjanst-v5") for a,t in tjanster_med_avsnitt(b)}
     hist=Historik().med(Handelse(datum=DAG,typ='utvärdering',beskrivning='Syntetiskt H6-prov'))
-    return rb,p,u,b,resultat,hist,bygg_arb(rb,p,b,resultat,hist)
+    return rb,p,u,b,resultat,hist,bygg_arb_v5(rb,p,b,resultat,hist)
 
 def test_h6_risk_tabell_bevarar_alla_motorutfall(h6):
     rb,p,u,b,r,h,d=h6
@@ -83,7 +84,7 @@ def test_h6_identiska_geografivillkor_samlas_en_gang(h6):
 
 def test_h6_preliminar_bedomning_bevarar_komplettering_i_atgardsdelen(h6):
     rb,p,u,b,r,h,d=h6
-    ny=bygg_arb(rb,p,b.model_copy(update={'status':'preliminär'}),r,h)
+    ny=bygg_arb_v5(rb,p,b.model_copy(update={'status':'preliminär'}),r,h)
     assert any('[VERIFIERA]' in s.text for s in ny.avsnitt_med_id()['D-ARB.9'].stycken)
 
 

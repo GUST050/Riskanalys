@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from riskanalys.dokument.delskrivning import FORMATVERSION
+from riskanalys.dokument.skrivversion import V6 as FORMATVERSION
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Textstycke
 from riskanalys.faststallelse import faststall as faststallmodul
 from riskanalys.faststallelse.modeller import Beslut

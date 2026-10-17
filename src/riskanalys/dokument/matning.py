@@ -65,12 +65,14 @@ def dokumentord(dokument, profil) -> dict[str, int]:
 def med_langdvarning(dokument, profil):
     """Redaktionellt mål, aldrig trunkering eller ett nytt fastställelsekrav."""
     from riskanalys.dokument.modeller import Textstycke
-    varningstext=('Redaktionell längdvarning: huvudtexten överstiger riktmärket 5 000 ord för fyra tjänster. '
+    grans = 4700 if dokument.formatversion == 'D-ARB-tjanst-v6' else 5000
+    gransnamn = '4 700' if grans == 4700 else '5 000'
+    varningstext=(f'Redaktionell längdvarning: huvudtexten överstiger riktmärket {gransnamn} ord för fyra tjänster. '
         'Gör en redaktionell genomgång; inga underlag har kapats för att uppfylla målet.')
     avsnitt=tuple(a.model_copy(update={'stycken':tuple(s for s in a.stycken if s.text!=varningstext or s.referenser)})
                   for a in dokument.avsnitt)
     ren=dokument.model_copy(update={'avsnitt':avsnitt})
-    if not avsnitt or dokumentord(ren,profil)['huvudtext']<=5000:
+    if not avsnitt or dokumentord(ren,profil)['huvudtext']<=grans:
         return ren
     varning=Textstycke(typ='beskrivning',text=varningstext,referenser=[])
     for index,a in enumerate(avsnitt):

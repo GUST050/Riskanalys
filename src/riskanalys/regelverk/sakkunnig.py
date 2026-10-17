@@ -41,6 +41,9 @@ def granskningsobjekt(rb: Regelbas, paket_id: str) -> dict[str, str]:
     for namn in ('hot', 'sarbarheter', 'kontroller', 'tjanster'):
         for id, post in getattr(rb, namn).items():
             objekt[id] = _summa(utan_granskningsmetadata(post.model_dump(mode='json')))
+    for kontroll in rb.kontroller.values():
+        for post in kontroll.rackvidd:
+            objekt[post.id] = _summa(utan_granskningsmetadata(post.model_dump(mode='json')))
     for post in (*rb.metod.riskmatris, *rb.metod.regler(), rb.skalmappning, rb.sanktionsmetod):
         if post is not None:
             objekt[post.id] = _summa(utan_granskningsmetadata(post.model_dump(mode='json')))
@@ -185,6 +188,11 @@ def applicera_attester(rb: Regelbas, b: Granskningsbeslut) -> Regelbas:
         updates[namn] = {
             k: v.model_copy(update={'sakkunnig': attest(k, v.sakkunnig)}) for k, v in getattr(rb, namn).items()
         }
+    updates['kontroller'] = {
+        k: v.model_copy(update={'rackvidd': tuple(
+            r.model_copy(update={'sakkunnig': attest(r.id, r.sakkunnig)}) for r in v.rackvidd
+        )}) for k, v in updates['kontroller'].items()
+    }
     metod = rb.metod
     metoduppdateringar = {
         'riskmatris': tuple(v.model_copy(update={'sakkunnig': attest(v.id, v.sakkunnig)}) for v in metod.riskmatris),

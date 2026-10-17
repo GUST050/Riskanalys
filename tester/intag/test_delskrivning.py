@@ -11,7 +11,7 @@ from riskanalys.profil.lagring import spara_profil
 from tester.fixturer.m2 import godkant_delsvar, tjanst_for_prov
 
 def _skriv(lev, rb, profil, t, avsnitt_id, effort="high", design="B"):
-    return skriv_tjanst(lev, rb, profil, t, avsnitt_id, design=design, effort=effort, personnamn=(), spara=lambda d, f: None)
+    return skriv_tjanst(lev, rb, profil, t, avsnitt_id, design=design, effort=effort, personnamn=(), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v5")
 
 
 def test_design_b_ett_anrop_per_del_och_kedjat_underlag(tmp_path, rb_intag, klar):
@@ -68,7 +68,7 @@ def test_natverksfel_sparas_och_ger_mall_utan_att_andra_delar_stannar(tmp_path,r
             return super().skriv_del(anrop)
     sparade=[]
     lev=Avbrottsleverantor([godkant_delsvar(d,t) for d in DELAR[1:]])
-    res=skriv_tjanst(lev,rb_intag,klar,t,avsnitt_id,effort='high',personnamn=(),spara=lambda d,f:sparade.append((d,f)))
+    res=skriv_tjanst(lev,rb_intag,klar,t,avsnitt_id,effort='high',personnamn=(),spara=lambda d,f:sparade.append((d,f)), formatversion="D-ARB-tjanst-v5")
     assert res.del_('hot').mall and len(res.del_('hot').forsok)==3
     assert not res.del_('slutsatser').mall
     assert [d for d,f in sparade].count('hot') == 3
@@ -167,7 +167,7 @@ def test_h6_aldre_format_kan_lasas_men_inte_ateranvandas(tmp_path,rb_intag,klar)
     data['formatversion']='D-ARB-tjanst-v4'
     gammalt=Tjanstresultat.model_validate(data)
     with pytest.raises(RiskanalysFel,match='identitet'):
-        kontrollera_resultat(rb_intag,klar,t,gammalt,avsnitt)
+        kontrollera_resultat(rb_intag,klar,t,gammalt,avsnitt, formatversion="D-ARB-tjanst-v5")
     assert res.formatversion=='D-ARB-tjanst-v5'
 
 
@@ -181,4 +181,4 @@ def test_h6_gammal_promptidentitet_kraver_omskrivning(tmp_path,rb_intag,klar):
     gammalt=forsok.model_copy(update={'anrop':forsok.anrop.model_copy(update={'prompt_kontrollsumma':'gammal-prompt'})})
     res=res.model_copy(update={'delar':(del_.model_copy(update={'forsok':(gammalt,)}),*res.delar[1:])})
     with pytest.raises(RiskanalysFel,match='prompt'):
-        kontrollera_resultat(rb_intag,klar,t,res,avsnitt)
+        kontrollera_resultat(rb_intag,klar,t,res,avsnitt, formatversion="D-ARB-tjanst-v5")

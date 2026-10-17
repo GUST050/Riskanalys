@@ -36,16 +36,15 @@ def bygg_arb(
     historik: Historik,
     *,
     gransindex: dict[str, tuple[float, ...]] | None = None,
+    analys=None,
+    modellrapport=None,
 ) -> Dokument:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
-    from riskanalys.dokument.delskrivning import Tjanstresultat
-    if regelbas.metod.omfattning and any(isinstance(r, Tjanstresultat) and r.formatversion == "D-ARB-tjanst-v5" for r in utkast.values()):
-        from riskanalys.dokument.arb_v5 import bygg_arb_v5
-        return bygg_arb_v5(regelbas, profil, bedomning, utkast, historik, gransindex=gransindex)
-    erbjudna = [tjanst for tjanst in bedomning.tjanster if tjanst.inneboende is not None]
     if regelbas.metod.omfattning:
-        return _bygg_tjanstvis(regelbas, profil, bedomning, utkast, historik, gransindex=gransindex)
+        from riskanalys.dokument.arb_v6 import bygg_arb_v6
+        return bygg_arb_v6(regelbas, profil, bedomning, utkast, historik, analys=analys, gransindex=gransindex, modellrapport=modellrapport)
+    erbjudna = [tjanst for tjanst in bedomning.tjanster if tjanst.inneboende is not None]
     dokument = Dokument(
         id=DOKUMENT_ID,
         titel=TITEL,
@@ -63,36 +62,6 @@ def bygg_arb(
     from riskanalys.dokument.intagsunderlag import med_intagsunderlag
     return med_intagsunderlag(dokument, regelbas, profil, bedomning)
 
-
-def _bygg_tjanstvis(rb, profil, bedomning, utkast, historik, *, gransindex: dict[str, tuple[float, ...]] | None = None):
-    if gransindex is None:
-        gransindex = metodgransindex(rb)
-    from riskanalys.dokument.delskrivning import Tjanstresultat
-    from riskanalys.dokument.tjanstavsnitt import bygg_tjanstavsnitt_v3, bygg_tjanstavsnitt, kontrollstycken, slutsatsstycken
-    from riskanalys.dokument.uppfoljning import omfattningsstycke, bevakningsavsnitt, uppfoljningsstycken
-    from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
-    erbjudna = [t for t in bedomning.tjanster if t.inneboende]
-    metod = _metod(rb, bedomning)
-    metod = metod.model_copy(update={'stycken': (*metod.stycken, omfattningsstycke(rb, profil, bedomning, gransindex=gransindex))})
-    hotkallor = sorted({k for t in erbjudna for h in t.hot for k in rb.hot[h].kallor})
-    hot = Avsnitt(id='D-ARB.4', rubrik='Myndighetsunderlag och egna erfarenheter', kalla='regelbas', stycken=(
-        _stycke('beskrivning', 'Varje tjänsts hotanalys nedan förenar myndigheternas tillvägagångssätt med byråns egen rapportering och erfarenhet. Källunderlag: '+
-                '; '.join(rb.kallor[k].titel for k in hotkallor)+'. Källversioner och profilbelägg redovisas i underlagsbilagan.',hotkallor),))
-    sarb = Avsnitt(id='D-ARB.5',rubrik='Riskförhållanden och begränsningar',kalla='regelbas',stycken=(
-        _stycke('analys','Kundförhållanden, leveranssätt, geografi och organisation prövas och motiveras per tjänst nedan. Byråövergripande indikatorer fördelas konservativt enligt ogranskad metod; de visar inte att varje kund i tjänsten har förhållandet. Ett nej till ett enskilt villkor utesluter inte andra risker. Okända uppgifter ska kompletteras.',[]),))
-    kontroller = Avsnitt(id='D-ARB.7',rubrik='Kontroller, utfall och bedömd effekt',kalla='regelbas',
-                        stycken=tuple(s for t in erbjudna for s in kontrollstycken(rb,profil,t, gransindex=gransindex)))
-    risk = tuple(bygg_tjanstavsnitt_v3(rb,profil,t,utkast[id],id, gransindex=gransindex) if isinstance(utkast[id],Tjanstresultat) else bygg_tjanstavsnitt(rb,profil,t,utkast[id],id,utokad=bedomning.proportionalitet.niva=='utökad', gransindex=gransindex)
-                 for id,t in tjanster_med_avsnitt(bedomning) if id in utkast)
-    samman = Avsnitt(id='D-ARB.8',rubrik='Tjänstevis risksammanställning',kalla='regelbas',stycken=tuple(
-        _stycke('beskrivning',f'{rb.tjanster[t.tjanst].namn}: inneboende penningtvättsrisk {t.inneboende.risk}, kvarstående {t.kvarstaende}; terrorfinansiering {t.terrorfinansiering.risk}. Riskerna redovisas per tjänst; ingen sammanvägd byrånivå beräknas.',[t.tjanst,*t.regelspar]) for t in erbjudna))
-    slutsats = Avsnitt(id='D-ARB.9',rubrik='Följder för rutiner, kundkännedom, övervakning och utbildning',kalla='regelbas',
-                       stycken=tuple(s for t in erbjudna for s in slutsatsstycken(rb,t)))
-    uppfoljning = _utvardering(historik)
-    uppfoljning = uppfoljning.model_copy(update={'stycken':(*uppfoljning.stycken,*uppfoljningsstycken(rb,profil, gransindex=gransindex))})
-    return Dokument(id=DOKUMENT_ID,titel=TITEL,avsnitt=(
-        _syfte(rb,profil,bedomning),metod,_tjanster(rb,bedomning),hot,sarb,kontroller,*risk,samman,slutsats,
-        uppfoljning,bevakningsavsnitt(rb,profil, gransindex=gransindex),bygg_underlagsbilaga(rb,profil, gransindex=gransindex)))
 
 def _stycke(typ: str, text: str, referenser: list[str]) -> Textstycke:
     return Textstycke(typ=typ, text=text, referenser=referenser)

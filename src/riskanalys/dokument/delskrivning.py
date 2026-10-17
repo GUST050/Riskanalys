@@ -6,20 +6,24 @@ from collections.abc import Callable
 from typing import Literal
 from datetime import datetime, timezone
 
-from pydantic import ValidationError
+from pydantic import ValidationError, model_validator
 
 from riskanalys.dokument.aischema import ai_schema, tolka_delsvar
 from riskanalys.dokument.analysunderlag import erfarenhetsstycke, sarbarhetsstycke
 from riskanalys.dokument.delvalidering import innehaller_personnamn, validera_del
 from riskanalys.dokument.faktablad import Faktablad, bygg_faktablad
+from riskanalys.dokument.lasta_v6 import lasta_stycken_v6
 from riskanalys.dokument.leverantor import Anropsdata, Delanrop, LeverantorFel, Leveranssvar
 from riskanalys.dokument.modeller import AISvar, Last
 from riskanalys.dokument.nivatext import nivastycken, sektorsstycken
+from riskanalys.dokument.platshallare import ersatt_tal
 from riskanalys.dokument.promptar import DELAR, bygg_innehall, promptsumma, systemprompt
 from riskanalys.dokument.tjanstavsnitt import kontrollstycken
 from riskanalys.lagring.kontrollsumma import for_text
 
-FORMATVERSION = "D-ARB-tjanst-v5"
+from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, V5, V6, delar_for_version
+
+FORMATVERSION = AKTUELL_SKRIVVERSION
 MAX_OMFORSOK = 2
 MAX_TOKENS = 64000
 EFFORTSTEG = {"low": "medium", "medium": "high", "high": "xhigh", "xhigh": "max", "max": "max"}
@@ -57,18 +61,29 @@ class Tjanstresultat(Last):
     avsnitt: str
     tjanst: str
     design: Literal["A", "B"]
-    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4", "D-ARB-tjanst-v5"] = FORMATVERSION
+    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4", "D-ARB-tjanst-v5", "D-ARB-tjanst-v6"] = FORMATVERSION
     faktablad: Faktablad
     delar: tuple[Delresultat, ...]
+
+    @model_validator(mode="after")
+    def giltiga_delar(self):
+        if self.formatversion in (V5, V6) and tuple(d.del_id for d in self.delar) != delar_for_version(self.formatversion):
+            raise ValueError("Skrivresultatets delar följer inte formatets ordning.")
+        return self
 
     def del_(self, del_id: str) -> Delresultat:
         return next(d for d in self.delar if d.del_id == del_id)
 
 
-def lasta_texter(regelbas, profil, t, del_id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> tuple[str, ...]:
-    """Kodens låsta stycken i delen. De används endast lokalt för validering (spec 8.4.1)."""
+def lasta_texter(regelbas, profil, t, del_id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None,
+                 formatversion: str = V5) -> tuple[str, ...]:
+    """Kodens låsta stycken i delen. De används endast lokalt för validering (spec 8.4.1).
+
+    I v6 är det exakt de stycken som v6-bygget infogar i delen; historiska format behåller sina stycken."""
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
+    if formatversion == V6:
+        return tuple(s.text for s in lasta_stycken_v6(regelbas, profil, t, del_id, gransindex=gransindex))
     if del_id == "hot":
         return (erfarenhetsstycke(regelbas, profil, t, gransindex=gransindex).text,)
     if del_id == "sarbarheter":
@@ -103,7 +118,7 @@ def _tolka(text: str, fb: Faktablad) -> tuple[AISvar | None, tuple[str, ...]]:
 
 
 def skriv_del(leverantor, fb: Faktablad, t, del_id: str, validerat: tuple[str, ...], *,
-              effort: str, spara: Callable[[str, Delforsok], None]) -> Delresultat:
+              effort: str, spara: Callable[[str, Delforsok], None], formatversion: str = FORMATVERSION) -> Delresultat:
     # Valideringen får bara jämföra mot det AI faktiskt har sett. De riktiga låsta texterna och personnamnen
     # prövas bara lokalt (spec 8.4.10 punkt 1, 2 och 7).
     lasta = skyddade_lasta_texter(fb, t, del_id)
@@ -114,8 +129,8 @@ def skriv_del(leverantor, fb: Faktablad, t, del_id: str, validerat: tuple[str, .
         klippt = any(f.anrop.stop_reason == "max_tokens" for f in forsok)
         niva = effort if nummer <= MAX_OMFORSOK or klippt else EFFORTSTEG[effort]
         anrop = Delanrop(del_id=del_id, system=systemprompt(leverantor.modell),
-                         innehall=bygg_innehall(fb, del_id, lasta, validerat, aterkoppling), schema=schema,
-                         effort=niva, max_tokens=MAX_TOKENS, promptsumma=promptsumma(leverantor.modell, del_id))
+                         innehall=bygg_innehall(fb, del_id, lasta, validerat, aterkoppling, formatversion=formatversion), schema=schema,
+                         effort=niva, max_tokens=MAX_TOKENS, promptsumma=promptsumma(leverantor.modell, del_id, formatversion=formatversion))
         try:
             leverans = leverantor.skriv_del(anrop)
         except LeverantorFel as fel:
@@ -149,8 +164,25 @@ def _utan_personnamn(d: Delresultat, personnamn: tuple[str, ...]) -> Delresultat
     return d.model_copy(update={"mall": True, "lokal_sparr": "personnamn"})
 
 
+def aterger_last(svar: AISvar, fb: Faktablad, lasta: tuple[str, ...]) -> bool:
+    """Ett AI-stycke innehåller ett låst stycke, som råtext eller sedan platshållarna ersatts som i dokumentet."""
+    texter = tuple(text for s in svar.stycken for text in (s.text, ersatt_tal(s.text, fb.numeriska(), fb.perioder())))
+    return any(last and last in text for last in lasta for text in texter)
+
+
+def _utan_lasta_v6(d: Delresultat, fb: Faktablad, lasta: tuple[str, ...]) -> Delresultat:
+    """V6:s låsta stycken bygger på uppgifter som AI inte ser, till exempel källa, bekräftare och smågruppsskyddade
+    antal. De prövas därför som namnen, först efter tjänstens alla AI-anrop, så att varken återkoppling eller antal
+    anrop beror på dem (spec 8.4.10 punkt 1). En del som återger ett låst stycke ersätts av mallen (spec 8.4.1)."""
+    svar = d.godkant_svar
+    if svar is None or not aterger_last(svar, fb, lasta):
+        return d
+    return d.model_copy(update={"mall": True})
+
+
 def skriv_tjanst(leverantor, regelbas, profil, t, avsnitt_id: str, *, design: Literal["A", "B"] = "B", effort: str,
-                 personnamn: tuple[str, ...], spara: Callable[[str, Delforsok], None]) -> Tjanstresultat:
+                 personnamn: tuple[str, ...], spara: Callable[[str, Delforsok], None],
+                 formatversion: str = FORMATVERSION) -> Tjanstresultat:
     if design != "B":
         raise LeverantorFel("Design A är inte byggd ännu; använd design B.")
     fb = bygg_faktablad(regelbas, profil, t, avsnitt_id)
@@ -160,23 +192,28 @@ def skriv_tjanst(leverantor, regelbas, profil, t, avsnitt_id: str, *, design: Li
         return tuple(s.text for id in ids if (svar := delar[id].godkant_svar) for s in svar.stycken)
 
     # Godkänd AI-text får följa kedjan; lokal namnkontroll påverkar aldrig nästa anrop (spec 8.4.10.9).
-    for del_id in DELAR:
+    for del_id in delar_for_version(formatversion):
         underlag = (validerad("hot", "sarbarheter", "kontroller") if del_id == "risknivaer"
                     else validerad("risknivaer") if del_id == "slutsatser" else ())
-        delar[del_id] = skriv_del(leverantor, fb, t, del_id, underlag, effort=effort, spara=spara)
-    return Tjanstresultat(avsnitt=avsnitt_id, tjanst=t.tjanst, design=design, faktablad=fb,
-                         delar=tuple(_utan_personnamn(d, personnamn) for d in delar.values()))
+        delar[del_id] = skriv_del(leverantor, fb, t, del_id, underlag, effort=effort, spara=spara, formatversion=formatversion)
+    provade = tuple(_utan_personnamn(d, personnamn) for d in delar.values())
+    if formatversion == V6:
+        index = metodgransindex(regelbas)
+        provade = tuple(_utan_lasta_v6(d, fb, lasta_texter(regelbas, profil, t, d.del_id, gransindex=index, formatversion=V6))
+                        for d in provade)
+    return Tjanstresultat(avsnitt=avsnitt_id, tjanst=t.tjanst, design=design, formatversion=formatversion, faktablad=fb,
+                         delar=provade)
 
 
-def kontrollera_resultat(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> None:
+def kontrollera_resultat(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None, formatversion: str = FORMATVERSION) -> None:
     """Kontrollera fryst indata och varje godkänt råsvar på nytt före dokumentbygget."""
     if gransindex is None:
         gransindex = metodgransindex(rb)
     from riskanalys.fel import RiskanalysFel
     from riskanalys.profil.hantering import personnamn
     if (resultat.avsnitt != avsnitt_id or resultat.tjanst != t.tjanst or resultat.design != "B"
-            or tuple(d.del_id for d in resultat.delar) != DELAR
-            or resultat.formatversion != FORMATVERSION):
+            or tuple(d.del_id for d in resultat.delar) != delar_for_version(formatversion)
+            or resultat.formatversion != formatversion):
         raise RiskanalysFel("Tjänstresultatets identitet eller analysdelar är ogiltiga. Skriv om utkastet.")
     if resultat.faktablad != bygg_faktablad(rb, p, t, avsnitt_id, gransindex=gransindex):
         raise RiskanalysFel("Skrivningens faktablad avviker från aktuellt underlag. Skriv och sakgranska på nytt.")
@@ -186,11 +223,14 @@ def kontrollera_resultat(rb, p, t, resultat: Tjanstresultat, avsnitt_id: str, *,
         if not d.godkant_svar:
             raise RiskanalysFel("En analysdel saknar validerat svar. Skriv om delen.")
         anrop = d.forsok[-1].anrop
-        if anrop.prompt_kontrollsumma != promptsumma(anrop.begard_modell, d.del_id):
+        if anrop.prompt_kontrollsumma != promptsumma(anrop.begard_modell, d.del_id, formatversion=formatversion):
             raise RiskanalysFel("Analysdelens prompt är inte aktuell. Skriv om delen och sakgranska på nytt.")
         svar, fel = _tolka(d.forsok[-1].text,resultat.faktablad)
         if svar != d.godkant_svar or fel:
             raise RiskanalysFel("Analysdelens råsvar avviker från det sparade svaret. Skriv om delen.")
-        fel = validera_del(d.del_id, svar, resultat.faktablad, personnamn(p, rb), lasta_texter(rb, p, t, d.del_id, gransindex=gransindex))
+        lasta = lasta_texter(rb, p, t, d.del_id, gransindex=gransindex, formatversion=formatversion)
+        fel = validera_del(d.del_id, svar, resultat.faktablad, personnamn(p, rb), lasta)
         if fel:
             raise RiskanalysFel("Analysdelen klarar inte valideringen. Skriv om delen: " + "; ".join(fel))
+        if formatversion == V6 and aterger_last(svar, resultat.faktablad, lasta):
+            raise RiskanalysFel("Analysdelen återger programmets låsta stycke. Skriv om delen och sakgranska på nytt.")

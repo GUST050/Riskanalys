@@ -49,7 +49,7 @@ def bygg_tjanstavsnitt_v5(rb,p,t,resultat,avsnitt_id,*,gransindex=None):
     from riskanalys.dokument.tjanstavsnitt import _ai_stycken
     from riskanalys.dokument.nivatext import utfallsforklaring
     index=gransindex if gransindex is not None else metodgransindex(rb)
-    kontrollera_resultat(rb,p,t,resultat,avsnitt_id,gransindex=index)
+    kontrollera_resultat(rb,p,t,resultat,avsnitt_id,gransindex=index,formatversion="D-ARB-tjanst-v5")
     fb=resultat.faktablad; tj=rb.tjanster[t.tjanst]; slug=tj.erbjuds_falt.removesuffix('_erbjuds')
     def ai(id):
         svar=resultat.del_(id).godkant_svar

@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 import yaml
 from tester.fixturer.m2 import komplett_profil,bygg_delsvar,DAG
+from tester.fixturer.v6_analys import utan_reduktionsansprak, godkann_syntetisk_analys
 from riskanalys.profil.lagring import las_profil,spara_profil
 from riskanalys.bedomning.korning import las_bedomning
 from riskanalys.lagring.korningar import senaste_korning
@@ -43,7 +44,7 @@ def kedja(tmp_path,paket,lan,negativ=None):
     if negativ=='expert':(r/'granskning.yaml').unlink()
     if negativ=='metod':
         fil=r/'granskning.yaml';d=yaml.safe_load(fil.read_text());d['beslut'][paket]['objekt']['KUNDMETOD-C']['beslut']='ändras';fil.write_text(yaml.safe_dump(d,allow_unicode=True))
-    rb=ladda_regelbas(r);p=komplett_profil(rb,las_profil(byra))
+    rb=ladda_regelbas(r);p=utan_reduktionsansprak(rb,komplett_profil(rb,las_profil(byra)))
     if negativ=='felpaket':
         from riskanalys.profil.modeller import Uppgift
         p=p.model_copy(update={'uppgifter':{**p.uppgifter,'P-ORG.sateslan':p.uppgifter['P-ORG.sateslan'].model_copy(update={'varde':'Stockholm'})}})
@@ -65,11 +66,12 @@ def kedja(tmp_path,paket,lan,negativ=None):
     fil=tmp_path/'testsvar.json';fil.write_text(json.dumps(svar,ensure_ascii=False))
     kor(env,'skriv','testbyra','--leverantor','test','--testsvar',str(fil),*arg)
     kor(env,'utvardera','testbyra','--beskrivning','Syntetisk teknisk prövning','--datum',str(DAG))
+    godkann_syntetisk_analys(byra,rb,mapp,senaste_korning(byra,'utkast','skriv'),tmp_path/'lokala-underlag',DAG)
     kor(env,'granska','testbyra','--datum',str(DAG),*arg)
     kor(env,'exportera','testbyra','--utkast','--datum',str(DAG))
     d,f=las_granskning(senaste_korning(byra,'granskning','granska'))
     if not negativ:assert not f,f
-    for a in d.avsnitt:kor(env,'sakgranska','testbyra','--avsnitt',a.id,'--godkann','--namn','Syntetisk testperson','--datum',str(DAG))
+    for a in d.avsnitt:kor(env,'sakgranska','testbyra','--avsnitt',a.id,'--godkann','--namn','Syntetisk testperson','--datum',str(DAG),*arg)
     if negativ=='belagg':
         p=las_profil(byra);u=p.uppgifter['P-ORG.namn'].model_copy(update={'kalla':None});spara_profil(byra,p.model_copy(update={'uppgifter':{**p.uppgifter,'P-ORG.namn':u}}))
     result=kor(env,'faststall','testbyra','--organ','styrelsen','--namn','Syntetisk testperson','--datum','2026-11-20' if negativ=='datum' else str(DAG),*arg,expected=1 if negativ else 0)

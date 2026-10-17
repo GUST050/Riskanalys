@@ -482,3 +482,11 @@
   hamtad: '2026-10-11'
   kontrollsumma: sha256:0a18061235353efda54b433510f4ff20a19fca4b8933b00578f4d6f3045ef3f6
   typ: riskbedömning
+
+- id: SRC-FIPO-PLATTFORM-2026
+  titel: Värdeöverföringar via sociala medieplattformar och spel utgör risk för penningtvätt och finansiering av terrorism
+  typ: riskbedömning
+  utgivare: Polismyndigheten
+  url: https://polisen.se/3c258ab8120fc2de94f6a7f11f2f774c/siteassets/dokument/finanspolisen/fipo-informerar/2026_risk-for-penningtvatt-och-tf_digitala-plattformar.pdf
+  hamtad: '2026-10-15'
+  kontrollsumma: sha256:212fab5ec3fe6cf7e79e9ee8bbbc9aad7db0130a0ef66eaccb9e91313a969532

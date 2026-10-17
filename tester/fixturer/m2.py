@@ -80,9 +80,9 @@ def _regelbas_for_delsvar():
     return ladda_regelbas()
 
 
-def bygg_delsvar(rb, profil, bedomning):
-    from riskanalys.dokument.promptar import DELAR
-    return [godkant_delsvar(d,t) for _,t in tjanster_med_avsnitt(bedomning) for d in DELAR]
+def bygg_delsvar(rb, profil, bedomning, *, formatversion="D-ARB-tjanst-v6"):
+    from riskanalys.dokument.skrivversion import delar_for_version
+    return [godkant_delsvar(d,t) for _,t in tjanster_med_avsnitt(bedomning) for d in delar_for_version(formatversion)]
 
 
 def godkant_delsvar(del_id, t):

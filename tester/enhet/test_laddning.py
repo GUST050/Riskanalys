@@ -181,3 +181,13 @@ def test_kontrollsumman_andras_nar_en_fil_andras(minimal_rot):
     fore = regelbasens_kontrollsumma(minimal_rot)
     (minimal_rot / "version.yaml").write_text("regelbas_version: '0.0.2'\n", encoding="utf-8")
     assert regelbasens_kontrollsumma(minimal_rot) != fore
+
+
+def test_laddning_och_dump_bevarar_kontrollrackvidd():
+    from riskanalys.regelverk.modeller import Kontroll
+
+    rb = ladda_regelbas()
+    kontroll = rb.kontroller['C-07']
+    assert kontroll.rackvidd
+    assert Kontroll.model_validate(kontroll.model_dump(mode='json')) == kontroll
+    assert kontroll.rackvidd[0].id in rb.alla_id()

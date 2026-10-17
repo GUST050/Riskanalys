@@ -4,7 +4,7 @@ import json
 from datetime import date
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_serializer, model_validator
 
 from riskanalys.lagring.kontrollsumma import for_text
 from riskanalys.regelverk.villkor import Faltdef
@@ -199,7 +199,51 @@ class Sarbarhet(Strikt):
     kallor: tuple[str, ...] = Field(min_length=1)
 
 
+class Kontrollrackvidd(Strikt):
+    """Källbunden möjlig observation, inte belägg för aktuell kontroll eller effekt."""
+
+    id: str
+    tjanst: str
+    hot: tuple[str, ...] = Field(min_length=1)
+    kan_belagga: str
+    begransningar: str
+    forutsattningar: str
+    grund: Grund
+    kallhanvisningar: tuple[Kallhanvisning, ...] = Field(min_length=1)
+    sakkunnig: Sakkunnig = Sakkunnig()
+    # Kunskapsstatus om beskrivningen, aldrig positiv scenariotäckning eller lokal effekt.
+    beskrivningsstatus: Literal["beskriven", "okand"] | None = None
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Bevara äldre räckviddspayloads och deras attestsummor vid oangiven status."""
+        data = handler(self)
+        if self.beskrivningsstatus is None:
+            data.pop("beskrivningsstatus", None)
+        return data
+
+
+    @field_validator("id", "tjanst", "kan_belagga", "begransningar", "forutsattningar")
+    @classmethod
+    def _saktext(cls, varde: str) -> str:
+        import re
+
+        text = varde.strip()
+        if not text or re.search(r"\[(?:KOMPLETTERA|VERIFIERA|FYLL I)[^\]]*\]", text, re.IGNORECASE):
+            raise ValueError("Ange saklig räckvidd utan tomma svar eller kompletteringsmarkörer.")
+        return text
+
+    @field_validator("hot")
+    @classmethod
+    def _hot_id(cls, varde: tuple[str, ...]) -> tuple[str, ...]:
+        ids = tuple(id.strip() for id in varde)
+        if any(not id for id in ids) or len(set(ids)) != len(ids):
+            raise ValueError("Ange unika, icke-tomma hot-ID:n.")
+        return ids
+
+
 class Kontroll(Strikt):
+    rackvidd: tuple[Kontrollrackvidd, ...] = ()
     effekt_falt: str | None = None
     utfall_falt: str | None = None
     sakkunnig: Sakkunnig = Sakkunnig()
@@ -211,6 +255,15 @@ class Kontroll(Strikt):
     utformning_falt: str
     genomforande_falt: str
     kallor: tuple[str, ...] = ()
+
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Tom räckvidd får inte ändra historiska innehålls- eller attestsummor."""
+        data = handler(self)
+        if not self.rackvidd:
+            data.pop("rackvidd", None)
+        return data
 
 
 class Tjanst(Strikt):
@@ -499,6 +552,7 @@ class Regelbas(BaseModel):
             self.sektorsreferenser,
         )
         alla = {nyckel for samling in samlingar for nyckel in samling}
+        alla |= {r.id for k in self.kontroller.values() for r in k.rackvidd}
         alla |= {rad.id for rad in self.metod.riskmatris}
         alla |= {regel.id for regel in self.metod.regler()}
         if self.skalmappning:

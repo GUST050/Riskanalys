@@ -74,3 +74,15 @@ def test_skrivresultat_sparas_och_lases(tmp_path, giltigt_utkast, real_underlag)
     (tmp_path / "D-ARB.6.1.json").write_text(resultat.model_dump_json(), encoding="utf-8")
     skriv_manifest(tmp_path, {})
     assert las_skrivresultat(tmp_path) == [resultat]
+
+
+@pytest.mark.parametrize('stycken', [None, 0, False])
+def test_felformat_styckesamling_sparas_och_ger_omforsok(stycken, giltigt_utkast, real_underlag):
+    import json
+    text = json.dumps({'avsnitt': 'D-ARB.6.1', 'stycken': stycken, 'oklarheter': []})
+    sparade = []
+    resultat = skriv_avsnitt(Testleverantor([text, giltigt_utkast]), real_underlag, (), spara=sparade.append)
+    assert len(resultat.forsok) == 2
+    assert sparade[0].text == text and sparade[0].svar is None
+    assert sparade[0].fel[0].startswith('Svaret följde inte schemat')
+    assert resultat.godkant_utkast == giltigt_utkast

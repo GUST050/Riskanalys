@@ -6,6 +6,7 @@ import sys
 from riskanalys.fel import RiskanalysFel
 from riskanalys.nyckelfil import ladda_nycklar
 from riskanalys.kommandon import (
+    analys_kommando,
     bolagsverket_kommando,
     intag_kommando,
     bedom_kommando,
@@ -20,6 +21,7 @@ from riskanalys.kommandon import (
 )
 
 KOMMANDON = [
+    analys_kommando,
     bolagsverket_kommando,
     intag_kommando,
     regelbas_kommando,

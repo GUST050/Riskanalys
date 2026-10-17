@@ -32,12 +32,12 @@ def granskad_summa(avsnitt: Avsnitt, profil: Profil) -> str:
 
 
 def _har_struktur(dokument: Dokument) -> bool:
-    return dokument.formatversion == "D-ARB-tjanst-v5" or any(a.underrubriker for a in dokument.avsnitt)
+    return dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6") or any(a.underrubriker for a in dokument.avsnitt)
 
 
 def struktur_summa(dokument: Dokument) -> str:
     """Titel, format och faktisk avsnittsordning i det granskade dokumentet."""
-    if dokument.formatversion == "D-ARB-tjanst-v5":
+    if dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"):
         return for_text(json.dumps({"titel": dokument.titel, "format": dokument.formatversion,
             "avsnitt": [(a.id, a.rubrik, a.visningsnummer,
                          [(u.fore_stycke, u.rubrik) for u in a.underrubriker],
@@ -69,6 +69,7 @@ def registrera_sakgranskning(
     namn: str | None,
     datum: date,
     kommentar: str | None = None,
+    *, analysbindning: str | None = None,
 ) -> tuple[Sakgranskning, ...]:
     """Returnerar sakgranskningarna med en ny post för avsnittet så som det ser ut med profilens namn."""
     avsnitt = dokument.avsnitt_med_id().get(avsnitt_id)
@@ -81,6 +82,7 @@ def registrera_sakgranskning(
         raise SakgranskningsFel("Ett underkännande kräver --kommentar som säger vad som är fel.")
     post = Sakgranskning(
         avsnitt=avsnitt.id,
+        analysbindning=analysbindning,
         kontrollsumma=granskad_summa(avsnitt, profil),
         dokumentstruktur=struktur_summa(dokument) if _har_struktur(dokument) else None,
         godkand=godkand,
@@ -93,19 +95,25 @@ def registrera_sakgranskning(
 
 
 def galler_sakgranskning(
-    sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None
+    sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None,
+    *, analysbindning: str | None = None,
 ) -> Sakgranskning | None:
     """Den senaste sakgranskningen av avsnittet i exakt den lydelse som exporten skulle få."""
     summa = granskad_summa(avsnitt, profil)
     ny_struktur = bool(dokument and _har_struktur(dokument))
-    giltiga = [post for post in sakgranskningar if post.avsnitt == avsnitt.id and post.kontrollsumma == summa
+    poster = sakgranskningar
+    if dokument and dokument.formatversion == "D-ARB-tjanst-v6":
+        senaste = next((post for post in reversed(poster) if post.avsnitt == avsnitt.id), None)
+        poster = (senaste,) if senaste is not None else ()
+    giltiga = [post for post in poster if post.avsnitt == avsnitt.id and post.kontrollsumma == summa
+               and post.analysbindning == analysbindning
                and (post.dokumentstruktur == struktur_summa(dokument) if post.dokumentstruktur and dokument
                     else not post.dokumentstruktur and not ny_struktur)]
     return giltiga[-1] if giltiga else None
 
 
-def sakgranskningsstatus(sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None) -> str:
-    galler = galler_sakgranskning(sakgranskningar, avsnitt, profil, dokument)
+def sakgranskningsstatus(sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None, *, analysbindning: str | None = None) -> str:
+    galler = galler_sakgranskning(sakgranskningar, avsnitt, profil, dokument, analysbindning=analysbindning)
     if galler is not None:
         utfall = "godkänt" if galler.godkand else f"underkänt ({galler.kommentar})"
         return f"{utfall} {galler.datum.isoformat()} av {galler.namn}, roll {galler.roll}"

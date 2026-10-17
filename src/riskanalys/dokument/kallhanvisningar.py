@@ -9,7 +9,7 @@ _SUFFIX = re.compile(r'(?: Källor: (?:\[\d+(?:, s\. [\d, ]+)?\](?:, )?)+\.)?(?:
 _REGISTER = 'Källregister ['
 
 
-def _poster(rb: Regelbas) -> dict:
+def _poster(rb: Regelbas, *, rackvidd: bool = False) -> dict:
     poster = {}
     for namn in ('kallor', 'lydelser', 'krav', 'hot', 'sarbarheter', 'kontroller', 'tjanster',
                  'bristmonster', 'tillamplighet', 'sektorsreferenser'):
@@ -18,6 +18,8 @@ def _poster(rb: Regelbas) -> dict:
     if rb.sanktionsmetod:
         poster[rb.sanktionsmetod.id] = rb.sanktionsmetod
         poster.update({r.id: r for r in rb.sanktionsmetod.rader})
+    if rackvidd:
+        poster.update({r.id: r for k in rb.kontroller.values() for r in getattr(k, 'rackvidd', ())})
     return poster
 
 
@@ -57,12 +59,15 @@ def _kallor(refs, rb: Regelbas, poster: dict) -> dict[str, set[int]]:
 
 def bygg_kallregister(dokument: Dokument, regelbas: Regelbas) -> dict[str, str]:
     """Stabila läsnummer för faktiskt refererade källor utanför B1:s inventarium."""
-    poster = _poster(regelbas)
+    ny = dokument.formatversion in ('D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6')
+    poster = _poster(regelbas, rackvidd=ny)
     kallor = set()
     for avsnitt in dokument.avsnitt:
         if avsnitt.id == 'D-ARB.B1':
-            continue
-        texter = [*avsnitt.stycken, *(cell for tabell in avsnitt.tabeller for rad in tabell.rader for cell in rad.celler)]
+            # B1:s inventarium är inte användning av källan. Flyttade beräkningar är det.
+            texter = [cell for tabell in avsnitt.tabeller for rad in tabell.rader for cell in rad.celler] if ny else []
+        else:
+            texter = [*avsnitt.stycken, *(cell for tabell in avsnitt.tabeller for rad in tabell.rader for cell in rad.celler)]
         for text in texter:
             kallor.update(_kallor(text.referenser, regelbas, poster))
     return {id: str(nr) for nr, id in enumerate(sorted(kallor), 1)}
@@ -74,10 +79,11 @@ def med_kallhanvisningar(dokument: Dokument, regelbas: Regelbas) -> Dokument:
     Referens-ID:n bevaras för granskningsspåret. Sidor visas bara när en
     uttrycklig hänvisning anger sidan; ett katalog-ID är inte ett sidbelägg.
     """
-    if dokument.formatversion != 'D-ARB-tjanst-v5':
+    if dokument.formatversion not in ('D-ARB-tjanst-v5', 'D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6'):
         return dokument
     register = bygg_kallregister(dokument, regelbas)
-    poster = _poster(regelbas)
+    ny = dokument.formatversion in ('D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6')
+    poster = _poster(regelbas, rackvidd=ny)
 
     def med_hanvisning(text):
         kallor = _kallor(text.referenser, regelbas, poster)
@@ -92,13 +98,31 @@ def med_kallhanvisningar(dokument: Dokument, regelbas: Regelbas) -> Dokument:
             suffix += ' Profilbelägg: bilaga B1.'
         return text.model_copy(update={'text': _SUFFIX.sub('', text.text) + suffix})
 
+    def med_tabellhanvisningar(tabell):
+        if dokument.formatversion != 'D-ARB-tjanst-v6':
+            return tabell.model_copy(update={'rader': tuple(rad.model_copy(update={
+                'celler': tuple(med_hanvisning(c) for c in rad.celler)}) for rad in tabell.rader)})
+        rader = []
+        for rad in tabell.rader:
+            refs = tuple(dict.fromkeys(ref for cell in rad.celler for ref in cell.referenser))
+            celler = tuple(c.model_copy(update={'text': _SUFFIX.sub('', c.text)}) for c in rad.celler)
+            if celler:
+                forsta = med_hanvisning(celler[0].model_copy(update={'referenser': refs}))
+                celler = (forsta.model_copy(update={'referenser': celler[0].referenser}), *celler[1:])
+            rader.append(rad.model_copy(update={'celler': celler}))
+        return tabell.model_copy(update={'rader': tuple(rader)})
+
     avsnitt = []
     for a in dokument.avsnitt:
         if a.id == 'D-ARB.B1':
-            avsnitt.append(a.model_copy(update={'stycken': tuple(s for s in a.stycken if not s.text.startswith(_REGISTER))}))
+            # Behåll positionerna även när det gamla registret ersätts och tabeller lagts efter det.
+            behall = [i for i, s in enumerate(a.stycken) if not s.text.startswith(_REGISTER)]
+            tabeller = tuple(t.model_copy(update={
+                'fore_stycke': sum(i < t.fore_stycke for i in behall),
+                'rader': med_tabellhanvisningar(t).rader}) for t in a.tabeller) if ny else a.tabeller
+            avsnitt.append(a.model_copy(update={'stycken': tuple(a.stycken[i] for i in behall), 'tabeller': tabeller}))
             continue
-        tabeller = tuple(tabell.model_copy(update={'rader': tuple(rad.model_copy(update={
-            'celler': tuple(med_hanvisning(c) for c in rad.celler)}) for rad in tabell.rader)}) for tabell in a.tabeller)
+        tabeller = tuple(med_tabellhanvisningar(tabell) for tabell in a.tabeller)
         avsnitt.append(a.model_copy(update={'stycken': tuple(med_hanvisning(s) for s in a.stycken), 'tabeller': tabeller}))
     registerstycken = tuple(Textstycke(typ='beskrivning', text=(
         f'{_REGISTER}{nr}]: {regelbas.kallor[id].titel}. {regelbas.kallor[id].utgivare}. {regelbas.kallor[id].url}'),

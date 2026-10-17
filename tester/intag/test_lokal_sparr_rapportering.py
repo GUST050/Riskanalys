@@ -107,9 +107,9 @@ def test_gransindex_beraknas_en_gang_per_bygge(v3, monkeypatch, tmp_path, hela_d
         if namn.startswith('riskanalys.') and getattr(modul, 'metodgransindex', None) is original:
             monkeypatch.setattr(modul, 'metodgransindex', rakna)
     if hela_dokumentet:
-        from riskanalys.dokument.arb import bygg_arb
+        from riskanalys.dokument.arb_v5 import bygg_arb_v5
         from riskanalys.drift.historik import Historik
-        bygg_arb(rb, profil, bedomning, {id: res}, Historik())
+        bygg_arb_v5(rb, profil, bedomning, {id: res}, Historik())
     else:
         bygg_tjanstavsnitt_v3(rb, profil, t, res, id)
     assert len(anrop) == 1
