@@ -126,16 +126,28 @@ def _erbjuds_inte(tjanst: Tjanst) -> Tjanstbedomning:
 def _tillampade_sarbarheter(
     regelbas: Regelbas, tjanst: Tjanst, varden: dict[str, Faltvarde]
 ) -> tuple[tuple[Sarbarhet, ...], frozenset[str]]:
+    valda, okanda = _valda_sarbarheter(regelbas, tjanst, varden)
+    return _utan_ersatta(valda), okanda
+
+
+def _valda_sarbarheter(
+    regelbas: Regelbas, tjanst: Tjanst, varden: dict[str, Faltvarde]
+) -> tuple[tuple[Sarbarhet, ...], frozenset[str]]:
+    """Sårbarheter vars villkor gäller, före kombinationsreglerna (ersatter)."""
     definitioner = regelbas.faltdefinitioner()
     utfall = [
         (sarbarhet, utvardera(tolka_villkor(sarbarhet.villkor, definitioner), varden))
         for sarbarhet in (regelbas.sarbarheter[sarbarhet_id] for sarbarhet_id in tjanst.sarbarheter)
     ]
     valda = tuple(sarbarhet for sarbarhet, resultat in utfall if _galler(sarbarhet, resultat))
-    ersatta = {id for s in valda for id in s.ersatter}
-    tillampade = tuple(s for s in valda if s.id not in ersatta)
     okanda = frozenset().union(*(resultat.okanda for _, resultat in utfall))
-    return tillampade, okanda
+    return valda, okanda
+
+
+def _utan_ersatta(valda: tuple[Sarbarhet, ...]) -> tuple[Sarbarhet, ...]:
+    """Kombinationsregel: en vald sårbarhet tar bort de sårbarheter den ersätter bland de valda."""
+    ersatta = {id for s in valda for id in s.ersatter}
+    return tuple(s for s in valda if s.id not in ersatta)
 
 
 def _galler(sarbarhet: Sarbarhet, utfall: Utfall) -> bool:

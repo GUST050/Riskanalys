@@ -254,6 +254,26 @@ def test_ersatt_sarbarhet_raknas_inte(filer, ladda):
     assert _scenario(t, "H-1").sarbarhetsniva == "hög"
 
 
+def test_ersattning_galler_bara_inom_samma_scenario(filer, ladda):
+    """A (hot H-1) ersätter B (hot H-1 och H-2): i H-1 räknas bara A, i H-2 räknas B som vanligt."""
+    filer["kataloger/sarbarheter.yaml"][0]["hot"] = ["H-1", "H-2"]
+    filer["kataloger/sarbarheter.yaml"][1].update(hot=["H-1"], ersatter=["S-1"], galler="penningtvatt")
+    t = _bedom(ladda(filer), {"P-A": 0.5, "P-B": 0.5})
+    assert _scenario(t, "H-1").sarbarheter == ("S-2",)
+    assert _scenario(t, "H-1").sarbarhetsniva == "hög"
+    assert _scenario(t, "H-2").sarbarheter == ("S-1",)
+    assert _scenario(t, "H-2").sarbarhetsniva == "hög"
+
+
+def test_ersattning_kraver_att_ersattaren_omfattar_dimensionen(filer, ladda):
+    filer["kataloger/sarbarheter.yaml"][0].update(hot=["H-3"], galler="bada")
+    filer["kataloger/sarbarheter.yaml"][1].update(hot=["H-3"], ersatter=["S-1"], galler="penningtvatt")
+    t = _bedom(ladda(filer), {"P-A": 0.5, "P-B": 0.5})
+    assert _scenario(t, "H-3", "pt").sarbarheter == ("S-2",)
+    assert _scenario(t, "H-3", "tf").sarbarheter == ("S-1",)
+    assert _scenario(t, "H-3", "tf").sarbarhetsniva == "medel"
+
+
 def test_okant_villkor_galler_preliminart_enligt_vid_okant(filer, ladda):
     filer["kataloger/sarbarheter.yaml"][0]["vid_okant"] = "preliminart_galler"
     t = _bedom(ladda(filer), okanda=("P-A",))

@@ -12,7 +12,8 @@ from riskanalys.bedomning.motor import (
     TERRORFINANSIERING,
     TF_KONSEKVENS,
     _riskdel,
-    _tillampade_sarbarheter,
+    _utan_ersatta,
+    _valda_sarbarheter,
     steg,
 )
 from riskanalys.fel import RiskanalysFel
@@ -66,7 +67,7 @@ def bedom_scenarier(
     """
     if regelbas.metod.scenario is None:
         return ()
-    sarbarheter, _ = _tillampade_sarbarheter(regelbas, tjanst, varden)
+    sarbarheter, _ = _valda_sarbarheter(regelbas, tjanst, varden)
     _kontrollera_hotkopplingar(sarbarheter)
     iakttagna = iakttagna_hot(tjanst, varden, okanda)
     scenarier = tuple(
@@ -125,7 +126,7 @@ def _scenario(
     ar_pt = dimension == "pt"
     iakttaget = hot.id in iakttagna
     hotniva = steg(_hotniva(hot), IAKTTAGELSEHOJNING if iakttaget else 0, SANNOLIKHETER)
-    mojliggorande = tuple(s for s in sarbarheter if hot.id in s.hot and s.galler in OMRADEN[dimension])
+    mojliggorande = _mojliggorande(sarbarheter, hot, dimension)
     bas = tjanst.grund_sannolikhet if ar_pt else tjanst.grund_tf_sannolikhet
     sarbarhetsniva = steg(bas, sum(s.effekt.sannolikhet for s in mojliggorande), SANNOLIKHETER)
     sannolikhetsrad = _sannolikhetsrad(regelbas, hotniva, sarbarhetsniva)
@@ -150,6 +151,15 @@ def _scenario(
         regelspar=(metod.scenario.hotniva.id, metod.scenario.sarbarhetsniva.id, sannolikhetsrad.id,
                    konsekvensregel, riskrad.id, *kvar_regel),
     )
+
+
+def _mojliggorande(sarbarheter: tuple[Sarbarhet, ...], hot: Hot, dimension: str) -> tuple[Sarbarhet, ...]:
+    """Valda sårbarheter som möjliggör hotet i dimensionen; ersättning (ersatter) gäller bara inom scenariot.
+
+    En sårbarhet A som ersätter B tar bort B bara där A själv är vald, kopplad till hotet och omfattar dimensionen.
+    """
+    i_scenariot = tuple(s for s in sarbarheter if hot.id in s.hot and s.galler in OMRADEN[dimension])
+    return _utan_ersatta(i_scenariot)
 
 
 def _hotniva(hot: Hot) -> str:
