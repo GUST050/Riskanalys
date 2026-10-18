@@ -15,6 +15,7 @@ Konsekvens = Literal["begränsad", "betydande", "allvarlig"]
 Risk = Literal["låg", "måttlig", "hög", "mycket hög"]
 Allvar = Literal["blockerande", "hög", "medel", "låg"]
 Belagg = Literal["dokument", "datum", "logg", "beslut", "register"]
+Dimension = Literal["pt", "tf"]
 KONTROLLSUMMA = r"^sha256:[0-9a-f]{64}$"
 KALLANS_GILTIGHET = frozenset({"id", "typ", "utgivare", "geografi", "beslutad", "konsoliderad_tom", "kontrollsumma", "galler_fran", "galler_till", "inventarium_kontrollsumma"})
 
@@ -38,7 +39,7 @@ class Intagsfalt(Strikt):
 
 class Falt(Strikt):
     id: str
-    typ: Literal["bool", "heltal", "tal", "andel", "text", "val", "datum"]
+    typ: Literal["bool", "heltal", "tal", "andel", "text", "val", "flerval", "datum"]
     fraga: str
     varfor: str
     personuppgift: bool = False
@@ -70,6 +71,12 @@ class Falt(Strikt):
     def _namnfalt_ar_personuppgift(self):
         if self.namnfalt and not (self.personuppgift and self.typ == "text"):
             raise ValueError(f"{self.id}: ett namnfält måste vara en personuppgift av typen text.")
+        return self
+
+    @model_validator(mode="after")
+    def _flerval_har_alternativ(self):
+        if self.typ == "flerval" and not self.val:
+            raise ValueError(f"{self.id}: ett fält av typen flerval måste ange sina alternativ i val.")
         return self
 
 
@@ -176,10 +183,52 @@ class Hot(Strikt):
     beskrivning: str
     kallor: tuple[str, ...] = Field(min_length=1)
     galler_tf: bool = False
+    # Scenariometod (spec 2026-10-18): hotnivå och dimensioner. Tomma värden utelämnas vid serialisering.
+    niva: Sannolikhet | None = None
+    nivamotivering: str = ""
+    dimensioner: tuple[Dimension, ...] = ()
+
+    @field_validator("dimensioner")
+    @classmethod
+    def _unika_dimensioner(cls, varde: tuple[str, ...]) -> tuple[str, ...]:
+        if len(set(varde)) != len(varde):
+            raise ValueError("Ange varje dimension, pt eller tf, högst en gång.")
+        return varde
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Utelämna osatta scenariofält, så att historiska innehålls- och attestsummor består."""
+        data = handler(self)
+        if self.niva is None:
+            data.pop("niva", None)
+        if not self.nivamotivering:
+            data.pop("nivamotivering", None)
+        if not self.dimensioner:
+            data.pop("dimensioner", None)
+        return data
+
+
+TF_HOTPREFIX = "H-TF-"
+
+
+def hot_dimensioner(hot: Hot) -> tuple[str, ...]:
+    """Hotets dimensioner: angivna, annars härledda ur hot-ID och galler_tf."""
+    if hot.dimensioner:
+        return hot.dimensioner
+    if hot.id.startswith(TF_HOTPREFIX):
+        return ("tf",)
+    return ("pt", "tf") if hot.galler_tf else ("pt",)
 
 
 class Effekt(Strikt):
-    sannolikhet: int = Field(ge=1, le=2)
+    sannolikhet: int = Field(ge=-2, le=2)
+
+    @field_validator("sannolikhet")
+    @classmethod
+    def _inte_noll(cls, varde: int) -> int:
+        if varde == 0:
+            raise ValueError("Effekten får inte vara 0. Ange −2, −1, 1 eller 2, eller ta bort sårbarheten.")
+        return varde
 
 
 class Sarbarhet(Strikt):
@@ -197,6 +246,15 @@ class Sarbarhet(Strikt):
     effekt: Effekt
     galler: Literal["penningtvatt", "terrorfinansiering", "bada"] = "penningtvatt"
     kallor: tuple[str, ...] = Field(min_length=1)
+    hot: tuple[str, ...] = ()  # Hot som sårbarheten möjliggör i scenariometoden.
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Tom hotkoppling får inte ändra historiska innehålls- eller attestsummor."""
+        data = handler(self)
+        if not self.hot:
+            data.pop("hot", None)
+        return data
 
 
 class Kontrollrackvidd(Strikt):
@@ -242,8 +300,22 @@ class Kontrollrackvidd(Strikt):
         return ids
 
 
+class Riktning(Strikt):
+    """Katalogens mål för en kontroll: de hot i en tjänst som kontrollen är utformad mot.
+
+    Skild från räckvidden, som bara beskriver vad kontrollen kan observera.
+    """
+
+    tjanst: str
+    hot: tuple[str, ...] = Field(min_length=1)
+    kallor: tuple[str, ...] = Field(min_length=1)
+    grund: Grund
+    motivering: str
+
+
 class Kontroll(Strikt):
     rackvidd: tuple[Kontrollrackvidd, ...] = ()
+    riktar_sig_mot: tuple[Riktning, ...] = ()
     effekt_falt: str | None = None
     utfall_falt: str | None = None
     sakkunnig: Sakkunnig = Sakkunnig()
@@ -259,10 +331,12 @@ class Kontroll(Strikt):
 
     @model_serializer(mode="wrap")
     def serialisera(self, handler):
-        """Tom räckvidd får inte ändra historiska innehålls- eller attestsummor."""
+        """Tom räckvidd eller riktning får inte ändra historiska innehålls- eller attestsummor."""
         data = handler(self)
         if not self.rackvidd:
             data.pop("rackvidd", None)
+        if not self.riktar_sig_mot:
+            data.pop("riktar_sig_mot", None)
         return data
 
 
@@ -314,6 +388,25 @@ class Regel(Strikt):
     forklaring: str
 
 
+class Sannolikhetsrad(Regel):
+    """En cell i scenariometodens sannolikhetsmatris (hotnivå × sårbarhetsnivå)."""
+
+    hot: Sannolikhet
+    sarbarhet: Sannolikhet
+    sannolikhet: Sannolikhet
+
+
+class Scenariometod(Strikt):
+    hotniva: Regel
+    sarbarhetsniva: Regel
+    sannolikhetsmatris: tuple[Sannolikhetsrad, ...]
+    kvarstaende: Regel
+    aggregering: Regel
+
+    def regler(self) -> tuple[Regel, ...]:
+        return (self.hotniva, self.sarbarhetsniva, *self.sannolikhetsmatris, self.kvarstaende, self.aggregering)
+
+
 class Tillamplighetsrad(Strikt):
     id: str
     punkt: int = Field(ge=18, le=23)
@@ -337,6 +430,15 @@ class Metod(Strikt):
     terrorfinansiering: Regel
     kvarstaende_ej_belagd: Regel
     kvarstaende_sankning: Regel
+    scenario: Scenariometod | None = None
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Saknad scenariometod får inte ändra historiska innehållssummor."""
+        data = handler(self)
+        if self.scenario is None:
+            data.pop("scenario", None)
+        return data
 
     def regler(self) -> tuple[Regel, ...]:
         return (
@@ -345,7 +447,7 @@ class Metod(Strikt):
             self.terrorfinansiering,
             self.kvarstaende_ej_belagd,
             self.kvarstaende_sankning,
-        ) + ((self.omfattning,) if self.omfattning else ())
+        ) + ((self.omfattning,) if self.omfattning else ()) + (self.scenario.regler() if self.scenario else ())
 
 
 class Tillatelselista(Strikt):

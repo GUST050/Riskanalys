@@ -12,7 +12,7 @@ from pydantic import ValidationError
 from riskanalys.fel import RiskanalysFel
 from riskanalys.lagring.manifest import skriv_manifest
 from riskanalys.lagring.yamlfil import las_yaml, spara_yaml
-from riskanalys.regelverk.modeller import Regelbas, Sakkunnig, Strikt, _summa, utan_granskningsmetadata
+from riskanalys.regelverk.modeller import Regelbas, Sakkunnig, Scenariometod, Strikt, _summa, utan_granskningsmetadata
 from riskanalys.regelverk.urval import valj
 
 
@@ -203,6 +203,8 @@ def applicera_attester(rb: Regelbas, b: Granskningsbeslut) -> Regelbas:
     if metod.omfattning:
         regel = metod.omfattning
         metoduppdateringar['omfattning'] = regel.model_copy(update={'sakkunnig': attest(regel.id, regel.sakkunnig)})
+    if metod.scenario:
+        metoduppdateringar['scenario'] = _attesterad_scenariometod(metod.scenario, attest)
     updates['metod'] = metod.model_copy(update=metoduppdateringar)
     for namn in ('skalmappning', 'sanktionsmetod'):
         post = getattr(rb, namn)
@@ -214,6 +216,17 @@ def applicera_attester(rb: Regelbas, b: Granskningsbeslut) -> Regelbas:
             'rader': tuple(v.model_copy(update={'sakkunnig': attest(v.id, v.sakkunnig)}) for v in rb.kundmall.rader),
         })
     return rb.model_copy(update=updates)
+
+
+def _attesterad_scenariometod(scenario: Scenariometod, attest) -> Scenariometod:
+    """Scenariometodens regler och matrisrader är egna granskningsobjekt."""
+    def med_attest(regel):
+        return regel.model_copy(update={'sakkunnig': attest(regel.id, regel.sakkunnig)})
+
+    uppdatering = {namn: med_attest(getattr(scenario, namn))
+                   for namn in ('hotniva', 'sarbarhetsniva', 'kvarstaende', 'aggregering')}
+    uppdatering['sannolikhetsmatris'] = tuple(med_attest(rad) for rad in scenario.sannolikhetsmatris)
+    return scenario.model_copy(update=uppdatering)
 
 
 def tillampa_granskning(regelbasrot: Path, beslut: Granskningsbeslut) -> None:

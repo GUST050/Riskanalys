@@ -207,3 +207,25 @@ def test_verifierad_karta_galler_bara_sitt_innehall(tmp_path, skriv_minimal_rege
 
     fel = _karta(tmp_path, skriv_minimal_regelbas, minimal_filer, signera_och_andra)
     assert any(rad.startswith("Paragrafkartan för RP-1: innehållet har ändrats efter sakkunniggranskningen.") for rad in fel)
+
+
+def test_flervalsfalt_laddas_och_validerar(tmp_path, skriv_minimal_regelbas, minimal_filer):
+    falt = minimal_filer["falt.yaml"]
+    falt.append({"id": "P-TJ.T-1_iakttagna_hot", "typ": "flerval", "fraga": "Vilka hot har iakttagits?",
+                 "varfor": "Test.", "val": ["H-1"]})
+    rot = skriv_minimal_regelbas(tmp_path / "rb", {"falt.yaml": falt})
+    rb = ladda_regelbas(rot)
+    assert rb.falt["P-TJ.T-1_iakttagna_hot"].typ == "flerval"
+    assert validera(rb) == []
+
+
+def test_flervalsfalt_utan_alternativ_kan_inte_laddas(tmp_path, skriv_minimal_regelbas, minimal_filer):
+    import pytest
+
+    from riskanalys.regelverk.laddning import RegelbasFel
+
+    falt = minimal_filer["falt.yaml"]
+    falt.append({"id": "P-X", "typ": "flerval", "fraga": "Vilka?", "varfor": "Test."})
+    rot = skriv_minimal_regelbas(tmp_path / "rb", {"falt.yaml": falt})
+    with pytest.raises(RegelbasFel, match="flerval"):
+        ladda_regelbas(rot)

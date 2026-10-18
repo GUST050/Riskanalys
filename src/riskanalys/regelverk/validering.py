@@ -8,6 +8,7 @@ from itertools import product
 from riskanalys.regelverk.modeller import Kartrad, Regelbas, Regelpaket
 from riskanalys.regelverk.villkor import VillkorsFel, tolka_villkor
 from riskanalys.regelverk.validering_m2 import m2fel
+from riskanalys.regelverk.validering_scenario import scenariofel
 from riskanalys.regelverk.inventering import kontrollera_inventarium
 
 AVSNITT_ID = re.compile(r"^D-[A-Z]+(\.\d+)+$")
@@ -37,6 +38,7 @@ def validera(regelbas: Regelbas) -> list[str]:
         *_matris(regelbas),
         *_tillamplighet(regelbas),
         *m2fel(regelbas),
+        *scenariofel(regelbas),
     ]
 
 
