@@ -1,6 +1,16 @@
 # Status och framsteg
 
-Senast uppdaterad 2026-10-17.
+Senast uppdaterad 2026-10-18.
+
+## Nivåmotivering, lokala utfall och skrivformat v7, 2026-10-18
+
+Planen [nivåmotivering och sammanhängande text](superpowers/plans/2026-10-17-nivamotivering-och-sammanhangande-text.md) (spec revision 35) är byggd med subagenter och separat granskning per uppgift: rättad sanktionsbetydelse, nivåmotivering i varje tjänsteavsnitt, M1-förslaget i B1, lokala utfall för skyddade faktorer, frivillig tjänstefördelning, färre hänvisningar, fasta verksamhetsval och skrivformat/dokument v7 med en AI-del per tjänst. Motorns beräkning och sakkunnigstatus är oförändrade; regelbas 1.6.0 validerar.
+
+**Verifiering:** fullsvit **2 495 passerade, ett bortvalt livetest, 1 408,97 s** (commits `6a9e59e`, `8eb0cdc`). Andra provet med riktig AI på två påhittade byråer: **9 av 9 tjänstetexter godkända, inga reservmallar**, 13 anrop, kanariekontroll godkänd (första provet: 2 av 9).
+
+**Inte uppnått:** huvudtexten blev 8 590 respektive 10 543 ord mot målet 3 500–5 000. Orsaken är främst att samma lokala svar återges i flera fält inom tjänsten och att byråövergripande utfallslistor upprepas i varje tjänst. Restetiketter ("Hänvisningar.") och en motsägelse mellan AI-text och lokal tjänstefördelning behöver rättas. Sidantal, Microsoft Word-läsning och medarbetarläsprov återstår.
+
+**Öppet metodval:** research visar att motorn inte värderar hoten och att kontrollsänkningen inte kopplas till specifika risker; en scenariomodell (hot → sårbarheter → kontroller per scenario) föreslås men är inte beslutad. M1–M4 och sakkunnigprövning kvarstår.
 
 ## A + B tekniskt slutfört, 2026-10-17
 
