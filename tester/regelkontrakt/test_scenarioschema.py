@@ -322,3 +322,15 @@ def test_attest_omfattar_scenariometodens_regler(scenariofiler, tmp_path, skriv_
     attesterad = applicera_attester(rb, beslut)
     assert all(regel.sakkunnig.status == "verifierad" for regel in attesterad.metod.scenario.regler())
     assert not [h for h in attesthinder(attesterad, "RP-1") if h.split(":")[0] in scenarioregler]
+
+
+def test_negativ_effekt_utan_scenariometod_underkanns(minimal_filer, tmp_path, skriv_minimal_regelbas):
+    """Den äldre motorn får aldrig sänkas tyst av en negativ effekt."""
+    minimal_filer["kataloger/sarbarheter.yaml"][0]["effekt"] = {"sannolikhet": -1}
+    fel = _fel(tmp_path, skriv_minimal_regelbas, minimal_filer)
+    assert any(rad.startswith("S-1: Negativ effekt kräver scenariometoden;") for rad in fel), fel
+
+
+def test_negativ_effekt_med_scenariometod_godtas(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler["kataloger/sarbarheter.yaml"][0]["effekt"] = {"sannolikhet": -1}
+    assert _fel(tmp_path, skriv_minimal_regelbas, scenariofiler) == []

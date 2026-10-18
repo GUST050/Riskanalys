@@ -58,12 +58,15 @@ def bedom_tjanst(regelbas: Regelbas, tjanst: Tjanst, profil: Profil) -> Tjanstbe
     okant_erbjudande = frozenset({tjanst.erbjuds_falt}) if erbjuds.kunskap is Kunskap.OKAND else frozenset()
     sarbarheter, okanda_sarbarheter = _tillampade_sarbarheter(regelbas, tjanst, varden)
     kontroller, okanda_kontroller = _kontroller(regelbas, tjanst, varden, profil)
-    hojning = _hojning(sarbarheter, PENNINGTVATT)
-    inneboende, rad = _riskdel(regelbas, tjanst.grund_sannolikhet, tjanst.grund_konsekvens, hojning)
-    tf_hojning = _hojning(sarbarheter, TERRORFINANSIERING)
-    terrorfinansiering, tf_rad = _riskdel(regelbas, tjanst.grund_tf_sannolikhet, TF_KONSEKVENS, tf_hojning)
-    kvarstaende, kvar_regel = _kvarstaende(regelbas, inneboende.risk, kontroller)
     okanda = okant_erbjudande | okanda_sarbarheter | okanda_kontroller
+    if regelbas.metod.scenario is None:
+        inneboende, terrorfinansiering, kvarstaende, regelspar = _aldre_nivaer(regelbas, tjanst, sarbarheter, kontroller)
+        scenarier = ()
+    else:
+        from riskanalys.bedomning.scenarier import bedom_scenarier, sammanfatta_scenarier, scenarioregelspar
+        scenarier = bedom_scenarier(regelbas, tjanst, varden, kontroller, okanda)
+        inneboende, terrorfinansiering, kvarstaende = sammanfatta_scenarier(scenarier)
+        regelspar = scenarioregelspar(regelbas, scenarier)
     from riskanalys.bedomning.sanktioner import bedom_sanktionsrisk
     sanktioner = bedom_sanktionsrisk(regelbas, tjanst, profil) if regelbas.utokade_krav else None
     if sanktioner:
@@ -72,7 +75,6 @@ def bedom_tjanst(regelbas: Regelbas, tjanst: Tjanst, profil: Profil) -> Tjanstbe
     erfarenhet = bedom_egen_erfarenhet(regelbas, profil)
     if erfarenhet:
         okanda |= frozenset(erfarenhet.okanda_uppgifter)
-    metod = regelbas.metod
     return Tjanstbedomning(
         tjanst=tjanst.id,
         egen_erfarenhet=erfarenhet,
@@ -85,9 +87,24 @@ def bedom_tjanst(regelbas: Regelbas, tjanst: Tjanst, profil: Profil) -> Tjanstbe
         terrorfinansiering=terrorfinansiering,
         kontroller=kontroller,
         kvarstaende=kvarstaende,
-        regelspar=(metod.sannolikhet.id, metod.konsekvens.id, rad.id, metod.terrorfinansiering.id, tf_rad.id, kvar_regel),
+        regelspar=regelspar,
         okanda_uppgifter=tuple(sorted(okanda)),
+        scenarier=scenarier,
     )
+
+
+def _aldre_nivaer(
+    regelbas: Regelbas, tjanst: Tjanst, sarbarheter: tuple[Sarbarhet, ...], kontroller: tuple[Kontrollbedomning, ...]
+) -> tuple[Riskdel, Riskdel, str, tuple[str, ...]]:
+    """Metod 1 utan scenarier (BT-SANN-01, BT-TF-01, BT-KVAR-01/02), oförändrad för äldre regelbaser."""
+    metod = regelbas.metod
+    hojning = _hojning(sarbarheter, PENNINGTVATT)
+    inneboende, rad = _riskdel(regelbas, tjanst.grund_sannolikhet, tjanst.grund_konsekvens, hojning)
+    tf_hojning = _hojning(sarbarheter, TERRORFINANSIERING)
+    terrorfinansiering, tf_rad = _riskdel(regelbas, tjanst.grund_tf_sannolikhet, TF_KONSEKVENS, tf_hojning)
+    kvarstaende, kvar_regel = _kvarstaende(regelbas, inneboende.risk, kontroller)
+    regelspar = (metod.sannolikhet.id, metod.konsekvens.id, rad.id, metod.terrorfinansiering.id, tf_rad.id, kvar_regel)
+    return inneboende, terrorfinansiering, kvarstaende, regelspar
 
 
 def _erbjuds_inte(tjanst: Tjanst) -> Tjanstbedomning:

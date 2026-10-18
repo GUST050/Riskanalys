@@ -113,3 +113,10 @@ def test_bedomningen_ar_deterministisk_och_bar_regelbasens_version(regelbas, pro
     assert forsta == andra
     assert forsta.regelbas_version == "0.1.0"
     assert forsta.regelbas_kontrollsumma == regelbas.kontrollsumma
+
+
+def test_regelbas_utan_scenariometod_ger_inga_scenarier(regelbas, profil_fabrik, real_varden):
+    assert regelbas.metod.scenario is None
+    (tjanst,) = _bedom(regelbas, profil_fabrik(regelbas, real_varden)).tjanster
+    assert tjanst.scenarier == ()
+    assert "scenarier" not in tjanst.model_dump(mode="json")

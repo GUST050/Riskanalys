@@ -3,10 +3,10 @@
 from datetime import date
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_serializer
 
 from riskanalys.regelverk.tillsyn import Omfattningsbeslut
-from riskanalys.regelverk.modeller import Konsekvens, Risk, Sannolikhet
+from riskanalys.regelverk.modeller import Dimension, Konsekvens, Risk, Sannolikhet
 
 Bedomningsstatus = Literal["preliminär", "slutlig"]
 
@@ -48,6 +48,24 @@ class EgenErfarenhet(Fryst):
     okanda_uppgifter: tuple[str, ...]
 
 
+class Scenariobedomning(Fryst):
+    """Ett scenario (tjänst × hot) i en dimension, beräknat enligt scenariometoden (spec 2026-10-18)."""
+
+    hot: str
+    dimension: Dimension
+    hotniva: Sannolikhet
+    iakttaget: bool
+    sarbarheter: tuple[str, ...]
+    sarbarhetsniva: Sannolikhet
+    sannolikhet: Sannolikhet
+    konsekvens: Konsekvens
+    risk: Risk
+    tackande_kontroller: tuple[str, ...]
+    kvarstaende: Risk | None
+    avgorande: bool
+    regelspar: tuple[str, ...]
+
+
 class Tjanstbedomning(Fryst):
     egen_erfarenhet: EgenErfarenhet | None = None
     sanktionsrisk: Sanktionsbedomning | None = None
@@ -62,6 +80,15 @@ class Tjanstbedomning(Fryst):
     kvarstaende: Risk | None
     regelspar: tuple[str, ...]
     okanda_uppgifter: tuple[str, ...]
+    scenarier: tuple[Scenariobedomning, ...] = ()
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Utan scenariometod utelämnas scenarierna, så att äldre bedömningar och summor består."""
+        data = handler(self)
+        if not self.scenarier:
+            data.pop("scenarier", None)
+        return data
 
 
 class Proportionalitet(Fryst):

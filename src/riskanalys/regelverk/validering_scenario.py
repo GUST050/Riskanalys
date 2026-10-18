@@ -13,7 +13,7 @@ def scenariofel(rb: Regelbas) -> list[str]:
     """Hänvisningar prövas alltid; fullständighet krävs bara när metod.scenario finns."""
     fel = [*_sarbarhetshot(rb), *_riktningar(rb)]
     if rb.metod.scenario is None:
-        return fel
+        return [*fel, *_negativa_effekter(rb)]
     return [*fel, *_hotnivaer(rb), *_sarbarheter_utan_hot(rb), *_sannolikhetsmatris(rb)]
 
 
@@ -61,6 +61,16 @@ def _for_breda_riktningar(rb: Regelbas, kontroll: Kontroll) -> list[str]:
                        f"{len(tjanst.hot)} hot i tjänsten. Smalna av till de hot som källan stöder "
                        f"att kontrollen är utformad mot.")
     return fel
+
+
+def _negativa_effekter(rb: Regelbas) -> list[str]:
+    """Den äldre motorn summerar effekter per tjänst; en negativ effekt skulle sänka nivån tyst."""
+    return [
+        f"{s.id}: Negativ effekt kräver scenariometoden; ange en positiv effekt (1 eller 2) i "
+        f"kataloger/sarbarheter.yaml eller lägg till scenario i beslutstabeller/metod.yaml."
+        for s in rb.sarbarheter.values()
+        if s.effekt.sannolikhet < 0
+    ]
 
 
 def _hotnivaer(rb: Regelbas) -> list[str]:

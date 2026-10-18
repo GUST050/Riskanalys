@@ -18,7 +18,7 @@ MODELLMODULER = (
     'bedomning.erfarenheter', 'bedomning.kundmodell.modeller',
     'bedomning.kundmodell.pep', 'bedomning.kundmodell.tabeller',
     'bedomning.kundmodell.utvardering', 'bedomning.modeller', 'bedomning.motor',
-    'bedomning.omfattning', 'bedomning.sanktioner', 'bedomning.sektorsrisk',
+    'bedomning.omfattning', 'bedomning.sanktioner', 'bedomning.scenarier', 'bedomning.sektorsrisk',
     'fel', 'lagring.kontrollsumma', 'profil.modeller', 'profil.omfattning',
     'regelverk.modeller', 'regelverk.tillsyn', 'regelverk.urval', 'regelverk.villkor',
 )
