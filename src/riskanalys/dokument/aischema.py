@@ -1,15 +1,17 @@
 """Schemat som AI svarar i. API:t garanterar formen; valideringen kontrollerar innehållet (spec 8.4.2)."""
 
 from pydantic import ValidationError
+from riskanalys.dokument.skrivversion import V5, V7
 
 from riskanalys.dokument.modeller import AISvar, AvsnittsUtkast, Oklarhet, Textstycke
 
 SCHEMAVERSION = "ai-svar-v1"
+SCHEMAVERSION_V7 = "ai-svar-v7"
 INGEN_UPPGIFT = "ingen_uppgift"
 STYCKETYPER = ("analys", "motivering", "scenario")
 
 
-def ai_schema(tillatna_id: frozenset[str], uppgift_id: frozenset[str]) -> dict:
+def ai_schema(tillatna_id: frozenset[str], uppgift_id: frozenset[str], *, formatversion: str = V5) -> dict:
     """JSON-schema med enum för referenser och oklarheter. Ett tomt enum är ogiltigt, därav reservvärdet."""
     stycke = {
         "type": "object",
@@ -31,6 +33,7 @@ def ai_schema(tillatna_id: frozenset[str], uppgift_id: frozenset[str]) -> dict:
         },
     }
     return {
+        **({"description": SCHEMAVERSION_V7 + ": sammanhängande tjänsteanalys"} if formatversion == V7 else {}),
         "type": "object",
         "additionalProperties": False,
         "required": ["stycken", "oklarheter"],

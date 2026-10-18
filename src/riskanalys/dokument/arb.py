@@ -38,12 +38,13 @@ def bygg_arb(
     gransindex: dict[str, tuple[float, ...]] | None = None,
     analys=None,
     modellrapport=None,
+    formatversion=None,
 ) -> Dokument:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
     if regelbas.metod.omfattning:
         from riskanalys.dokument.arb_v6 import bygg_arb_v6
-        return bygg_arb_v6(regelbas, profil, bedomning, utkast, historik, analys=analys, gransindex=gransindex, modellrapport=modellrapport)
+        return bygg_arb_v6(regelbas, profil, bedomning, utkast, historik, analys=analys, gransindex=gransindex, modellrapport=modellrapport, formatversion=formatversion)
     erbjudna = [tjanst for tjanst in bedomning.tjanster if tjanst.inneboende is not None]
     dokument = Dokument(
         id=DOKUMENT_ID,

@@ -48,6 +48,8 @@ def kedja(tmp_path,paket,lan,negativ=None):
     if negativ=='felpaket':
         from riskanalys.profil.modeller import Uppgift
         p=p.model_copy(update={'uppgifter':{**p.uppgifter,'P-ORG.sateslan':p.uppgifter['P-ORG.sateslan'].model_copy(update={'varde':'Stockholm'})}})
+    from tester.fixturer.skrivsvar_v7 import med_verksamhetsval
+    p=med_verksamhetsval(rb,p)
     spara_profil(byra,p)
     # Riktig subprocess genom bekräftelser med period och härledning.
     for id,v in [('P-KUND.antal_aktiva','100'),('P-TJ.bolag01_antal_kunder','3')]:
@@ -61,7 +63,7 @@ def kedja(tmp_path,paket,lan,negativ=None):
         d=json.loads((mapp/'bedomning.json').read_text());d.pop('omfattning')
         (mapp/'bedomning.json').write_text(json.dumps(d,ensure_ascii=False))
         skriv_manifest(mapp,las_manifest(mapp).metadata)
-    svar=[s.model_dump(mode='json') for s in bygg_delsvar(rb,las_profil(byra),b)]
+    svar=[s.model_dump(mode='json') for s in bygg_delsvar(rb,las_profil(byra),b,tjanstspecifik=True)]
     if negativ=='fraga':svar[0]['oklarheter']=[{'fraga':'Syntetisk öppen fråga','uppgift_id':'P-KUND.antal_aktiva'}]
     fil=tmp_path/'testsvar.json';fil.write_text(json.dumps(svar,ensure_ascii=False))
     kor(env,'skriv','testbyra','--leverantor','test','--testsvar',str(fil),*arg)
@@ -70,6 +72,7 @@ def kedja(tmp_path,paket,lan,negativ=None):
     kor(env,'granska','testbyra','--datum',str(DAG),*arg)
     kor(env,'exportera','testbyra','--utkast','--datum',str(DAG))
     d,f=las_granskning(senaste_korning(byra,'granskning','granska'))
+    assert d.formatversion == 'D-ARB-tjanst-v7'
     if not negativ:assert not f,f
     for a in d.avsnitt:kor(env,'sakgranska','testbyra','--avsnitt',a.id,'--godkann','--namn','Syntetisk testperson','--datum',str(DAG),*arg)
     if negativ=='belagg':

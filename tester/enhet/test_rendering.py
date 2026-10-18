@@ -97,3 +97,31 @@ def test_utan_bilaga_finns_ingen_atgardslista(tmp_path, regelbas, profil_fabrik,
     profil = profil_fabrik(regelbas, real_varden)
     sokvag = rendera_docx(_dokument(regelbas, profil, {}), profil, "Status.", tmp_path / "b.docx")
     assert BILAGERUBRIK not in [stycke.text for stycke in docx.Document(str(sokvag)).paragraphs]
+
+
+def test_v7_fyndgruppering_bevarar_alla_oppna_id_och_radata():
+    poster = [FYND.model_copy(update={'id': f'F-{n:04d}', 'beskrivning': f'Beskrivning {n}.'}) for n in range(132)]
+    poster += [p.model_copy(update={'id': f'F-{n+132:04d}'}) for n, p in enumerate(poster[:112])]
+    poster.append(FYND.model_copy(update={'id': 'HANTERAD', 'status': 'åtgärdad'}))
+    fore = [p.model_dump_json() for p in poster]
+    rader = atgardslista(poster, (), formatversion='D-ARB-tjanst-v7')
+    assert rader[0] == '244 öppna fynd visas i 132 grupper. Alla fynd-ID anges i respektive rad.'
+    assert len(rader) == 133 and all('HANTERAD' not in rad for rad in rader)
+    for p in poster[:-1]:
+        (rad,) = [rad for rad in rader[1:] if p.id in rad]
+        assert p.beskrivning in rad and p.atgard in rad and p.allvar in rad and 'öppen' in rad
+    assert [p.model_dump_json() for p in poster] == fore
+    assert len(atgardslista(poster, (), formatversion='D-ARB-tjanst-v6')) == 244
+
+
+def test_v7_gruppnyckel_omfattar_alla_fyndfalt_utom_id():
+    from riskanalys.dokument.rendering import gruppera_fynd
+    olika = {'typ': 'sparbarhet', 'regel': 'B-09', 'allvar': 'blockerande', 'grund': 'metodval',
+        'avsnitt': 'D-ARB.6.2', 'beskrivning': 'Annan tjänst eller referens.', 'atgard': 'Annan åtgärd.',
+        'status': 'åtgärdad', 'motivering': 'Annat skäl.', 'hanterad_av': 'Syntetisk granskare'}
+    assert set(olika) == set(Fynd.model_fields) - {'id'}
+    for falt, varde in olika.items():
+        annan = FYND.model_copy(update={'id': 'F-ANNAN', falt: varde})
+        assert gruppera_fynd((FYND, annan)) == ((FYND,), (annan,))
+    dubbel = FYND.model_copy(update={'id': 'F-DUBBEL'})
+    assert gruppera_fynd((FYND, dubbel)) == ((FYND, dubbel),)

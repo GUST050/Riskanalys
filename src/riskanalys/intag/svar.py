@@ -2,6 +2,8 @@
 from datetime import date
 from riskanalys.fel import RiskanalysFel
 from riskanalys.intag.modeller import IntagSvar
+from riskanalys.intag.verksamhetsval import erbjuds_aktuellt, verksamhetsval
+from riskanalys.intag.fordelning import aktiverad, faltkoppling, omprova, svarsbrist, underlagsbindning
 from riskanalys.profil.hantering import bekrafta
 from riskanalys.profil.modeller import Profil, Uppgift
 from riskanalys.profil.omfattning import aktivt, harled_andelar
@@ -15,7 +17,10 @@ def besvara(rb: Regelbas, profil: Profil, svar: IntagSvar) -> Profil:
     f = rb.falt.get(svar.falt)
     if not f or not f.intag or f.alias_for or f.basfalt:
         raise RiskanalysFel('Välj en registrerad intagsfråga; andelar beräknas från antal och bas.')
-    if not aktivt(f, profil, rb):
+    val = verksamhetsval(rb, f.id)
+    if val and not erbjuds_aktuellt(profil, val[0]):
+        raise RiskanalysFel('Frågan är inte tillämplig enligt grundsvaren. Bekräfta först att tjänsten erbjuds.')
+    if (faltkoppling(rb, f.id) and not aktiverad(rb, profil, f.id)) or not aktivt(f, profil, rb):
         raise RiskanalysFel('Frågan är inte tillämplig enligt grundsvaren. Ändra dem först.')
     if svar.datum > date.today():
         raise RiskanalysFel('Bekräftelsedatum får inte ligga i framtiden.')
@@ -36,6 +41,12 @@ def besvara(rb: Regelbas, profil: Profil, svar: IntagSvar) -> Profil:
                 and oms.kalla.startswith('Bolagsverket HVD;') and svar.period != oms.period):
             raise RiskanalysFel('Statistikperioden skiljer sig från den godkända årsredovisningen. Använd samma period eller uppdatera omsättningen med underlag för den nya perioden först.')
         p = bekrafta(profil, rb, f.id, svar.text, svar.kalla, svar.roll, svar.datum, svar.period)
+    if faltkoppling(rb, f.id) and svar.status == 'bekräftad':
+        hinder = svarsbrist(rb, p, f.id)
+        if hinder:
+            raise RiskanalysFel(hinder)
+        u = p.uppgifter[f.id].model_copy(update={'underlagsbindning': underlagsbindning(rb, p, f.id)})
+        p = p.model_copy(update={'uppgifter': {**p.uppgifter, f.id: u}})
     tidigare = profil.uppgifter.get(f.id, Uppgift())
     nytt = p.uppgifter[f.id]
     ny_byra = p.byra
@@ -65,6 +76,7 @@ def besvara(rb: Regelbas, profil: Profil, svar: IntagSvar) -> Profil:
         if alias.alias_for == f.id and uppgifter.get(alias.id, Uppgift()).status == 'bekräftad':
             uppgifter[alias.id] = uppgifter[alias.id].model_copy(update={'status':'föreslagen','inaktuell':True})
     p = p.model_copy(update={'uppgifter':uppgifter})
+    p = omprova(rb, p)
     from riskanalys.intag.kvalitet import kvalitetsbrister
     hinder = [h for h in kvalitetsbrister(rb,p) if h.startswith(f.id + ":")]
     if hinder:raise RiskanalysFel(" ".join(hinder))

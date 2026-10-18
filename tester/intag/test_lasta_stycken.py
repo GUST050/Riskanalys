@@ -290,7 +290,7 @@ def _hela_dokumentet(tmp_path, rb, profil):
     profil = _andrat(profil, "P-BEVAKNING.kallor", varde=", ".join(BEVAKADE_KALLOR))
     avsnitt_id, t = tjanst_for_prov(tmp_path, rb, profil)
     lev = Testleverantor([godkant_delsvar(d, t) for d in ("hot", "sarbarheter")])
-    res = skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None)
+    res = skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v6")
     b = bedom(rb, valj(rb, profil.byra.regelpaket, DAG, profil.byra.lan), profil)
     return bygg_arb(rb, profil, b, {avsnitt_id: res}, Historik())
 
@@ -308,9 +308,10 @@ def test_bevakningsavsnittet_namnger_kallorna_och_behaller_kall_id_som_referense
     dokument = _hela_dokumentet(tmp_path, rb_intag, klar)
     (stycke,) = dokument.avsnitt_med_id()["D-ARB.11"].stycken
     assert set(BEVAKADE_KALLOR) <= set(stycke.referenser)
-    assert "Lästa källor: " in stycke.text and "Version och kontrollsumma för varje källa redovisas i bilaga B1." in stycke.text
+    assert "Källor som byrån har läst i omvärldsbevakningen: " in stycke.text
+    assert "Version och kontrollsumma för varje källa redovisas i bilaga B1." in stycke.text
     for id in BEVAKADE_KALLOR:
-        assert rb_intag.kallor[id].titel in stycke.text
+        assert stycke.text.count(rb_intag.kallor[id].titel) == 1
 
 
 def test_syftet_namnger_regelpaketet_utan_kod(rb_intag, klar):

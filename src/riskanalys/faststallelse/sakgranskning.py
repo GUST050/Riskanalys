@@ -32,12 +32,12 @@ def granskad_summa(avsnitt: Avsnitt, profil: Profil) -> str:
 
 
 def _har_struktur(dokument: Dokument) -> bool:
-    return dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6") or any(a.underrubriker for a in dokument.avsnitt)
+    return dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7") or any(a.underrubriker for a in dokument.avsnitt)
 
 
 def struktur_summa(dokument: Dokument) -> str:
     """Titel, format och faktisk avsnittsordning i det granskade dokumentet."""
-    if dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"):
+    if dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
         return for_text(json.dumps({"titel": dokument.titel, "format": dokument.formatversion,
             "avsnitt": [(a.id, a.rubrik, a.visningsnummer,
                          [(u.fore_stycke, u.rubrik) for u in a.underrubriker],
@@ -102,7 +102,7 @@ def galler_sakgranskning(
     summa = granskad_summa(avsnitt, profil)
     ny_struktur = bool(dokument and _har_struktur(dokument))
     poster = sakgranskningar
-    if dokument and dokument.formatversion == "D-ARB-tjanst-v6":
+    if dokument and dokument.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
         senaste = next((post for post in reversed(poster) if post.avsnitt == avsnitt.id), None)
         poster = (senaste,) if senaste is not None else ()
     giltiga = [post for post in poster if post.avsnitt == avsnitt.id and post.kontrollsumma == summa

@@ -25,7 +25,8 @@ MED_ANALYS = ('Profiluppgifter', 'Källversioner', 'Omfattningsregel', 'Gemensam
               'Källbunden kontrollräckvidd', 'Lokal analys och belägg', 'Scenarioreferenser',
               'Delanalyser och analysblock', 'Kompletteringspunkter', 'Beräkningsunderlag',
               'Regelvis sakkunnigstatus', 'Källregister')
-UTAN_ANALYS = ('Profiluppgifter', 'Källversioner', 'Omfattningsregel', 'Källbunden kontrollräckvidd',
+UTAN_ANALYS = ('Profiluppgifter', 'Källversioner', 'Omfattningsregel', 'Gemensamma resonemang per tjänst',
+               'Källbunden kontrollräckvidd',
                'Lokal analys och belägg', 'Beräkningsunderlag', 'Regelvis sakkunnigstatus', 'Källregister')
 
 
@@ -103,6 +104,29 @@ def test_byggaren_skriver_b1_delarna_som_underrubriker_pa_ratt_stycken(v6underla
     for tabell in utfall:
         assert start <= tabell.fore_stycke < slut
         assert b1.stycken[tabell.fore_stycke].referenser == [avsnitt_for[tabell.id.removesuffix('-utfall')]]
+    if not med_analys:
+        # Maskinskrivna lokala utfall kan delas även utan ett författat analysobjekt.
+        delar = _delar(b1)
+        start, slut = delar['Gemensamma resonemang per tjänst']
+        assert delar['Omfattningsregel'][1] == start
+        assert slut == delar['Källbunden kontrollräckvidd'][0]
+        gemensamma = d.avsnitt_med_id()['D-ARB.5'].stycken
+        kartlagda = set()
+        for s in b1.stycken[start:slut]:
+            tjansteavsnitt = set(s.referenser) & set(avsnitt_for.values())
+            assert len(tjansteavsnitt) == 1
+            id, = tjansteavsnitt
+            kartlagda.add(id)
+            assert s.text.startswith(d.avsnitt_med_id()[id].rubrik + '. ')
+            nummer = re.search(r'gemensamt resonemang (\d+)\.$', s.text)
+            assert nummer is not None
+            traffar = [g for g in gemensamma if g.text.startswith(f'Gemensamt resonemang {nummer[1]}. ')]
+            assert len(traffar) == 1
+            assert set(s.referenser) & set(rb.sarbarheter)
+            assert set(s.referenser) - {id, 'D-ARB.5'} <= set(traffar[0].referenser)
+            assert any('D-ARB.5' in stycke.referenser and id in stycke.referenser
+                       for stycke in d.avsnitt_med_id()[id].stycken)
+        assert kartlagda == set(avsnitt_for.values())
     # Positionerna håller modellens validering även efter lagring.
     assert Dokument.model_validate_json(d.model_dump_json()) == d
 
@@ -122,6 +146,38 @@ def test_m1_forslaget_visas_aldrig_utanfor_b1_med_lokal_analys(v6underlag, lokal
         if a.id != B1:
             texter = [*(s.text for s in a.stycken), *(c.text for t in a.tabeller for r in t.rader for c in r.celler)]
             assert not [t for t in texter if 'Förslag till sakkunnig, M1' in t or 'ingen reduktion utan belagd' in t], a.id
+
+
+@pytest.mark.parametrize('med_analys', [False, True])
+@pytest.mark.parametrize('med_m1_kalla', [False, True])
+def test_m1_byggs_och_granskas_utan_okand_kalla(v6underlag, lokal, med_analys, med_m1_kalla):
+    """Minimal modellvariant av äldre källkatalog, inte hela den frysta regelbasen 1.5.0."""
+    from riskanalys.granskning.kontroller import granska
+    from riskanalys.regelverk.urval import valj
+    rb, p, b, resultat, h = v6underlag
+    kallor = dict(rb.kallor)
+    if not med_m1_kalla:
+        del kallor['SRC-LST-GOR-ARB']
+    variant = rb.model_copy(update={'kallor': kallor})
+    fore = variant.model_dump_json()
+    analys = lokal if med_analys else None
+    d = bygg_arb_v6(variant, p, b, resultat, h, analys=analys)
+    fynd = granska(variant, valj(variant, p.byra.regelpaket, DAG, p.byra.lan), p, b, d, h, DAG,
+                   skrivresultat=resultat, analys=analys)
+    assert not [f for f in fynd if f.typ == 'sparbarhet' and 'SRC-LST-GOR-ARB' in f.beskrivning]
+    b1 = _b1(d)
+    start, slut = _delar(b1)['Regelvis sakkunnigstatus']
+    delen = b1.stycken[start:slut]
+    assert delen[0].text.startswith('Regelvis sakkunnigstatus: ')
+    forslag = [s for s in delen if s.text.startswith('Förslag till sakkunnig, M1')]
+    assert len(forslag) == int(med_m1_kalla)
+    if med_m1_kalla:
+        assert forslag[0].referenser == ['SRC-LST-GOR-ARB', 'BT-KVAR-01', 'BT-KVAR-02', B1]
+        assert 'Källor: [' in forslag[0].text
+    else:
+        assert all('SRC-LST-GOR-ARB' not in s.referenser for s in b1.stycken)
+    assert variant.model_dump_json() == fore
+    assert 'SRC-LST-GOR-ARB' in rb.kallor
 
 
 def test_analysblock_utan_delanalyser_far_ingen_delanalysrubrik(v6underlag, lokal):

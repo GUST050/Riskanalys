@@ -37,7 +37,7 @@ def _v5_resultat(rb, profil, t, avsnitt_id):
 
 def _v6_resultat(rb, profil, t, avsnitt_id):
     lev = Testleverantor([godkant_delsvar(d, t) for d in DELAR_V6])
-    return skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda *a: None)
+    return skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda *a: None, formatversion="D-ARB-tjanst-v6")
 
 
 def _ar_atgardbart(fel: RiskanalysFel, avsnitt_id: str) -> bool:
@@ -52,7 +52,7 @@ def test_v6_avvisar_aldre_utkast_tidigt_med_atgard(rb_intag, klar, aldre):
     # Bara den sista tjänsten har ett äldre utkast: varje post prövas, inte bara den första.
     utkast = {**{id: _v6_resultat(rb_intag, klar, t, id) for id, t in forsta}, sista_id: aldre(rb_intag, klar, sista, sista_id)}
     with pytest.raises(RiskanalysFel) as fel:
-        bygg_arb(rb_intag, klar, b, utkast, Historik())
+        bygg_arb(rb_intag, klar, b, utkast, Historik(), formatversion="D-ARB-tjanst-v6")
     assert _ar_atgardbart(fel.value, sista_id)
 
 

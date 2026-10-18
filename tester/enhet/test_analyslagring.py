@@ -268,7 +268,7 @@ def verklig_skrivkedja(lagring,regelbas_v1,tmp_path):
     spara_profil(byra,profil)
     bm=kor_bedomning(byra,rb);b=las_bedomning(bm)
     svar=[godkant_delsvar(d,t) for _,t in tjanster_med_avsnitt(b) for d in delar_for_version('D-ARB-tjanst-v6')]
-    um=kor_skrivning(byra,rb,Testleverantor(svar))
+    um=kor_skrivning(byra,rb,Testleverantor(svar),formatversion="D-ARB-tjanst-v6")
     return byra,rb,profil,b,bm,um
 
 

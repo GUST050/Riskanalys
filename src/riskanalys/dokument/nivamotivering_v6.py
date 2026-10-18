@@ -7,6 +7,7 @@ from riskanalys.analys.modeller import Tjansteanalys
 from riskanalys.bedomning.modeller import Riskdel, Tjanstbedomning
 from riskanalys.bedomning.motor import SANNOLIKHETER
 from riskanalys.dokument.modeller import Textstycke
+from riskanalys.dokument.skrivversion import V6, V7
 from riskanalys.dokument.nivatext import PT_OMRADEN, TF_OMRADEN, _sparbegransning, tillampade_faktorer
 from riskanalys.regelverk.modeller import Regelbas
 
@@ -24,7 +25,7 @@ def _upprakning(namn: list[str]) -> str:
     return namn[0] if len(namn) == 1 else f"{', '.join(namn[:-1])} och {namn[-1]}"
 
 
-def _faktordel(t: Tjanstbedomning, rb: Regelbas, grund: str, omraden: frozenset[str]) -> str:
+def _faktordel(t: Tjanstbedomning, rb: Regelbas, grund: str, omraden: frozenset[str], *, samma_som_pt=False) -> str:
     """'Grundnivå X; höjs av …{; taket …}' eller 'Grundnivå X; inga tillämpade faktorer höjer den'."""
     faktorer = tillampade_faktorer(t, rb, omraden)
     if not faktorer:
@@ -32,7 +33,8 @@ def _faktordel(t: Tjanstbedomning, rb: Regelbas, grund: str, omraden: frozenset[
     hojning = ', '.join(f'{s.namn} (+{s.effekt.sannolikhet})' for s in faktorer)
     nar_taket = SANNOLIKHETER.index(grund) + sum(s.effekt.sannolikhet for s in faktorer) > SANNOLIKHETER.index(TAK)
     tak = f'; taket {TAK} nås, så fler faktorer ändrar inte nivån' if nar_taket else ''
-    return f'Grundnivå {grund}; höjs av {hojning}{tak}'
+    faktorfras = 'samma faktorer och vikter som PT' if samma_som_pt else hojning
+    return f'Grundnivå {grund}; höjs av {faktorfras}{tak}'
 
 
 def _delriskmening(rubrik: str, delrisk: Riskdel | None, forklaring: str) -> str:
@@ -49,11 +51,14 @@ def _ptmening(t: Tjanstbedomning, rb: Regelbas, begransning: str) -> str:
     return _delriskmening('Penningtvättsrisk före kontroller', t.inneboende, forklaring)
 
 
-def _tfmening(t: Tjanstbedomning, rb: Regelbas, begransning: str) -> str:
+def _tfmening(t: Tjanstbedomning, rb: Regelbas, begransning: str, *, formatversion=V6) -> str:
     if begransning or t.terrorfinansiering is None:
         return _delriskmening('TF-risk', t.terrorfinansiering, begransning)
     grund = rb.tjanster[t.tjanst].grund_tf_sannolikhet
-    forklaring = (f'{_faktordel(t, rb, grund, TF_OMRADEN)}; '
+    samma = formatversion == V7 and bool(tillampade_faktorer(t, rb, TF_OMRADEN)) and (
+        tuple((s.id, s.effekt.sannolikhet) for s in tillampade_faktorer(t, rb, TF_OMRADEN)) ==
+        tuple((s.id, s.effekt.sannolikhet) for s in tillampade_faktorer(t, rb, PT_OMRADEN)))
+    forklaring = (f'{_faktordel(t, rb, grund, TF_OMRADEN, samma_som_pt=samma)}; '
                   f'konsekvensen är alltid {t.terrorfinansiering.konsekvens} enligt metoden.')
     return _delriskmening('TF-risk', t.terrorfinansiering, forklaring)
 
@@ -86,11 +91,11 @@ def _sanktionsmening(t: Tjanstbedomning) -> tuple[str, ...]:
     return (f'Sanktionsrisk: {s.inneboende.risk} före{efter} kontroll, enligt den separata sanktionsmetoden.',)
 
 
-def _dimensioner(t: Tjanstbedomning, rb: Regelbas, reduktionsprovning: str) -> tuple[str, str, str]:
+def _dimensioner(t: Tjanstbedomning, rb: Regelbas, reduktionsprovning: str, *, formatversion=V6) -> tuple[str, str, str]:
     """PT före kontroll, PT efter kontroll och TF; sanktionen hålls separat eftersom den har eget regelspår."""
     begransning = _sparbegransning(t, rb) or ('' if t.tjanst in rb.tjanster else KATALOG_SAKNAS)
     return (_ptmening(t, rb, begransning), _kvarmening(t, rb, begransning, reduktionsprovning),
-            _tfmening(t, rb, begransning))
+            _tfmening(t, rb, begransning, formatversion=formatversion))
 
 
 def berakningsmotivering(t: Tjanstbedomning, rb: Regelbas, *, reduktionsprovning: str = 'okand') -> tuple[str, ...]:
@@ -117,12 +122,12 @@ def _motivering(text: str, refs, proveniens: str) -> Textstycke:
     return Textstycke(typ='motivering', text=text, referenser=list(dict.fromkeys(refs)), proveniens=proveniens)
 
 
-def nivamotivering_stycken(rb: Regelbas, t: Tjanstbedomning, a: Tjansteanalys | None) -> tuple[Textstycke, ...]:
+def nivamotivering_stycken(rb: Regelbas, t: Tjanstbedomning, a: Tjansteanalys | None, *, formatversion=V6) -> tuple[Textstycke, ...]:
     """Programmets beräkning följd av byråns PT- och TF-bedömning; alla stycken har typen motivering."""
     refs = (t.tjanst, *t.regelspar, *t.tillampade_sarbarheter, B1)
     reduktion = a.reduktionsprovning if a is not None else 'okand'
     sanktionsspar = t.sanktionsrisk.regelspar if t.sanktionsrisk else ()
-    berakning = (*(_motivering(text, refs, 'regelbas') for text in _dimensioner(t, rb, reduktion)),
+    berakning = (*(_motivering(text, refs, 'regelbas') for text in _dimensioner(t, rb, reduktion, formatversion=formatversion)),
                  *(_motivering(text, (*refs, *sanktionsspar), 'regelbas') for text in _sanktionsmening(t)))
     # Byråns egen text får ingen källhänvisning till regelbasen; länken leder till tjänstens beräkning i B1.
     byran = tuple(_motivering(text, (B1,), 'lokal') for text in (_byrans_pt(a), _byrans_tf(a)))

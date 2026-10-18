@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from riskanalys.dokument.skrivversion import V6 as FORMATVERSION
+from riskanalys.dokument.skrivversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION, V5, V6
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Textstycke
 from riskanalys.faststallelse import faststall as faststallmodul
 from riskanalys.faststallelse.modeller import Beslut
@@ -23,7 +23,10 @@ def _dok(*avsnitt):
 
 
 def test_blandat_format_stoppar():
-    hinder = formathinder(ladda_regelbas(), _dok(_avsnitt("D-ARB.6.1", FORMATVERSION), _avsnitt("D-ARB.6.2", "D-ARB-tjanst-v3")))
+    d = _dok(_avsnitt('D-ARB.6.1', FORMATVERSION))
+    # Angrip formatsparren även efter manipulation förbi dokumentmodellens versionsvalidering.
+    d = d.model_copy(update={'avsnitt': (*d.avsnitt, _avsnitt('D-ARB.6.2', 'D-ARB-tjanst-v3'))})
+    hinder = formathinder(ladda_regelbas(), d)
     assert len(hinder) == 1 and "D-ARB.6.2" in hinder[0] and "Skriv om utkastet" in hinder[0]
     assert hinder[0].startswith("Tjänsteavsnittet D-ARB.6.2 har formatet D-ARB-tjanst-v3, men aktuellt format är ")
 
@@ -35,7 +38,14 @@ def test_saknad_formatmarkering_i_tjansteavsnitt_stoppar():
 
 
 def test_aktuellt_format_i_alla_tjansteavsnitt_godtas():
-    assert formathinder(ladda_regelbas(), _dok(_avsnitt("D-ARB.6.1", FORMATVERSION), _avsnitt("D-ARB.2", None))) == []
+    assert formathinder(ladda_regelbas(), _dok(_avsnitt("D-ARB.6.1", FORMATVERSION), _avsnitt("D-ARB.2", FORMATVERSION))) == []
+
+
+@pytest.mark.parametrize('version', [V5, V6])
+def test_historiskt_format_stoppar_ny_faststallelse(version):
+    (hinder,) = formathinder(ladda_regelbas(), _dok(_avsnitt('D-ARB.6.1', version)))
+    assert f'har formatet {version}, men aktuellt format är {FORMATVERSION}.' in hinder
+    assert 'Skriv om utkastet och granska på nytt.' in hinder
 
 
 def test_aldre_regelbas_utan_omfattningsmetod_berors_inte():

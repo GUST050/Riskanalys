@@ -295,7 +295,8 @@ def _insyn_uppdrag(a,aktiv,text,refs,k):
 
 
 def _sarbarheter(a,rb,katalog,scenarier,relevanta,text,refs,k):
-    for omrade in ('kund','kanal','geo','verk'):
+    omraden = ('kund','kanal','geo','verk') + (('tjanst',) if any(rb.sarbarheter[id].omrade == 'tj' for id in katalog.sarbarheter) else ())
+    for omrade in omraden:
         k(any(s.omrade==omrade for s in a.sarbarhetsprovningar),f'Sårbarhetsområdet {omrade} saknas.')
     for s in a.sarbarhetsprovningar:
         k(s.relevans!='okant',f'{s.id}: sårbarhetens relevans är okänd.')

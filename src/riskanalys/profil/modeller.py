@@ -3,7 +3,7 @@
 from datetime import date
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
 
 from riskanalys.regelverk.villkor import Faltvarde, Kunskap
 
@@ -35,6 +35,15 @@ class Uppgift(Fryst):
     period: Period | None = None
     harledd: bool = False
     inaktuell: bool = False
+    underlagsbindning: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Historiska uppgifter behåller sina payloads och profilsummor."""
+        data = handler(self)
+        if self.underlagsbindning is None:
+            data.pop("underlagsbindning", None)
+        return data
 
 
 class Byra(Fryst):

@@ -1,16 +1,18 @@
 """Lokala resonemang ersätter v5:s tre borttagna AI-delar."""
 from riskanalys.dokument.analystabeller import status, bygg_scenariotabell, bygg_kontrollprovning, bygg_rutinatgarder
 from riskanalys.dokument.tjanstavsnitt_v6 import lokaltext
+from riskanalys.dokument.exponeringsmetadata_v6 import kort_exponering
 
 OMRADEN = {'kund': 'Kunder', 'kanal': 'Distributionskanaler', 'geo': 'Geografi', 'verk': 'Egen verksamhet', 'tjanst': 'Tjänstespecifika förhållanden'}
 
 
-def bygg_lokaltext(a, paket, rb, index):
+def bygg_lokaltext(a, paket, rb, index, *, profil=None):
     poster = []
     def lagg(rubrik, text, refs=(), *, krav=True):
         if text or krav:
             poster.append(lokaltext(rubrik+': '+(text or 'Saknas; komplettera. [VERIFIERA]'), (*refs, 'D-ARB.B1')))
-    lagg('Uppdrag och exponering', a.exponering, index.refs('belagg', a.exponeringsbelagg))
+    lagg('Uppdrag och exponering', kort_exponering(a, paket, rb, profil) if profil is not None else a.exponering,
+         index.refs('belagg', a.exponeringsbelagg))
     lagg('Arbetsmomentens indelning', a.delningsmotivering)
     for d in a.delanalyser:
         lagg('Delanalys '+(d.rubrik or 'utan rubrik'), d.arbetsmoment_och_befogenheter, (*index.refs('delanalys', (a.tjanst+':'+d.id,)), *index.refs('belagg', d.belagg)))

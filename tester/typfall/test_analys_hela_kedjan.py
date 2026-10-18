@@ -131,7 +131,11 @@ def test_fyrtjanstfall_hela_kedjan_med_syntetiska_kopieattester(positiv):
     d,fynd=las_granskning(k.granskningsmapp)
     assert fynd == ()
     assert las_fryst_analys(k.granskningsmapp).paket==a
-    assert d.formatversion=='D-ARB-tjanst-v6'
+    assert d.formatversion=='D-ARB-tjanst-v7'
+    from riskanalys.dokument.matning import dokumentord
+    matt = dokumentord(d, f.profil)
+    print({'fall': 'positiv-V7-kedja', **matt})
+    assert any('Redaktionell längdvarning' in s.text for a in d.avsnitt for s in a.stycken) == (matt['huvudtext'] > 4700)
     paket=faststall(f.byramapp,k.regelrot,f.regelbas,Beslut(organ='styrelsen',namn='Syntetisk beslutsfattare',roll='FfR',datum=date_dag()))
     assert verifiera_manifest(paket)==[] and verifiera_version(f.byramapp,1)==[]
     assert (paket/'analys/snapshot.json').is_file()
@@ -207,7 +211,7 @@ def test_demotexterna_ar_atta_tjanstevisa_stycken_utan_reserv(fall):
     resultat=[]
     for id,t in tjanster_med_avsnitt(fall.bedomning):
         v=Testleverantor([demosvar(d,t,fall.regelbas) for d in ('hot','sarbarheter')])
-        r=skriv_tjanst(v,fall.regelbas,fall.profil,t,id,effort='medium',personnamn=(),spara=lambda *args:None)
+        r=skriv_tjanst(v,fall.regelbas,fall.profil,t,id,effort='medium',personnamn=(),spara=lambda *args:None, formatversion="D-ARB-tjanst-v6")
         assert len(v.delanrop)==2
         assert all(not d.mall and len(d.forsok)==1 and len(d.godkant_svar.stycken)==1 for d in r.delar)
         resultat.extend(s.text for d in r.delar for s in d.godkant_svar.stycken)
@@ -225,7 +229,7 @@ def test_verklig_regelbas_bundet_utkast_stoppar_attest_och_faststallelse(regelba
     from riskanalys.faststallelse.modeller import Beslut
     from riskanalys.fel import RiskanalysFel
     from riskanalys.dokument.skrivning import las_skrivresultat
-    k=bygg_bunden_kedja(regelbas_v1,tmp_path,regelrot=STANDARD_REGELBAS,demo=True)
+    k=bygg_bunden_kedja(regelbas_v1,tmp_path,regelrot=STANDARD_REGELBAS)
     f=k.fall;a=l.las_analys(f.byramapp)
     assert a.bindning == l.bygg_bindning(f.byramapp,regelbas_v1,k.bedomningsmapp,k.utkastmapp)
     assert all(not d.mall and len(d.forsok)==1 for t in las_skrivresultat(k.utkastmapp) for d in t.delar)

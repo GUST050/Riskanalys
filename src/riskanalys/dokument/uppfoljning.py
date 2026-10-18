@@ -54,11 +54,17 @@ def omfattningsregel_i_bilaga(rb: Regelbas) -> tuple[Textstycke, ...]:
     return (stycke(f'Omfattningsregel {regel.id}: {regel.forklaring}', [regel.id], typ='beskrivning'),) if regel else ()
 
 
-def bevakningsavsnitt(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Avsnitt:
+def bevakningsavsnitt(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[float, ...]] | None = None,
+                     kort: bool = False, formatversion=None) -> Avsnitt:
     if gransindex is None:
         gransindex = metodgransindex(rb)
     refs = ['P-BEVAKNING.' + s for s in ['kallor', 'datum', 'ansvarig', 'relevans']]
-    text = 'Byråns dokumenterade omvärldsbevakning: ' + ' '.join((_belagg(rb, p, id, gransindex=gransindex) for id in refs))
+    if formatversion == 'D-ARB-tjanst-v7':
+        from riskanalys.dokument.redaktion_v7 import grupperade_profilbelagg
+        text = 'Byråns dokumenterade omvärldsbevakning: ' + grupperade_profilbelagg(rb, p, refs,
+            dict(zip(refs, ('Lästa källor', 'Läst och utvärderat', 'Ansvar', 'Relevans'))), gransindex=gransindex)
+    else:
+        text = 'Byråns dokumenterade omvärldsbevakning: ' + ' '.join((_belagg(rb, p, id, gransindex=gransindex) for id in refs))
     uppgift = p.uppgifter.get('P-BEVAKNING.kallor')
     idn = tuple(re.split('[,;\\s]+', str(uppgift.varde).strip())) if uppgift else ()
     kanda = [id for id in idn if id in rb.kallor and rb.kallor[id].kontrollsumma]
@@ -66,15 +72,22 @@ def bevakningsavsnitt(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[fl
         text += ' [VERIFIERA] Ange enbart registrerade käll-ID:n med kontrollerad version, separerade med komma. '
     else:
         refs.extend(kanda)
-        text += ' Lästa källor: ' + '; '.join(rb.kallor[id].titel for id in kanda) + '. Version och kontrollsumma för varje källa redovisas i bilaga B1. '
+        forsta_lista = kod_till_namn(rb, _belagg(rb, p, refs[0], gransindex=gransindex))
+        if not kort or not all(rb.kallor[id].titel in forsta_lista for id in kanda):
+            text += ' Lästa källor: ' + '; '.join(rb.kallor[id].titel for id in kanda) + '.'
+        text += ' Version och kontrollsumma för varje källa redovisas i bilaga B1. '
     text += ' En hämtning eller registrering i programmets källregister visar inte att byrån läst och bedömt relevansen. Lästa källor ska knytas till varje tjänsts hot, sårbarheter och åtgärder, även när slutsatsen är att inget behöver ändras.'
     text = kod_till_namn(rb, text)
     return Avsnitt(id='D-ARB.11', rubrik='Omvärldsbevakning', kalla='regelbas', stycken=(stycke(text, list(dict.fromkeys([*refs, 'SRC-TS-2026-14']))),))
 
-def uppfoljningsstycken(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> tuple[Textstycke, ...]:
+def uppfoljningsstycken(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[float, ...]] | None = None, formatversion=None) -> tuple[Textstycke, ...]:
     if gransindex is None:
         gransindex = metodgransindex(rb)
     refs = ['P-VERK.spridning', 'P-VERK.goaml', 'P-VERK.tidigare_tillsyn']
     text = 'Uppdateringsgrunder: pröva behovet efter hot eller hämnd mot personal, förändrade tjänster, kunder, leveranssätt eller geografi, ny nationell riskbedömning, ändrad EU-lista över högrisktredjeländer och nya tillsynsbeslut. Uppdatera vid behov; omvärldshändelsen ger inte automatiskt en bestämd risknivå. Dokumentera spridning till berörda roller, utbildning utifrån riskbedömningen, goAML-förmåga och uppföljning av tillsyn. '
-    text += ' '.join((_belagg(rb, p, id, gransindex=gransindex) for id in refs))
+    if formatversion == 'D-ARB-tjanst-v7':
+        from riskanalys.dokument.redaktion_v7 import grupperade_profilbelagg
+        text += grupperade_profilbelagg(rb, p, refs, dict(zip(refs, ('Spridning', 'goAML-förmåga', 'Tidigare tillsyn'))), gransindex=gransindex)
+    else:
+        text += ' '.join((_belagg(rb, p, id, gransindex=gransindex) for id in refs))
     return (stycke(text, [*refs, 'SRC-14FS-2024-11', 'SRC-PTL', 'SRC-VAGL-2025-03', 'SRC-FIPO-AR-2025']),)

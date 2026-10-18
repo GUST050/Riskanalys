@@ -13,7 +13,7 @@ from docx.oxml.ns import qn
 from docx.shared import Pt
 
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Oklarhet, Textstycke
-from riskanalys.dokument.skrivversion import V6
+from riskanalys.dokument.skrivversion import V6, V7
 from riskanalys.granskning.modeller import Fynd
 from riskanalys.profil.modeller import Profil
 
@@ -25,7 +25,7 @@ VERIFIERA_PREFIX = "[VERIFIERA"
 B1_ID = "D-ARB.B1"
 _AVSNITTSPREFIX = "D-ARB."
 _ANALYSPREFIX = "ANALYS:"  # Samma prefix som riskanalys.dokument.analysreferenser.PREFIX.
-_V5_FORMAT = ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", V6)
+_V5_FORMAT = ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", V6, V7)
 _V5_1 = "D-ARB-tjanst-v5.1"
 
 # Det som följer är enbart presentation i v6:s Word-fil. Det ingår inte i modellen, i ordmätningen
@@ -109,11 +109,25 @@ def faststalld_status(organ: str, datum: date, version: int) -> str:
     return f"Fastställt av {organ} {datum.isoformat()}. Version {version}."
 
 
-def atgardslista(fynd: Iterable[Fynd], oklarheter: Iterable[tuple[str, Oklarhet]]) -> tuple[str, ...]:
+def gruppera_fynd(fynd: Iterable[Fynd]) -> tuple[tuple[Fynd, ...], ...]:
+    """Exakt visningsgruppering; alla fält utom fyndets identitet måste vara lika."""
+    grupper = {}
+    for post in fynd:
+        nyckel = post.model_dump_json(exclude={'id'})
+        grupper.setdefault(nyckel, []).append(post)
+    return tuple(tuple(grupp) for grupp in grupper.values())
+
+
+def atgardslista(fynd: Iterable[Fynd], oklarheter: Iterable[tuple[str, Oklarhet]], *, formatversion: str | None = None) -> tuple[str, ...]:
     """Öppna fynd och AI:ns oklarheter, en rad var (spec 11)."""
-    fyndrader = [
-        f"{post.id} ({post.allvar}): {post.beskrivning} Åtgärd: {post.atgard}" for post in fynd if post.status == "öppen"
-    ]
+    oppna = tuple(post for post in fynd if post.status == 'öppen')
+    if formatversion == 'D-ARB-tjanst-v7' and oppna:
+        grupper = gruppera_fynd(oppna)
+        fyndrader = [f'{len(oppna)} öppna fynd visas i {len(grupper)} grupper. Alla fynd-ID anges i respektive rad.']
+        fyndrader.extend(f"{', '.join(p.id for p in grupp)} ({grupp[0].allvar}, {grupp[0].status}): "
+            f"{grupp[0].beskrivning} Åtgärd: {grupp[0].atgard}" for grupp in grupper)
+    else:
+        fyndrader = [f"{post.id} ({post.allvar}): {post.beskrivning} Åtgärd: {post.atgard}" for post in oppna]
     oklarhetsrader = [
         f"{avsnitt}: {oklarhet.fraga} Uppgift som saknas: {oklarhet.saknad_uppgift}." for avsnitt, oklarhet in oklarheter
     ]
@@ -136,7 +150,7 @@ def rendera_docx(
         _innehallsforteckning(word, avsnitten)
         for sektion in word.sections:
             _falt(sektion.footer.paragraphs[0], "PAGE", "Sidnummer uppdateras i Word")
-    lankmal = _lankmal(avsnitten) if dokument.formatversion == V6 else None
+    lankmal = _lankmal(avsnitten) if dokument.formatversion in (V6, V7) else None
     for nummer, avsnitt in enumerate(avsnitten):
         _rendera_avsnitt(word, avsnitten, nummer, dokument.formatversion, lankmal)
     if bilaga:
@@ -219,6 +233,7 @@ def _rendera_avsnitt(word, avsnitten: tuple[Avsnitt, ...], nummer: int, formatve
     underrubriksniva = B1_DELRUBRIKNIVA if ar_b1_v6 else 2
     mal = frozenset(lankmal.b1.values()) if ar_b1_v6 else frozenset()
     cellankare = (lambda refs: lankmal.cellankare(refs, avsnitt.id)) if lankmal is not None else None
+    sista_b1 = max((i for i, s in enumerate(avsnitt.stycken) if B1_ID in s.referenser), default=None)
     for index in range(len(avsnitt.stycken) + 1):
         if index in underrubriker:
             word.add_heading(underrubriker[index], level=underrubriksniva)
@@ -227,17 +242,19 @@ def _rendera_avsnitt(word, avsnitten: tuple[Avsnitt, ...], nummer: int, formatve
             innehall.extend(_tabell(word, tabell, cellankare=cellankare, hall_ihop_rader=lankmal is not None)
                             for tabell in avsnitt.tabeller if tabell.fore_stycke == index)
         if index < len(avsnitt.stycken):
-            innehall.append(_textstycke(word, avsnitten, avsnitt.stycken[index], avsnitt.id, formatversion, lankmal))
+            innehall.append(_textstycke(word, avsnitten, avsnitt.stycken[index], avsnitt.id, formatversion, lankmal,
+                                       visa_b1=index == sista_b1))
         if index in mal and innehall:
             # Målet är det första som står på positionen, så att en tabell före stycket syns direkt.
             _bokmarke_efter_egenskaper(innehall[0], len(avsnitten) + index, _b1_bokmarke(index))
 
 
 def _textstycke(word, avsnitten: tuple[Avsnitt, ...], textstycke: Textstycke, kalla_id: str,
-                formatversion: str | None, lankmal: _Lankmal | None):
+                formatversion: str | None, lankmal: _Lankmal | None, *, visa_b1: bool = True):
     stycke = word.add_paragraph(textstycke.text)
     if lankmal is not None:
-        _lankrad(stycke, lankmal.lankar(textstycke.referenser, kalla_id))
+        referenser = [ref for ref in textstycke.referenser if visa_b1 or ref != B1_ID]
+        _lankrad(stycke, lankmal.lankar(referenser, kalla_id))
     elif formatversion == _V5_1:
         nummer_for_id = {a.id: n for n, a in enumerate(avsnitten)}
         for ref in dict.fromkeys(textstycke.referenser):

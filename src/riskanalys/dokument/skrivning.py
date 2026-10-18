@@ -103,7 +103,7 @@ def _bedom_leverans(
     return svar, tuple(validera_utkast(svar, underlag, personnamn))
 
 
-def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor, *, effort: str | None = None) -> Path:
+def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor, *, effort: str | None = None, formatversion: str = FORMATVERSION) -> Path:
     """Skriver ett riskavsnitt per bedömd tjänst utifrån den senaste bedömningen.
 
     Med omfattningsmetod skrivs varje tjänst i analysdelar med skyddad AI-begäran (skriv_tjanst). Utan
@@ -122,14 +122,14 @@ def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor
     mapp = ny_korningsmapp(byramapp, UTKAST)
     try:
         for avsnitt_id, tjanst in tjanster_med_avsnitt(bedomning):
-            underlag = bygg_underlag(regelbas, profil, tjanst, avsnitt_id)
+            underlag = bygg_underlag(regelbas, profil, tjanst, avsnitt_id, formatversion=formatversion)
             avsnittsmapp = mapp / avsnitt_id
             avsnittsmapp.mkdir()
             (avsnittsmapp / UNDERLAGSFIL).write_text(underlag.model_dump_json(indent=2), encoding="utf-8")
             if regelbas.metod.omfattning:
                 resultat = skriv_tjanst(leverantor, regelbas, profil, tjanst, avsnitt_id,
                     effort=effort, personnamn=namn,
-                    spara=partial(_spara_delforsok, avsnittsmapp))
+                    spara=partial(_spara_delforsok, avsnittsmapp), formatversion=formatversion)
             else:
                 resultat = skriv_avsnitt(leverantor, underlag, namn, partial(_spara_forsok, avsnittsmapp))
             (mapp / f"{avsnitt_id}.json").write_text(resultat.model_dump_json(indent=2), encoding="utf-8")
@@ -144,7 +144,7 @@ def kor_skrivning(byramapp: Path, regelbas: Regelbas, leverantor: Textleverantor
         "bedomning": bedomningsmapp.name,
     }
     if regelbas.metod.omfattning:
-        metadata.update(dokumentformat=FORMATVERSION, skrivformat=FORMATVERSION, format=FORMATVERSION, design="B", effort=effort)
+        metadata.update(dokumentformat=formatversion, skrivformat=formatversion, format=formatversion, design="B", effort=effort)
     skriv_manifest(mapp, metadata)
     return mapp
 

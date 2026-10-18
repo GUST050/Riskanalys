@@ -84,7 +84,7 @@ def test_v6_saknad_analys_blir_blockerande_utan_aldre_aterbyggnad(regelbas_v1,pr
     assert fynd and all(f['allvar']=='blockerande' for f in fynd)
 
 
-def test_v6_granskning_fryser_ofullstandig_analys_som_utkast(regelbas_v1,tmp_path):
+def test_v7_granskning_fryser_ofullstandig_analys_som_utkast(regelbas_v1,tmp_path):
     from tester.fixturer.analys_hela_kedjan import skapa_fall, skriv_fall
     from riskanalys.profil.lagring import spara_profil
     from riskanalys.bedomning.korning import kor_bedomning
@@ -105,7 +105,7 @@ def test_v6_granskning_fryser_ofullstandig_analys_som_utkast(regelbas_v1,tmp_pat
     assert frozen.paket == a and len(frozen.filer)>=5
     assert any('modellrisk' in x.lower() for x in frozen.brister)
     d,fynd=las_granskning(gm)
-    assert d.formatversion==V6 and any(x.allvar=='blockerande' for x in fynd)
+    assert d.formatversion=='D-ARB-tjanst-v7' and any(x.allvar=='blockerande' for x in fynd)
 
 
 def test_fryst_analys_kraver_exakt_levande_register(tmp_path):
@@ -151,10 +151,11 @@ def _byggd_kedja(tmp_path_factory,regelbas_v1):
     for c in rb.kontroller.values():
         for falt,varde in ((c.utformning_falt,'saknas'),(c.genomforande_falt,'ej_belagt')):
             if falt in upp:upp[falt]=upp[falt].model_copy(update={'varde':varde})
-    profil=harled_andelar(f.profil.model_copy(update={'uppgifter':upp}),rb)
+    from tester.fixturer.skrivsvar_v7 import med_verksamhetsval
+    profil=med_verksamhetsval(rb,harled_andelar(f.profil.model_copy(update={'uppgifter':upp}),rb))
     spara_profil(f.byramapp,profil)
     bm=kor_bedomning(f.byramapp,rb);b=las_bedomning(bm)
-    um=kor_skrivning(f.byramapp,rb,Testleverantor(bygg_delsvar(rb,profil,b)))
+    um=kor_skrivning(f.byramapp,rb,Testleverantor(bygg_delsvar(rb,profil,b,tjanstspecifik=True)))
     registrera_handelse(f.byramapp,Handelse(datum=DAG,typ='utvärdering',beskrivning='Syntetisk kontroll.'))
     (tmp_path/'rapport').mkdir()
     rapport,projektrot=projekt(api,rb,tmp_path/'rapport')
@@ -197,7 +198,7 @@ def aktuell_kedja(_byggd_kedja,tmp_path):
     return ny,r,rb,ny/'granskning'/gm.name
 
 
-def test_v6_paket_verifieras_utan_levande_modellregister(aktuell_kedja,monkeypatch):
+def test_v7_paket_verifieras_utan_levande_modellregister(aktuell_kedja,monkeypatch):
     import shutil
     from riskanalys.faststallelse.faststall import faststall,verifiera_version
     from riskanalys.faststallelse.modeller import Beslut
@@ -291,7 +292,7 @@ def test_andring_mellan_granskning_och_publicering_stoppar_paket(aktuell_kedja,y
 
 
 @pytest.mark.parametrize('yta',['mening','cell','referens'])
-def test_v6_aterbyggs_fran_fryst_analys(aktuell_kedja,yta):
+def test_v7_aterbyggs_fran_fryst_analys(aktuell_kedja,yta):
     from riskanalys.granskning.analysunderlag import las_fryst_analys,fryst_modellrapport
     from riskanalys.granskning.dokument_v6 import analysfynd_v6
     from riskanalys.granskning.korning import las_granskning,granskningens_metadata,godkanda_utkast
@@ -379,7 +380,7 @@ def test_kopians_manifest_maste_motsvara_granskad_bindning(aktuell_kedja,monkeyp
     assert not (byra/'faststallda/v1').exists()
 
 
-def test_v6_sakgranskning_kraver_aktuell_fryst_bindning_i_cli(aktuell_kedja,monkeypatch,capsys):
+def test_v7_sakgranskning_kraver_aktuell_fryst_bindning_i_cli(aktuell_kedja,monkeypatch,capsys):
     from riskanalys.cli import main
     from riskanalys.faststallelse.sakgranskning import las_sakgranskningar
     from riskanalys.analys.lagring import las_analys,spara_analys

@@ -1,5 +1,7 @@
 """Den fasta systemprompten. Identisk i alla anrop för samma modell (spec 8.4.2)."""
 
+from riskanalys.dokument.skrivversion import V5, V7
+
 SYSTEMTEXT = """<roll>
 Du skriver analyserande text i en svensk redovisningsbyrås allmänna riskbedömning enligt lagen (2017:630) om åtgärder mot penningtvätt och finansiering av terrorism. Läsarna är byråns ledning och personal och Länsstyrelsens handläggare. Texten ska visa att byrån förstår hur just dess tjänster, kunder, kanaler och geografi kan utnyttjas, och vad det betyder för byråns arbete.
 </roll>
@@ -44,6 +46,15 @@ Illustrativt, inte en mall för den här byrån:
 SONNETRAD = "Think the problem through before you answer."
 
 
-def systemprompt(modell: str) -> str:
+def systemprompt(modell: str, *, formatversion: str = V5) -> str:
     """Sonnet 5.5 hoppar ofta över tänkandet med strukturerade svar; raden sist motverkar det."""
-    return SYSTEMTEXT + ("\n\n" + SONNETRAD if "sonnet" in modell else "")
+    policy = ("\n\nSkrivformat v7: Skriv aldrig att sanktioner inte behöver prövas; skriv att ingen anknytning har identifierats bara när faktabladet belägger detta. "
+              "Är uppgiften ja eller okänd får du inte påstå att anknytning saknas. "
+              "Faktapostens omfang anger byra eller tjanst. Byråfakta belägger ingen fördelning på tjänstens kunder. "
+              "Katalogens kontrollbeskrivning är generell och intygar varken utförande eller effekt."
+              if formatversion == V7 else "")
+    text = SYSTEMTEXT
+    if formatversion == V7:
+        text = text.replace('{tal:P-KUND.andel_riskbransch} av kunderna i tjänsten',
+                            '{tal:P-KUND.andel_riskbransch} av byråns kunder')
+    return text + policy + ("\n\n" + SONNETRAD if "sonnet" in modell else "")

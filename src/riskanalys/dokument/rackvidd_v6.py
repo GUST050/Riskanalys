@@ -2,7 +2,7 @@
 from riskanalys.dokument.arb_v5 import stycke
 
 
-def rackviddsoversikt(rb, bedomning):
+def rackviddsoversikt(rb, bedomning, *, formatversion=None):
     poster = [stycke('Källbeskrivning är inte faktiskt genomförande eller scenariotäckning. Fulla observationer, begränsningar, förutsättningar och sakkunnigstatus finns i bilaga B1.', ['D-ARB.B1'])]
     kontrolltjanster = {}
     for t in bedomning.tjanster:
@@ -19,7 +19,9 @@ def rackviddsoversikt(rb, bedomning):
             poster.append(stycke(k.namn+': källbunden möjlig observation finns för '+', '.join(rb.tjanster[t].namn for t in beskrivna)
                 + '. Den bevisar inte kontrollens lokala effekt. Ett matchande synligt betalningsflöde styrker varken underliggande affär eller samtliga betalningsled.', [id, *beskrivna, 'D-ARB.B1']))
         if okand:
-            okanda.append(k.namn+' ('+', '.join(rb.tjanster[t].namn for t in okand)+')')
+            namn = ', '.join(rb.tjanster[t].namn for t in okand)
+            samma = len(okand) == 1 and k.namn.casefold() == ('Kontroll av ' + namn).casefold()
+            okanda.append(k.namn if formatversion == 'D-ARB-tjanst-v7' and samma else k.namn+' ('+namn+')')
     if okanda:
         poster.append(stycke('Källbunden scenariotäckning är okänd för: '+'; '.join(okanda)
             + '. Saknat källstöd får inte bli positiv täckning eller ett godkännande av motorns reduktion. Pröva faktiskt genomförande och kvarstående begränsning per tjänst.', [*kontrolltjanster, 'D-ARB.B1']))

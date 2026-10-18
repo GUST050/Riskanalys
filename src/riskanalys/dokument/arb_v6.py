@@ -21,7 +21,7 @@ from riskanalys.dokument.kallhanvisningar import med_kallhanvisningar, utan_kall
 from riskanalys.dokument.m1_forslag import m1_forslag
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Underrubrik
 from riskanalys.dokument.nivatext import utfallsforklaring, sektorsmening
-from riskanalys.dokument.skrivversion import V6
+from riskanalys.dokument.skrivversion import V6, V7, AKTUELL_DOKUMENTVERSION
 from riskanalys.dokument.tabeller import bygg_metodmatris, bygg_riskoversikt, bygg_tjansteoversikt
 from riskanalys.dokument.tjanstavsnitt_v6 import bygg_tjanstavsnitt_v6, lokaltext
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
@@ -48,11 +48,17 @@ ALDRE_UTKAST = ("AI-utkastet för {avsnitt} kan inte användas i dokumentformate
                 "och granska sedan på nytt med 'riskanalys granska'.")
 
 
-def kontrollera_v6_utkast(resultat: Mapping[str, object]) -> None:
-    """Stoppa före bygget om något utkast inte är ett tjänstresultat från den aktuella v6-skrivaren."""
+def kontrollera_v6_utkast(resultat: Mapping[str, object], formatversion=None) -> str:
+    """Välj en enda faktisk skrivversion; äldre eller ommärkta utkast kan inte migreras genom märkning."""
+    versioner = {post.formatversion for post in resultat.values() if isinstance(post, Tjanstresultat)}
+    version = formatversion or (next(iter(versioner)) if len(versioner) == 1 else AKTUELL_DOKUMENTVERSION)
+    if version not in (V6, V7) or len(versioner) > 1:
+        raise RiskanalysFel(ALDRE_UTKAST.format(avsnitt=', '.join(resultat) or 'D-ARB', format=version)
+            + ' Skrivresultaten har blandade eller äldre format.')
     for avsnitt_id, post in resultat.items():
-        if not isinstance(post, Tjanstresultat) or post.formatversion != V6:
-            raise RiskanalysFel(ALDRE_UTKAST.format(avsnitt=avsnitt_id, format=V6))
+        if not isinstance(post, Tjanstresultat) or post.formatversion != version:
+            raise RiskanalysFel(ALDRE_UTKAST.format(avsnitt=avsnitt_id, format=version))
+    return version
 
 
 def avsnitt(id, rubrik, stycken=(), tabeller=(), *, kalla='regelbas', underrubriker=()):
@@ -109,15 +115,18 @@ def _sammanfoga_delar(delar) -> tuple[tuple, tuple, tuple]:
     return stycken, rubriker, tabeller
 
 
-def bilaga_b1_v6(rb, profil, bedomning, analys, *, refindex, brister, tillampningskarta, metodposter, gransindex) -> Avsnitt:
+def bilaga_b1_v6(rb, profil, bedomning, analys, *, refindex, brister, tillampningskarta, metodposter, gransindex, reservkatalog=()) -> Avsnitt:
     """B1 före källregistret: varje del får sin rubrik i modellen på delens första stycke."""
     from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
     from riskanalys.dokument.uppfoljning import omfattningsregel_i_bilaga
+    from riskanalys.dokument.tjanstavsnitt_v7 import RESERVKATALOG_RUBRIK
     underlag = bygg_underlagsbilaga(rb, profil, gransindex=gransindex)
     profiluppgifter, kallversioner = _profil_och_kallversioner(underlag, rb)
     berakning, utfall = _berakningsdel(rb, bedomning)
     status = stycke('Regelvis sakkunnigstatus: ' + '; '.join(f'{r.id}: {_sakkunnigstatus(r)}' for r in metodposter) + '.',
                     [r.id for r in metodposter])
+    # Äldre frysta källunderlag saknar vägledningen; lägg bara till det källbundna förslaget när den finns.
+    metodstycken = (status, m1_forslag()) if 'SRC-LST-GOR-ARB' in rb.kallor else (status,)
     stycken, rubriker, tabeller = _sammanfoga_delar((
         (PROFILUPPGIFTER, profiluppgifter, ()),
         (KALLVERSIONER, kallversioner, ()),
@@ -126,7 +135,8 @@ def bilaga_b1_v6(rb, profil, bedomning, analys, *, refindex, brister, tillampnin
         (KONTROLLRACKVIDD, _rackviddsstycken(rb, bedomning), ()),
         *_analysdelar(analys, analysbilaga(analys, profil, rb, refindex, brister), brister),
         (BERAKNINGSUNDERLAG, berakning, utfall),
-        (SAKKUNNIGSTATUS, (status, m1_forslag()), ()),
+        (SAKKUNNIGSTATUS, metodstycken, ()),
+        (RESERVKATALOG_RUBRIK, reservkatalog, ()),
     ))
     return avsnitt(underlag.id, underlag.rubrik, stycken, tabeller, kalla=underlag.kalla, underrubriker=rubriker)
 
@@ -165,10 +175,12 @@ def _oppna_metodfragor(fragor: tuple[str, ...]) -> str:
             'risköversikten visar vad det betyder för nivåerna.')
 
 
-def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspaket | None, gransindex=None, modellrapport: Modellvalidering | None = None) -> Dokument:
+def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspaket | None, gransindex=None, modellrapport: Modellvalidering | None = None, formatversion=None) -> Dokument:
     from riskanalys.dokument.arb import _syfte, _metod
     from riskanalys.dokument.uppfoljning import bevakningsavsnitt, kort_omfattningsstycke, uppfoljningsstycken
-    kontrollera_v6_utkast(resultat)
+    version = kontrollera_v6_utkast(resultat, formatversion)
+    from riskanalys.dokument.tjanstavsnitt_v7 import bygg_tjanstavsnitt_v7, reservkatalog_i_b1
+    tjanstebyggare = bygg_tjanstavsnitt_v7 if version == V7 else bygg_tjanstavsnitt_v6
     index = gransindex if gransindex is not None else metodgransindex(rb)
     refindex = bygg_analysreferenser(analys)
     brister = analysbrister(rb, profil, bedomning, analys) if analys is not None else ()
@@ -179,7 +191,7 @@ def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspake
         stycke('Nivåerna är motorns utfall. Varje tjänsteavsnitt förklarar vilka faktorer som avgör nivån och byråns egen bedömning. '
               'Hela beräkningen finns i bilaga B1. Ingen sammanvägd byrånivå beräknas.', ['D-ARB.B1']),
         stycke(status),
-        *analysstatus(rb, bedomning, analys, brister),
+        *analysstatus(rb, bedomning, analys, brister, formatversion=version),
         *modellstatus(analys, modellrapport),
     ), (bygg_riskoversikt(bedomning, rb),))
     sektorer = sorted({rb.tjanster[t.tjanst].sektorreferens for t in bedomning.tjanster if t.inneboende and rb.tjanster[t.tjanst].sektorreferens})
@@ -192,13 +204,13 @@ def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspake
     ), (bygg_metodmatris(rb),))
     tjanster = avsnitt('D-ARB.3', 'Byråns tjänster', (stycke('Kundantal överlappar mellan tjänster och summeras inte till unika kunder.'),),
         (bygg_tjansteoversikt(rb, profil, bedomning, gransindex=index),))
-    kontroller = avsnitt('D-ARB.7', 'Källbunden kontrollräckvidd', rackviddsoversikt(rb, bedomning))
+    kontroller = avsnitt('D-ARB.7', 'Källbunden kontrollräckvidd', rackviddsoversikt(rb, bedomning, formatversion=version))
     analyser = {a.tjanst: a for a in analys.tjanster} if analys else {}
     risk = []
     for id, t in tjanster_med_avsnitt(bedomning):
         a = analyser.get(t.tjanst)
-        lokal, tabeller = bygg_lokaltext(a, analys, rb, refindex) if a is not None else (None, ())
-        risk.append(bygg_tjanstavsnitt_v6(rb, profil, t, resultat.get(id), id, gransindex=index, lokal=lokal,
+        lokal, tabeller = bygg_lokaltext(a, analys, rb, refindex, profil=profil) if a is not None else (None, ())
+        risk.append(tjanstebyggare(rb, profil, t, resultat.get(id), id, gransindex=index, lokal=lokal,
                                           tabeller=tabeller, analys=a))
     risk, gemensamma_resonemang, tillampningskarta = sammanfor_identisk_lokaltext(risk)
     myndighetskallor = sorted({k for t in bedomning.tjanster if t.inneboende for id in t.hot for k in rb.hot[id].kallor})
@@ -206,17 +218,34 @@ def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspake
         stycke('Myndighetsunderlag: '+'; '.join(rb.kallor[id].titel for id in myndighetskallor)+'. Händelseförloppen återges en gång. Relevans, samma/avviker och lokala begränsningar prövas uttryckligen vid varje tjänst.', myndighetskallor),
     ), (tabell('gemensamma-scenarier', 'Gemensamma händelseförlopp', ('Scenario', 'Händelseförlopp', 'Betydelse', 'Hot', 'Belägg'),
         (scenariorad(s, rb, refindex) for s in analys.gemensamma_scenarier)),) if analys and analys.gemensamma_scenarier else ())
+    if version == V7:
+        from riskanalys.dokument.redaktion_v7 import utan_redundant_hotkolumn, samla_konstant_betydelse, samma_tabellkallor
+        gemensamma_stycken = gemensamt.stycken
+        if samma_tabellkallor(gemensamt.tabeller, myndighetskallor, rb):
+            prefix = 'Myndighetsunderlag: '+'; '.join(rb.kallor[id].titel for id in myndighetskallor)+'. '
+            gemensamma_stycken = tuple(s.model_copy(update={'text': s.text[len(prefix):]}) if s.text.startswith(prefix) else s for s in gemensamma_stycken)
+        gemensamma_tabeller = []
+        for tab in gemensamt.tabeller:
+            tab, betydelse = samla_konstant_betydelse(utan_redundant_hotkolumn(tab))
+            if betydelse is not None:
+                tab = tab.model_copy(update={'fore_stycke': len(gemensamma_stycken)})
+                gemensamma_stycken = (*gemensamma_stycken, betydelse)
+            gemensamma_tabeller.append(tab)
+        gemensamt = gemensamt.model_copy(update={'stycken': gemensamma_stycken, 'tabeller': tuple(gemensamma_tabeller)})
+        risk = tuple(a.model_copy(update={'tabeller': tuple(utan_redundant_hotkolumn(t) for t in a.tabeller)}) for a in risk)
     tabellavsnitt, tabellresonemang = sammanfor_identiska_tabelltexter((gemensamt, *risk))
     gemensamt, *risk = tabellavsnitt
     gemensam_analys = avsnitt('D-ARB.5', 'Gemensamma lokala resonemang', (*gemensamma_resonemang, *tabellresonemang), kalla='lokal')
     bilaga = bilaga_b1_v6(rb, profil, bedomning, analys, refindex=refindex, brister=brister,
-                          tillampningskarta=tillampningskarta, metodposter=metodposter, gransindex=index)
+        tillampningskarta=tillampningskarta, metodposter=metodposter, gransindex=index,
+        reservkatalog=reservkatalog_i_b1(rb, profil, bedomning, resultat, gransindex=index) if version == V7 else ())
     uppfoljning = utvarderingsavsnitt_v6(historik)
-    uppfoljning = uppfoljning.model_copy(update={'stycken': (*uppfoljning.stycken, *uppfoljningsstycken(rb, profil, gransindex=index))})
+    uppfoljning = uppfoljning.model_copy(update={'stycken': (*uppfoljning.stycken, *uppfoljningsstycken(rb, profil, gransindex=index, formatversion=version))})
     # D-ARB.9 står direkt efter tjänsternas åtgärdstabeller och före utvärderingen (planens disposition 8–10).
     foljder = bygg_foljder_v6(rb, bedomning, analys, refindex)
-    poster = (syfte, oversikt, metod, tjanster, gemensamt, gemensam_analys, kontroller, *risk, foljder, uppfoljning, bevakningsavsnitt(rb, profil, gransindex=index), bilaga)
-    poster = tuple(a.model_copy(update={'formatversion': V6, 'visningsnummer': 'B1' if a.id == B1_ID else str(n)}) for n, a in enumerate(poster, 1))
+    poster = (syfte, oversikt, metod, tjanster, gemensamt, gemensam_analys, kontroller, *risk, foljder, uppfoljning,
+              bevakningsavsnitt(rb, profil, gransindex=index, kort=True, formatversion=version), bilaga)
+    poster = tuple(a.model_copy(update={'formatversion': version, 'visningsnummer': 'B1' if a.id == B1_ID else str(n)}) for n, a in enumerate(poster, 1))
     from riskanalys.dokument.matning import med_langdvarning
     dokument = med_kallhanvisningar(Dokument(id='D-ARB', titel='Allmän riskbedömning', avsnitt=poster), rb)
     return med_langdvarning(med_kallregisterrubrik(dokument, bilaga), profil)

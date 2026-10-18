@@ -46,7 +46,7 @@ def kor_export_utkast(byramapp: Path, datum: date, *, granskningsmapp: Path | No
     metadata = granskningens_metadata(granskningsmapp)
     profil = granskningens_profil(byramapp, granskningsmapp)
     dokument, fynd = las_granskning(granskningsmapp)
-    bilaga = atgardslista(fynd, utkastens_oklarheter(byramapp, metadata["utkast"]))
+    bilaga = atgardslista(fynd, utkastens_oklarheter(byramapp, metadata["utkast"]), formatversion=dokument.formatversion)
     mapp = ny_korningsmapp(byramapp, EXPORT)
     rendera_docx(dokument, profil, utkaststatus(datum), mapp / UTKASTFIL, bilaga)
     from riskanalys.dokument.matning import dokumentord

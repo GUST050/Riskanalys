@@ -65,7 +65,7 @@ def dokumentord(dokument, profil) -> dict[str, int]:
 def med_langdvarning(dokument, profil):
     """Redaktionellt mål, aldrig trunkering eller ett nytt fastställelsekrav."""
     from riskanalys.dokument.modeller import Textstycke
-    grans = 4700 if dokument.formatversion == 'D-ARB-tjanst-v6' else 5000
+    grans = 4700 if dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7') else 5000
     gransnamn = '4 700' if grans == 4700 else '5 000'
     varningstext=(f'Redaktionell längdvarning: huvudtexten överstiger riktmärket {gransnamn} ord för fyra tjänster. '
         'Gör en redaktionell genomgång; inga underlag har kapats för att uppfylla målet.')

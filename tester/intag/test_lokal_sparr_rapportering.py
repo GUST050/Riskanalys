@@ -76,8 +76,8 @@ def test_namnstopp_hela_vagen_till_dokument_och_blockerande_fynd(tmp_path, rb_in
     b = las_bedomning(kor_bedomning(tmp_path, rb_intag))
     svar = bygg_delsvar(rb_intag, klar, b)
     hot = svar[0]
-    from riskanalys.dokument.promptar import DELAR
-    assert DELAR[0] == 'hot'
+    from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, delar_for_version
+    assert delar_for_version(AKTUELL_SKRIVVERSION) == ('analys',)
     svar[0] = hot.model_copy(update={'stycken': [hot.stycken[0].model_copy(update={
         'text': 'Testa Testssons rutin följs. ' + hot.stycken[0].text}), *hot.stycken[1:]]})
     kor_skrivning(tmp_path, rb_intag, Testleverantor(svar))

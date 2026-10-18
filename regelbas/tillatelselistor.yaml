@@ -112,6 +112,40 @@
   - P-KONTROLL.C-SANK.utformning
   - P-KONTROLL.C-SANK.genomforande
   - P-KONTROLL.C-SANK.effekt
+  # Verksamhetsval tillförs endast i den versionerade V7-vyn.
+  - P-TJ.red01_attest
+  - P-TJ.red01_betalningsmandat
+  - P-TJ.red01_bankinsyn
+  - P-TJ.red02_attest
+  - P-TJ.red02_betalningsmandat
+  - P-TJ.red02_bankinsyn
+  - P-TJ.red03_attest
+  - P-TJ.red03_betalningsmandat
+  - P-TJ.red03_bankinsyn
+  - P-TJ.red04_attest
+  - P-TJ.red04_betalningsmandat
+  - P-TJ.red04_bankinsyn
+  - P-TJ.red05_attest
+  - P-TJ.red05_betalningsmandat
+  - P-TJ.red05_bankinsyn
+  - P-TJ.red06_attest
+  - P-TJ.red06_betalningsmandat
+  - P-TJ.red06_bankinsyn
+  - P-TJ.red07_attest
+  - P-TJ.red07_betalningsmandat
+  - P-TJ.red07_bankinsyn
+  - P-TJ.skatt01_attest
+  - P-TJ.skatt01_betalningsmandat
+  - P-TJ.skatt01_bankinsyn
+  - P-TJ.bolag01_attest
+  - P-TJ.bolag01_betalningsmandat
+  - P-TJ.bolag01_bankinsyn
+  - P-TJ.bolag02_attest
+  - P-TJ.bolag02_betalningsmandat
+  - P-TJ.bolag02_bankinsyn
+  - P-TJ.bolag03_attest
+  - P-TJ.bolag03_betalningsmandat
+  - P-TJ.bolag03_bankinsyn
   undvik:
   - B-02
   - B-03

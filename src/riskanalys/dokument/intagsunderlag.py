@@ -1,6 +1,8 @@
 """Infoga lokala fakta; fri text ingår aldrig i AI-underlag eller automatiska riskbeslut."""
 
 from datetime import date
+from riskanalys.intag.fordelning import kan_ateranvandas
+from riskanalys.intag.verksamhetsval import erbjuds_aktuellt, verksamhetsval
 
 from riskanalys.regelverk.granser import metodgransindex
 from riskanalys.dokument.delvalidering import SANKTION_OMFORMULERAD
@@ -33,6 +35,8 @@ def med_intagsunderlag(dokument: Dokument, rb, profil, bedomning) -> Dokument:
             continue
         # Organisationsgrunddata återges redan i syftet; erbjudandena i tjänstelistan.
         if f.id.startswith(('P-ORG.','P-ROLL.')) or f.id.endswith('_erbjuds') or f.alias_for or f.basfalt:
+            continue
+        if not kan_ateranvandas(rb, profil, f.id):
             continue
         u=profil.uppgifter[f.id]
         period=f' Period: {u.period.fran}–{u.period.till}.' if u.period else ''
@@ -70,6 +74,12 @@ def bygg_underlagsbilaga(rb, profil, *, gransindex: dict[str, tuple[float, ...]]
     for f in rb.falt.values():
         harledd=bool(f.antalfalt and f.basfalt)
         if not (f.intag or harledd) or f.alias_for or not aktivt(f,profil,rb):
+            continue
+        val = verksamhetsval(rb, f.id)
+        if val and (not erbjuds_aktuellt(profil, val[0]) or not profil.ar_bekraftad(f.id)):
+            continue
+        if not kan_ateranvandas(rb, profil, f.id):
+            # Valfri frånvaro eller gammalt underlag är ingen ny kompletteringsspärr.
             continue
         # Personnamn återges via lokala rollplatshållare i huvudtexten.
         if f.personuppgift:

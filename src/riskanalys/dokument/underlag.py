@@ -12,6 +12,8 @@ from riskanalys.dokument.modeller import (
     UnderlagUppgift,
 )
 from riskanalys.fel import RiskanalysFel
+from riskanalys.dokument.skrivversion import V6, V7
+from riskanalys.intag.verksamhetsval import VERKSAMHETSVAL, erbjuds_aktuellt, verksamhetsval
 from riskanalys.profil.hantering import visa_varde, visa_varde_klartext, visa_grans, visa_andel_begransad
 from riskanalys.profil.modeller import Profil, Uppgift
 from riskanalys.regelverk.granser import metodgranser, metodgransindex
@@ -125,7 +127,7 @@ def visa_for_ai(regelbas: Regelbas, falt_id: str, uppgift: Uppgift, antal: int |
 
 def bygg_underlag(
     regelbas: Regelbas, profil: Profil, tjanstbedomning: Tjanstbedomning, avsnitt_id: str
-, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Avsnittsunderlag:
+, *, gransindex: dict[str, tuple[float, ...]] | None = None, formatversion: str = V6) -> Avsnittsunderlag:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
     from riskanalys.profil.omfattning import kompatibilitetsvy, aktivt
@@ -133,6 +135,7 @@ def bygg_underlag(
     lista = regelbas.tillatelselistor[AVSNITTSTYP]
     _kontrollera_lista(regelbas, lista.falt)
     tjanst = regelbas.tjanster[tjanstbedomning.tjanst]
+    tillatna = tillatna_falt(regelbas, formatversion)
     return Avsnittsunderlag(
         avsnitt=avsnitt_id,
         rubrik=tjanst.namn,
@@ -150,7 +153,7 @@ def bygg_underlag(
                 id=sarbarhet_id,
                 namn=regelbas.sarbarheter[sarbarhet_id].namn,
                 galler=sarbarhet_status(regelbas, profil, sarbarhet_id),
-                motivering=_sarbarhetsmotivering(regelbas, profil, sarbarhet_id, lista.falt, gransindex=gransindex),
+                motivering=_sarbarhetsmotivering(regelbas, profil, sarbarhet_id, tillatna, gransindex=gransindex),
             )
             for sarbarhet_id in tjanst.sarbarheter
         ),
@@ -159,10 +162,44 @@ def bygg_underlag(
             for kontroll in (*tjanstbedomning.kontroller,
                 *((tjanstbedomning.sanktionsrisk.kontroll,) if tjanstbedomning.sanktionsrisk and tjanstbedomning.sanktionsrisk.kontroll else ()))
         ),
-        uppgifter=tuple(_uppgift(regelbas, profil, falt_id, gransindex=gransindex) for falt_id in lista.falt if aktivt(regelbas.falt[falt_id], profil, regelbas)),
+        uppgifter=tuple(_verksamhetsuppgift(regelbas, profil, falt_id, gransindex=gransindex)
+            for falt_id in tillatna if aktivt(regelbas.falt[falt_id], profil, regelbas)
+            and (formatversion != V7 or _galler_tjansten(regelbas, profil, falt_id, tjanst.id))),
         regelspar=tjanstbedomning.regelspar + (tjanstbedomning.sanktionsrisk.regelspar if tjanstbedomning.sanktionsrisk else ()),
         undvik=tuple(UnderlagBrist(id=brist_id, namn=regelbas.bristmonster[brist_id].namn) for brist_id in lista.undvik),
     )
+
+
+def tillatna_falt(regelbas: Regelbas, formatversion: str = V6) -> tuple[str, ...]:
+    """Äldre skrivformat behåller sin vy när nya verksamhetsval tillåts för V7."""
+    return tuple(id for id in regelbas.tillatelselistor[AVSNITTSTYP].falt
+                 if formatversion == V7 or verksamhetsval(regelbas, id) is None)
+
+
+def faltets_tjanst(regelbas: Regelbas, falt_id: str) -> str | None:
+    for tjanst in regelbas.tjanster.values():
+        prefix = tjanst.erbjuds_falt.removesuffix('_erbjuds')
+        if falt_id.startswith(prefix + '_'):
+            return tjanst.id
+        if any(falt_id.startswith(f'P-KONTROLL.{id}.') for id in tjanst.kontroller if id.startswith('C-TJ-')):
+            return tjanst.id
+    return None
+
+
+def _galler_tjansten(regelbas: Regelbas, profil: Profil, falt_id: str, tjanst_id: str) -> bool:
+    omfang = faltets_tjanst(regelbas, falt_id)
+    val = verksamhetsval(regelbas, falt_id)
+    return (omfang is None or omfang == tjanst_id) and (val is None or erbjuds_aktuellt(profil, val[0]))
+
+
+def _verksamhetsuppgift(regelbas: Regelbas, profil: Profil, falt_id: str, *, gransindex: dict | None):
+    u = _uppgift(regelbas, profil, falt_id, gransindex=gransindex)
+    val = verksamhetsval(regelbas, falt_id)
+    if val:
+        uppgift = profil.uppgifter.get(falt_id, Uppgift())
+        visning = VERKSAMHETSVAL[val[1]].get(uppgift.varde, 'okänt') if u.bekraftad else 'okänt'
+        return u.model_copy(update={'varde': visning, 'bekraftad': u.bekraftad and visning != 'okänt'})
+    return u
 
 
 def _sarbarhetsmotivering(regelbas: Regelbas, profil: Profil, id: str, tillatna: tuple[str, ...], *, gransindex: dict | None = None) -> str:

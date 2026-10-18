@@ -91,3 +91,69 @@ def test_smagruppsandel_och_antal_undertrycks_tillsammans(regelbas,profil_fabrik
     a=bygg_underlag(rb,p,t,"D-ARB.6.1")
     value=next(u.varde for u in a.uppgifter if u.id==f.id)
     assert value==(SKYDDAD_VISNING if antal<5 else "5 %")
+
+
+@pytest.mark.parametrize(('falt', 'a', 'b'), [
+    ('P-RISK.pep', False, True),
+    ('P-KUND.antal_riskbransch', 0, 3),
+    ('P-KUND.antal_riskbransch', 3, 97),
+])
+def test_ai_begaranskedja_oforandrad_av_lokala_privata_utfall(regelbas_v1, profil_fabrik, falt, a, b):
+    from riskanalys.dokument.delskrivning import skriv_tjanst
+    from riskanalys.dokument.leverantor import Testleverantor
+    from riskanalys.dokument.tjanstavsnitt_v6 import bygg_tjanstavsnitt_v6
+    from riskanalys.profil.omfattning import harled_andelar
+    from tester.fixturer.m2 import komplett_profil, godkant_delsvar
+
+    rb = regelbas_v1
+    faktor = {'P-RISK.pep': 'S-ARB-02', 'P-KUND.antal_riskbransch': 'S-KUND-01'}[falt]
+    bas = komplett_profil(rb, profil_fabrik(rb, {}))
+    bas = bas.model_copy(update={'byra': bas.byra.model_copy(update={'regelpaket': 'RP-RED-VG'})})
+
+    def begaranskedja(varde):
+        u = bas.uppgifter[falt].model_copy(update={'varde': varde})
+        p = harled_andelar(bas.model_copy(update={'uppgifter': {**bas.uppgifter, falt: u}}), rb, frozenset({falt}))
+        t = bedom(rb, valj(rb, p.byra.regelpaket, p.byra.datum, p.byra.lan), p).tjanster[0]
+        leverantor = Testleverantor(['ogiltig JSON', godkant_delsvar('hot', t),
+            'ogiltig JSON', godkant_delsvar('sarbarheter', t)])
+        r = skriv_tjanst(leverantor, rb, p, t, 'D-ARB.6.1', effort='medium', personnamn=(), spara=lambda *args: None, formatversion="D-ARB-tjanst-v6")
+        assert len(leverantor.delanrop) == 4
+        avsnitt = bygg_tjanstavsnitt_v6(rb, p, t, r, 'D-ARB.6.1', gransindex={})
+        lokalt = tuple(s.text for s in avsnitt.stycken if s.proveniens == 'lokal' and faktor in s.referenser)
+        assert lokalt
+        return tuple(anrop.model_dump_json().encode('utf-8') for anrop in leverantor.delanrop), lokalt
+
+    begaran_a, utfall_a = begaranskedja(a)
+    begaran_b, utfall_b = begaranskedja(b)
+    assert begaran_a == begaran_b
+    assert utfall_a != utfall_b
+
+
+def test_hela_ai_omforsokskedjan_ar_identisk_vid_privat_tjanstefordelning(regelbas_v1, profil_fabrik):
+    from riskanalys.dokument.delskrivning import skriv_tjanst
+    from riskanalys.dokument.leverantor import Testleverantor
+    from riskanalys.dokument.tjanstavsnitt_v6 import bygg_tjanstavsnitt_v6
+    from riskanalys.intag.modeller import IntagSvar
+    from riskanalys.intag.svar import besvara
+    from riskanalys.profil.omfattning import harled_andelar
+    from tester.fixturer.m2 import DAG, PERIOD, komplett_profil, godkant_delsvar
+    rb = regelbas_v1
+    p = komplett_profil(rb, profil_fabrik(rb, {}))
+    p = p.model_copy(update={'byra': p.byra.model_copy(update={'regelpaket': 'RP-RED-VG'}),
+        'uppgifter': {**p.uppgifter, 'P-GEO.antal_utland_transaktion': p.uppgifter['P-GEO.antal_utland_transaktion'].model_copy(update={'varde': 6})}})
+    p = harled_andelar(p, rb, frozenset({'P-GEO.antal_utland_transaktion'}))
+    kedjor, lokala = [], []
+    for antal in (0, 2):
+        privat = besvara(rb, p, IntagSvar(falt='P-TJ.red01_antal_utland_transaktion', text=str(antal),
+            kalla='PRIVAT FÖRDELNINGSKÄLLA', roll='Ansvarig', datum=DAG, period=PERIOD))
+        t = bedom(rb, valj(rb, privat.byra.regelpaket, privat.byra.datum, privat.byra.lan), privat).tjanster[0]
+        lev = Testleverantor(['ogiltig JSON', godkant_delsvar('hot', t), 'ogiltig JSON', godkant_delsvar('sarbarheter', t)])
+        resultat = skriv_tjanst(lev, rb, privat, t, 'D-ARB.6.1', effort='medium', personnamn=(), spara=lambda *args: None, formatversion="D-ARB-tjanst-v6")
+        assert len(lev.delanrop) == 4
+        kedjor.append(tuple(a.model_dump_json().encode('utf-8') for a in lev.delanrop))
+        a = bygg_tjanstavsnitt_v6(rb, privat, t, resultat, 'D-ARB.6.1', gransindex={})
+        lokala.append(tuple(s.text for s in a.stycken if 'varav' in s.text))
+        assert lokala[-1] and any(f'varav {antal} i tjänsten' in text for text in lokala[-1])
+    assert kedjor[0] == kedjor[1]
+    assert b'PRIVAT' not in b''.join(kedjor[0])
+    assert lokala[0] != lokala[1]

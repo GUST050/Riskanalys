@@ -153,7 +153,7 @@ def _tjanst(rb,t,gem,*,variation):
         'kanal':'Digitalt inlämnade handlingar kan sakna ursprungskontroll och därför dölja ändringar eller utelämnade flöden.',
         'geo':'Gränsöverskridande betalningar kan lämna oklarhet om bakomliggande parter; geografi ensam avgör inte utfallet.',
         'verk':'Sju medarbetare delar granskningsarbete; dokumenterad ersättare och ansvar behövs vid frånvaro och tidspress.'}
-    sidor=tuple(s.model_copy(update={'relevans':'relevant','motivering':sartext[s.omrade],
+    sidor=tuple(s.model_copy(update={'relevans':'relevant','motivering':sartext.get(s.omrade, 'Tjänstens särskilda arbetsmoment och mandat behöver prövas mot uppdragets underlag och scenarier.'),
         'scenarier':(scenarier[0].id,),'belagg':('ab6:mandat',)}) for s in t.sarbarhetsprovningar)
     u=m.Uppdragsprovning(status='hanterbart',kompetens_och_insyn='Syntetiskt dokumenterad tjänstekompetens, ersättare och mandat för granskning av mottagna underlag.',
         motivering='Uppdragets dokumenterade avgränsning motsvarar tillgänglig kapacitet; nya betalningsled kräver förnyad prövning.',belagg=('ab6:mandat',))
@@ -240,7 +240,7 @@ def skriv_fall(fall,*,skript='normal',maxord=False):
     elif skript!='normal':raise ValueError('Okänt syntetiskt svarsskript.')
     leverantor=Testleverantor(svar)
     resultat={id:skriv_tjanst(leverantor,fall.regelbas,fall.profil,t,id,effort='medium',
-        personnamn=(),spara=lambda *args:None) for id,t in tjanster_med_avsnitt(fall.bedomning)}
+        personnamn=(),spara=lambda *args:None, formatversion="D-ARB-tjanst-v6") for id,t in tjanster_med_avsnitt(fall.bedomning)}
     return resultat,[a.model_dump(mode='json',by_alias=True) for a in leverantor.delanrop]
 
 
@@ -328,7 +328,7 @@ def syntetisk_expertkopia(rot):
     return regelrot,ladda_regelbas(regelrot)
 
 
-def bygg_bunden_kedja(rb,rot,*,regelrot,godkann=False,variation=False,maxord=False,demo=False):
+def bygg_bunden_kedja(rb,rot,*,regelrot,godkann=False,variation=False):
     """Verkliga manifest och bindningar; godkann=True ENDAST syntetisk kopia."""
     from riskanalys.analys import lagring as l
     from riskanalys.profil.lagring import spara_profil
@@ -337,12 +337,12 @@ def bygg_bunden_kedja(rb,rot,*,regelrot,godkann=False,variation=False,maxord=Fal
     from riskanalys.drift.historik import registrera_handelse,Handelse
     from riskanalys.granskning.korning import kor_granskning
     f=skapa_fall(rb,rot,variation=variation)
+    from tester.fixturer.skrivsvar_v7 import med_verksamhetsval
+    f=replace(f,profil=med_verksamhetsval(rb,f.profil))
     spara_profil(f.byramapp,f.profil)
     bm=kor_bedomning(f.byramapp,rb);b=las_bedomning(bm)
-    svar=[]
-    for _,t in tjanster_med_avsnitt(b):
-        for del_id in ('hot','sarbarheter'):
-            svar.append(demosvar(del_id,t,rb) if demo else (_maxsvar if maxord else godkant_delsvar)(del_id,t))
+    from tester.fixturer.skrivsvar_v7 import tjanstspecifikt_svar_v7
+    svar=[tjanstspecifikt_svar_v7(rb,f.profil,t,id) for id,t in tjanster_med_avsnitt(b)]
     um=kor_skrivning(f.byramapp,rb,Testleverantor(svar),effort='medium')
     registrera_handelse(f.byramapp,Handelse(datum=date(2026,10,1),typ='utvärdering',beskrivning='Syntetisk årlig utvärdering av tjänster och mandat.'))
     registrera_handelse(f.byramapp,Handelse(datum=date(2026,10,8),typ='uppdatering',beskrivning='Syntetisk separat komplettering om betalningsled; flyttar inte årsfristen.'))

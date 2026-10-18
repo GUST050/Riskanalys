@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator, model_serial
 from pydantic.json_schema import SkipJsonSchema
 
 from riskanalys.lagring.kontrollsumma import for_text
+from riskanalys.regelverk.modeller import Kallhanvisning
 
 
 class Last(BaseModel):
@@ -63,10 +64,38 @@ class UnderlagSarbarhet(Last):
     motivering: str = ""
 
 
+class UnderlagKontrollrackvidd(Last):
+    """Offentlig katalogtext för en tjänst, utan lokal tillämpning, effekt eller attest."""
+
+    id: str
+    tjanst: str
+    hot: tuple[str, ...]
+    kan_belagga: str
+    begransningar: str
+    forutsattningar: str
+    grund: str
+    kallhanvisningar: tuple["Kallhanvisning", ...]
+    beskrivningsstatus: Literal["beskriven", "okand"] | None = None
+
+
 class UnderlagKontroll(Last):
     id: str
     namn: str
     status: str
+    beskrivning: str | None = None
+    rackviddsstatus: Literal["kallbundet_underlag", "okand"] | None = None
+    kallor: tuple[str, ...] = ()
+    kallhanvisningar: tuple["Kallhanvisning", ...] = ()
+    rackvidd: tuple[UnderlagKontrollrackvidd, ...] = ()
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        data = handler(self)
+        if self.rackviddsstatus is None:
+            data.pop("rackviddsstatus", None)
+            for falt in ('beskrivning', 'kallor', 'kallhanvisningar', 'rackvidd'):
+                data.pop(falt, None)
+        return data
 
 
 class UnderlagUppgift(Last):
@@ -158,7 +187,7 @@ class Avsnitt(Last):
     kalla: Literal["regelbas", "ai", "lokal"]
     stycken: tuple[Textstycke, ...]
     underrubriker: tuple[Underrubrik, ...] = ()
-    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4", "D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"] | None = None
+    formatversion: Literal["D-ARB-tjanst-v3", "D-ARB-tjanst-v4", "D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7"] | None = None
 
     tabeller: tuple[Dokumenttabell, ...] = ()
     visningsnummer: str | None = None
@@ -168,7 +197,7 @@ class Avsnitt(Last):
         data = handler(self)
         if self.formatversion is None:
             data.pop("formatversion", None)
-        if self.formatversion not in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"):
+        if self.formatversion not in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
             if not self.tabeller:
                 data.pop("tabeller", None)
             if self.visningsnummer is None:
@@ -177,7 +206,7 @@ class Avsnitt(Last):
 
     @model_validator(mode="after")
     def giltiga_positioner(self):
-        if (self.tabeller or self.visningsnummer is not None) and self.formatversion not in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"):
+        if (self.tabeller or self.visningsnummer is not None) and self.formatversion not in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
             raise ValueError("Tabeller och visningsnummer kräver dokumentformat v5.")
         if len({t.id for t in self.tabeller}) != len(self.tabeller):
             raise ValueError("Tabell-ID ska vara unika inom avsnittet.")
@@ -198,9 +227,16 @@ class Dokument(Last):
     titel: str
     avsnitt: tuple[Avsnitt, ...]
 
+    @model_validator(mode="after")
+    def enhetligt_v7_format(self):
+        versioner = {a.formatversion for a in self.avsnitt}
+        if "D-ARB-tjanst-v7" in versioner and versioner != {"D-ARB-tjanst-v7"}:
+            raise ValueError("Dokumentformat v7 kräver samma format i samtliga avsnitt. Återskapa dokumentet.")
+        return self
+
     @property
     def formatversion(self) -> str:
-        for version in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v5", "D-ARB-tjanst-v4", "D-ARB-tjanst-v3"):
+        for version in ("D-ARB-tjanst-v7", "D-ARB-tjanst-v6", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v5", "D-ARB-tjanst-v4", "D-ARB-tjanst-v3"):
             if any(a.formatversion == version for a in self.avsnitt):
                 return version
         return "D-ARB-tjanst-v2" if any(a.underrubriker for a in self.avsnitt) else "D-ARB-v1"

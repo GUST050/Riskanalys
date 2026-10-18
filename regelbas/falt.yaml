@@ -6068,3 +6068,2026 @@
     - SRC-TS-2026-14
     beroenden: []
     grund: metodval
+- id: P-TJ.red01_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Löpande bokföring: Hur många av byråns kunder med utlandstransaktioner använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 800
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red01_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red01_antal_kunder
+    grund: metodval
+- id: P-TJ.red01_antal_utland_agare
+  typ: heltal
+  fraga: 'Löpande bokföring: Hur många av byråns kunder med utländska ägare använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 801
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red01_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red01_antal_kunder
+    grund: metodval
+- id: P-TJ.red01_antal_riskbransch
+  typ: heltal
+  fraga: 'Löpande bokföring: Hur många av byråns kunder med verksamhet i riskbransch använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 802
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red01_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red01_antal_kunder
+    grund: metodval
+- id: P-TJ.red01_antal_kontant
+  typ: heltal
+  fraga: 'Löpande bokföring: Hur många av byråns kunder med kontanthantering använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 803
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red01_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red01_antal_kunder
+    grund: metodval
+- id: P-TJ.red02_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Bokslut och årsredovisning: Hur många av byråns kunder med utlandstransaktioner använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 804
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red02_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red02_antal_kunder
+    grund: metodval
+- id: P-TJ.red02_antal_utland_agare
+  typ: heltal
+  fraga: 'Bokslut och årsredovisning: Hur många av byråns kunder med utländska ägare använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 805
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red02_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red02_antal_kunder
+    grund: metodval
+- id: P-TJ.red02_antal_riskbransch
+  typ: heltal
+  fraga: 'Bokslut och årsredovisning: Hur många av byråns kunder med verksamhet i riskbransch använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 806
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red02_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red02_antal_kunder
+    grund: metodval
+- id: P-TJ.red02_antal_kontant
+  typ: heltal
+  fraga: 'Bokslut och årsredovisning: Hur många av byråns kunder med kontanthantering använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 807
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red02_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red02_antal_kunder
+    grund: metodval
+- id: P-TJ.red03_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Deklarationer och deklarationsombud: Hur många av byråns kunder med utlandstransaktioner använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 808
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red03_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red03_antal_kunder
+    grund: metodval
+- id: P-TJ.red03_antal_utland_agare
+  typ: heltal
+  fraga: 'Deklarationer och deklarationsombud: Hur många av byråns kunder med utländska ägare använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 809
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red03_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red03_antal_kunder
+    grund: metodval
+- id: P-TJ.red03_antal_riskbransch
+  typ: heltal
+  fraga: 'Deklarationer och deklarationsombud: Hur många av byråns kunder med verksamhet i riskbransch
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 810
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red03_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red03_antal_kunder
+    grund: metodval
+- id: P-TJ.red03_antal_kontant
+  typ: heltal
+  fraga: 'Deklarationer och deklarationsombud: Hur många av byråns kunder med kontanthantering använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 811
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red03_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red03_antal_kunder
+    grund: metodval
+- id: P-TJ.red04_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Lönehantering: Hur många av byråns kunder med utlandstransaktioner använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 812
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red04_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red04_antal_kunder
+    grund: metodval
+- id: P-TJ.red04_antal_utland_agare
+  typ: heltal
+  fraga: 'Lönehantering: Hur många av byråns kunder med utländska ägare använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 813
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red04_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red04_antal_kunder
+    grund: metodval
+- id: P-TJ.red04_antal_riskbransch
+  typ: heltal
+  fraga: 'Lönehantering: Hur många av byråns kunder med verksamhet i riskbransch använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 814
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red04_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red04_antal_kunder
+    grund: metodval
+- id: P-TJ.red04_antal_kontant
+  typ: heltal
+  fraga: 'Lönehantering: Hur många av byråns kunder med kontanthantering använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 815
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red04_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red04_antal_kunder
+    grund: metodval
+- id: P-TJ.red05_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Betalningar och attest i kundens namn: Hur många av byråns kunder med utlandstransaktioner använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 816
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red05_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red05_antal_kunder
+    grund: metodval
+- id: P-TJ.red05_antal_utland_agare
+  typ: heltal
+  fraga: 'Betalningar och attest i kundens namn: Hur många av byråns kunder med utländska ägare använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 817
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red05_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red05_antal_kunder
+    grund: metodval
+- id: P-TJ.red05_antal_riskbransch
+  typ: heltal
+  fraga: 'Betalningar och attest i kundens namn: Hur många av byråns kunder med verksamhet i riskbransch
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 818
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red05_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red05_antal_kunder
+    grund: metodval
+- id: P-TJ.red05_antal_kontant
+  typ: heltal
+  fraga: 'Betalningar och attest i kundens namn: Hur många av byråns kunder med kontanthantering använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 819
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red05_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red05_antal_kunder
+    grund: metodval
+- id: P-TJ.red06_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Klientmedelskonto: Hur många av byråns kunder med utlandstransaktioner använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 820
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red06_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red06_antal_kunder
+    grund: metodval
+- id: P-TJ.red06_antal_utland_agare
+  typ: heltal
+  fraga: 'Klientmedelskonto: Hur många av byråns kunder med utländska ägare använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 821
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red06_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red06_antal_kunder
+    grund: metodval
+- id: P-TJ.red06_antal_riskbransch
+  typ: heltal
+  fraga: 'Klientmedelskonto: Hur många av byråns kunder med verksamhet i riskbransch använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 822
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red06_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red06_antal_kunder
+    grund: metodval
+- id: P-TJ.red06_antal_kontant
+  typ: heltal
+  fraga: 'Klientmedelskonto: Hur många av byråns kunder med kontanthantering använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 823
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red06_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red06_antal_kunder
+    grund: metodval
+- id: P-TJ.red07_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Hur många av byråns kunder med utlandstransaktioner
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 824
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red07_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red07_antal_kunder
+    grund: metodval
+- id: P-TJ.red07_antal_utland_agare
+  typ: heltal
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Hur många av byråns kunder med utländska ägare
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 825
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red07_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red07_antal_kunder
+    grund: metodval
+- id: P-TJ.red07_antal_riskbransch
+  typ: heltal
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Hur många av byråns kunder med verksamhet i riskbransch
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 826
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red07_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red07_antal_kunder
+    grund: metodval
+- id: P-TJ.red07_antal_kontant
+  typ: heltal
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Hur många av byråns kunder med kontanthantering
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 827
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red07_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red07_antal_kunder
+    grund: metodval
+- id: P-TJ.skatt01_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Skatterådgivning utöver deklarationer: Hur många av byråns kunder med utlandstransaktioner använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 828
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.skatt01_antal_kunder
+    grund: metodval
+- id: P-TJ.skatt01_antal_utland_agare
+  typ: heltal
+  fraga: 'Skatterådgivning utöver deklarationer: Hur många av byråns kunder med utländska ägare använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 829
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.skatt01_antal_kunder
+    grund: metodval
+- id: P-TJ.skatt01_antal_riskbransch
+  typ: heltal
+  fraga: 'Skatterådgivning utöver deklarationer: Hur många av byråns kunder med verksamhet i riskbransch
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 830
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.skatt01_antal_kunder
+    grund: metodval
+- id: P-TJ.skatt01_antal_kontant
+  typ: heltal
+  fraga: 'Skatterådgivning utöver deklarationer: Hur många av byråns kunder med kontanthantering använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 831
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.skatt01_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag01_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Hur många av byråns kunder med utlandstransaktioner
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 832
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag01_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag01_antal_utland_agare
+  typ: heltal
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Hur många av byråns kunder med utländska ägare
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 833
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag01_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag01_antal_riskbransch
+  typ: heltal
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Hur många av byråns kunder med verksamhet i
+    riskbransch använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 834
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag01_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag01_antal_kontant
+  typ: heltal
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Hur många av byråns kunder med kontanthantering
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 835
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag01_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag02_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Registrerad adress eller postadress: Hur många av byråns kunder med utlandstransaktioner använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 836
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag02_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag02_antal_utland_agare
+  typ: heltal
+  fraga: 'Registrerad adress eller postadress: Hur många av byråns kunder med utländska ägare använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 837
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag02_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag02_antal_riskbransch
+  typ: heltal
+  fraga: 'Registrerad adress eller postadress: Hur många av byråns kunder med verksamhet i riskbransch
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 838
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag02_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag02_antal_kontant
+  typ: heltal
+  fraga: 'Registrerad adress eller postadress: Hur många av byråns kunder med kontanthantering använder
+    tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 839
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag02_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag03_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Hur många av byråns kunder med utlandstransaktioner
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 840
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag03_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag03_antal_utland_agare
+  typ: heltal
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Hur många av byråns kunder med utländska ägare
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 841
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag03_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag03_antal_riskbransch
+  typ: heltal
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Hur många av byråns kunder med verksamhet i riskbransch
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 842
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag03_antal_kunder
+    grund: metodval
+- id: P-TJ.bolag03_antal_kontant
+  typ: heltal
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Hur många av byråns kunder med kontanthantering
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 843
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.bolag03_antal_kunder
+    grund: metodval
+
+# Frivilliga fasta verksamhetsval per tjänst; V7-skrivkontext.
+- id: P-TJ.red01_attest
+  typ: val
+  fraga: 'Löpande bokföring: Vem attesterar underlagen?'
+  etikett: 'Löpande bokföring: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: &verksamhetsval001
+  - kund
+  - byra
+  - bada
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red01_betalningsmandat
+  typ: val
+  fraga: 'Löpande bokföring: Vilket betalningsmandat har byrån?'
+  etikett: 'Löpande bokföring: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: &verksamhetsval002
+  - inget
+  - forbereder
+  - verkstaller
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red01_bankinsyn
+  typ: val
+  fraga: 'Löpande bokföring: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Löpande bokföring: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: &verksamhetsval003
+  - full
+  - delvis
+  - ingen
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red02_attest
+  typ: val
+  fraga: 'Bokslut och årsredovisning: Vem attesterar underlagen?'
+  etikett: 'Bokslut och årsredovisning: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red02_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red02_betalningsmandat
+  typ: val
+  fraga: 'Bokslut och årsredovisning: Vilket betalningsmandat har byrån?'
+  etikett: 'Bokslut och årsredovisning: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red02_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red02_bankinsyn
+  typ: val
+  fraga: 'Bokslut och årsredovisning: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Bokslut och årsredovisning: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red02_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red03_attest
+  typ: val
+  fraga: 'Deklarationer och deklarationsombud: Vem attesterar underlagen?'
+  etikett: 'Deklarationer och deklarationsombud: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red03_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red03_betalningsmandat
+  typ: val
+  fraga: 'Deklarationer och deklarationsombud: Vilket betalningsmandat har byrån?'
+  etikett: 'Deklarationer och deklarationsombud: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red03_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red03_bankinsyn
+  typ: val
+  fraga: 'Deklarationer och deklarationsombud: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Deklarationer och deklarationsombud: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red03_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red04_attest
+  typ: val
+  fraga: 'Lönehantering: Vem attesterar underlagen?'
+  etikett: 'Lönehantering: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red04_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red04_betalningsmandat
+  typ: val
+  fraga: 'Lönehantering: Vilket betalningsmandat har byrån?'
+  etikett: 'Lönehantering: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red04_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red04_bankinsyn
+  typ: val
+  fraga: 'Lönehantering: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Lönehantering: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red04_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red05_attest
+  typ: val
+  fraga: 'Betalningar och attest i kundens namn: Vem attesterar underlagen?'
+  etikett: 'Betalningar och attest i kundens namn: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red05_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red05_betalningsmandat
+  typ: val
+  fraga: 'Betalningar och attest i kundens namn: Vilket betalningsmandat har byrån?'
+  etikett: 'Betalningar och attest i kundens namn: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red05_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red05_bankinsyn
+  typ: val
+  fraga: 'Betalningar och attest i kundens namn: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Betalningar och attest i kundens namn: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red05_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red06_attest
+  typ: val
+  fraga: 'Klientmedelskonto: Vem attesterar underlagen?'
+  etikett: 'Klientmedelskonto: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red06_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red06_betalningsmandat
+  typ: val
+  fraga: 'Klientmedelskonto: Vilket betalningsmandat har byrån?'
+  etikett: 'Klientmedelskonto: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red06_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red06_bankinsyn
+  typ: val
+  fraga: 'Klientmedelskonto: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Klientmedelskonto: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red06_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red07_attest
+  typ: val
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Vem attesterar underlagen?'
+  etikett: 'Ekonomisk rådgivning och ekonomichefstjänster: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red07_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red07_betalningsmandat
+  typ: val
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Vilket betalningsmandat har byrån?'
+  etikett: 'Ekonomisk rådgivning och ekonomichefstjänster: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red07_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red07_bankinsyn
+  typ: val
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Ekonomisk rådgivning och ekonomichefstjänster: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red07_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.skatt01_attest
+  typ: val
+  fraga: 'Skatterådgivning utöver deklarationer: Vem attesterar underlagen?'
+  etikett: 'Skatterådgivning utöver deklarationer: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.skatt01_betalningsmandat
+  typ: val
+  fraga: 'Skatterådgivning utöver deklarationer: Vilket betalningsmandat har byrån?'
+  etikett: 'Skatterådgivning utöver deklarationer: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.skatt01_bankinsyn
+  typ: val
+  fraga: 'Skatterådgivning utöver deklarationer: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Skatterådgivning utöver deklarationer: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag01_attest
+  typ: val
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Vem attesterar underlagen?'
+  etikett: 'Bolagsbildning, lagerbolag och bolagsförmedling: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag01_betalningsmandat
+  typ: val
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Vilket betalningsmandat har byrån?'
+  etikett: 'Bolagsbildning, lagerbolag och bolagsförmedling: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag01_bankinsyn
+  typ: val
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Bolagsbildning, lagerbolag och bolagsförmedling: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag02_attest
+  typ: val
+  fraga: 'Registrerad adress eller postadress: Vem attesterar underlagen?'
+  etikett: 'Registrerad adress eller postadress: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag02_betalningsmandat
+  typ: val
+  fraga: 'Registrerad adress eller postadress: Vilket betalningsmandat har byrån?'
+  etikett: 'Registrerad adress eller postadress: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag02_bankinsyn
+  typ: val
+  fraga: 'Registrerad adress eller postadress: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Registrerad adress eller postadress: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag03_attest
+  typ: val
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Vem attesterar underlagen?'
+  etikett: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval001
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag03_betalningsmandat
+  typ: val
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Vilket betalningsmandat har byrån?'
+  etikett: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval002
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.bolag03_bankinsyn
+  typ: val
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val: *verksamhetsval003
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+    obligatorisk: false

@@ -1,11 +1,55 @@
 """En modul per analysdel: mål, krav med skäl och fällor med skäl (spec 8.4.4)."""
 
 from riskanalys.dokument.delvalidering import LANGD
-from riskanalys.dokument.skrivversion import V5, V6, DELAR_V5, delar_for_version
+from riskanalys.dokument.skrivversion import V5, V6, V7, DELAR_V5, delar_for_version
 
 DELAR = DELAR_V5  # Historiskt offentligt femdelarskontrakt. Ny skrivning väljer version explicit.
 
 MODULER = {
+    "analys": (
+        "Skriv en sammanhängande analys för tjänsten i följande ordning. Börja med uppdraget utifrån "
+        "tjänstens aktuella verksamhetsval och kundantal, eftersom mandat och insyn avgör hur uppdraget kan utnyttjas. "
+        "Beskriv mandat, attest och bankinsyn inom just tjänsten; ett tjänstbundet nej till betalningsmandat "
+        "belägger inte att byrån saknar betalningsmandat i andra tjänster. "
+        "Saknade eller okända val markeras med [VERIFIERA] och en oklarhet; fyll aldrig i ett mandat själv.\n"
+        "Beskriv två till tre konkreta sätt som tjänsten kan utnyttjas för penningtvätt eller finansiering av terrorism "
+        "hos byrån, med TF när faktabladet har TF-hot, eftersom allmänna hot inte visar hur uppdraget används. "
+        "Hänvisa till minst två hot och knyt minst ett hot till en sårbarhet eller faktauppgift i samma stycke. "
+        "Skilj möjliga scenarier från iakttagna händelser, eftersom kataloghot inte bevisar att något har inträffat.\n"
+        "Koppla scenarierna till de kund-, kanal- och geografiomständigheter som faktabladet visar gäller, eftersom "
+        "analysen ska avse belagd exponering. Varje faktapost har omfang byra eller tjanst och tjänstposter har "
+        "tjanst_id; tillskriv aldrig tjänsten byråns antal eller andelar eftersom fördelningen skrivs lokalt av programmet. "
+        "Faktabladet är ett avsiktligt avgränsat urval, inte den fullständiga lokala analysen. "
+        "Påstå därför inte att den lokala analysen saknar tjänstfördelning när faktabladet inte visar den. "
+        "Ange byråomfånget utan att gissa fördelning eller beskriva det som en lokal kunskapslucka. "
+        "Beskriv en kombination som villkorligt scenario när överlapp inte är belagt, eftersom skilda byråfaktorer "
+        "inte visar att samma kunder berörs.\n"
+        "Kontrollera kategorierna före svaret: kund = kunder, kanal = distributionskanaler, geo = geografi, "
+        "tj = tjänstespecifika förhållanden och verk = verksamhetsspecifika förhållanden. "
+        "För varje kategori med synligt utfall ja, nej eller okänt krävs minst ett synligt S-ID i referenser; "
+        "ett P-ID ersätter inte kategorins S-ID. Kategorin tj krävs bara om den finns synlig. "
+        "Ett känt nej är en avgränsning av metodvillkoret, inte frånvaro av hot eller skäl att avstå kontrollprövning. "
+        "Beskriv negativa villkor kort och sakligt med rätt S-ID; flera kan behandlas tillsammans. "
+        "Skyddade värden och sårbarheter med utfallet prövas lokalt är undantagna från checklistan och får inte refereras.\n"
+        "Förklara vad katalogens kontroller normalt prövar och normalt inte visar utifrån beskrivning, kan_belagga, "
+        "begransningar och forutsattningar med källhänvisningar, eftersom kontrollens räckvidd måste kunna spåras. "
+        "Beskriv bara den tjänst- och hotkoppling som uttryckligen finns i räckvidden; saknas källbundet stöd ska du "
+        "utelämna påståendet eftersom katalogens namn inte belägger räckvidd. "
+        "rackviddsstatus okand betyder att källbundet räckviddsunderlag saknas; även källbundet_underlag är en "
+        "generell beskrivning och faktisk scenariotäckning är fortfarande okänd. "
+        "Påstå aldrig att byrån utför eller har utfört kontrollen eller att den är effektiv eller minskar risk, eftersom "
+        "lokal tillämpning och effekt avgörs av programmet och byrån.\n"
+        "nämn inte sårbarheter med utfallet prövas lokalt eller skyddade värden och skriv aldrig orden prövas lokalt, "
+        "eftersom programmet skriver dessa utfall och deras lokala belägg. "
+        "Ange inga nivåer eller motorutfall eftersom regelmotorn skriver dem. "
+        "Programmet återger byråns egen rapportering och slutsatserna av den i den lokala låsta delen. "
+        "Återberätta inte rapporteringsantal eller slutsatser av egen rapportering i AI-texten; överlåt dem till programmet. "
+        "Få eller inga rapporter är inte "
+        "belägg för frånvaro av hot eftersom rapporteringsantal inte mäter den faktiska exponeringen.\n"
+        "Sikta på 240–280 ord för att rymma analys och referenser inom den hårda ordgränsen. "
+        "Lägg käll-ID i referenser, inte utgivningsår, sidnummer eller uppräkningar av källtitlar i löptexten. "
+        "Behåll exakt sak- och källstöd; tal och perioder följer fortfarande platshållarkontraktet."
+    ),
     "hot": (
         "Skriv delen Hot och egna erfarenheter för tjänsten. Beskriv minst två konkreta sätt som just den här tjänsten "
         "kan utnyttjas hos byrån, utifrån hoten i faktabladet och tjänstens kunder. Ta med finansiering av terrorism när "

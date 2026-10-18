@@ -10,6 +10,7 @@ from tester.fixturer.m2 import godkant_delsvar, tjanst_for_prov
 
 
 def skriv(lev, rb, p, t, id, **kwargs):
+    kwargs.setdefault("formatversion", "D-ARB-tjanst-v6")
     return skriv_tjanst(lev, rb, p, t, id, effort='medium', personnamn=(), spara=lambda d, f: None, **kwargs)
 
 
@@ -20,7 +21,7 @@ def test_ny_skrivning_gor_bara_tva_anrop_och_kan_aterverifieras(tmp_path, rb_int
     assert r.formatversion == 'D-ARB-tjanst-v6'
     assert [a.del_id for a in lev.delanrop] == ['hot', 'sarbarheter']
     assert not any(d.mall for d in r.delar)
-    kontrollera_resultat(rb_intag, klar, t, r, id)
+    kontrollera_resultat(rb_intag, klar, t, r, id, formatversion="D-ARB-tjanst-v6")
 
 
 def test_v6_omforsok_stannar_inom_de_tva_delarna(tmp_path, rb_intag, klar):
@@ -37,7 +38,7 @@ def test_v5_kraver_explicit_historiskt_kontrakt_och_far_inte_markas_om(tmp_path,
     r = skriv(lev, rb_intag, klar, t, id, formatversion='D-ARB-tjanst-v5')
     kontrollera_resultat(rb_intag, klar, t, r, id, formatversion='D-ARB-tjanst-v5')
     with pytest.raises(RiskanalysFel, match='identitet'):
-        kontrollera_resultat(rb_intag, klar, t, r, id)
+        kontrollera_resultat(rb_intag, klar, t, r, id, formatversion="D-ARB-tjanst-v6")
     data = r.model_dump(mode='json')
     data['formatversion'] = 'D-ARB-tjanst-v6'
     with pytest.raises(ValidationError):
@@ -53,7 +54,7 @@ def test_promptidentitet_skiller_v6_fran_historiskt_v5():
     assert promptsumma('testleverantor', 'hot', formatversion='D-ARB-tjanst-v6') != gammal
 
 
-def test_ny_skrivkorning_sparar_v6_manifest_och_tva_delar(tmp_path, rb_intag, klar):
+def test_ny_skrivkorning_sparar_v7_manifest_och_en_del(tmp_path, rb_intag, klar):
     from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
     from riskanalys.dokument.skrivning import kor_skrivning, las_skrivresultat
     from riskanalys.dokument.underlag import tjanster_med_avsnitt
@@ -61,12 +62,13 @@ def test_ny_skrivkorning_sparar_v6_manifest_och_tva_delar(tmp_path, rb_intag, kl
     from riskanalys.profil.lagring import spara_profil
     spara_profil(tmp_path, klar)
     b = las_bedomning(kor_bedomning(tmp_path, rb_intag))
-    lev = Testleverantor([godkant_delsvar(d, t) for _, t in tjanster_med_avsnitt(b) for d in ('hot', 'sarbarheter')])
+    from tester.fixturer.m2 import bygg_delsvar
+    lev = Testleverantor(bygg_delsvar(rb_intag, klar, b))
     mapp = kor_skrivning(tmp_path, rb_intag, lev)
     metadata = las_manifest(mapp).metadata
-    assert metadata['format'] == 'D-ARB-tjanst-v6'
-    assert metadata['skrivformat'] == 'D-ARB-tjanst-v6'
-    assert all(tuple(d.del_id for d in r.delar) == ('hot', 'sarbarheter') for r in las_skrivresultat(mapp))
+    assert metadata['format'] == 'D-ARB-tjanst-v7'
+    assert metadata['skrivformat'] == 'D-ARB-tjanst-v7'
+    assert all(tuple(d.del_id for d in r.delar) == ('analys',) for r in las_skrivresultat(mapp))
 
 
 def test_lokal_namnsparr_andrar_inte_v6s_andra_anrop(tmp_path, rb_intag, klar):
@@ -76,6 +78,6 @@ def test_lokal_namnsparr_andrar_inte_v6s_andra_anrop(tmp_path, rb_intag, klar):
     svar = [hot, godkant_delsvar('sarbarheter', t)]
     lev1, lev2 = Testleverantor(svar), Testleverantor(svar)
     r1 = skriv(lev1, rb_intag, klar, t, id)
-    r2 = skriv_tjanst(lev2, rb_intag, klar, t, id, effort='medium', personnamn=('Kim Testsson',), spara=lambda d, f: None)
+    r2 = skriv_tjanst(lev2, rb_intag, klar, t, id, effort='medium', personnamn=('Kim Testsson',), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v6")
     assert not r1.del_('hot').mall and r2.del_('hot').lokal_sparr == 'personnamn'
     assert lev1.delanrop == lev2.delanrop

@@ -3,9 +3,9 @@ from docx import Document
 import pytest
 from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
 from riskanalys.dokument.delskrivning import FORMATVERSION
-from riskanalys.dokument.arb_v6 import FORMATVERSION as DOKUMENTFORMAT
+from riskanalys.dokument.skrivversion import AKTUELL_DOKUMENTVERSION as DOKUMENTFORMAT
 from riskanalys.dokument.leverantor import Testleverantor
-from riskanalys.dokument.skrivversion import DELAR_V6
+from riskanalys.dokument.skrivversion import DELAR_V7
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
 from riskanalys.faststallelse.faststall import FASTSTALLDA
 from riskanalys.dokument.modeller import AvsnittsUtkast
@@ -28,11 +28,11 @@ def test_hel_kedja_ger_word_utan_fritext_till_ai(tmp_path, rb_intag, klar):
     dokument=Document(fil)
     alltext='\n'.join(p.text for p in dokument.paragraphs)
     assert text in alltext and 'UTKAST' in alltext
-    # V6: AI skriver bara hot och sårbarheter per tjänst; resten är lokal analys.
+    # V7: ett sammanhängande AI-anrop per tjänst; lokala bedömningar fogas in i dokumentet.
     tjanster=tjanster_med_avsnitt(b)
     assert len(tjanster) == 3
-    assert len(provider.delanrop) == len(DELAR_V6)*len(tjanster) == 6
-    assert [a.del_id for a in provider.delanrop] == list(DELAR_V6)*len(tjanster)
+    assert len(provider.delanrop) == len(DELAR_V7)*len(tjanster) == 3
+    assert [a.del_id for a in provider.delanrop] == list(DELAR_V7)*len(tjanster)
     assert not provider.anrop
     assert all(text not in a.model_dump_json() for a in provider.delanrop)
     assert not (tmp_path/FASTSTALLDA).exists()
@@ -87,7 +87,7 @@ def test_reservmall_exporteras_som_utkast_och_blockerar_grinden(tmp_path,rb_inta
     utkast=las_skrivresultat(tmp_path/'utkast'/manifestets_metadata(granskning,'utkast')['utkast'])
     assert all(isinstance(r,Tjanstresultat) and r.formatversion==FORMATVERSION for r in utkast)
     forsta=tjanster_med_avsnitt(b)[0][0]
-    assert [(r.avsnitt,d.del_id) for r in utkast for d in r.delar if d.mall]==[(forsta,'hot')]
+    assert [(r.avsnitt,d.del_id) for r in utkast for d in r.delar if d.mall]==[(forsta,'analys')]
     assert any(f.allvar=='blockerande' and 'mall' in f.beskrivning and f.avsnitt==forsta for f in fynd)
     assert not (tmp_path/FASTSTALLDA).exists()
 

@@ -43,7 +43,7 @@ def granska(
         *_b04(regelbas, bedomning, dokument),
         # V6:s lokala PT/TF-, scenario- och sårbarhetsprövningar valideras och
         # återbyggs nedan; den äldre AI-motiveringens stycketyp finns inte där.
-        *(_b12(regelbas, dokument) if dokument.formatversion != "D-ARB-tjanst-v6" else []),
+        *(_b12(regelbas, dokument) if dokument.formatversion not in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7") else []),
         *_b16(regelbas, historik),
         *sektorsfynd(regelbas, bedomning, profil),
         *_analys(regelbas, bedomning, profil, dokument, historik, skrivresultat, analys, modellrapport, analysbrister_filer, granskningsdatum=granskningsdatum),
@@ -55,7 +55,7 @@ def granska(
 
 
 def _analys(rb, b, p, d, historik, resultat, analys=None, modellrapport=None, analysbrister_filer=(), *, granskningsdatum=None):
-    if d.formatversion == "D-ARB-tjanst-v6":
+    if d.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
         from riskanalys.granskning.dokument_v6 import analysfynd_v6
         return analysfynd_v6(rb,b,p,d,historik,resultat,analys=analys,modellrapport=modellrapport,analysbrister_filer=analysbrister_filer,granskningsdatum=granskningsdatum)
     if d.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1"):
@@ -135,9 +135,9 @@ def _oppna_fragor(oklarheter: tuple[tuple[str, Oklarhet], ...]) -> list[dict[str
 
 def _sparbarhet(regelbas: Regelbas, dokument: Dokument, analys=None) -> list[dict[str, Any]]:
     kanda = regelbas.alla_id()
-    if dokument.formatversion in ("D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6"):
+    if dokument.formatversion in ("D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
         kanda = kanda | set(dokument.avsnitt_med_id())
-    if dokument.formatversion == "D-ARB-tjanst-v6":
+    if dokument.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
         from riskanalys.dokument.analysreferenser import bygg_analysreferenser
         kanda = kanda | set(bygg_analysreferenser(analys).etiketter)
     return [

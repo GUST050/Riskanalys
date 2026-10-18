@@ -110,14 +110,30 @@ def test_v6_lankar_efter_text_och_mellan_varandra_har_synliga_avgransare(tmp_pat
     word = _word(tmp_path, profil, _dokument())
     stycke = _stycke_med(word, 'Gemensamma resonemang 1 gäller')._p
     barn = [b for b in stycke if b.tag != qn('w:pPr')]
-    assert [b.tag for b in barn] == [qn('w:r'), *[qn('w:r'), qn('w:hyperlink')] * 3]
+    assert [b.tag for b in barn] == [qn('w:r'), *[qn('w:r'), qn('w:hyperlink')] * 2]
     avgransare = [_text(b) for b in barn[1::2]]
-    assert avgransare == [' ', LANKSEPARATOR, LANKSEPARATOR]
+    assert avgransare == [' ', LANKSEPARATOR]
     assert all(t.get(qn('xml:space')) == 'preserve' for b in barn[1::2] for t in b.iter(qn('w:t')))
     lanktexter = [_text(b) for b in barn[2::2]]
-    assert lanktexter == ['Öppna Gemensamma lokala resonemang', 'Öppna Analys av löpande bokföring', 'Öppna Bilaga B1']
+    assert lanktexter == ['Öppna Gemensamma lokala resonemang', 'Öppna Analys av löpande bokföring']
     assert _text(stycke) == ('Gemensamma resonemang 1 gäller för denna tjänst. Fältkoppling och belägg: bilaga B1. '
-                             'Öppna Gemensamma lokala resonemang | Öppna Analys av löpande bokföring | Öppna Bilaga B1')
+                             'Öppna Gemensamma lokala resonemang | Öppna Analys av löpande bokföring')
+
+
+def test_v6_b1_lank_visas_bara_efter_sista_hanvisande_stycket_per_avsnitt(tmp_path, profil):
+    d = _dokument()
+    a = d.avsnitt[2]
+    a = a.model_copy(update={'stycken': (*a.stycken, _stycke('Avslutning utan bilagehänvisning.'))})
+    d = d.model_copy(update={'avsnitt': (*d.avsnitt[:2], a, d.avsnitt[3])})
+    word = _word(tmp_path, profil, d)
+    lankstycken = [p for p in word.paragraphs if any(_text(x) == 'Öppna Bilaga B1' for x in p._p.iter(qn('w:hyperlink')))]
+    assert [p.runs[0].text for p in lankstycken] == [
+        'Fullständig beräkning finns i bilaga B1.',
+        'Gemensamt resonemang 1. Betalningsinsyn.',
+        'Motorns beräkning och fullständiga regelspår finns i bilaga B1.',
+        'Analys av löpande bokföring. Betalningsinsyn (bedömd): gemensamt resonemang 1.',
+    ]
+    assert d.avsnitt[2].stycken[0].referenser == ['D-ARB.5', 'D-ARB.6.1', 'D-ARB.B1']
 
 
 def test_v6_inga_inledande_eller_avslutande_blanksteg_kan_forsvinna(tmp_path, profil):
@@ -253,15 +269,25 @@ def test_v6_byggarens_b1_far_rubriker_och_tjanstens_lank_landar_pa_dess_beraknin
     assert {'Profiluppgifter', 'Källversioner', 'Lokal analys och belägg', 'Beräkningsunderlag', 'Källregister'} <= set(delrubriker)
     brodtext = [_text(p.runs[0]._r) for p in i_b1 if p.style.name == 'Normal']
     assert brodtext == [s.text for s in b1.stycken]
-    # Varje tjänsts nivåmotivering med hänvisning till bilaga B1 landar på tjänstens eget beräkningsunderlag.
+    # Nivåmotiveringens sista B1-hänvisning landar på tjänstens eget beräkningsunderlag.
     berakning = {s.referenser[0]: i for i, s in enumerate(b1.stycken) if s.text.startswith('Beräkningsunderlag för ')}
     nivastart = {a.id: a.stycken[a.underrubriker[-1].fore_stycke].text for a in d.avsnitt
                  if a.underrubriker and a.underrubriker[-1].rubrik == 'Risknivå och motivering'}
     assert nivastart and set(nivastart) <= set(berakning)
     assert all(text.startswith('Penningtvättsrisk före kontroller: ') for text in nivastart.values())
-    i_word = [p for text in nivastart.values() for p in stycken if p.runs and _text(p.runs[0]._r) == text]
+    nivasista = {a.id: next(s.text for s in reversed(a.stycken) if 'D-ARB.B1' in s.referenser)
+                 for a in d.avsnitt if a.id in nivastart}
+    i_word = []
+    for id, text in nivasista.items():
+        a = d.avsnitt_med_id()[id]
+        start = next(i for i, p in enumerate(stycken) if p.style.name == 'Heading 1'
+                     and p.text == f'{a.visningsnummer} {a.rubrik}')
+        slut = next((i for i in range(start + 1, len(stycken)) if stycken[i].style.name == 'Heading 1'), len(stycken))
+        i_word.extend(p for p in stycken[start + 1:slut] if p.runs and _text(p.runs[0]._r) == text)
     ankare = [x.get(qn('w:anchor')) for p in i_word for x in p._p.iter(qn('w:hyperlink'))]
     assert ankare == [f'arb_b1_{berakning[id]}' for id in nivastart]
+    assert not [x for text in nivastart.values() for p in stycken if p.runs and _text(p.runs[0]._r) == text
+                for x in p._p.iter(qn('w:hyperlink'))]
     bokmarken = _bokmarken(word)
     assert all(x.get(qn('w:anchor')) in bokmarken for x in word.element.body.iter(qn('w:hyperlink')))
     assert all(r.find(qn('w:trPr') + '/' + qn('w:cantSplit')) is not None for r in word.element.body.iter(qn('w:tr')))

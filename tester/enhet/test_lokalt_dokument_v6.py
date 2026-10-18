@@ -255,13 +255,144 @@ def _bevarar_all_analys_och_varnar_vid_overskridande(fall, d, aitexter):
     return ordantal
 
 
-@pytest.mark.xfail(strict=True, reason='Nivåmotiveringen gör huvudtexten längre; uppgift 7 tar bort upprepning och ska ta bort denna markering.')
-def test_realistiskt_fyrtjanstprov_med_normal_ai_text_haller_huvudtextmalet(tmp_path, regelbas_v1):
+@pytest.fixture
+def realistiskt_fyrtjanstprov(tmp_path, regelbas_v1):
+    """Bygge, analysbevarande, varning och undre längdgräns får aldrig vara väntade fel."""
     fall, d, aitexter = _fyrtjanstprov(tmp_path, regelbas_v1, variation=False, maxord=False)
     assert sum(len(text.split()) for text in aitexter) < AI_MAX_ORD
     ordantal = _bevarar_all_analys_och_varnar_vid_overskridande(fall, d, aitexter)
     print({'fall': 'normal', 'variation': False, **ordantal})
-    assert HUVUDTEXTMAL_MIN <= ordantal['huvudtext'] <= HUVUDTEXTMAL_MAX
+    assert HUVUDTEXTMAL_MIN <= ordantal['huvudtext']
+    return ordantal
+
+
+def test_realistiskt_fyrtjanstprov_bevarar_analys_och_varnar_normalt(realistiskt_fyrtjanstprov):
+    assert realistiskt_fyrtjanstprov['huvudtext'] >= HUVUDTEXTMAL_MIN
+
+
+def test_realistiskt_fyrtjanstprov_haller_ovre_huvudtextmalet(realistiskt_fyrtjanstprov):
+    huvudord = realistiskt_fyrtjanstprov['huvudtext']
+    assert huvudord <= HUVUDTEXTMAL_MAX
+
+
+@pytest.mark.parametrize('eftertext', ['', ' Byråns egna tillägg står exakt kvar.\nÄven nästa rad.'])
+def test_bara_automatiskt_exponeringsprefix_kortas_och_egen_text_bevaras(v6underlag, lokal, eftertext):
+    from riskanalys.dokument.exponeringsmetadata_v6 import kort_exponering
+    rb, p, b, _, _ = v6underlag
+    paket = forifyll_analys(rb, p, b, lokal.bindning)
+    t = paket.tjanster[0]
+    text = t.exponering + eftertext
+    t = t.model_copy(update={'exponering': text})
+    nytt = kort_exponering(t, paket, rb, p)
+    assert len(nytt.split()) < len(text.split())
+    assert nytt.endswith(eftertext) if eftertext else True
+    assert 'Kunder:' in nytt and 'Kundandel:' in nytt and 'Omsättning (SEK):' in nytt and 'Omsättningsandel:' in nytt
+    assert 'erbjudandet är bekräftat' in nytt
+    assert t.exponering == text
+
+
+@pytest.mark.parametrize('andring', ['helt_egen', 'andrat_prefix'])
+def test_handskriven_exponering_och_andrat_automatiskt_prefix_lamnas_ororda(v6underlag, lokal, andring):
+    from riskanalys.dokument.exponeringsmetadata_v6 import kort_exponering
+    rb, p, b, _, _ = v6underlag
+    paket = forifyll_analys(rb, p, b, lokal.bindning)
+    t = paket.tjanster[0]
+    text = 'Byråns egen bedömning av uppdraget.' if andring == 'helt_egen' else t.exponering.replace('Period ', 'Vår period ', 1)
+    t = t.model_copy(update={'exponering': text})
+    assert kort_exponering(t, paket, rb, p) == text
+
+
+def test_kort_exponering_bevarar_skilda_perioder_datum_och_belagg(v6underlag, lokal):
+    from riskanalys.dokument.exponeringsmetadata_v6 import kort_exponering
+    from riskanalys.profil.modeller import Period
+    rb, p, b, _, _ = v6underlag
+    id = 'P-TJ.red01_omsattning'
+    u = p.uppgifter[id].model_copy(update={'datum': date(2026, 10, 9),
+        'period': Period(fran=date(2025, 1, 1), till=date(2025, 12, 31))})
+    p = p.model_copy(update={'uppgifter': {**p.uppgifter, id: u}})
+    paket = forifyll_analys(rb, p, b, lokal.bindning)
+    t = paket.tjanster[0]
+    nytt = kort_exponering(t, paket, rb, p)
+    assert '2025-01-01–2025-12-31' in nytt and '2026-01-01–2026-09-30' in nytt
+    assert '2026-10-09' in nytt and '2026-10-10' in nytt
+    assert t.exponeringsbelagg == paket.tjanster[0].exponeringsbelagg
+
+
+def test_identiska_ai_stycken_samordnas_med_alla_referenser_och_ordalydelsen_kvar():
+    from riskanalys.dokument.tjanstavsnitt_v6 import sammanfor_identiska_ai_stycken
+    from riskanalys.dokument.modeller import Textstycke
+    ursprung = (
+        Textstycke(typ='analys', text='Identisk analys med oförändrad ordalydelse.', referenser=['H-01'], proveniens='ai'),
+        Textstycke(typ='analys', text='En annan analys.', referenser=['H-03'], proveniens='ai'),
+        Textstycke(typ='analys', text='Identisk analys med oförändrad ordalydelse.', referenser=['H-02', 'P-A'], proveniens='ai'),
+    )
+    nytt = sammanfor_identiska_ai_stycken(ursprung)
+    assert [s.text for s in nytt] == ['Identisk analys med oförändrad ordalydelse.', 'En annan analys.']
+    assert nytt[0].referenser == ['H-01', 'H-02', 'P-A']
+    assert nytt[1] == ursprung[1]
+    assert all(s.proveniens == 'ai' for s in nytt)
+    assert ursprung[0].referenser == ['H-01']
+    # Två separata delanrop får ingen gemensam historik som kan radera andra delens text.
+    assert sammanfor_identiska_ai_stycken((ursprung[0],)) == (ursprung[0],)
+    assert sammanfor_identiska_ai_stycken((ursprung[2],)) == (ursprung[2],)
+
+
+def test_byggd_v6_bevarar_varje_ai_text_och_referens_inom_ratt_tjanst_och_del(v6underlag, lokal):
+    from riskanalys.dokument.kallhanvisningar import utan_kallhanvisning
+    from riskanalys.dokument.tjanstavsnitt import _ai_stycken
+    resultat = v6underlag[3]
+    fore = {id: r.model_dump_json() for id, r in resultat.items()}
+    d = bygg_arb_v6(*v6underlag, analys=lokal)
+    for id, r in resultat.items():
+        a = d.avsnitt_med_id()[id]
+        for del_id, rubrik in (('hot', 'Hot'), ('sarbarheter', 'Sårbarheter')):
+            start = next(u.fore_stycke for u in a.underrubriker if u.rubrik == rubrik)
+            slut = next((u.fore_stycke for u in a.underrubriker if u.fore_stycke > start), len(a.stycken))
+            faktiska = [s for s in a.stycken[start:slut] if s.proveniens == 'ai']
+            ursprungliga = _ai_stycken(r.del_(del_id).godkant_svar, r.faktablad.numeriska(), r.faktablad.perioder())
+            etikett = ' Gemensamma hänvisningar inom avsnittet.'
+            # Här är etiketten genererad: den förekommer inte i fixturens ursprungliga AI-text.
+            assert all(not s.text.endswith(etikett) for s in ursprungliga)
+            for s in ursprungliga:
+                traffar = [nytt for nytt in faktiska if utan_kallhanvisning(nytt.text, genererad_etikett=etikett) == s.text]
+                assert len(traffar) == 1
+                assert set(s.referenser) <= set(traffar[0].referenser)
+            assert {utan_kallhanvisning(s.text, genererad_etikett=etikett) for s in faktiska} == {s.text for s in ursprungliga}
+    assert {id: r.model_dump_json() for id, r in resultat.items()} == fore
+
+
+def test_v6_omvarldsbevakning_visar_kalltitel_en_gang_aldre_visning_behalls(v6underlag):
+    from riskanalys.dokument.uppfoljning import bevakningsavsnitt
+    rb, p, _, _, _ = v6underlag
+    historisk = bevakningsavsnitt(rb, p, gransindex={})
+    nytt = bevakningsavsnitt(rb, p, gransindex={}, kort=True)
+    for id in ('SRC-TS-2026-14', 'SRC-VAGL-2025-03'):
+        titel = rb.kallor[id].titel
+        assert historisk.stycken[0].text.count(titel) == 2
+        assert nytt.stycken[0].text.count(titel) == 1
+    assert nytt.stycken[0].referenser == historisk.stycken[0].referenser
+    for id in ('P-BEVAKNING.ansvarig', 'P-BEVAKNING.relevans'):
+        assert str(p.uppgifter[id].varde) in nytt.stycken[0].text
+
+
+@pytest.mark.parametrize(('antal_ord', 'samordnas'), [(12, False), (39, False), (40, True), (41, True)])
+def test_bara_langa_identiska_tabellceller_samordnas(antal_ord, samordnas):
+    from riskanalys.dokument.gemensam_analys import sammanfor_identiska_tabelltexter
+    from riskanalys.dokument.modeller import Avsnitt, Dokumenttabell, Tabellcell, Tabellrad
+    text = ' '.join(['Resonemang'] * antal_ord)
+    celler = tuple(Tabellcell(text=text, referenser=(ref,), proveniens='lokal') for ref in ('H-01', 'H-02'))
+    a = Avsnitt(id='D-ARB.6.1', rubrik='Analys', kalla='lokal', formatversion='D-ARB-tjanst-v6', stycken=(),
+        tabeller=(Dokumenttabell(id='tabell', rubrik='Prövning', kolumner=('Analys',), fore_stycke=0,
+            rader=tuple(Tabellrad(celler=(c,)) for c in celler)),))
+    nytt, gemensamma = sammanfor_identiska_tabelltexter((a,))
+    assert bool(gemensamma) is samordnas
+    for ursprunglig, rad in zip(celler, nytt[0].tabeller[0].rader):
+        assert set(ursprunglig.referenser) <= set(rad.celler[0].referenser)
+        if samordnas:
+            assert rad.celler[0].text == 'Tabellresonemang 1'
+            assert text in gemensamma[0].text
+        else:
+            assert rad.celler[0] == ursprunglig
 
 
 @pytest.mark.parametrize('variation', [False, True])

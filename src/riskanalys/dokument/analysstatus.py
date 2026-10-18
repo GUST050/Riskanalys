@@ -4,7 +4,7 @@ from riskanalys.dokument.tjanstavsnitt_v6 import lokaltext
 from riskanalys.drift.modellrapport import Modellvalidering, valideringens_innehallssumma
 
 
-def analysstatus(rb, bedomning, paket, brister):
+def analysstatus(rb, bedomning, paket, brister, *, formatversion=None):
     if paket is None:
         return (lokaltext('Lokal analys och dess godkännande saknas. Dokumentet är ett ofullständigt utkast. [VERIFIERA]'),)
     poster = []
@@ -21,6 +21,14 @@ def analysstatus(rb, bedomning, paket, brister):
         else:
             text += '. [VERIFIERA]'
         poster.append(lokaltext(text, [t.tjanst, 'D-ARB.B1']))
+    if formatversion == 'D-ARB-tjanst-v7':
+        grupper = {}
+        for post in poster:
+            namn, text = post.text.split(': ', 1)
+            grupper.setdefault(text, []).append((namn, post))
+        poster = [lokaltext(', '.join(namn for namn, _ in delar) + ': ' + text,
+            tuple(dict.fromkeys(ref for _, post in delar for ref in post.referenser)))
+            for text, delar in grupper.items()]
     if brister:
         poster.append(lokaltext(f'Lokal analys har {len(brister)} kompletteringspunkter eller bindningsbrister. Se B1; registrerat beslut undanröjer inte dessa. [VERIFIERA]', ['D-ARB.B1']))
     poster.append(lokaltext('Registrerade beslut är inte ett fastställt dokument. Filaktualitet och slutliga grindar prövas separat.', ['D-ARB.B1']))

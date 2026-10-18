@@ -1,5 +1,7 @@
 """Aktiveringsfrågor går före följdfrågor; alias och andelar frågas aldrig två gånger."""
 from riskanalys.intag.modeller import Intagsfraga
+from riskanalys.intag.verksamhetsval import erbjuds_aktuellt, verksamhetsval
+from riskanalys.intag.fordelning import aktiverad, faltkoppling, fragetext, tjanstefordelning
 from riskanalys.profil.modeller import Profil
 from riskanalys.profil.omfattning import aktivt, kompatibilitetsvy
 from riskanalys.regelverk.modeller import Regelbas
@@ -10,7 +12,16 @@ def fragor(rb: Regelbas, profil: Profil) -> tuple[Intagsfraga, ...]:
     p = kompatibilitetsvy(profil, rb)
     resultat = []
     for f in rb.falt.values():
+        koppling = faltkoppling(rb, f.id)
+        if koppling:
+            if aktiverad(rb, p, f.id):
+                dynamisk = f.model_copy(update={'fraga': fragetext(rb, p, f.id)})
+                resultat.append(Intagsfraga(dynamisk, koppling[1] in tjanstefordelning(rb, p, koppling[0].id)))
+            continue
         if not f.intag or f.alias_for or f.basfalt or not aktivt(f, p, rb):
+            continue
+        val = verksamhetsval(rb, f.id)
+        if val and not erbjuds_aktuellt(p, val[0]):
             continue
         # En okänd aktivering ska först besvaras, inte fylla skärmen med möjliga följdfrågor.
         if f.kritisk_om:

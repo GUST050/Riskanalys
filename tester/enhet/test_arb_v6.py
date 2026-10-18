@@ -25,7 +25,7 @@ def v6underlag(regelbas_v1):
     p = komplett_profil(rb, skapa_profil(rb, Byra(id='ab4b', regelpaket='RP-RED-VG', lan='Västra Götaland', datum=DAG)))
     b = bedom(rb, valj(rb, p.byra.regelpaket, DAG, p.byra.lan), p)
     resultat = {id: skriv_tjanst(Testleverantor([godkant_delsvar(d, t) for d in ('hot', 'sarbarheter')]),
-        rb, p, t, id, effort='medium', personnamn=(), spara=lambda *a: None) for id, t in tjanster_med_avsnitt(b)}
+        rb, p, t, id, effort='medium', personnamn=(), spara=lambda *a: None, formatversion="D-ARB-tjanst-v6") for id, t in tjanster_med_avsnitt(b)}
     h = Historik(handelser=(Handelse(datum=date(2026, 10, 1), typ='utvärdering', beskrivning='Prövning.'),
         Handelse(datum=date(2026, 10, 8), typ='uppdatering', beskrivning='Uppdatering.')))
     return rb, p, b, resultat, h

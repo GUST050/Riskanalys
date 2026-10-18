@@ -40,12 +40,12 @@ def analysfynd_v6(rb,b,p,d,historik,resultat,*,analys=None,modellrapport=None,an
             beskrivning=text,atgard='Komplettera analysen och återskapa dokumentet från aktuellt underlag. Sakgranska på nytt.'))
     for text in (*analyshinder(rb,p,b,analys,datum=granskningsdatum),*analysbrister_filer):lagg('D-ARB',text)
     resultat=resultat or {}
-    if any(not isinstance(resultat.get(id),Tjanstresultat) or resultat[id].formatversion!=V6
+    if any(not isinstance(resultat.get(id),Tjanstresultat) or resultat[id].formatversion!=d.formatversion
            for id,t in tjanster_med_avsnitt(b)):
-        lagg('D-ARB','Validerade v6-skrivdelar saknas för en erbjuden tjänst.')
+        lagg('D-ARB','Validerade versionsbundna skrivdelar saknas för en erbjuden tjänst.')
         return fynd
     try:
-        expected=bygg_arb_v6(rb,p,b,resultat,historik,analys=analys,modellrapport=modellrapport)
+        expected=bygg_arb_v6(rb,p,b,resultat,historik,analys=analys,modellrapport=modellrapport,formatversion=d.formatversion)
     except RiskanalysFel as exc:
         lagg('D-ARB',str(exc));return fynd
     if d.titel!=expected.titel or d.formatversion!=expected.formatversion or [a.id for a in d.avsnitt]!=[a.id for a in expected.avsnitt]:

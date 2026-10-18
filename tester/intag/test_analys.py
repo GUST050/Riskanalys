@@ -12,7 +12,7 @@ from riskanalys.dokument.underlag import tjanster_med_avsnitt
 from riskanalys.intag.tjanst import Intagstjanst
 from riskanalys.intag.webb import skapa_server
 from riskanalys.profil.lagring import spara_profil
-from tester.fixturer.m2 import DAG, godkant_delsvar
+from tester.fixturer.m2 import DAG, bygg_delsvar
 from tester.intag.test_webb import anrop
 
 
@@ -26,7 +26,7 @@ def analysmiljo(tmp_path, monkeypatch, rb_intag, klar):
     spara_profil(t.mapp, klar)
     bm = kor_bedomning(t.mapp, rb_intag)
     b = las_bedomning(bm)
-    lev = Testleverantor([godkant_delsvar(d, x) for _, x in tjanster_med_avsnitt(b) for d in ('hot', 'sarbarheter')])
+    lev = Testleverantor(bygg_delsvar(rb_intag, klar, b))
     kor_skrivning(t.mapp, rb_intag, lev)
     s = skapa_server(t, leverantor=lev)
     trad = threading.Thread(target=s.serve_forever, daemon=True); trad.start()

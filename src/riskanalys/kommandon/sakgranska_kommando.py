@@ -60,7 +60,7 @@ def _kor_sakgranska_last(args: argparse.Namespace) -> int:
     profil = granskningens_profil(byramapp, granskningsmapp)
     sakgranskningar = las_sakgranskningar(byramapp)
     analysbindning = None
-    if dokument.formatversion == 'D-ARB-tjanst-v6':
+    if dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7'):
         from riskanalys.granskning.analysunderlag import las_fryst_analys, aktuell_analys_hinder
         analysbindning = las_fryst_analys(granskningsmapp).registersumma
         if args.godkann or args.underkann:

@@ -4,6 +4,7 @@ from html import escape as e
 from urllib.parse import urlencode
 from riskanalys.fel import RiskanalysFel
 from riskanalys.intag.fragor import fragor
+from riskanalys.intag.fordelning import faltkoppling
 from riskanalys.profil.hantering import visa_varde_klartext
 from riskanalys.regelverk.granser import metodgranser, metodgransindex
 from riskanalys.profil.modeller import Uppgift
@@ -75,6 +76,8 @@ def fragesida(s,id=None,data=None,fel=''):
     t=s.tjanst.oversikt(p)
     nu=sum(q.falt.intag.obligatorisk and not q.besvarad and p.uppgifter.get(q.falt.id,Uppgift()).status!='föreslagen' for q in qs)
     html=f'<p class="eyebrow">3. Komplettera verksamheten</p><p class="hint">{t.besvarade} uppgifter bekräftade · {nu} frågor att besvara nu. Följdfrågor anpassas efter dina tjänster; okända svar finns i översikten.</p><progress value="{t.besvarade}" max="{max(t.antal,1)}"></progress><h1>{e(f.fraga)}</h1><p class="hint">{e(f.varfor)}</p>'
+    if not f.intag.obligatorisk:
+        html += '<p class="hint">Svaret är valfritt inför utkastet. Du kan lämna frågan obesvarad och fortsätta via översikten.</p>'
     if f.intag:
         kallsidor='; '.join(f'<a href="{e(s.tjanst.rb.kallor[k].url,quote=True)}" rel="noreferrer" target="_blank">{e(s.tjanst.rb.kallor[k].titel)}</a>' for k in f.intag.kallor if k in s.tjanst.rb.kallor)
         html+=f'<details><summary>Frågans källor och användning</summary><p>Svaret används i riskbedömningens avsnitt {e(", ".join(id.removeprefix("D-ARB.") for id in f.intag.avsnitt))}. Källstöd: {kallsidor}.</p><p>Frågekopplingen visar vilket underlag som behövs; den är inget intyg om att kraven är uppfyllda.</p></details>'
@@ -134,6 +137,8 @@ def oversikt(s,fel='',profil=None,qs=None):
         u=vy.uppgifter.get(q.falt.id,Uppgift())
         value=visa_varde_klartext(q.falt,u.varde,metodgranser(s.tjanst.rb,q.falt.id,gransindex)) if u.varde is not None else 'Saknas'
         status='Behöver kontrolleras igen' if u.inaktuell else u.status
+        if faltkoppling(s.tjanst.rb, q.falt.id) and u.status == 'bekräftad' and not q.besvarad:
+            status = 'Behöver bekräftas på nytt'
         if not q.falt.intag.obligatorisk:status += ' (frivilligt inför utkast)'
         html+=f'<tr><td>{e(q.falt.fraga)}</td><td>{e(value)}<br><small>{e(status)}; {e(u.kalla or u.motivering or "")}</small></td><td><a href="{s.prefix}?{urlencode({"falt":q.falt.id})}">Ändra<span class="hint"> svar</span></a></td></tr>'
     html+='</tbody></table>'

@@ -1,5 +1,6 @@
 """Samma sakliga begränsningar gäller formulär, CLI och handredigerade profiler."""
 from datetime import date
+from riskanalys.intag.fordelning import faltkoppling, svarsbrist
 from riskanalys.profil.omfattning import aktivt
 
 
@@ -8,6 +9,10 @@ def kvalitetsbrister(rb, profil) -> tuple[str, ...]:
     if profil.byra.datum > date.today():
         hinder.append('Bedömningsdatum får inte ligga i framtiden.')
     for f in rb.falt.values():
+        if faltkoppling(rb, f.id):
+            brist = svarsbrist(rb, profil, f.id)
+            if brist:
+                hinder.append(brist)
         u=profil.uppgifter.get(f.id)
         if not u or u.status!='bekräftad' or u.inaktuell or not aktivt(f,profil,rb):continue
         if u.datum and u.datum > date.today():

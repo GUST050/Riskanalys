@@ -6,12 +6,28 @@ from riskanalys.dokument.modeller import Avsnitt, Textstycke, Underrubrik
 from riskanalys.dokument.nivamotivering_v6 import nivamotivering_stycken
 from riskanalys.dokument.skrivversion import V6
 from riskanalys.dokument.tjanstavsnitt import _ai_stycken
+from riskanalys.dokument.utfall_v6 import utfallsstycken
+from riskanalys.intag.fordelning import tjanstefordelning
 
 AI_DELAR = (('hot', 'Hot'), ('sarbarheter', 'Sårbarheter'))
 
 
 def lokaltext(text, refs=(), *, typ='analys'):
     return Textstycke(typ=typ, text=text, referenser=list(dict.fromkeys(refs)), proveniens='lokal')
+
+
+def sammanfor_identiska_ai_stycken(stycken):
+    """Behåll exakt ordalydelse en gång inom en AI-del och förena dess referenser."""
+    poster = {}
+    for s in stycken:
+        nyckel = (s.typ, s.text, s.proveniens)
+        if nyckel in poster:
+            forra = poster[nyckel]
+            poster[nyckel] = forra.model_copy(update={
+                'referenser': list(dict.fromkeys((*forra.referenser, *s.referenser)))})
+        else:
+            poster[nyckel] = s
+    return tuple(poster.values())
 
 
 def _mall(rb, profil, t, del_id, rubrik, gransindex):
@@ -31,10 +47,12 @@ def _ai_del(rb, profil, t, resultat, del_id, rubrik, gransindex):
     svar = resultat.del_(del_id).godkant_svar if resultat is not None else None
     if svar:
         fb = resultat.faktablad
-        text = tuple(s.model_copy(update={'proveniens': 'ai'}) for s in _ai_stycken(svar, fb.numeriska(), fb.perioder()))
+        text = sammanfor_identiska_ai_stycken(
+            s.model_copy(update={'proveniens': 'ai'}) for s in _ai_stycken(svar, fb.numeriska(), fb.perioder()))
     else:
         text = _mall(rb, profil, t, del_id, rubrik, gransindex)
-    return (*text, *lasta_stycken_v6(rb, profil, t, del_id, gransindex=gransindex))
+    utfall = utfallsstycken(rb, profil, t, gransindex=gransindex, fordelning=tjanstefordelning(rb, profil, t.tjanst)) if del_id == 'sarbarheter' else ()
+    return (*text, *utfall, *lasta_stycken_v6(rb, profil, t, del_id, gransindex=gransindex))
 
 
 def bygg_tjanstavsnitt_v6(rb, profil, t, resultat, avsnitt_id, *, gransindex, lokal=None, tabeller=(), analys=None):

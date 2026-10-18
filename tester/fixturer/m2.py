@@ -12,7 +12,9 @@ PERIOD=Period(fran=date(2026,1,1),till=date(2026,9,30))
 def komplett_profil(rb,p):
     upp={}
     for k,f in rb.falt.items():
-        if f.alias_for or f.basfalt:upp[k]=Uppgift();continue
+        if f.alias_for or f.basfalt or k.endswith(('_attest', '_betalningsmandat', '_bankinsyn')):
+            # Frivilliga nya verksamhetsval lämnas obesvarade om ett prov inte väljer dem uttryckligen.
+            upp[k]=Uppgift();continue
         v={'bool':False,'heltal':0,'tal':0.,'text':'Syntetiskt testnamn','datum':DAG,'andel':0.}.get(f.typ)
         if f.typ=='val':v=p.byra.lan if k=='P-ORG.sateslan' else f.val[0]
         if k=='P-ORG.sateslan':v=p.byra.lan
@@ -80,8 +82,12 @@ def _regelbas_for_delsvar():
     return ladda_regelbas()
 
 
-def bygg_delsvar(rb, profil, bedomning, *, formatversion="D-ARB-tjanst-v6"):
+def bygg_delsvar(rb, profil, bedomning, *, formatversion="D-ARB-tjanst-v7", tjanstspecifik=False):
     from riskanalys.dokument.skrivversion import delar_for_version
+    if formatversion == "D-ARB-tjanst-v7":
+        from tester.fixturer.skrivsvar_v7 import godkant_svar_v7, tjanstspecifikt_svar_v7
+        bygg = tjanstspecifikt_svar_v7 if tjanstspecifik else godkant_svar_v7
+        return [bygg(rb, profil, t, id) for id, t in tjanster_med_avsnitt(bedomning)]
     return [godkant_delsvar(d,t) for _,t in tjanster_med_avsnitt(bedomning) for d in delar_for_version(formatversion)]
 
 

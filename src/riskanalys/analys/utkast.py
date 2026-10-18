@@ -1,16 +1,18 @@
 """Förifyll redigerbara ogranskade svar från bekräftad profil och motor."""
 from collections import Counter
+from riskanalys.intag.fordelning import kan_ateranvandas
 from riskanalys.analys.modeller import (
     Analysbelagg, Analysblock, Analyspaket, Scenarioanalys, Sarbarhetsprovning, Tjansteanalys,
 )
 from riskanalys.analys.provning import ALLTID, faktisk_reduktion
-from riskanalys.profil.hantering import visa_varde_klartext
+from riskanalys.analys.exponering import forifylld_exponering
 
 
 def forifyll_analys(rb,profil,bedomning,bindning) -> Analyspaket:
     belagg=tuple(Analysbelagg(id='profil:'+f,profilfalt=(f,),datum=u.datum,period=u.period)
                  for f,u in sorted(profil.uppgifter.items())
-                 if f in rb.falt and profil.ar_bekraftad(f) and u.datum and u.kalla and u.bekraftad_av)
+                 if f in rb.falt and profil.ar_bekraftad(f) and u.datum and u.kalla and u.bekraftad_av
+                 and kan_ateranvandas(rb, profil, f))
     erbjudna=[t for t in bedomning.tjanster if t.erbjuds is not False]
     antal=Counter(h for t in erbjudna for h in rb.tjanster[t.tjanst].hot)
     def scenario(id,hot):
@@ -21,20 +23,7 @@ def forifyll_analys(rb,profil,bedomning,bindning) -> Analyspaket:
     giltiga={f for b in belagg for f in b.profilfalt}
     for t in erbjudna:
         kat=rb.tjanster[t.tjanst]
-        erbjuds=kat.erbjuds_falt
-        uppgift=profil.uppgifter.get(erbjuds)
-        exponering=f'{kat.namn}: erbjudandet är ' + ('bekräftat.' if profil.ar_bekraftad(erbjuds) else 'okänt; komplettera intaget.')
-        exponeringsbelagg=('profil:'+erbjuds,) if erbjuds in giltiga else ()
-        for f,u in profil.uppgifter.items():
-            if f.startswith(erbjuds.removesuffix('_erbjuds')+'_') and f in giltiga:
-                falt=rb.falt[f]
-                # Only service-specific factual fields belong in exposure; narratives remain editable source references.
-                if falt.typ=='text':
-                    continue
-                rubrik=falt.etikett or falt.fraga
-                period=f' Period {u.period.fran.isoformat()}–{u.period.till.isoformat()}.' if u.period else ''
-                exponering+=f' {rubrik}: {visa_varde_klartext(falt,u.varde)}.{period} Bekräftat {u.datum.isoformat()}.'
-                exponeringsbelagg+=('profil:'+f,)
+        exponering,exponeringsbelagg=forifylld_exponering(rb,profil,t.tjanst,giltiga)
         block=[]
         for n in range(1,17):
             aktiv='aktiv' if n in ALLTID else 'okand'
@@ -50,8 +39,10 @@ def forifyll_analys(rb,profil,bedomning,bindning) -> Analyspaket:
                     skal='Bekräftad extern KYC/utkontraktering.' if finns else 'Bekräftat att extern KYC/utkontraktering inte används.'
             block.append(Analysblock(nummer=n,aktivering=aktiv,motivering=skal))
         sarbarheter=[]
-        for omrade in ('kund','kanal','geo','verk'):
-            ids=tuple(s for s in kat.sarbarheter if rb.sarbarheter[s].omrade==omrade)
+        for omrade in ('kund','kanal','geo','verk','tjanst'):
+            if omrade == 'tjanst' and not any(rb.sarbarheter[s].omrade == 'tj' for s in kat.sarbarheter):
+                continue
+            ids=tuple(s for s in kat.sarbarheter if rb.sarbarheter[s].omrade==('tj' if omrade == 'tjanst' else omrade))
             sarbarheter.append(Sarbarhetsprovning(id=t.tjanst+':'+omrade,omrade=omrade,sarbarheter=ids))
         tjanster.append(Tjansteanalys(tjanst=t.tjanst,block=tuple(block),exponering=exponering,
             exponeringsbelagg=exponeringsbelagg,

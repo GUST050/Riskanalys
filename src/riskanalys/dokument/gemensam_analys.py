@@ -27,7 +27,8 @@ def sammanfor_identisk_lokaltext(avsnitt):
     gemensamt = []
     for text, poster in delade.items():
         refs = tuple(dict.fromkeys(ref for _, s in poster for ref in s.referenser))
-        gemensamt.append(lokaltext(f'Gemensamt resonemang {nummer[text]}. {text}', refs))
+        prefix = '' if poster[0][0].formatversion == 'D-ARB-tjanst-v7' else 'Gemensamt resonemang '
+        gemensamt.append(lokaltext(f'{prefix}{nummer[text]}. {text}', refs))
     resultat = []
     kartposter = []
     for a in avsnitt:
@@ -35,7 +36,10 @@ def sammanfor_identisk_lokaltext(avsnitt):
         stycken = []
         nya = []
         infogad = False
-        for s in a.stycken:
+        delstarter = {u.fore_stycke for u in a.underrubriker} if a.formatversion == 'D-ARB-tjanst-v7' else set()
+        for i, s in enumerate(a.stycken):
+            if i in delstarter:
+                infogad = False
             nya.append(len(stycken))
             if not _delbar(s) or s.text not in delade:
                 stycken.append(s)
@@ -43,7 +47,11 @@ def sammanfor_identisk_lokaltext(avsnitt):
             if not infogad:
                 karta = nummerintervall(nummer[x.text] for x in valda)
                 refs = ['D-ARB.5', 'D-ARB.B1', a.id]
-                stycken.append(lokaltext('Gemensamma resonemang '+karta+' gäller för denna tjänst. Fältkoppling och belägg: bilaga B1.', refs))
+                belaggsmening = '' if a.formatversion == 'D-ARB-tjanst-v7' and any(
+                    ref.startswith('P-') for s in a.stycken for ref in s.referenser) else ' Fältkoppling och belägg: bilaga B1.'
+                text = ('Se gemensamma resonemang '+karta+'.' if a.formatversion == 'D-ARB-tjanst-v7' else
+                        'Gemensamma resonemang '+karta+' gäller för denna tjänst.')
+                stycken.append(lokaltext(text+belaggsmening, refs))
                 infogad = True
             kartposter.append(lokaltext(a.rubrik+'. '+s.text.split(':', 1)[0]+': gemensamt resonemang '+str(nummer[s.text])+'.',
                 (*s.referenser, a.id, 'D-ARB.5')))
@@ -59,7 +67,7 @@ def sammanfor_identiska_tabelltexter(avsnitt):
         for tab in a.tabeller:
             for rad in tab.rader:
                 for cell in rad.celler:
-                    if cell.proveniens == 'lokal' and len(cell.text.split()) >= 12 and '[VERIFIERA]' not in cell.text:
+                    if cell.proveniens == 'lokal' and len(cell.text.split()) >= 40 and '[VERIFIERA]' not in cell.text:
                         grupper.setdefault(cell.text, []).append(cell)
     delade = {text: poster for text, poster in grupper.items() if len(poster) > 1}
     nummer = {text: n for n, text in enumerate(delade, 1)}
