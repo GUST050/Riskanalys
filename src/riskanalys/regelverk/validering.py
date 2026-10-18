@@ -186,6 +186,11 @@ def _tillatelselistor(regelbas: Regelbas) -> list[str]:
             for falt_id in lista.falt
             if falt_id in regelbas.falt and regelbas.falt[falt_id].personuppgift
         ]
+        fel += [
+            f"{lista.id}: fältet {falt_id} är ett lokalt flervalsfält och får inte skickas till AI."
+            for falt_id in lista.falt
+            if falt_id in regelbas.falt and regelbas.falt[falt_id].typ == "flerval"
+        ]
         fel += _saknas(lista.id, lista.undvik, regelbas.bristmonster)
     return fel
 

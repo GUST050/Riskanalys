@@ -5,7 +5,7 @@ from riskanalys.profil.hantering import visa_varde_klartext
 def exponeringsposter(rb, profil, tjanst, giltiga):
     erbjuds = rb.tjanster[tjanst].erbjuds_falt
     return tuple((f, rb.falt[f], u) for f, u in profil.uppgifter.items()
-        if f.startswith(erbjuds.removesuffix('_erbjuds') + '_') and f in giltiga and rb.falt[f].typ != 'text')
+        if f.startswith(erbjuds.removesuffix('_erbjuds') + '_') and f in giltiga and rb.falt[f].typ not in ('text', 'flerval'))
 
 
 def forifylld_exponering(rb, profil, tjanst, giltiga):

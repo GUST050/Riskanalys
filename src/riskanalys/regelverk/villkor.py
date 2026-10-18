@@ -106,12 +106,21 @@ def kontrollera_varde(definition: Faltdef, varde: Any) -> None:
         ok = isinstance(varde, str)
     elif typ == "val":
         ok = isinstance(varde, str) and varde in definition.val
+    elif typ == "flerval":
+        ok = _ar_flerval(definition, varde)
     elif typ == "datum":
         ok = isinstance(varde, date)
     else:
         raise VillkorsFel(f"Okänd typ {typ!r} för fältet {definition.id}.")
     if not ok:
         raise VillkorsFel(f"Värdet {varde!r} passar inte typen {typ} för fältet {definition.id}.")
+
+
+def _ar_flerval(definition: Faltdef, varde: Any) -> bool:
+    """Ett flerval är en tuple eller lista med unika val ur fältets alternativ. Tomt betyder att inget valts."""
+    return (isinstance(varde, (tuple, list))
+            and all(isinstance(del_, str) and del_ in definition.val for del_ in varde)
+            and len(set(varde)) == len(varde))
 
 
 def tolka_villkor(data: Any, falt: dict[str, Faltdef]) -> Villkor:
@@ -142,6 +151,9 @@ def _tolka_jamforelse(data: dict[str, Any], falt: dict[str, Faltdef]) -> Jamfore
     if op not in OPERATORER:
         raise VillkorsFel(f"Okänd operator {op!r} för fältet {falt_id}.")
     definition = falt[falt_id]
+    if definition.typ == "flerval":
+        # Ett flervalsfält är en lokal iakttagelse som motorn läser direkt; det får aldrig styra krav eller sårbarheter.
+        raise VillkorsFel(f"Fältet {falt_id} är ett flervalsfält och kan inte användas i villkor.")
     if op in UTAN_VARDE:
         if "varde" in data:
             raise VillkorsFel(f"Operatorn {op} tar inget värde ({falt_id}).")

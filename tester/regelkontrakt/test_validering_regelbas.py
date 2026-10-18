@@ -229,3 +229,14 @@ def test_flervalsfalt_utan_alternativ_kan_inte_laddas(tmp_path, skriv_minimal_re
     rot = skriv_minimal_regelbas(tmp_path / "rb", {"falt.yaml": falt})
     with pytest.raises(RegelbasFel, match="flerval"):
         ladda_regelbas(rot)
+
+
+def test_flervalsfalt_far_inte_sta_i_tillatelselista(tmp_path, skriv_minimal_regelbas, minimal_filer):
+    falt = minimal_filer["falt.yaml"]
+    falt.append({"id": "P-TJ.T-1_iakttagna_hot", "typ": "flerval", "fraga": "Vilka hot har iakttagits?",
+                 "varfor": "Test.", "val": ["H-1"]})
+    listor = minimal_filer["tillatelselistor.yaml"]
+    listor[0]["falt"].append("P-TJ.T-1_iakttagna_hot")
+    rot = skriv_minimal_regelbas(tmp_path / "rb", {"falt.yaml": falt, "tillatelselistor.yaml": listor})
+    fel = validera(ladda_regelbas(rot))
+    assert fel == ["risk_per_tjanst: fältet P-TJ.T-1_iakttagna_hot är ett lokalt flervalsfält och får inte skickas till AI."]

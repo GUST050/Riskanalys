@@ -79,6 +79,21 @@ class Falt(Strikt):
             raise ValueError(f"{self.id}: ett fält av typen flerval måste ange sina alternativ i val.")
         return self
 
+    @model_validator(mode="after")
+    def _flerval_blockerar_aldrig(self):
+        """Ett flervalsfält är en frivillig lokal iakttagelse: aldrig kritiskt, aldrig ett obligatoriskt intagssvar.
+
+        kritisk_om får finnas; det styr bara när frågan visas, till exempel först när tjänsten erbjuds.
+        """
+        if self.typ != "flerval":
+            return self
+        if self.kritisk or (self.intag is not None and self.intag.obligatorisk):
+            raise ValueError(
+                f"{self.id}: ett fält av typen flerval får inte vara kritiskt eller obligatoriskt. "
+                "Ta bort kritisk och sätt intag.obligatorisk till false."
+            )
+        return self
+
 
 class Kalla(Strikt):
     id: str

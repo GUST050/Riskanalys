@@ -96,7 +96,10 @@ def fragesida(s,id=None,data=None,fel=''):
         from riskanalys.intag.tjanstvy import lista
         html+=lista(s,p)+'<details><summary>Besvara tjänsterna en i taget</summary>'
     html+=f'<form method="post" action="{s.prefix}svar" autocomplete="off">'+dold('csrf',s.csrf)+dold('revision',d.get('revision',profilrevision(p)))+dold('falt',f.id)
-    if f.typ in ('bool','val'):
+    if f.typ=='flerval':
+        from riskanalys.intag.flervalsvy import flervalsrutor, formularval, sparade_val
+        html+=flervalsrutor(s.tjanst.rb,f,formularval(d) if data is not None else sparade_val(u.varde))
+    elif f.typ in ('bool','val'):
         choices=[('ja','Ja'),('nej','Nej')] if f.typ=='bool' else [(v,v.replace('_',' ')) for v in f.val]
         html+=val('text','Ditt svar',choices,value)
     elif f.id=='P-ORG.namn':

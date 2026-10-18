@@ -3,7 +3,7 @@
 from datetime import date
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_serializer, model_validator
 
 from riskanalys.regelverk.villkor import Faltvarde, Kunskap
 
@@ -37,12 +37,20 @@ class Uppgift(Fryst):
     inaktuell: bool = False
     underlagsbindning: str | None = Field(default=None, pattern=r"^sha256:[0-9a-f]{64}$")
 
+    @field_validator("varde", mode="after")
+    @classmethod
+    def _flerval_som_tuple(cls, varde: Any) -> Any:
+        """Ett flerval lagras som YAML-lista men hanteras som oföränderlig tuple."""
+        return tuple(varde) if isinstance(varde, list) else varde
+
     @model_serializer(mode="wrap")
     def serialisera(self, handler):
-        """Historiska uppgifter behåller sina payloads och profilsummor."""
+        """Historiska uppgifter behåller sina payloads och profilsummor. Ett flerval skrivs som lista."""
         data = handler(self)
         if self.underlagsbindning is None:
             data.pop("underlagsbindning", None)
+        if isinstance(self.varde, tuple) and "varde" in data:
+            data["varde"] = list(data["varde"])
         return data
 
 

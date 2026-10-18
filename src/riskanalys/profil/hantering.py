@@ -15,6 +15,7 @@ from riskanalys.regelverk.villkor import Faltdef, VillkorsFel, falt_i, kontrolle
 
 SANT = frozenset({"ja", "sant", "true", "1"})
 FALSKT = frozenset({"nej", "falskt", "false", "0"})
+INGET_FLERVAL = "inga"
 ANDEL_HJALP = "Andelen anges som 0–1 eller i procent, till exempel 0,3 eller 30 %."
 _PROCENT = re.compile(r"^(\d+(?:[.,]\d+)?)\s*%$")
 _HJALP = {
@@ -54,6 +55,8 @@ def visa_varde(falt: Falt, varde: Any) -> str:
         return "ja" if varde else "nej"
     if falt.typ == "andel":
         return f"{round(varde * 100)} %"
+    if falt.typ == "flerval" and isinstance(varde, (tuple, list)):
+        return ", ".join(varde) if varde else INGET_FLERVAL
     if isinstance(varde, date):
         return varde.isoformat()
     return str(varde)
@@ -303,6 +306,8 @@ def _med(profil: Profil, falt_id: str, uppgift: Uppgift) -> Profil:
 def _hjalp(falt: Falt) -> str:
     if falt.typ == "val":
         return f" Välj ett av: {', '.join(falt.val)}."
+    if falt.typ == "flerval":
+        return f" Välj inget, ett eller flera av: {', '.join(falt.val)}, åtskilda med komma."
     return f" {_HJALP[falt.typ]}" if falt.typ in _HJALP else ""
 
 
@@ -333,6 +338,11 @@ def _bool(text: str) -> bool:
     raise ValueError("inte ja eller nej")
 
 
+def _flerval(text: str) -> tuple[str, ...]:
+    """Kommaseparerade val blir en sorterad tuple utan dubbletter; tom text betyder att inget valts."""
+    return tuple(sorted({del_.strip() for del_ in text.split(",") if del_.strip()}))
+
+
 def _heltal(text: str) -> int:
     return int(text.replace(" ", ""))
 
@@ -350,5 +360,6 @@ _TOLKARE: dict[str, Callable[[str], Any]] = {
     "andel": _andel,
     "text": _text,
     "val": _text,
+    "flerval": _flerval,
     "datum": date.fromisoformat,
 }

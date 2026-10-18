@@ -131,7 +131,8 @@ class Hantera(BaseHTTPRequestHandler):
         hanterare={k:getattr(self,'post_'+k) for k in ('skapa','svar','skriv','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
         if path not in hanterare or query:
             self.svara(404,'Sidan finns inte.');return
-        data=self.formulardata(512 if path.startswith('analys') else 32 if path in ('tjanster','skapa','registersamlat') else 16)
+        from riskanalys.intag.flervalsvy import flervalsgrans
+        data=self.formulardata(512 if path.startswith('analys') else 32 if path in ('tjanster','skapa','registersamlat') else 16+flervalsgrans(self.server.tjanst.rb) if path=='svar' else 16)
         if data is None:return
         try:
             hanterare[path](data)
@@ -310,7 +311,11 @@ class Hantera(BaseHTTPRequestHandler):
             raise RiskanalysFel('Välj en registrerad intagsfråga.')
         period=Period(fran=formulardatum(data,'period_fran'),till=formulardatum(data,'period_till')) if a else None
         kalla=vald_kalla(s.tjanst.rb,p,f,data,period) if data.get('status','bekräftad')=='bekräftad' else data.get('kalla','')
-        svar=IntagSvar(falt=f.id,text=data.get('text',''),kalla=kalla,roll=data.get('roll',''),datum=formulardatum(data,'datum'),status=data.get('status','bekräftad'),motivering=data.get('motivering',''),period=period)
+        if f.typ=='flerval':
+            from riskanalys.intag.flervalsvy import formulartext
+            text=formulartext(f,data)
+        else:text=data.get('text','')
+        svar=IntagSvar(falt=f.id,text=text,kalla=kalla,roll=data.get('roll',''),datum=formulardatum(data,'datum'),status=data.get('status','bekräftad'),motivering=data.get('motivering',''),period=period)
         self.server.tjanst.spara(svar,data.get('revision',''))
         self.server.utkast=None;self.server.kompletteringar=()
 
