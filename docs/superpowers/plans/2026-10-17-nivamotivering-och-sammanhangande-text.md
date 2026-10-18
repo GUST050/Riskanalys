@@ -19,7 +19,7 @@
 - Äldre v5-, v5.1- och v6-resultat och exporter ska fortsatt kunna läsas och verifieras.
 - Regelbasversion höjs till 1.6.0 i första uppgiften som ändrar regelbasen; regelbasvalidering (`.venv/bin/riskanalys regelbas validera`) ska passera efter varje sådan uppgift.
 - Testkommando: `.venv/bin/pytest <filer> -q`. Ingen uppgift är klar förrän dess riktade tester och berörda befintliga testfiler är gröna. Fullsviten (`env -u ANTHROPIC_API_KEY .venv/bin/pytest`, cirka 20 min) körs efter uppgift 7 och i uppgift 11.
-- En lokal commit per godkänd uppgift på `codex/m0-m1`, format `<typ>: <beskrivning>`, avslutad med `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Ingen push. `research_notes/` committas inte.
+- **Fortsättning 2026-10-18:** Codex byggde uppgift 4–11 utan commits och granskade mot sparade arbetskopiesnapshots. Användaren beslutade 2026-10-18 att säkra det fullsvitsgröna läget i lokala commits utan push (`6a9e59e`). Ändringarna är sammanflätade mellan uppgifterna, så kodläget committas samlat i stället för per uppgift; otestade mellanlägen committas inte. `research_notes/` lämnas orört.
 
 ## Granskningsfokus
 
@@ -28,6 +28,18 @@
 3. **Byrå utan lokal analys eller med tom PT-motivering:** nivådelen ska visa beräkningen och `[VERIFIERA]`, inte tom text eller undantag. Prov i uppgift 3.
 4. **Tjänstefördelning större än byråns eller tjänstens antal:** ska ge en motsägelse i intaget och aldrig visas som giltigt utfall. Prov i uppgift 6.
 5. **Äldre v6-skrivresultat i ny byggare:** ett sparat v6-resultat ska fortsatt bygga ett v6-dokument; ett v6-resultat får inte användas som v7-svar. Prov i uppgift 10.
+
+## Integrationspreciseringar 2026-10-18
+
+Förkontroll och beslut finns i arbetsloggen. Spec revision 35 gäller fortsatt; dessa preciseringar genomför dess säkerhets- och läsbarhetskrav.
+
+- Uppgift 4: M1-förslaget kräver att dess vägledningskälla finns i det tillförda, versionsbundna källunderlaget. En äldre fryst regelbas ändras aldrig för att lägga till en saknad källa. Ett tillfälligt budgetundantag får bara omfatta övre ordgränsen efter godkänt bygge/bevarande/varningskontroll; uppgift 7 tar bort det.
+- Uppgift 6: fördelningsfält är uttryckligen valfria och inte kritiska. Frågorna måste vara åtkomliga i intagsflödet. Användning förutsätter aktuella bekräftade baser, samma statistikperiod och giltig aktivering. Tjänsters kunder kan överlappa och summeras inte. Felaktiga eller inaktuella antal visas inte som giltigt varav. Källor/grund placeras enligt Intagsfalt-schemat, inte som ogiltiga top-level-fält.
+- Uppgift 8–9: nya verksamhetsval får påverka V7-underlaget, medan historiska V5/V6-begäranden behåller sin versionerade vy. V7 skiljer uttryckligen byråfakta från tjänstefakta och använder bara den aktuella tjänstens verksamhetsval. Saknat eller valt okant är okänt. Katalogens kontrollbeskrivning och källbundna räckvidd/avgränsning tillförs endast som offentligt regelbasunderlag i den nya versionens skrivkontrakt; privata kontrollutfall skickas aldrig. Om beskrivningsstöd saknas ska modellen inte fylla luckan själv.
+- Uppgift 9: befintliga tillämpliga sakskydd för TF, hotreferenser, obelagda samband, rapporteringsslutsatser, kontrollminskning och sanktionsundantag överförs till delen analys. Nya ordregler ersätter inte dessa skydd. Namn-/privatberoende lokal efterprövning sker först efter alla externa anrop.
+- Uppgift 10: fullständiga lokala utfall återges en gång. Kategoritabellen visar kort status/relevans och hänvisning inom samma tjänst, utan att kopiera fulla värde-/periodmeningar eller lokala motiveringar. En verklig kort introduktionsmening bär tabellens rubrikposition. Aktuell Tjansteanalys skickas till nivåmotiveringen.
+- Uppgift 10 omfattar också slutna dokumentmodeller, matning, sakgranskning, senaste-underkännande, kronologi och fastställelse. V7 får samma skydd som V6; gamla paket förblir verifierbara. Blandade V6/V7-svar avvisas, inte märks om. V7-standard väljs först när både skrivning och dokumentkedja stöder den.
+- Ord- och sidmål höjs inte. Normala prov ska nå 3 500–5 000 huvudord med bevarad sakmotivering; maxprov bevarar allt och visar längdvarning. Fullsvitsresultat avser ett identifierat och oförändrat kodläge.
 
 ---
 
