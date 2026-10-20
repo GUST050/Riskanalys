@@ -1,7 +1,7 @@
 """En modul per analysdel: mål, krav med skäl och fällor med skäl (spec 8.4.4)."""
 
 from riskanalys.dokument.delvalidering import LANGD
-from riskanalys.dokument.skrivversion import V5, V6, V7, DELAR_V5, delar_for_version
+from riskanalys.dokument.skrivversion import V5, V6, V7, V8, DELAR_V5, delar_for_version
 
 DELAR = DELAR_V5  # Historiskt offentligt femdelarskontrakt. Ny skrivning väljer version explicit.
 
@@ -118,6 +118,39 @@ def modultext(del_id: str, *, formatversion: str = V5) -> str:
     """Modulen med delens längdintervall. Gränsen kommer från valideringen så att de inte glider isär."""
     if del_id not in delar_for_version(formatversion):
         raise ValueError("Analysdelen ingår inte i skrivformatet.")
+    if formatversion == V8:
+        return MODUL_V8
     lagst, hogst = LANGD[del_id]
     versionstext = "Skrivformat v6: endast hot och sårbarheter genereras. Övrig analys skrivs lokalt.\n" if formatversion == V6 else ""
     return f"{versionstext}{MODULER[del_id]}\nSkriv {lagst}–{hogst} ord i delen. Text utanför intervallet underkänns och måste skrivas om."
+
+
+# Eget kontrakt: ändringar här får aldrig ändra V7:s historiska modulbytes.
+MODUL_V8 = (
+    "Skrivformat v8: Skriv en sammanhängande tjänsteanalys med uppdrag, mandat och insyn utifrån synliga "
+    "verksamhetsval. Ett tjänstbundet nej belägger inget om andra tjänster. Okända synliga val markeras "
+    "med [VERIFIERA] och en oklarhet för faktaraden; fyll inte i ett mandat själv. "
+    "Beskriv två till tre konkreta möjliga missbruksprocesser, med terrorfinansiering när TF-hot finns. "
+    "Hänvisa till minst två H-ID och knyt minst ett hot till ett synligt S-ID eller P-ID i samma stycke. "
+    "Kataloghot bevisar inga inträffade händelser. "
+    "För varje kategori med synligt ja, nej eller okänt behövs minst ett S-ID: kund = kunder, "
+    "kanal = distributionskanaler, geo = geografi, tj = tjänstespecifika och verk = verksamhetsspecifika "
+    "förhållanden. P-ID ersätter inte S-ID. Kategorier utan synligt utfall undantas. Ett nej är en "
+    "avgränsning, ingen frånvaro av hot. Nämn eller referera inte skyddade värden eller sårbarheter med "
+    "utfallet prövas lokalt; programmet skriver dessa. "
+    "Faktapostens omfang anger byra eller tjanst, med tjanst_id. Byråantal får aldrig tillskrivas tjänsten. "
+    "Privata tjänstefördelningar, lokala antal och kunskapsstatus infogas av programmet. Påstå inte att "
+    "lokal fördelning saknas, är okänd eller behöver kompletteras utifrån faktabladets avgränsning. "
+    "Gissa varken antal med talord eller andelar som hälften. Beskriv faktoröverlapp endast som "
+    "villkorligt scenario när samma kunder inte är belagda; använd stycketypen scenario. "
+    "Beskriv kontrollernas generella räckvidd, vad de normalt kan visa och relevant begränsning enligt "
+    "beskrivning, kan_belagga, begransningar och forutsattningar med källreferenser. Använd bara den "
+    "tjänst- och hotkoppling som uttryckligen finns. rackviddsstatus okand innebär saknat källstöd; "
+    "kallbundet_underlag intygar ingen lokal scenariotäckning. Hitta inte på utförda åtgärder, "
+    "kontrolleffekt, riskreduktion, fattade beslut, utförd bevakning eller sakkunnigattest. "
+    "Råd och möjliga scenarier ska framgå som sådana. Programmet skriver samtliga nivåer och motorutfall "
+    "samt egen rapportering; återberätta inte detta. "
+    "Använd AISvar med stycken och oklarheter. Tal och perioder följer platshållarkontraktet; "
+    "referenser bär käll-ID, inte löptexten. Skriv så långt analysen behöver utan hård ordgräns; "
+    "längd är rådgivande och inget resonemang ska kapas."
+)

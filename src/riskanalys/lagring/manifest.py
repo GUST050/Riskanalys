@@ -147,4 +147,5 @@ def verifiera_manifest(mapp: Path) -> list[str]:
             fel.append(f"Fil ändrad: {namn}")
     for namn in sorted(nuvarande.keys() - manifest.filer.keys()):
         fel.append(f"Fil finns inte i manifestet: {namn}")
-    return fel
+    from riskanalys.dokument.rapportpaket_v8 import verifiera_rapportpaket
+    return [*fel, *verifiera_rapportpaket(mapp, manifest)]

@@ -26,10 +26,12 @@ def test_faktisk_bokforing_kan_inte_kombineras_med_falsk_roll(regelbas_v1):
  assert any('T-RED-01' in h for h in rattlig_omfattning(regelbas_v1,p).hinder)
 
 def test_deterministiskt_dokument_visar_metod_tre_dimensioner_sektorreferens(regelbas_v1):
+ from riskanalys.dokument.skrivversion import V6
  p=profil(regelbas_v1);p=p.model_copy(update={'uppgifter':{**p.uppgifter,'P-TJ.red01_erbjuds':u(True)}})
  b=bedom(regelbas_v1,valj(regelbas_v1,p.byra.regelpaket,p.byra.datum,p.byra.lan),p)
  from riskanalys.dokument.rendering import renderat_avsnitt,synliga_texter
- d=bygg_arb(regelbas_v1,p,b,{},Historik())
+ d=bygg_arb(regelbas_v1,p,b,{},Historik(),formatversion=V6)
+ assert d.formatversion == V6
  avsnitt=d.avsnitt_med_id()
  # V6 visar nivåerna i tabeller; prova det läsaren ser, inklusive tabellceller.
  synligt={id:' '.join(synliga_texter(renderat_avsnitt(a,p))) for id,a in avsnitt.items()}

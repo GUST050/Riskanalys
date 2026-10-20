@@ -323,7 +323,7 @@ def test_syftet_namnger_regelpaketet_utan_kod(rb_intag, klar):
 
 def test_myndighetsunderlaget_namnger_kallorna_men_refererar_till_kall_id(rb_intag, klar):
     b = bedom(rb_intag, valj(rb_intag, klar.byra.regelpaket, DAG, klar.byra.lan), klar)
-    (stycke,) = bygg_arb(rb_intag, klar, b, {}, Historik()).avsnitt_med_id()["D-ARB.4"].stycken
+    (stycke,) = bygg_arb(rb_intag, klar, b, {}, Historik(), formatversion="D-ARB-tjanst-v6").avsnitt_med_id()["D-ARB.4"].stycken
     assert stycke.referenser and all(id in rb_intag.kallor for id in stycke.referenser)
     assert all(rb_intag.kallor[id].titel in stycke.text for id in stycke.referenser)
     assert not _KATALOGKOD.search(stycke.text)

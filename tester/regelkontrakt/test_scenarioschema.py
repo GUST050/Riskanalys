@@ -34,7 +34,7 @@ SANN_02 = {
 
 
 def _regel(regel_id: str) -> dict:
-    return {"id": regel_id, "grund": "metodval", "forklaring": "Testregel."}
+    return {"id": regel_id, "grund": "metodval", "forklaring": "Testregel.", "kallor": ["SRC-1"]}
 
 
 def _sannolikhetsmatris() -> list[dict]:
@@ -45,7 +45,7 @@ def _sannolikhetsmatris() -> list[dict]:
             "sarbarhet": sarbarhet,
             "sannolikhet": SANN_02[(hot, sarbarhet)],
             "grund": "metodval",
-            "forklaring": f"Hotnivå {hot} och sårbarhetsnivå {sarbarhet}.",
+            "forklaring": f"Hotnivå {hot} och sårbarhetsnivå {sarbarhet}.", "kallor": ["SRC-1"],
         }
         for nummer, (hot, sarbarhet) in enumerate(SANN_02, start=1)
     ]
@@ -74,6 +74,7 @@ def scenariofiler(minimal_filer):
          "niva": "medel", "nivamotivering": "Testmotivering."}
         for nummer in (1, 2, 3)
     ]
+    filer["kataloger/hot.yaml"][0]["galler_tf"] = True
     filer["kataloger/sarbarheter.yaml"][0]["hot"] = ["H-1"]
     filer["kataloger/kontroller.yaml"][0]["riktar_sig_mot"] = [_riktning(["H-1"])]
     filer["kataloger/tjanster.yaml"][0]["hot"] = ["H-1", "H-2", "H-3"]
@@ -174,15 +175,12 @@ def test_regelbas_v0_ar_oforandrad_utan_scenariometod():
     assert rb.paketets_innehallssumma("RP-RED-VG") == V0_PAKET
 
 
-def test_repots_regelbas_validerar_utan_scenariometod_och_utan_nya_nycklar():
+def test_repots_regelbas_validerar_med_scenariometod_och_nya_nycklar():
     rb = ladda_regelbas()
-    assert rb.metod.scenario is None
+    assert rb.metod.scenario is not None
     assert validera(rb) == []
-    data = rb.model_dump(mode="json")
-    assert "scenario" not in data["metod"]
-    assert all(not {"niva", "nivamotivering", "dimensioner"} & set(h) for h in data["hot"].values())
-    assert all("hot" not in s for s in data["sarbarheter"].values())
-    assert all("riktar_sig_mot" not in k for k in data["kontroller"].values())
+    assert all(h.niva is not None for h in rb.hot.values())
+    assert all(s.hot for s in rb.sarbarheter.values())
 
 
 # --- Validering med scenariometod ------------------------------------------
@@ -333,4 +331,81 @@ def test_negativ_effekt_utan_scenariometod_underkanns(minimal_filer, tmp_path, s
 
 def test_negativ_effekt_med_scenariometod_godtas(scenariofiler, tmp_path, skriv_minimal_regelbas):
     scenariofiler["kataloger/sarbarheter.yaml"][0]["effekt"] = {"sannolikhet": -1}
+    scenariofiler["kataloger/sarbarheter.yaml"][0]["vid_okant"] = "preliminart_galler_ej"
     assert _fel(tmp_path, skriv_minimal_regelbas, scenariofiler) == []
+
+
+def test_tjanst_utan_pt_scenario_underkanns(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    for h in scenariofiler['kataloger/hot.yaml']:
+        h['dimensioner'] = ['tf']
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('T-1' in rad and 'PT-scenario' in rad for rad in fel), fel
+
+
+def test_tjanst_utan_tf_scenario_underkanns(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    for h in scenariofiler['kataloger/hot.yaml']:
+        h['dimensioner'] = ['pt']
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('T-1' in rad and 'TF-scenario' in rad for rad in fel), fel
+
+
+def test_globalt_hot_som_saknas_i_tjansten_far_inte_gora_sarbarheten_verkningslos(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler['kataloger/hot.yaml'].append(
+        {'id': 'H-9', 'namn': 'Annan tjänst', 'beskrivning': 'Test.', 'kallor': ['SRC-1'], 'niva': 'medel'})
+    scenariofiler['kataloger/sarbarheter.yaml'][0]['hot'] = ['H-9']
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('T-1' in rad and 'S-1' in rad and 'verksam' in rad for rad in fel), fel
+
+
+def test_pt_sarbarhet_med_enbart_tf_hot_underkanns(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler['kataloger/hot.yaml'][0]['dimensioner'] = ['tf']
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('T-1' in rad and 'S-1' in rad and 'verksam' in rad for rad in fel), fel
+
+
+def test_kundsarbarhet_far_inte_kopplas_till_generiskt_tjanstehot(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler['kataloger/hot.yaml'][0]['id'] = 'H-TJ-99'
+    scenariofiler['kataloger/tjanster.yaml'][0]['hot'][0] = 'H-TJ-99'
+    scenariofiler['kataloger/sarbarheter.yaml'][0]['hot'] = ['H-TJ-99']
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('S-1' in rad and 'H-TJ-99' in rad and 'tj eller verk' in rad for rad in fel), fel
+
+
+def test_scenarioregel_med_okand_kalla_underkanns(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler['beslutstabeller/metod.yaml']['scenario']['hotniva']['kallor'] = ['SRC-SAKNAS']
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('BT-HOT-01' in rad and 'SRC-SAKNAS' in rad for rad in fel), fel
+
+
+@pytest.mark.parametrize('plats', ['hotniva', 'sarbarhetsniva', 'kvarstaende', 'aggregering', 'sannolikhetsmatris'])
+def test_scenarioregel_kraver_metodval(scenariofiler, tmp_path, skriv_minimal_regelbas, plats):
+    post = scenariofiler['beslutstabeller/metod.yaml']['scenario'][plats]
+    if plats == 'sannolikhetsmatris':
+        post = post[0]
+    post['grund'] = 'ska_krav'
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any(post['id'] in rad and 'metodval' in rad for rad in fel), fel
+
+
+def test_hotniva_ar_metodval_inte_ett_rattsligt_krav(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler['kataloger/hot.yaml'][0]['grund'] = 'ska_krav'
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('H-1' in rad and 'metodval' in rad for rad in fel), fel
+
+
+def test_kontrollmal_ar_metodval_inte_ett_rattsligt_krav(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler['kataloger/kontroller.yaml'][0]['riktar_sig_mot'][0]['grund'] = 'ska_krav'
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('C-1' in rad and 'metodval' in rad for rad in fel), fel
+
+
+def test_aven_vanlig_regels_angivna_kallor_valideras(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler['beslutstabeller/metod.yaml']['sannolikhet']['kallor'] = ['SRC-SAKNAS']
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('BT-SANN-01' in rad and 'SRC-SAKNAS' in rad for rad in fel), fel
+
+
+def test_negativ_effekt_far_inte_galla_vid_okant_villkor(scenariofiler, tmp_path, skriv_minimal_regelbas):
+    scenariofiler['kataloger/sarbarheter.yaml'][0]['effekt']['sannolikhet'] = -1
+    fel = _fel(tmp_path, skriv_minimal_regelbas, scenariofiler)
+    assert any('S-1' in rad and 'preliminart_galler_ej' in rad for rad in fel), fel

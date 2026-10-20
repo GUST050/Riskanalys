@@ -510,3 +510,10 @@
   utgivare: Finansinspektionen
   url: https://www.fi.se/sv/forsakring/internationella-sanktioner/
   hamtad: '2026-10-17'
+- id: SRC-EU-SNRA-METOD
+  titel: Supranational risk assessment methodology, version 1.1, 4 November 2015
+  typ: vägledning
+  utgivare: Europeiska kommissionen (metoddokument, arkivkopia hos FATF Platform)
+  url: https://fatfplatform.org/assets/04112015-Methodology-SNRA-Clean-v1.1.pdf
+  hamtad: 2026-10-18
+  kontrollsumma: sha256:d3b4520ac4e33ffa4b5d594a3bc1d7f1bc0a25ca9ae40f75c1e4d8a56903fc09

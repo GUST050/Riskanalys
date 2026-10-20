@@ -1,5 +1,6 @@
 """Hela befintliga dokumentkedjan, utan att attestera eller fastställa något."""
 from datetime import date
+from contextlib import nullcontext
 from pathlib import Path
 from riskanalys.bedomning.korning import kor_bedomning, BEDOMNINGAR, kontrollera_aktuell
 from riskanalys.dokument.export import kor_export_utkast, UTKASTFIL
@@ -27,7 +28,7 @@ def skapa_utkast(byramapp: Path, rb, leverantor) -> Path:
     bedomningsnamn = manifestets_metadata(mapp, 'bedomning')['bedomning']
     granskning = kor_granskning(byramapp,rb,date.today(),
                                bedomningsmapp=byramapp / BEDOMNINGAR / bedomningsnamn, utkastmapp=mapp)
-    fil = kor_export_utkast(byramapp,date.today(),granskningsmapp=granskning) / UTKASTFIL
+    fil = kor_export_utkast(byramapp,date.today(),granskningsmapp=granskning,regelbas=rb) / UTKASTFIL
     if historik != historikens_kontrollsumma(byramapp):
         raise RiskanalysFel('Utvärderingshistoriken ändrades under skrivningen. Skapa ett nytt utkast.')
     kontrollera_utkast(byramapp, rb, fil)
@@ -43,14 +44,41 @@ def kontrollera_utkast(byramapp: Path, rb, fil: Path) -> None:
         raise RiskanalysFel('Exportens granskningsreferens är ogiltig. Skapa ett nytt utkast.')
     granskning = byramapp / GRANSKNING / namn
     kontrollera_kallor(byramapp, granskning)
+    if (fil.parent/'granskning').is_dir():
+        from riskanalys.lagring.kontrollsumma import for_fil
+        if for_fil(fil.parent/'granskning/manifest.json') != for_fil(granskning/'manifest.json'):
+            raise RiskanalysFel('Exporten hör till en annan granskningskälla. Granska och exportera igen.')
     underlag = granskningens_metadata(granskning)
     if underlag['historik'] != historikens_kontrollsumma(byramapp):
         raise RiskanalysFel('Utvärderingshistoriken har ändrats. Granska och exportera ett nytt utkast.')
     kontrollera_aktuell(byramapp, byramapp / BEDOMNINGAR / underlag['bedomning'], rb)
+    if rb.metod.omfattning:
+        from riskanalys.analys.lagring import las_analys
+        from riskanalys.granskning.analysunderlag import las_fryst_analys, registerhinder
+        snapshot = las_fryst_analys(granskning)
+        # Ett första utkast får sakna lokal analys; en tillagd eller borttagen analys gör det inaktuellt.
+        if snapshot.paket is not None or las_analys(byramapp) is not None:
+            hinder = registerhinder(byramapp, snapshot)
+            if hinder:
+                raise RiskanalysFel(' '.join(hinder) + ' Uppdatera Word-utkastet utan nya AI-anrop.')
+
+
+def las_utkast(byramapp: Path, rb, fil: Path) -> bytes:
+    """Håll profil/analys/drift oförändrade från aktualitetskontroll till läst Word-fil."""
+    from riskanalys.analys.lagring import analyslas
+    with analyslas(byramapp) if rb.metod.omfattning else nullcontext():
+        kontrollera_utkast(byramapp, rb, fil)
+        return fil.read_bytes()
 
 
 def uppdatera_export(byramapp: Path, rb, tidigare: Path) -> Path:
-    """En ändrad utvärdering kräver granskning och export, inte ny AI-text."""
+    from riskanalys.analys.lagring import analyslas
+    with analyslas(byramapp) if rb.metod.omfattning else nullcontext():
+        return _uppdatera_export_last(byramapp,rb,tidigare)
+
+
+def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path) -> Path:
+    """Lokal analys eller utvärdering kan granskas och exporteras från befintlig AI-text."""
     historik = historikens_kontrollsumma(byramapp)
     if verifiera_manifest(tidigare.parent):
         raise RiskanalysFel('Det tidigare utkastet är ändrat. Skapa ett nytt utkast.')
@@ -64,9 +92,14 @@ def uppdatera_export(byramapp: Path, rb, tidigare: Path) -> Path:
     kontrollera_aktuell(byramapp, bedomningsmapp, rb)
     if not underlag['utkast']:
         raise RiskanalysFel('Tidigare AI-riskavsnitt saknas. Skapa ett nytt utkast.')
-    granskning = kor_granskning(byramapp, rb, date.today(), bedomningsmapp=bedomningsmapp,
+    from riskanalys.granskning.korning import _kor_granskning_last, las_granskning
+    granskning = _kor_granskning_last(byramapp, rb, date.today(), bedomningsmapp=bedomningsmapp,
                                utkastmapp=byramapp / UTKAST / underlag['utkast'])
-    fil = kor_export_utkast(byramapp, date.today(), granskningsmapp=granskning) / UTKASTFIL
+    if las_granskning(granskning)[0].formatversion=='D-ARB-tjanst-v8':
+        from riskanalys.dokument.export import exportera_v8_last
+        fil=exportera_v8_last(byramapp,date.today(),granskning,regelbas=rb)/UTKASTFIL
+    else:
+        fil = kor_export_utkast(byramapp, date.today(), granskningsmapp=granskning) / UTKASTFIL
     if historik != historikens_kontrollsumma(byramapp):
         raise RiskanalysFel('Utvärderingshistoriken ändrades under exporten. Försök igen.')
     kontrollera_utkast(byramapp, rb, fil)

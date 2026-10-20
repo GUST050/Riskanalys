@@ -10,7 +10,7 @@ from riskanalys.fel import RiskanalysFel
 from riskanalys.intag import vyer
 from riskanalys.intag.modeller import IntagSvar
 from riskanalys.intag.tjanst import profilrevision
-from riskanalys.intag.dokument import skapa_utkast, kontrollera_utkast, uppdatera_export
+from riskanalys.intag.dokument import skapa_utkast, las_utkast, uppdatera_export
 from riskanalys.profil.modeller import Period
 from riskanalys.kommandon.skriv_kommando import valj_leverantor
 from riskanalys.dokument.claude import STANDARDMODELL, STANDARDEFFORT
@@ -74,7 +74,7 @@ class Hantera(BaseHTTPRequestHandler):
             query=parse_qs(u.query, max_num_fields=4)
         except ValueError:
             self.svara(400,'Ogiltig förfrågan.');return None
-        tillatna = {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
+        tillatna = {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
         if any(len(v)!=1 for v in query.values()) or set(query)-tillatna:
             self.svara(400,'Ogiltig förfrågan.');return None
         return u.path.removeprefix(self.server.prefix),query
@@ -84,6 +84,9 @@ class Hantera(BaseHTTPRequestHandler):
         if vag is None:return
         path,query=vag;s=self.server
         try:
+            if path=='samlat' and s.tjanst.finns():
+                from riskanalys.intag.samladvy import samladsida
+                self.svara(200,samladsida(s,query.get('grupp',[None])[0]));return
             if path=='analys' and s.tjanst.finns():
                 from riskanalys.intag.analysvy import analyssida
                 self.svara(200,analyssida(s,query));return
@@ -93,8 +96,8 @@ class Hantera(BaseHTTPRequestHandler):
             if path=='tjanster' and not query and s.tjanst.finns():
                 from riskanalys.intag.tjanstvy import tjanstesida
                 self.svara(200,tjanstesida(s));return
-            if path=='word':
-                self.word();return
+            if path in ('word','underlag'):
+                self.word(underlag=path=='underlag');return
             if path:
                 self.svara(404,'Sidan finns inte.');return
             if not s.tjanst.finns():html=vyer.grund(s)
@@ -103,14 +106,14 @@ class Hantera(BaseHTTPRequestHandler):
             self.svara(200,html)
         except RiskanalysFel as exc:self.svara(400,vyer.sida(s,'',exc))
 
-    def formulardata(self,maxfalt=16):
+    def formulardata(self,maxfalt=16,maxbytes=65536):
         if self.headers.get_all('Origin') != [self.server.origin]:
             self.svara(403,'Otillåtet ursprung.');return None
         if self.headers.get('Transfer-Encoding') or len(self.headers.get_all('Content-Length',[]))!=1:
             self.svara(400,'Ogiltig formulärlängd.');return None
         try:n=int(self.headers['Content-Length'])
         except ValueError:self.svara(400,'Ogiltig formulärlängd.');return None
-        if not 0<=n<=65536:self.svara(413,'Formuläret är för stort.');return None
+        if not 0<=n<=maxbytes:self.svara(413,'Formuläret är för stort.');return None
         if self.headers.get_content_type()!='application/x-www-form-urlencoded':
             self.svara(400,'Skicka ett vanligt formulär.');return None
         try:
@@ -128,15 +131,16 @@ class Hantera(BaseHTTPRequestHandler):
         vag=self.vag()
         if vag is None:return
         path,query=vag
-        hanterare={k:getattr(self,'post_'+k) for k in ('skapa','svar','skriv','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
+        hanterare={k:getattr(self,'post_'+k) for k in ('skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
         if path not in hanterare or query:
             self.svara(404,'Sidan finns inte.');return
         from riskanalys.intag.flervalsvy import flervalsgrans
-        data=self.formulardata(512 if path.startswith('analys') else 32 if path in ('tjanster','skapa','registersamlat') else 16+flervalsgrans(self.server.tjanst.rb) if path=='svar' else 16)
+        maxfalt=512 if path.startswith('analys') else 128 if path=='samlat' else 32 if path in ('tjanster','skapa','registersamlat') else 16+flervalsgrans(self.server.tjanst.rb) if path=='svar' else 16
+        data=self.formulardata(maxfalt,maxbytes=1024*1024 if path=='samlat' else 65536)
         if data is None:return
         try:
             hanterare[path](data)
-            if path in ('skapa','svar','registerbekrafta','registersamlat','tjanster') and data.get('status','bekräftad')=='bekräftad' and data.get('roll','').strip():
+            if path in ('skapa','svar','samlat','registerbekrafta','registersamlat','tjanster') and data.get('status','bekräftad')=='bekräftad' and data.get('roll','').strip():
                 self.server.rollforslag=data['roll'].strip()
             if path.startswith('analys'):
                 from urllib.parse import urlencode
@@ -144,7 +148,7 @@ class Hantera(BaseHTTPRequestHandler):
                 if path=='analysblock':destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'block':data.get('nummer','')})
                 elif path in ('analysscenario','analysbeslut'):destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'granska':'ja'})
             else:
-                destination='' if path=='registersamlat' and data.get('fortsatt')=='ja' else 'register' if path.startswith('register') else '?oversikt=1' if path in ('skriv','utvardera') else ''
+                destination='' if path=='registersamlat' and data.get('fortsatt')=='ja' else 'register' if path.startswith('register') else '?oversikt=1' if path in ('skriv','uppdaterautkast','utvardera') else ''
             self.svara(303,'',extra={'Location':self.server.prefix+destination})
         except RiskanalysFel as exc:
             self.formularfel(path,data,str(exc))
@@ -152,7 +156,7 @@ class Hantera(BaseHTTPRequestHandler):
             falt=', '.join('.'.join(str(x) for x in e['loc']) for e in exc.errors())
             self.formularfel(path,data,'Kontrollera värde och längd i fälten: '+falt+'.')
         except ValueError:
-            fel='Word-utkastet kunde inte skapas. Kontrollera underlaget och sparade skrivförsök före ett nytt försök.' if path in ('skriv','utvardera') else 'Formuläret innehåller ett ogiltigt värde. Kontrollera de angivna uppgifterna.'
+            fel='Word-utkastet kunde inte skapas. Kontrollera underlaget och sparade skrivförsök före ett nytt försök.' if path in ('skriv','uppdaterautkast','utvardera') else 'Formuläret innehåller ett ogiltigt värde. Kontrollera de angivna uppgifterna.'
             self.formularfel(path,data,fel)
 
     def formularfel(self,path,data,fel):
@@ -174,6 +178,10 @@ class Hantera(BaseHTTPRequestHandler):
         elif path=='tjanster':
             from riskanalys.intag.tjanstvy import tjanstesida
             html=tjanstesida(s,data,fel)
+        elif path=='samlat':
+            from riskanalys.intag.samladvy import samladsida
+            try:html=samladsida(s,data.get('grupp'),data,fel)
+            except RiskanalysFel:html=vyer.sida(s,'<h1>Samlade frågor</h1>',fel)
         elif path=='skapa':html=vyer.grund(s,data,fel)
         elif path=='svar':html=vyer.fragesida(s,data.get('falt'),data,fel)
         else:html=vyer.oversikt(s,fel)
@@ -319,6 +327,11 @@ class Hantera(BaseHTTPRequestHandler):
         self.server.tjanst.spara(svar,data.get('revision',''))
         self.server.utkast=None;self.server.kompletteringar=()
 
+    def post_samlat(self,data):
+        from riskanalys.intag.samlade import spara_grupp
+        spara_grupp(self.server.tjanst,data)
+        self.server.utkast=None;self.server.kompletteringar=()
+
     def post_utvardera(self,data):
         from riskanalys.intag.utvardering import registrera_utvardering
         s=self.server
@@ -343,14 +356,28 @@ class Hantera(BaseHTTPRequestHandler):
         m=senaste_korning(s.tjanst.mapp,GRANSKNING,'granska')
         s.kompletteringar=utkastens_oklarheter(s.tjanst.mapp,granskningens_metadata(m)['utkast'])
 
-    def word(self):
+    def post_uppdaterautkast(self,data):
+        s=self.server
+        if set(data)-{'csrf','revision'}:
+            raise RiskanalysFel('Uppdateringsformuläret innehåller okända fält.')
+        revision=profilrevision(s.tjanst.profil())
+        if data.get('revision')!=revision or s.utkastrevision!=revision:
+            raise RiskanalysFel('Profilen har ändrats eller formuläret hör till en annan flik. Läs om sidan och skapa ett nytt utkast vid ändrade fakta.')
+        if not s.utkast:
+            raise RiskanalysFel('Skapa ett Word-utkast före uppdatering.')
+        s.utkast=uppdatera_export(s.tjanst.mapp,s.tjanst.rb,s.utkast)
+
+    def word(self, *, underlag=False):
         s=self.server
         if not s.utkast:
             self.svara(404,'Skapa ett Word-utkast först.');return
         if s.utkastrevision != profilrevision(s.tjanst.profil()):
             raise RiskanalysFel('Utkastet bygger på äldre svar. Skapa ett nytt utkast.')
-        kontrollera_utkast(s.tjanst.mapp, s.tjanst.rb, s.utkast)
-        self.svara(200,s.utkast.read_bytes(),'application/vnd.openxmlformats-officedocument.wordprocessingml.document',extra={'Content-Disposition':'attachment; filename="allman-riskbedomning-UTKAST.docx"'})
+        fil=s.utkast.parent/'underlagsbilaga-UTKAST.docx' if underlag else s.utkast
+        if underlag and not fil.is_file():
+            raise RiskanalysFel('Underlagsbilagan saknas. Uppdatera båda delarna av Word-utkastet.')
+        innehall=las_utkast(s.tjanst.mapp, s.tjanst.rb, fil)
+        self.svara(200,innehall,'application/vnd.openxmlformats-officedocument.wordprocessingml.document',extra={'Content-Disposition':f'attachment; filename="{fil.name}"'})
 
 
 def formulardatum(data,falt):

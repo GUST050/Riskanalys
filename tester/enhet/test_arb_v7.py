@@ -41,12 +41,12 @@ def test_v7_fyra_delar_kategorier_och_riktig_nivamotivering(v7fall):
     assert d.formatversion == V7
     for id, t in tjanster_med_avsnitt(f.bedomning):
         a = d.avsnitt_med_id()[id]
-        assert [u.rubrik for u in a.underrubriker] == ['Analys', 'Kategorier', 'Lokal analys och slutsats', 'Risknivå och motivering']
+        assert [u.rubrik for u in a.underrubriker] == ['Analys', 'Scenarier', 'Lokal analys och slutsats', 'Risknivå och motivering']
         assert len({u.fore_stycke for u in a.underrubriker}) == 4
-        tab = next(tab for tab in a.tabeller if tab.id.endswith('-kategorier'))
-        assert tab.kolumner == ('Område', 'Utfall', 'Byråns prövning')
-        assert all(c.proveniens == 'lokal' for r in tab.rader for c in r.celler)
-        assert [utan_kallhanvisning(r.celler[0].text) for r in tab.rader] == ['Kunder', 'Distributionskanaler', 'Geografi', 'Egen verksamhet', 'Tjänstespecifika förhållanden']
+        tab = next(tab for tab in a.tabeller if tab.id.endswith('-motorscenarier'))
+        assert len(tab.rader) == len(t.scenarier)
+        assert all(c.proveniens == 'regelbas' for r in tab.rader for c in r.celler)
+        assert not any(tab.id.endswith('-kategorier') for tab in a.tabeller)
         lokal = next(x for x in f.analys.tjanster if x.tjanst == t.tjanst)
         nivatext = ' '.join(s.text for s in a.stycken[a.underrubriker[-1].fore_stycke:])
         assert lokal.pt_motivering in nivatext and lokal.tf_motivering in nivatext
@@ -65,7 +65,6 @@ def test_v7_normal_matning_utan_trunkering(v7fall):
         assert all(s.text in huvud for s in res.del_('analys').godkant_svar.stycken)
     matt = dokumentord(d, f.profil)
     print({'fall': 'V7-normal', **matt})
-    assert 3500 <= matt['huvudtext'] <= 5000
 
 
 def test_v7_avvisar_blandning_och_ommarkning(v7fall):
@@ -213,13 +212,17 @@ def test_v7_korta_hanvisningar_och_enbart_entydig_hotkolumn_tas_bort(v7fall):
 def test_v7_tf_samma_faktorer_kraver_exakt_overensstammelse(v7fall):
     from riskanalys.dokument.nivamotivering_v6 import nivamotivering_stycken
     f, _ = v7fall
-    t = tjanster_med_avsnitt(f.bedomning)[0][1]
-    texter = [s.text for s in nivamotivering_stycken(f.regelbas, t, None, formatversion=V7)]
+    from riskanalys.bedomning.motor import bedom
+    from riskanalys.regelverk.urval import valj
+    rb = f.regelbas.model_copy(update={'metod': f.regelbas.metod.model_copy(update={'scenario': None})})
+    urval = valj(rb, f.profil.byra.regelpaket, f.profil.byra.datum, f.profil.byra.lan)
+    t = tjanster_med_avsnitt(bedom(rb, urval, f.profil))[0][1]
+    texter = [s.text for s in nivamotivering_stycken(rb, t, None, formatversion=V7)]
     assert any('TF-risk:' in s and 'samma faktorer och vikter som PT' in s for s in texter)
     # En kundfaktor räknas för PT men inte TF; samma-nämning får då inte användas.
     id = next(id for id in f.regelbas.tjanster[t.tjanst].sarbarheter if f.regelbas.sarbarheter[id].omrade == 'kund')
     annan = t.model_copy(update={'tillampade_sarbarheter': (*t.tillampade_sarbarheter, id)})
-    texter = [s.text for s in nivamotivering_stycken(f.regelbas, annan, None, formatversion=V7)]
+    texter = [s.text for s in nivamotivering_stycken(rb, annan, None, formatversion=V7)]
     assert not any('samma faktorer och vikter som PT' in s for s in texter)
 
 
@@ -317,7 +320,8 @@ def test_v7_numrerar_gemensamma_resonemang_utan_dubbla_etiketter(v7fall):
     import re
     d = bygg(v7fall)
     gem = d.avsnitt_med_id()['D-ARB.5']
-    assert sum(bool(re.match(r'\d+\. ', s.text)) for s in gem.stycken) == 20
+    assert [int(re.match(r'(\d+)\. ', s.text)[1]) for s in gem.stycken] == list(range(1, len(gem.stycken) + 1))
+    assert any('Gemensam scenarioberäkning' in s.text for s in gem.stycken)
     assert not any('Gemensamt resonemang ' in s.text for s in gem.stycken)
     for a in d.avsnitt:
         if a.id.startswith('D-ARB.6.'):

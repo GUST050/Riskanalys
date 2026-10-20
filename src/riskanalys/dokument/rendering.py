@@ -6,6 +6,14 @@ from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from riskanalys.analys.modeller import Analyspaket
+    from riskanalys.bedomning.modeller import Bedomning
+    from riskanalys.dokument.presentation_v8 import Presentation
+    from riskanalys.dokument.rapportpaket_v8 import Leverans
+    from riskanalys.dokument.rapportvyer import Rapportvyer
 
 import docx
 from docx.oxml import OxmlElement
@@ -13,7 +21,7 @@ from docx.oxml.ns import qn
 from docx.shared import Pt
 
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Oklarhet, Textstycke
-from riskanalys.dokument.skrivversion import V6, V7
+from riskanalys.dokument.skrivversion import V6, V7, V8
 from riskanalys.granskning.modeller import Fynd
 from riskanalys.profil.modeller import Profil
 
@@ -25,7 +33,7 @@ VERIFIERA_PREFIX = "[VERIFIERA"
 B1_ID = "D-ARB.B1"
 _AVSNITTSPREFIX = "D-ARB."
 _ANALYSPREFIX = "ANALYS:"  # Samma prefix som riskanalys.dokument.analysreferenser.PREFIX.
-_V5_FORMAT = ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", V6, V7)
+_V5_FORMAT = ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", V6, V7, V8)
 _V5_1 = "D-ARB-tjanst-v5.1"
 
 # Det som följer är enbart presentation i v6:s Word-fil. Det ingår inte i modellen, i ordmätningen
@@ -57,6 +65,19 @@ def ersatt_platshallare(text: str, profil: Profil) -> str:
     return _PLATSHALLARE.sub(ersatt, text)
 
 
+def _ersatt_platshallare_med_originalspann(text: str, profil: Profil, spann: tuple[tuple[int, int], ...]) -> str:
+    """Bevara bara källans råa tecken; omslutande malltext fortsätter att lösas."""
+    if not spann:
+        return ersatt_platshallare(text, profil)
+    if any(start < 0 or end < start or end > len(text) for start,end in spann):
+        raise ValueError('V8-originalets literalspann passar inte texten.')
+    def ersatt(traff: re.Match[str]) -> str:
+        if any(start <= traff.start() and traff.end() <= end for start,end in spann):
+            return traff.group(0)
+        return ersatt_platshallare(traff.group(0), profil)
+    return _PLATSHALLARE.sub(ersatt,text)
+
+
 def har_verifiera(avsnitt: Avsnitt, profil: Profil) -> bool:
     """Om avsnittet så som det skrivs ut har en [VERIFIERA]-markering av något slag, till exempel [VERIFIERA: FfR]."""
     return any(VERIFIERA_PREFIX in text for text in synliga_texter(renderat_avsnitt(avsnitt, profil)))
@@ -67,11 +88,33 @@ def avsnittsnummer(avsnitt_id: str) -> str:
     return avsnitt_id.split(".", 1)[1]
 
 
+def bokstavliga_positioner(avsnitt: Avsnitt) -> tuple[str, ...]:
+    """V8:s typade originalplaceringar; ingen sökning efter språk eller klamrar."""
+    if avsnitt.formatversion != V8:
+        return ()
+    poster=[(f'{avsnitt.id}/stycken/{n}',s) for n,s in enumerate(avsnitt.stycken)]
+    poster.extend((f'{avsnitt.id}/tabeller/{t.id}/rader/{n}/celler/{m}',c)
+                  for t in avsnitt.tabeller for n,r in enumerate(t.rader) for m,c in enumerate(r.celler))
+    giltiga={p for p,_ in poster}
+    original=set()
+    if avsnitt.id == 'D-ARB.B1':
+        for t in avsnitt.tabeller:
+            if t.id == 'v8-fria-falt':
+                for r in t.rader:
+                    if len(r.celler)!=4 or r.celler[2].text not in giltiga:
+                        raise ValueError('V8-originalets fulltextplacering är ogiltig.')
+                    original.add(r.celler[2].text)
+    return tuple(p for p,obj in poster if obj.proveniens=='lokal' or p in original)
+
+
 def renderat_avsnitt(avsnitt: Avsnitt, profil: Profil) -> Avsnitt:
-    """Avsnittet som granskaren ser och exporten innehåller: platshållarna utbytta mot namn eller [VERIFIERA: roll]."""
-    stycken = tuple(
-        stycke.model_copy(update={"text": ersatt_platshallare(stycke.text, profil)}) for stycke in avsnitt.stycken
-    )
+    """Program-/AI-roller löses; V8:s identifierade lokala original återges bokstavligt."""
+    literala=set(bokstavliga_positioner(avsnitt))
+    def text(obj,position):
+        return obj.text if position in literala else _ersatt_platshallare_med_originalspann(
+            obj.text,profil,getattr(obj,'literala_spann',()))
+    stycken = tuple(stycke.model_copy(update={'text':text(stycke,f'{avsnitt.id}/stycken/{n}')})
+                    for n,stycke in enumerate(avsnitt.stycken))
     return avsnitt.model_copy(update={
         "stycken": stycken,
         "visningsnummer": ersatt_platshallare(avsnitt.visningsnummer, profil) if avsnitt.visningsnummer is not None else None,
@@ -81,7 +124,8 @@ def renderat_avsnitt(avsnitt: Avsnitt, profil: Profil) -> Avsnitt:
             "rubrik": ersatt_platshallare(t.rubrik, profil),
             "kolumner": tuple(ersatt_platshallare(k, profil) for k in t.kolumner),
             "rader": tuple(r.model_copy(update={"celler": tuple(c.model_copy(update={
-                "text": ersatt_platshallare(c.text, profil)}) for c in r.celler)}) for r in t.rader),
+                "text": text(c,f'{avsnitt.id}/tabeller/{t.id}/rader/{n}/celler/{m}')})
+                for m,c in enumerate(r.celler))}) for n,r in enumerate(t.rader)),
         }) for t in avsnitt.tabeller),
     })
 
@@ -111,11 +155,8 @@ def faststalld_status(organ: str, datum: date, version: int) -> str:
 
 def gruppera_fynd(fynd: Iterable[Fynd]) -> tuple[tuple[Fynd, ...], ...]:
     """Exakt visningsgruppering; alla fält utom fyndets identitet måste vara lika."""
-    grupper = {}
-    for post in fynd:
-        nyckel = post.model_dump_json(exclude={'id'})
-        grupper.setdefault(nyckel, []).append(post)
-    return tuple(tuple(grupp) for grupp in grupper.values())
+    from riskanalys.granskning.fyndgrupper import gruppera_fynd as typade_grupper
+    return tuple(g.medlemmar for g in typade_grupper(tuple(fynd)))
 
 
 def atgardslista(fynd: Iterable[Fynd], oklarheter: Iterable[tuple[str, Oklarhet]], *, formatversion: str | None = None) -> tuple[str, ...]:
@@ -135,24 +176,51 @@ def atgardslista(fynd: Iterable[Fynd], oklarheter: Iterable[tuple[str, Oklarhet]
 
 
 def rendera_docx(
-    dokument: Dokument, profil: Profil, statusrad: str, sokvag: Path, bilaga: tuple[str, ...] = ()
+    dokument: Dokument, profil: Profil, statusrad: str, sokvag: Path, bilaga: tuple[str, ...] = (), *, analys=None, fynd: tuple[Fynd, ...] = (), leveransdel=None, presentation=None, leverans=None
 ) -> Path:
     """Skriver dokumentet som Word-fil med statusraden i sidhuvudet, så att den syns på varje sida."""
     word = docx.Document()
-    for sektion in word.sections:
-        sektion.header.paragraphs[0].text = statusrad
-    word.add_heading(dokument.titel, level=0)
-    word.add_paragraph().add_run(statusrad).bold = True
+    if leverans is not None:
+        from riskanalys.dokument.leverans_v8 import kontrollerad_leveransmall
+        mall = kontrollerad_leveransmall(presentation)
+        statusrad = mall.status_for(leverans)
+        for placering in mall.placering:
+            if placering == 'sidhuvud:status':
+                for sektion in word.sections:
+                    sektion.header.paragraphs[0].text = statusrad
+            elif placering == 'start:titel':
+                word.add_heading(dokument.titel, level=0)
+            elif placering == 'start:status_fet':
+                word.add_paragraph().add_run(statusrad).bold = True
+            elif placering == 'start:inledning':
+                word.add_paragraph(mall.inledning_for(leverans, leveransdel))
+    else:
+        for sektion in word.sections:
+            sektion.header.paragraphs[0].text = statusrad
+        word.add_heading(dokument.titel, level=0)
+        word.add_paragraph().add_run(statusrad).bold = True
     avsnitten = tuple(renderat_avsnitt(post, profil) for post in dokument.avsnitt)
     if dokument.formatversion in _V5_FORMAT:
         from riskanalys.dokument.wordstil import formatera_dokument
-        formatera_dokument(word)
+        formatera_dokument(word, formatversion=dokument.formatversion)
         _innehallsforteckning(word, avsnitten)
         for sektion in word.sections:
             _falt(sektion.footer.paragraphs[0], "PAGE", "Sidnummer uppdateras i Word")
-    lankmal = _lankmal(avsnitten) if dokument.formatversion in (V6, V7) else None
+    lankmal = _lankmal(avsnitten) if dokument.formatversion in (V6, V7, V8) else None
     for nummer, avsnitt in enumerate(avsnitten):
-        _rendera_avsnitt(word, avsnitten, nummer, dokument.formatversion, lankmal)
+        _rendera_avsnitt(word, avsnitten, nummer, dokument.formatversion, lankmal, atgardsanalys=analys, presentation=presentation, leveransdel=leveransdel)
+    if dokument.formatversion == V8 and presentation is not None:
+        from riskanalys.dokument.presentation_v8 import skriv_presentationsrader
+        for del_ in presentation.delar:
+            if del_.leveransdel == leveransdel and del_.placering.startswith('slut:'):
+                skriv_presentationsrader(word, del_.rader)
+    elif dokument.formatversion == V8:
+        from riskanalys.dokument.presentation_v8 import fulla_atgarder, fyndlista
+        full = leveransdel == 'underlagsbilaga'
+        if full and analys is not None:
+            fulla_atgarder(word, analys)
+        if fynd:
+            fyndlista(word, fynd, full=full)
     if bilaga:
         word.add_heading(BILAGERUBRIK, level=1)
         for rad in bilaga:
@@ -217,10 +285,19 @@ def _b1_mal(stycken: tuple[Textstycke, ...]) -> dict[str, int]:
 
 
 def _rendera_avsnitt(word, avsnitten: tuple[Avsnitt, ...], nummer: int, formatversion: str | None,
-                     lankmal: _Lankmal | None) -> None:
+                     lankmal: _Lankmal | None, *, atgardsanalys=None, presentation=None, leveransdel=None) -> None:
     avsnitt = avsnitten[nummer]
     v5 = formatversion in _V5_FORMAT
     rubrik = word.add_heading(f"{avsnitt.visningsnummer or avsnittsnummer(avsnitt.id)} {avsnitt.rubrik}", level=1)
+    if formatversion == V8 and presentation is not None:
+        from riskanalys.dokument.presentation_v8 import skriv_presentationsrader
+        for del_ in presentation.delar:
+            if del_.leveransdel == leveransdel and del_.placering == avsnitt.id + ':fore_innehall':
+                skriv_presentationsrader(word, del_.rader)
+    elif formatversion == V8 and avsnitt.id == 'D-ARB.9' and atgardsanalys is not None:
+
+        from riskanalys.dokument.presentation_v8 import atgardsindex
+        atgardsindex(word, atgardsanalys)
     if v5:
         if lankmal is None:
             _bokmarke(rubrik, nummer)
@@ -239,7 +316,7 @@ def _rendera_avsnitt(word, avsnitten: tuple[Avsnitt, ...], nummer: int, formatve
             word.add_heading(underrubriker[index], level=underrubriksniva)
         innehall = []
         if v5:
-            innehall.extend(_tabell(word, tabell, cellankare=cellankare, hall_ihop_rader=lankmal is not None)
+            innehall.extend(_tabell(word, tabell, cellankare=cellankare, hall_ihop_rader=lankmal is not None, formatversion=formatversion)
                             for tabell in avsnitt.tabeller if tabell.fore_stycke == index)
         if index < len(avsnitt.stycken):
             innehall.append(_textstycke(word, avsnitten, avsnitt.stycken[index], avsnitt.id, formatversion, lankmal,
@@ -255,6 +332,11 @@ def _textstycke(word, avsnitten: tuple[Avsnitt, ...], textstycke: Textstycke, ka
     if lankmal is not None:
         referenser = [ref for ref in textstycke.referenser if visa_b1 or ref != B1_ID]
         _lankrad(stycke, lankmal.lankar(referenser, kalla_id))
+    if formatversion == V8:
+        for ref in dict.fromkeys(textstycke.referenser):
+            if ref.startswith('D-ARB.') and ref not in {a.id for a in avsnitten}:
+                delnamn = 'kompletterande underlagsbilaga' if ref == B1_ID else 'läsrapport'
+                stycke.add_run(f' | Se {delnamn}, {ref}.')
     elif formatversion == _V5_1:
         nummer_for_id = {a.id: n for n, a in enumerate(avsnitten)}
         for ref in dict.fromkeys(textstycke.referenser):
@@ -358,7 +440,7 @@ def _innehallsforteckning(word, avsnitt: tuple[Avsnitt, ...]) -> None:
 
 
 def _tabell(word, tabell, *, cellankare: Callable[[tuple[str, ...]], str | None] | None = None,
-            hall_ihop_rader: bool = False):
+            hall_ihop_rader: bool = False, formatversion: str | None = None):
     """Tabellen med rubrik; returnerar rubrikstycket. Rubrikraden upprepas på varje sida."""
     rubrik = word.add_heading(tabell.rubrik, level=3)
     tab = word.add_table(rows=1, cols=len(tabell.kolumner))
@@ -378,7 +460,7 @@ def _tabell(word, tabell, *, cellankare: Callable[[tuple[str, ...]], str | None]
                 stycke.clear()
                 stycke._p.append(_lankelement(ankare, innehall.text))
     from riskanalys.dokument.wordstil import formatera_tabell
-    formatera_tabell(word, tab, tabell.id)
+    formatera_tabell(word, tab, tabell.id, formatversion=formatversion)
     if hall_ihop_rader:
         _hall_ihop_rader(tab)
     return rubrik
@@ -398,3 +480,39 @@ def _uppskattade_rader(rad) -> int:
 def _cellrader(cell) -> int:
     bredd = max((cell.width or 0) - _CELLMARGINAL_EMU, _TECKENBREDD_EMU)
     return sum(max(1, math.ceil(len(stycke.text) * _TECKENBREDD_EMU / bredd)) for stycke in cell.paragraphs)
+
+
+def rendera_rapportvyer(
+    vyer: 'Rapportvyer', profil: Profil, statusrad: str, katalog: Path, *,
+    analys: 'Analyspaket | None', fynd: tuple[Fynd, ...], bedomning: 'Bedomning',
+    presentation: 'Presentation | None' = None, leverans: 'Leverans | None' = None,
+) -> tuple[Path, ...]:
+    """Renderar båda oförändrade V8-projektioner med explicit gemensam presentationskälla."""
+    if any(d.formatversion != V8 for d in (vyer.lasrapport, vyer.underlagsbilaga)):
+        raise ValueError('Tvådelad rendering kräver V8.')
+    if presentation is not None:
+        from riskanalys.dokument.presentation_v8 import Presentationsvy, kallsumma
+        actual=tuple(Presentationsvy(titel=d.titel,format=d.formatversion,avsnitt=tuple(a.id for a in d.avsnitt))
+                     for d in (vyer.lasrapport,vyer.underlagsbilaga))
+        summor=dict(zip(presentation.avsnitt_id,presentation.renderade,strict=True))
+        if actual!=presentation.vyer or any(renderat_avsnitt(a,profil).kontrollsumma()!=summor.get(a.id)
+                for d in (vyer.lasrapport,vyer.underlagsbilaga) for a in d.avsnitt):
+            raise ValueError('Vyerna avviker från granskad presentation.')
+        if (presentation.analys!=kallsumma(analys.model_dump(mode='json') if analys else None)
+                or presentation.fynd!=kallsumma([p.model_dump(mode='json') for p in fynd])
+                or presentation.bedomning!=kallsumma(bedomning.model_dump(mode='json'))):
+            raise ValueError('Källan avviker från granskad presentation.')
+    from riskanalys.dokument.underlag import tjanster_med_avsnitt
+    erbjudna = {t.tjanst for _,t in tjanster_med_avsnitt(bedomning)}
+    lasanalys = analys.model_copy(update={'tjanster': tuple(t for t in analys.tjanster if t.tjanst in erbjudna)}) if analys else None
+    if leverans is not None:
+        from riskanalys.dokument.leverans_v8 import kontrollerad_leveransmall
+        mall = kontrollerad_leveransmall(presentation)
+        namnpar = mall.filnamn_for(leverans)
+        statusrad = mall.status_for(leverans)
+    else:
+        namnpar = ('allman-riskbedomning-UTKAST.docx', 'underlagsbilaga-UTKAST.docx')
+    return tuple(rendera_docx(d, profil, statusrad, katalog / namn,
+                 analys=lasanalys if del_ == 'lasrapport' else analys, fynd=fynd, leveransdel=del_, presentation=presentation, leverans=leverans)
+        for d,namn,del_ in ((vyer.lasrapport,namnpar[0],'lasrapport'),
+                           (vyer.underlagsbilaga,namnpar[1],'underlagsbilaga')))

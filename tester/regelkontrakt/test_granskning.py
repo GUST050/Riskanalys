@@ -72,6 +72,35 @@ def test_preliminar_bedomning_ger_fynd(regelbas, profil_fabrik, real_varden, gil
     ]
 
 
+def test_preliminar_omfattning_visar_sina_okanda_falt(regelbas, profil_fabrik, real_varden):
+    from riskanalys.bedomning.modeller import Proportionalitet
+    from riskanalys.granskning.kontroller import _preliminar
+    profil = profil_fabrik(regelbas, real_varden)
+    urval = valj(regelbas, "RP-RED-VG", DAG, "Västra Götaland")
+    b = bedom(regelbas, urval, profil)
+    assert all(not t.okanda_uppgifter for t in b.tjanster)
+    b = b.model_copy(update={"status": "preliminär", "proportionalitet": Proportionalitet(
+        niva="utökad", status="preliminär", regelspar=("BT-OMF-01",),
+        okanda_uppgifter=("P-ORG.omsattning",))})
+    (fynd,) = _preliminar(b)
+    assert fynd["beskrivning"] == "Bedömningen är preliminär. Okända uppgifter: P-ORG.omsattning."
+
+
+def test_preliminar_utan_okanda_falt_har_begriplig_atgard(regelbas, profil_fabrik, real_varden):
+    from riskanalys.granskning.kontroller import _preliminar
+    from riskanalys.regelverk.tillsyn import Omfattningsbeslut
+    profil = profil_fabrik(regelbas, real_varden)
+    urval = valj(regelbas, "RP-RED-VG", DAG, "Västra Götaland")
+    hinder = "Tillsynsområdet behöver utredas för filialen."
+    omfattning = Omfattningsbeslut(paket_id=None, punkter=(), status="preliminär",
+                                  regelspar=(), hinder=(hinder,))
+    b = bedom(regelbas, urval, profil).model_copy(update={"status": "preliminär", "omfattning": omfattning})
+    (fynd,) = _preliminar(b)
+    assert "Okända uppgifter: ." not in fynd["beskrivning"]
+    assert hinder in fynd["beskrivning"]
+    assert "omfattning" in fynd["atgard"].lower()
+
+
 def test_motivering_utan_hot_ger_b12(regelbas, profil_fabrik, real_varden, giltigt_utkast):
     stycken = [stycke.model_copy(update={"typ": "analys"}) for stycke in giltigt_utkast.stycken]
     utkast = giltigt_utkast.model_copy(update={"stycken": stycken})

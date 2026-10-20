@@ -42,6 +42,12 @@ def bygg_arb(
 ) -> Dokument:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
+    from riskanalys.dokument.skrivversion import V8, AKTUELL_DOKUMENTVERSION
+    if formatversion == V8 or (formatversion is None and
+            (any(getattr(r, 'formatversion', None) == V8 for r in utkast.values())
+             or (not utkast and regelbas.metod.omfattning and AKTUELL_DOKUMENTVERSION == V8))):
+        from riskanalys.dokument.arb_v8 import bygg_arb_v8
+        return bygg_arb_v8(regelbas, profil, bedomning, utkast, historik, analys=analys, gransindex=gransindex, modellrapport=modellrapport)
     if regelbas.metod.omfattning:
         from riskanalys.dokument.arb_v6 import bygg_arb_v6
         return bygg_arb_v6(regelbas, profil, bedomning, utkast, historik, analys=analys, gransindex=gransindex, modellrapport=modellrapport, formatversion=formatversion)
@@ -74,7 +80,7 @@ def _varde(regelbas: Regelbas, profil: Profil, falt_id: str) -> str:
     return visa_varde(regelbas.falt[falt_id], profil.uppgifter[falt_id].varde)
 
 
-def _syfte(regelbas: Regelbas, profil: Profil, bedomning: Bedomning) -> Avsnitt:
+def _syfte(regelbas: Regelbas, profil: Profil, bedomning: Bedomning, *, bevara_original: bool = False) -> Avsnitt:
     paket = regelbas.regelpaket[bedomning.regelpaket]
     roll = ROLL_FFR if profil.ar_bekraftad(FALT_FFR) else VERIFIERA
     ansvarstext = f"Funktionen för regelefterlevnad utövas av {roll}. Funktionen ansvarar för att riskbedömningen utvärderas och hålls aktuell."
@@ -86,7 +92,7 @@ def _syfte(regelbas: Regelbas, profil: Profil, bedomning: Bedomning) -> Avsnitt:
             motiv = ffr.motivering if ffr and ffr.status == "ej_tillämplig" else "Särskilda funktioner har dokumenterats."
             ansvarstext = f"Dokumenterad ansvarsfunktion: {roll}. Ansvarsfördelning: {motiv}. Den rättsliga lämpligheten ska sakgranskas."
 
-    stycken = (
+    stycken = [
         _stycke(
             "beskrivning",
             f"Den här allmänna riskbedömningen gäller {_varde(regelbas, profil, FALT_NAMN)}. "
@@ -105,8 +111,21 @@ def _syfte(regelbas: Regelbas, profil: Profil, bedomning: Bedomning) -> Avsnitt:
             ansvarstext,
             [FALT_FFR],
         ),
-    )
-    return Avsnitt(id="D-ARB.1", rubrik="Syfte, omfattning och ansvar", kalla="regelbas", stycken=stycken)
+    ]
+    if bevara_original:
+        from riskanalys.dokument.profiloriginal_v8 import spann_for_original, ansvarsmotiveringsspann
+        uppgifter=profil.uppgifter
+        for falt_id in (FALT_NAMN,FALT_ANSTALLDA,FALT_VERKSAMHETSSTALLEN):
+            u=uppgifter.get(falt_id)
+            if u and u.status=='bekräftad' and not u.inaktuell and isinstance(u.varde,str):
+                stycken[0]=stycken[0].model_copy(update={'literala_spann':(*stycken[0].literala_spann,
+                    *spann_for_original(stycken[0].text,u.varde))})
+        ffr=uppgifter.get(FALT_FFR)
+        if ffr and ffr.status=='ej_tillämplig' and ffr.motivering:
+            ansvar = ('{roll:Ansvarsfunktion}' if profil.ar_bekraftad('P-ROLL.ansvarsfunktion') else VERIFIERA)
+            spann = ansvarsmotiveringsspann(stycken[2].text, ansvar, ffr.motivering)
+            stycken[2]=stycken[2].model_copy(update={'literala_spann':spann})
+    return Avsnitt(id="D-ARB.1", rubrik="Syfte, omfattning och ansvar", kalla="regelbas", stycken=tuple(stycken))
 
 
 def _tjanster(regelbas: Regelbas, bedomning: Bedomning) -> Avsnitt:

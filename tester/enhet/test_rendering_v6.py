@@ -274,7 +274,7 @@ def test_v6_byggarens_b1_far_rubriker_och_tjanstens_lank_landar_pa_dess_beraknin
     nivastart = {a.id: a.stycken[a.underrubriker[-1].fore_stycke].text for a in d.avsnitt
                  if a.underrubriker and a.underrubriker[-1].rubrik == 'Risknivå och motivering'}
     assert nivastart and set(nivastart) <= set(berakning)
-    assert all(text.startswith('Penningtvättsrisk före kontroller: ') for text in nivastart.values())
+    assert all(text.startswith('Avgörande scenario (PT): ') for text in nivastart.values())
     nivasista = {a.id: next(s.text for s in reversed(a.stycken) if 'D-ARB.B1' in s.referenser)
                  for a in d.avsnitt if a.id in nivastart}
     i_word = []

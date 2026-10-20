@@ -14,12 +14,12 @@ def svar(text='Underlaget behöver bedömas mot dokumenterade affärshändelser.
     return AISvar(stycken=[AIStycke(typ=typ, referenser=refs or ['H-01','H-02','P-KUND.antal_aktiva'], text=text)], oklarheter=[])
 
 
-def test_v7_en_del_med_bevarade_aldre_delar():
+def test_v7_en_del_med_bevarade_aldre_delar_och_v8_som_ny_default():
     assert delar_for_version(V7) == ('analys',)
     assert delar_for_version(V6) == ('hot','sarbarheter')
     assert len(delar_for_version(V5)) == 5
-    from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, AKTUELL_DOKUMENTVERSION
-    assert AKTUELL_SKRIVVERSION == AKTUELL_DOKUMENTVERSION == V7
+    from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, AKTUELL_DOKUMENTVERSION, V8
+    assert AKTUELL_SKRIVVERSION == AKTUELL_DOKUMENTVERSION == V8
 
 
 def test_v7_prompt_kedja_omfang_och_kallbunden_kontroll():

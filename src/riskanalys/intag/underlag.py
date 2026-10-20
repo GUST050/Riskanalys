@@ -20,7 +20,8 @@ def egen_kannedom_tillaten(falt):
     return (falt.id in ENKLA_FALT
             or (falt.id.startswith('P-VERK.') and falt.typ == 'bool')
             or (falt.id.startswith('P-TJ.') and falt.id.endswith(
-                ('_erbjuds', '_arbetssatt', '_kundtyper', '_kanaler', '_geografi', '_ovriga_risker'))))
+                ('_erbjuds', '_arbetssatt', '_kundtyper', '_kanaler', '_geografi', '_ovriga_risker',
+                 '_iakttagna_hot'))))
 
 
 def kategori(falt):

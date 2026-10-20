@@ -98,9 +98,30 @@ def _dimensioner(t: Tjanstbedomning, rb: Regelbas, reduktionsprovning: str, *, f
             _tfmening(t, rb, begransning, formatversion=formatversion))
 
 
+def _scenariomotivering(t: Tjanstbedomning, rb: Regelbas, reduktionsprovning: str) -> tuple[str, ...]:
+    """Gruppera endast identiska förklaringar och bevara alla avgörande hotnamn."""
+    from riskanalys.dokument.scenariotabell import scenarioforklaring, kontrollmening, hotnamn
+    grupper = {}
+    for s in t.scenarier:
+        if s.avgorande:
+            text = scenarioforklaring(rb, t, s) + ' ' + kontrollmening(rb, s)
+            grupper.setdefault((s.dimension, text), []).append(hotnamn(rb, s))
+    poster = [f'Avgörande scenario ({dimension.upper()}): {", ".join(namn)}. {text}'
+              for (dimension, text), namn in grupper.items()]
+    if t.kvarstaende is not None:
+        fore = {s.hot for s in t.scenarier if s.dimension == 'pt' and s.avgorande}
+        efter = {s.hot for s in t.scenarier if s.dimension == 'pt' and s.kvarstaende == t.kvarstaende}
+        andra = fore != efter
+        andra_text = ' Avgörande scenarier ändras; se B1.' if andra else ''
+        poster.append(f'Högsta kvarstående PT-risk: {t.kvarstaende}.{andra_text} '
+                      f'Lokal reduktionsprövning: {REDUKTIONSFRASER.get(reduktionsprovning, reduktionsprovning)}.')
+    return tuple(poster)
+
+
 def berakningsmotivering(t: Tjanstbedomning, rb: Regelbas, *, reduktionsprovning: str = 'okand') -> tuple[str, ...]:
     """En mening per dimension: PT före kontroll, PT kvarstående, TF och sanktion när den finns."""
-    return (*_dimensioner(t, rb, reduktionsprovning), *_sanktionsmening(t))
+    dimensioner = _scenariomotivering(t, rb, reduktionsprovning) if t.scenarier else _dimensioner(t, rb, reduktionsprovning)
+    return (*dimensioner, *_sanktionsmening(t))
 
 
 def _byrans_pt(a: Tjansteanalys | None) -> str:
@@ -124,10 +145,13 @@ def _motivering(text: str, refs, proveniens: str) -> Textstycke:
 
 def nivamotivering_stycken(rb: Regelbas, t: Tjanstbedomning, a: Tjansteanalys | None, *, formatversion=V6) -> tuple[Textstycke, ...]:
     """Programmets beräkning följd av byråns PT- och TF-bedömning; alla stycken har typen motivering."""
-    refs = (t.tjanst, *t.regelspar, *t.tillampade_sarbarheter, B1)
+    refs = (t.tjanst, *t.regelspar, *t.tillampade_sarbarheter,
+            *(ref for s in t.scenarier for ref in (s.hot, *s.sarbarheter, *s.tackande_kontroller, *s.regelspar)), B1)
     reduktion = a.reduktionsprovning if a is not None else 'okand'
     sanktionsspar = t.sanktionsrisk.regelspar if t.sanktionsrisk else ()
-    berakning = (*(_motivering(text, refs, 'regelbas') for text in _dimensioner(t, rb, reduktion, formatversion=formatversion)),
+    dimensioner = (_scenariomotivering(t, rb, reduktion) if t.scenarier
+                   else _dimensioner(t, rb, reduktion, formatversion=formatversion))
+    berakning = (*(_motivering(text, refs, 'regelbas') for text in dimensioner),
                  *(_motivering(text, (*refs, *sanktionsspar), 'regelbas') for text in _sanktionsmening(t)))
     # Byråns egen text får ingen källhänvisning till regelbasen; länken leder till tjänstens beräkning i B1.
     byran = tuple(_motivering(text, (B1,), 'lokal') for text in (_byrans_pt(a), _byrans_tf(a)))

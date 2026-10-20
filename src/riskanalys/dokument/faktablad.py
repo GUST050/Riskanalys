@@ -3,7 +3,7 @@
 import json
 from typing import Literal
 from pydantic import Field, model_serializer
-from riskanalys.dokument.skrivversion import V6, V7
+from riskanalys.dokument.skrivversion import V6, V7, V8
 
 from riskanalys.dokument.modeller import Last, UnderlagHot, UnderlagKontroll, UnderlagKontrollrackvidd, UnderlagSarbarhet
 from riskanalys.dokument.klartext import faltnamn
@@ -124,7 +124,7 @@ def _post(regelbas: Regelbas, profil: Profil, u) -> Faktapost:
 
 def _post_med_omfang(regelbas: Regelbas, profil: Profil, u, formatversion: str) -> Faktapost:
     post = _post(regelbas, profil, u)
-    if formatversion != V7:
+    if formatversion not in (V7, V8):
         return post
     tjanst_id = faltets_tjanst(regelbas, u.id)
     return post.model_copy(update={'omfang': 'tjanst' if tjanst_id else 'byra', 'tjanst_id': tjanst_id})
@@ -170,9 +170,9 @@ def _kontroll_for_ai(regelbas, kontroll, bedomning, tjanst_id: str, formatversio
     """
     publik = {"status": kontrollstatus_for_ai(bedomning)}
     k = regelbas.kontroller[kontroll.id]
-    if formatversion == V7:
+    if formatversion in (V7, V8):
         publik["rackviddsstatus"] = "okand"
-    if formatversion == V7 and k.kallor and all(id in regelbas.kallor for id in k.kallor):
+    if formatversion in (V7, V8) and k.kallor and all(id in regelbas.kallor for id in k.kallor):
         publik.update(beskrivning=k.beskrivning, kallor=k.kallor,
             kallhanvisningar=tuple(h for h in k.kallhanvisningar if h.kalla in regelbas.kallor),
             rackvidd=tuple(UnderlagKontrollrackvidd.model_validate(r.model_dump(exclude={'sakkunnig'}))

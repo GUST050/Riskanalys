@@ -9,7 +9,17 @@ from riskanalys.dokument.analysunderlag import _belagg
 from riskanalys.dokument.klartext import faltnamn, kod_till_namn, uppgiftstext
 from riskanalys.dokument.tabeller import kort_varde
 from riskanalys.dokument.tjanstavsnitt import stycke
+from riskanalys.dokument.skrivversion import V8
 import re
+
+
+def _v8_originalsspann(rb, text, profil, refs):
+    from riskanalys.dokument.profiloriginal_v8 import spann_for_profiltext
+    spann=[]
+    for id in dict.fromkeys(refs):
+        if id in profil.uppgifter:
+            spann.extend(spann_for_profiltext(rb,profil,id,text))
+    return tuple(dict.fromkeys(spann))
 
 def omfattningsstycke(rb: Regelbas, p: Profil, b: Bedomning, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Textstycke:
     if gransindex is None:
@@ -27,7 +37,8 @@ def omfattningsstycke(rb: Regelbas, p: Profil, b: Bedomning, *, gransindex: dict
 STORLEKSFALT = ('P-ORG.antal_anstallda', 'P-ORG.verksamhetsstallen', 'P-VERK.omsattning')
 
 
-def kort_omfattningsstycke(rb: Regelbas, p: Profil, b: Bedomning, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Textstycke:
+def kort_omfattningsstycke(rb: Regelbas, p: Profil, b: Bedomning, *, gransindex: dict[str, tuple[float, ...]] | None = None,
+                           bevara_original: bool = False) -> Textstycke:
     """V6: samma motivering efter storlek och art som omfattningsstycke; belägg och trösklar står i B1."""
     index = gransindex if gransindex is not None else metodgransindex(rb)
     prop = b.proportionalitet
@@ -45,7 +56,11 @@ def kort_omfattningsstycke(rb: Regelbas, p: Profil, b: Bedomning, *, gransindex:
     text += 'Byråns motivering: ' + kort_varde(rb, p, 'P-OMFATTNING.motivering', gransindex=index)
     regelspar = prop.regelspar if prop else ((regel.id,) if regel else ())
     refs = [*regelspar, *STORLEKSFALT, *okanda, 'P-OMFATTNING.motivering', *((regel.id, 'D-ARB.B1') if regel else ())]
-    return stycke(text, list(dict.fromkeys(refs)), typ='motivering')
+    spann=()
+    if bevara_original:
+        from riskanalys.dokument.profiloriginal_v8 import omfattningsspann
+        spann=omfattningsspann(rb,p,'P-OMFATTNING.motivering',text)
+    return stycke(text, list(dict.fromkeys(refs)), typ='motivering').model_copy(update={'literala_spann':spann})
 
 
 def omfattningsregel_i_bilaga(rb: Regelbas) -> tuple[Textstycke, ...]:
@@ -64,7 +79,9 @@ def bevakningsavsnitt(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[fl
         text = 'Byråns dokumenterade omvärldsbevakning: ' + grupperade_profilbelagg(rb, p, refs,
             dict(zip(refs, ('Lästa källor', 'Läst och utvärderat', 'Ansvar', 'Relevans'))), gransindex=gransindex)
     else:
-        text = 'Byråns dokumenterade omvärldsbevakning: ' + ' '.join((_belagg(rb, p, id, gransindex=gransindex) for id in refs))
+        v8=formatversion == V8
+        text = 'Byråns dokumenterade omvärldsbevakning: ' + ' '.join((_belagg(rb, p, id,
+            gransindex=gransindex,bevara_original=v8) for id in refs))
     uppgift = p.uppgifter.get('P-BEVAKNING.kallor')
     idn = tuple(re.split('[,;\\s]+', str(uppgift.varde).strip())) if uppgift else ()
     kanda = [id for id in idn if id in rb.kallor and rb.kallor[id].kontrollsumma]
@@ -78,7 +95,10 @@ def bevakningsavsnitt(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[fl
         text += ' Version och kontrollsumma för varje källa redovisas i bilaga B1. '
     text += ' En hämtning eller registrering i programmets källregister visar inte att byrån läst och bedömt relevansen. Lästa källor ska knytas till varje tjänsts hot, sårbarheter och åtgärder, även när slutsatsen är att inget behöver ändras.'
     text = kod_till_namn(rb, text)
-    return Avsnitt(id='D-ARB.11', rubrik='Omvärldsbevakning', kalla='regelbas', stycken=(stycke(text, list(dict.fromkeys([*refs, 'SRC-TS-2026-14']))),))
+    post=stycke(text, list(dict.fromkeys([*refs, 'SRC-TS-2026-14'])))
+    if formatversion == V8:
+        post=post.model_copy(update={'literala_spann':_v8_originalsspann(rb,text,p,refs)})
+    return Avsnitt(id='D-ARB.11', rubrik='Omvärldsbevakning', kalla='regelbas', stycken=(post,))
 
 def uppfoljningsstycken(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[float, ...]] | None = None, formatversion=None) -> tuple[Textstycke, ...]:
     if gransindex is None:
@@ -89,5 +109,9 @@ def uppfoljningsstycken(rb: Regelbas, p: Profil, *, gransindex: dict[str, tuple[
         from riskanalys.dokument.redaktion_v7 import grupperade_profilbelagg
         text += grupperade_profilbelagg(rb, p, refs, dict(zip(refs, ('Spridning', 'goAML-förmåga', 'Tidigare tillsyn'))), gransindex=gransindex)
     else:
-        text += ' '.join((_belagg(rb, p, id, gransindex=gransindex) for id in refs))
-    return (stycke(text, [*refs, 'SRC-14FS-2024-11', 'SRC-PTL', 'SRC-VAGL-2025-03', 'SRC-FIPO-AR-2025']),)
+        v8=formatversion == V8
+        text += ' '.join((_belagg(rb, p, id,gransindex=gransindex,bevara_original=v8) for id in refs))
+    post=stycke(text, [*refs, 'SRC-14FS-2024-11', 'SRC-PTL', 'SRC-VAGL-2025-03', 'SRC-FIPO-AR-2025'])
+    if formatversion == V8:
+        post=post.model_copy(update={'literala_spann':_v8_originalsspann(rb,text,p,refs)})
+    return (post,)

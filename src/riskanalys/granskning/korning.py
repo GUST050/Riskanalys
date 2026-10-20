@@ -98,7 +98,7 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
         snapshot = (las_analyssnapshot_last(byramapp,regelbas,granskningsdatum,bedomningsmapp=bedomningsmapp,utkastmapp=utkastmapp)
                     if utkastmapp else Analyssnapshot(None,'',('Skrivresultat och lokal analys saknas.',),()))
         rapport = fryst_modellrapport(snapshot)
-        dokument = bygg_arb_v6(regelbas,profil,bedomning,utkast,historik,analys=snapshot.paket,modellrapport=rapport)
+        dokument = bygg_arb(regelbas,profil,bedomning,utkast,historik,analys=snapshot.paket,modellrapport=rapport)
     else:
         dokument = bygg_arb(regelbas, profil, bedomning, utkast, historik)
     fynd = granska(regelbas, urval, profil, bedomning, dokument, historik, granskningsdatum, oppna_fragor(utkast), skrivresultat=utkast, analys=snapshot.paket if snapshot else None, modellrapport=rapport, analysbrister_filer=snapshot.brister if snapshot else ())
@@ -119,6 +119,11 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
         spara_fryst_analys(mapp,snapshot)
         (mapp / "historik.json").write_text(historik.model_dump_json(indent=2), encoding="utf-8")
         metadata['analysbindning'] = snapshot.registersumma
+    if dokument.formatversion == 'D-ARB-tjanst-v8':
+        from riskanalys.dokument.presentation_v8 import bygg_presentation
+        from riskanalys.dokument.rapportpaket_v8 import PRESENTATIONSFIL
+        presentation = bygg_presentation(dokument, analys=snapshot.paket if snapshot else None, fynd=fynd, bedomning=bedomning, profil=profil)
+        (mapp/PRESENTATIONSFIL).write_text(presentation.model_dump_json(indent=2), encoding='utf-8')
     skriv_manifest(mapp, metadata)
     return mapp
 

@@ -16,6 +16,83 @@ from tester.fixturer.m2 import DAG, bygg_delsvar
 from tester.intag.test_webb import anrop
 
 
+def _exportera_analysutkast(s, t):
+    from riskanalys.dokument.export import kor_export_utkast, UTKASTFIL
+    from riskanalys.granskning.korning import kor_granskning
+    from riskanalys.profil.lagring import profilrevision
+    gm = kor_granskning(t.mapp, t.rb, DAG)
+    s.utkast = kor_export_utkast(t.mapp, DAG, granskningsmapp=gm) / UTKASTFIL
+    s.utkastrevision = profilrevision(t.profil())
+    return s.utkast
+
+
+def _andra_lokal_pt_text(s, t):
+    paket = las_analys(t.mapp)
+    text = 'Syntetiskt ändrat lokalt resonemang som ska följa med den uppdaterade Word-filen.'
+    data = dict(csrf=s.csrf, revision=registersumma(paket), tjanst=paket.tjanster[0].tjanst,
+                nummer='13', operation='spara', forfattare='Syntetisk Ada', pt_motivering=text)
+    assert anrop(s, 'analysblock', data)[0] == 200
+    return text
+
+
+@pytest.mark.parametrize('andring', ['andrad', 'tillagd', 'borttagen'])
+def test_word_stoppar_utkast_med_inaktuell_lokal_analys(analysmiljo, andring):
+    from riskanalys.analys.lagring import ANALYSFIL
+    s, t = analysmiljo
+    if andring != 'tillagd':
+        assert start(s)[0] == 200
+    _exportera_analysutkast(s, t)
+    assert anrop(s, 'word')[0] == 200
+    if andring == 'andrad':
+        _andra_lokal_pt_text(s, t)
+    elif andring == 'tillagd':
+        assert start(s)[0] == 200
+    else:
+        (t.mapp / ANALYSFIL).unlink()  # Enbart det syntetiska provets register.
+    status, html, _ = anrop(s, 'word')
+    assert status == 400
+    assert 'analys' in html.lower() and ('uppdatera' in html.lower() or 'granska' in html.lower())
+
+
+def test_word_tillater_utkast_nar_lokal_analys_saknas_bade_da_och_nu(analysmiljo):
+    from riskanalys.analys.lagring import ANALYSFIL
+    s, t = analysmiljo
+    _exportera_analysutkast(s, t)
+    assert anrop(s, 'word')[0] == 200
+    assert not (t.mapp / ANALYSFIL).exists()
+
+
+def test_word_uppdateras_efter_lokal_andring_utan_nya_ai_anrop(analysmiljo):
+    from io import BytesIO
+    from urllib.request import urlopen
+    from docx import Document
+    s, t = analysmiljo
+    assert start(s)[0] == 200
+    gammal = _exportera_analysutkast(s, t)
+    text = _andra_lokal_pt_text(s, t)
+    antal = len(s.leverantor.delanrop)
+    assert anrop(s, 'uppdaterautkast', dict(csrf=s.csrf, revision=s.utkastrevision))[0] == 200
+    assert s.utkast != gammal
+    assert len(s.leverantor.delanrop) == antal
+    assert 'Uppdatera Word-utkast utan nya AI-anrop' in anrop(s, '?oversikt=1')[1]
+    with urlopen(s.url + 'word', timeout=10) as svar:
+        dokument = Document(BytesIO(svar.read()))
+    texter = [p.text for p in dokument.paragraphs]
+    texter += [cell.text for tabell in dokument.tables for rad in tabell.rows for cell in rad.cells]
+    assert text in '\n'.join(texter)
+    assert not las_analys(t.mapp).beslut
+
+
+@pytest.mark.parametrize('extra,forvantad', [({'revision':'gammal'},409), ({'csrf':'fel'},403), ({'okant':'ja'},400)])
+def test_uppdatera_word_nekar_gammal_flik_csrf_och_okanda_falt(analysmiljo, extra, forvantad):
+    s, t = analysmiljo
+    gammal = _exportera_analysutkast(s, t)
+    data = dict(csrf=s.csrf, revision=s.utkastrevision)
+    data.update(extra)
+    assert anrop(s, 'uppdaterautkast', data)[0] == forvantad
+    assert s.utkast == gammal
+
+
 @pytest.fixture
 def analysmiljo(tmp_path, monkeypatch, rb_intag, klar):
     monkeypatch.setenv('RISKANALYS_DATA', str(tmp_path))

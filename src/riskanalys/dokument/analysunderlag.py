@@ -11,10 +11,12 @@ from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.regelverk.villkor import falt_i, tolka_villkor, utvardera, Sanning
 
 
-def _belagg(regelbas: Regelbas, profil: Profil, id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> str:
+def _belagg(regelbas: Regelbas, profil: Profil, id: str, *, gransindex: dict[str, tuple[float, ...]] | None = None,
+            bevara_original: bool = False) -> str:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
-    return uppgiftstext(regelbas, profil, id, gransindex=gransindex)
+    return uppgiftstext(regelbas, profil, id, gransindex=gransindex,
+        bevara_textoriginal=bevara_original)
 
 
 def erfarenhetsstycke(regelbas: Regelbas, profil: Profil, tjanst: Tjanstbedomning, *, gransindex: dict[str, tuple[float, ...]] | None = None) -> Textstycke:

@@ -20,7 +20,7 @@ MODELLMODULER = (
     'bedomning.kundmodell.utvardering', 'bedomning.modeller', 'bedomning.motor',
     'bedomning.omfattning', 'bedomning.sanktioner', 'bedomning.scenarier', 'bedomning.sektorsrisk',
     'fel', 'lagring.kontrollsumma', 'profil.modeller', 'profil.omfattning',
-    'regelverk.modeller', 'regelverk.tillsyn', 'regelverk.urval', 'regelverk.villkor',
+    'regelverk.modeller', 'regelverk.tillsyn', 'regelverk.urval', 'regelverk.validering_scenario', 'regelverk.villkor',
 )
 MODELLPAKET = ('bedomning', 'bedomning.kundmodell', 'lagring', 'profil', 'regelverk')
 MODELLFILER = tuple(sorted(

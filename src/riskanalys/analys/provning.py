@@ -118,10 +118,59 @@ def gallande_beslut(paket: Analyspaket, tjanst: str) -> Analysbeslut | None:
     return None
 
 
-def faktisk_reduktion(t) -> bool:
+POSITIV_TACKNING = ('bedomd_tillracklig','delvis')
+
+
+def _sankt(fran, till) -> bool:
     from riskanalys.bedomning.motor import RISKNIVAER
-    return bool(t.inneboende and t.kvarstaende and
-                RISKNIVAER.index(t.kvarstaende)<RISKNIVAER.index(t.inneboende.risk))
+    return bool(fran and till) and RISKNIVAER.index(till)<RISKNIVAER.index(fran)
+
+
+def sankta_scenarier(t) -> tuple:
+    """PT-scenarier som motorn har sänkt med en kontroll; TF sänks aldrig."""
+    return tuple(s for s in t.scenarier if s.dimension=='pt' and _sankt(s.risk,s.kvarstaende))
+
+
+def faktisk_reduktion(t) -> bool:
+    """Sann när tjänstens nivå eller något enskilt scenario har sänkts.
+
+    Utan scenarier (äldre bedömningar) avgör tjänstens nivå ensam, som tidigare.
+    """
+    return _sankt(t.inneboende.risk if t.inneboende else None,t.kvarstaende) or bool(sankta_scenarier(t))
+
+
+def _rackviddshot(rb, tjanst, c) -> frozenset:
+    """Hot som kontrollprövningens beskrivna källräckvidd för tjänsten faktiskt avser."""
+    kontroll=rb.kontroller.get(c.kontroll)
+    rack={r.id:r for r in kontroll.rackvidd} if kontroll else {}
+    return frozenset(h for id in c.rackvidd if id in rack and rack[id].tjanst==tjanst
+                     and rack[id].beskrivningsstatus=='beskriven' for h in rack[id].hot)
+
+
+def scenarioreduktionsbrister(rb, a, t, scenarier, relevanta) -> tuple[str,...]:
+    """Spärren per sänkt motorscenario: byrån kan stoppa en sänkning, aldrig skapa en.
+
+    `scenarier` är tjänstens effektiva lokala scenarier (lokala och aktuellt bekräftade
+    samma-kopplingar); `relevanta` de av dem som byrån bedömt relevanta.
+    """
+    fel=[]
+    for s in sankta_scenarier(t):
+        med_hot={id for id,x in scenarier.items() if s.hot in x.hot}
+        provade=[c for c in a.kontroller if c.scenario in med_hot and c.kontroll in s.tackande_kontroller]
+        if any(c.tackning=='saknas' for c in provade):
+            fel.append(f'{s.hot}: kontrollen täcker enligt byråns prövning inte scenariot; '
+                       'rätta kontrolluppgifterna eller registrera metodkonflikt.')
+        if not med_hot&relevanta:
+            fel.append(f'{s.hot}: motorn sänker scenariot men hotet saknar relevant lokal scenarioprövning; '
+                       'pröva hotet i ett relevant scenario eller registrera metodkonflikt.')
+            continue
+        stod=any(c.scenario in relevanta and c.tackning in POSITIV_TACKNING
+                 and s.hot in _rackviddshot(rb,a.tjanst,c) for c in provade)
+        if not stod:
+            fel.append(f'{s.hot}: motorns sänkning saknar positiv lokal prövning av en bärande kontroll '
+                       f'({", ".join(s.tackande_kontroller)}) i ett relevant scenario med hotet; '
+                       'pröva kontrollen för scenariot eller registrera metodkonflikt.')
+    return tuple(fel)
 
 
 def _saktext(text):
@@ -256,9 +305,13 @@ def _tjanstbrister(rb,profil,t,a,paket,gem,belagg,krav,sektorsavvikelse):
     if reduktion:
         k(bool(relevanta),'Faktisk reduktion saknar relevant stöd i lokal scenarioprövning.')
         text(a.reduktionsmotivering,'Reduktionsmotivering')
-        for id in relevanta:
-            k(any(c.scenario==id and c.tackning in ('bedomd_tillracklig','delvis') for c in a.kontroller),
-              f'{id}: faktisk reduktion saknar belagd scenariotäckning; registrera metodkonflikt.')
+        if t.scenarier:
+            # Bara sänkta motorscenarier behöver reduktionsstöd; övriga brister prövas som kontroll/gap.
+            for brist in scenarioreduktionsbrister(rb,a,t,scenarier,relevanta):k(False,brist)
+        else:
+            for id in relevanta:
+                k(any(c.scenario==id and c.tackning in POSITIV_TACKNING for c in a.kontroller),
+                  f'{id}: faktisk reduktion saknar belagd scenariotäckning; registrera metodkonflikt.')
     for g in a.gap:
         text(g.beskrivning,g.id);text(g.motivering,g.id);refs(g.belagg,g.id,kravs=g.status=='atgardat')
         if g.status=='accepterad_kvarstaende_risk':

@@ -3,7 +3,7 @@
 from collections import Counter
 from itertools import product
 
-from riskanalys.regelverk.modeller import Kontroll, Regelbas, Riktning
+from riskanalys.regelverk.modeller import Kontroll, Regelbas, Riktning, Sarbarhet, Tjanst, hot_dimensioner
 
 NIVAER = ("låg", "medel", "hög")
 MINSTA_HOT_FOR_SMAL_RIKTNING = 3
@@ -14,7 +14,53 @@ def scenariofel(rb: Regelbas) -> list[str]:
     fel = [*_sarbarhetshot(rb), *_riktningar(rb)]
     if rb.metod.scenario is None:
         return [*fel, *_negativa_effekter(rb)]
-    return [*fel, *_hotnivaer(rb), *_sarbarheter_utan_hot(rb), *_sannolikhetsmatris(rb)]
+    return [*fel, *_hotnivaer(rb), *_sarbarheter_utan_hot(rb), *_sannolikhetsmatris(rb),
+            *tjanstkopplingsfel(rb), *_scenarioregler(rb)]
+
+
+def verksam_hotkoppling(rb: Regelbas, tjanst: Tjanst, sarbarhet: Sarbarhet) -> bool:
+    """Minst ett av tjänstens scenarier kan ta emot sårbarhetens effekt."""
+    dimensioner = {"pt", "tf"} if sarbarhet.galler == "bada" else {
+        "pt" if sarbarhet.galler == "penningtvatt" else "tf"}
+    return any(h in rb.hot and h in tjanst.hot and dimensioner.intersection(hot_dimensioner(rb.hot[h]))
+               for h in sarbarhet.hot)
+
+
+def tjanstkopplingsfel(rb: Regelbas, tjanst: Tjanst | None = None) -> list[str]:
+    """Samma tjänstgräns används vid validering och före en direkt scenarioberäkning."""
+    fel = []
+    for t in (tjanst,) if tjanst else rb.tjanster.values():
+        for dimension in ("pt", "tf"):
+            if not any(h in rb.hot and dimension in hot_dimensioner(rb.hot[h]) for h in t.hot):
+                fel.append(f"{t.id}: tjänsten saknar {dimension.upper()}-scenario. Ange ett relevant hot "
+                           "med denna dimension i kataloger/tjanster.yaml och validera regelbasen.")
+        for id in t.sarbarheter:
+            s = rb.sarbarheter.get(id)
+            if s and s.hot and not verksam_hotkoppling(rb, t, s):
+                fel.append(f"{t.id}, {s.id}: sårbarheten saknar verksam hot-/dimensionskoppling i tjänsten. "
+                           "Motivera en relevant koppling eller avgränsa tjänstens sårbarheter uttryckligen.")
+    return fel
+
+
+def _scenarioregler(rb: Regelbas) -> list[str]:
+    fel = []
+    for regel in rb.metod.scenario.regler():
+        if regel.grund != "metodval":
+            fel.append(f"{regel.id}: numerisk riskpåverkan är metodval, inte rättsligt ska-krav.")
+        if not regel.kallor:
+            fel.append(f"{regel.id}: ange källor för scenariometodens regel i kallor.")
+    for s in rb.sarbarheter.values():
+        if s.effekt.sannolikhet < 0 and s.vid_okant != "preliminart_galler_ej":
+            fel.append(f"{s.id}: en negativ effekt kräver vid_okant: preliminart_galler_ej. "
+                       "Ett okänt svar får aldrig sänka risken.")
+        if s.omrade not in ("tj", "verk"):
+            fel += [f"{s.id}: {h} får bara kopplas till sårbarheter i område tj eller verk."
+                    for h in s.hot if h.startswith("H-TJ-")]
+    fel += [f"{h.id}: hotnivån är ett ogranskat metodval, inte ett rättsligt ska-krav."
+            for h in rb.hot.values() if h.niva is not None and h.grund != "metodval"]
+    fel += [f"{k.id}, riktning mot {r.tjanst}: kontrollmålet är ett metodval, inte ett rättsligt ska-krav."
+            for k in rb.kontroller.values() for r in k.riktar_sig_mot if r.grund != "metodval"]
+    return fel
 
 
 def _saknas(plats: str, referenser, finns, slag: str) -> list[str]:

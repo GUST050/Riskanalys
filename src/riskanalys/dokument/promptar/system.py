@@ -1,6 +1,6 @@
 """Den fasta systemprompten. Identisk i alla anrop för samma modell (spec 8.4.2)."""
 
-from riskanalys.dokument.skrivversion import V5, V7
+from riskanalys.dokument.skrivversion import V5, V7, V8
 
 SYSTEMTEXT = """<roll>
 Du skriver analyserande text i en svensk redovisningsbyrås allmänna riskbedömning enligt lagen (2017:630) om åtgärder mot penningtvätt och finansiering av terrorism. Läsarna är byråns ledning och personal och Länsstyrelsens handläggare. Texten ska visa att byrån förstår hur just dess tjänster, kunder, kanaler och geografi kan utnyttjas, och vad det betyder för byråns arbete.
@@ -52,9 +52,14 @@ def systemprompt(modell: str, *, formatversion: str = V5) -> str:
               "Är uppgiften ja eller okänd får du inte påstå att anknytning saknas. "
               "Faktapostens omfang anger byra eller tjanst. Byråfakta belägger ingen fördelning på tjänstens kunder. "
               "Katalogens kontrollbeskrivning är generell och intygar varken utförande eller effekt."
-              if formatversion == V7 else "")
+              if formatversion in (V7, V8) else "")
     text = SYSTEMTEXT
-    if formatversion == V7:
+    if formatversion in (V7, V8):
         text = text.replace('{tal:P-KUND.andel_riskbransch} av kunderna i tjänsten',
                             '{tal:P-KUND.andel_riskbransch} av byråns kunder')
+    if formatversion == V8:
+        policy += ("\n\nSkrivformat v8: Lokala fördelningar och deras kunskapsstatus återges enbart av programmet. "
+                   "Beskriv ingen saknad lokal fördelning och gissa inga lokala tal. "
+                   "Skilj möjliga missbruksprocesser och råd från utförda kontroller, effekt och fattade beslut. "
+                   "Inga lokala utföranden, beslut eller kontrollresultat får intygas.")
     return text + policy + ("\n\n" + SONNETRAD if "sonnet" in modell else "")

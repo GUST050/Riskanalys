@@ -4,6 +4,7 @@ import re
 
 from riskanalys.dokument.faktablad import Faktablad
 from riskanalys.dokument.modeller import AISvar
+from riskanalys.dokument.skrivversion import V5, V8
 from riskanalys.dokument.rendering import ROLLER
 from riskanalys.dokument.platshallare import faltid_fel, platshallarfel
 from riskanalys.dokument.validering import FORBJUDNA_FORMULERINGAR, VERIFIERA, har_nivasprak
@@ -133,7 +134,7 @@ def _gemensamma(svar: AISvar, fb: Faktablad, personnamn, lasta, *, sanktionsfel:
     return fel
 
 
-def _per_del(del_id: str, svar: AISvar, fb: Faktablad) -> list[str]:
+def _per_del(del_id: str, svar: AISvar, fb: Faktablad, *, formatversion: str = V5) -> list[str]:
     refs = [r for s in svar.stycken for r in s.referenser]
     text = " ".join(s.text for s in svar.stycken)
     fel = []
@@ -159,7 +160,9 @@ def _per_del(del_id: str, svar: AISvar, fb: Faktablad) -> list[str]:
         # kan vara tillåtet; programmet avgör det lokalt.
         fel += [f"Stycke {n} säger att risken minskar. Programmet avgör lokalt om en kontroll räknas som "
                 "riskreducerande; använd inte orden minskar, begränsar, reducerar eller sänker i den här delen."
-                for n, s in enumerate(svar.stycken, 1) if _pastaende_om_minskning(s.text)]
+                for n, s in enumerate(svar.stycken, 1)
+                if (_v8_pastaende_om_minskning(s, fb) if formatversion == V8 and del_id == "analys"
+                    else _pastaende_om_minskning(s.text))]
     if del_id in ("risknivaer", "analys") and not any(
             (del_id == "analys" or s.typ == "motivering") and any(r.startswith("H-") for r in s.referenser)
             and any(r.startswith(("S-", "P-")) for r in s.referenser) for s in svar.stycken):
@@ -190,14 +193,16 @@ def _per_del(del_id: str, svar: AISvar, fb: Faktablad) -> list[str]:
             fel.append("Delen motiverar ett motorutfall. Beskriv endast kvalitativa samband och villkorliga scenarier.")
     lagst, hogst = LANGD[del_id]
     antal = len(text.split())
-    if not lagst <= antal <= hogst:
+    if formatversion != V8 and not lagst <= antal <= hogst:
         fel.append(f"Delen ska vara {lagst}–{hogst} ord; den är {antal} ord.")
     return fel
 
 
-def validera_del(del_id: str, svar: AISvar, fb: Faktablad, personnamn: tuple[str, ...], lasta: tuple[str, ...]) -> list[str]:
+def validera_del(del_id: str, svar: AISvar, fb: Faktablad, personnamn: tuple[str, ...], lasta: tuple[str, ...], *, formatversion: str = V5) -> list[str]:
     sanktionsfel = SANKTIONSFEL_V7 if del_id == "analys" else SANKTIONSFEL
-    return [*_gemensamma(svar, fb, personnamn, lasta, sanktionsfel=sanktionsfel), *_per_del(del_id, svar, fb)]
+    return [*_gemensamma(svar, fb, personnamn, lasta, sanktionsfel=sanktionsfel),
+            *_per_del(del_id, svar, fb, formatversion=formatversion),
+            *(_v8_pastaenden(svar) if formatversion == V8 else [])]
 
 
 def _pastaende_om_minskning(text: str) -> bool:
@@ -206,3 +211,74 @@ def _pastaende_om_minskning(text: str) -> bool:
         if not re.match(r"\s+(?:inte|ej|aldrig)\b",efter,re.IGNORECASE):
             return True
     return False
+
+
+_V8_BANKINSYNSBEGRANSNING = re.compile(
+    r",\s*(?P<verb>begränsar)\s+den\s+delvisa\s+bankinsynen\s+i\s+tjänsten\s+"
+    r"möjligheten\s+att\s+följa\s+pengarna\s+från\s+insättning\s+till\s+slutmottagare"
+    r"(?:(?P<slut>[.!?])(?=\s|$)|(?=$))",
+    re.IGNORECASE,
+)
+
+
+def _v8_pastaende_om_minskning(stycke, fb: Faktablad) -> bool:
+    """Behåll förbudet per verbträff utom V8:s enda synligt belagda insynsformulering."""
+    tillaten_traff = None
+    bankinsyn = next((p for p in fb.poster
+                      if p.id.startswith("P-TJ.") and p.id.endswith("_bankinsyn")
+                      and p.id in stycke.referenser), None)
+    synlig_delvis_tjanstinsyn = (
+        stycke.typ == "scenario"
+        and bankinsyn is not None
+        and bankinsyn.status == "bekräftad"
+        and bankinsyn.visningsvarde.strip().casefold() == "delvis"
+        and bankinsyn.omfang == "tjanst"
+        and bankinsyn.tjanst_id == fb.tjanst_id
+    )
+    if synlig_delvis_tjanstinsyn:
+        match = _V8_BANKINSYNSBEGRANSNING.search(stycke.text)
+        if match:
+            tillaten_traff = match.span("verb")
+
+    for match in _MINSKNING.finditer(stycke.text):
+        if match.span() == tillaten_traff:
+            continue
+        efter = stycke.text[match.end():]
+        if not re.match(r"\s+(?:inte|ej|aldrig)\b", efter, re.IGNORECASE):
+            return True
+    return False
+
+
+# Avgränsade regressioner för observerade formuleringar, aldrig en semantisk attest.
+# De läser enbart leverantörssvaret: inga privata lokala värden får påverka retry.
+_FORDELNING = re.compile(r"\b(?:fördel\w*|tjänstefördel\w*|hur\s+många|riskbranschkunder\w*)\b", re.IGNORECASE)
+_KUNSKAPSLUCKA = re.compile(
+    r"\b(?:saknas|saknar|okän\w*|inte\s+(?:känd\w*|bekräft\w*|kartlag\w*)|"
+    r"visar\s+inte\s+hur|framgår\s+inte|behöver\s+(?:kompletteras|utredas|kartläggas))\b", re.IGNORECASE)
+_LOKALT_ANTAL = re.compile(
+    r"\b(?:en|ett|två|tre|fyra|fem|sex|sju|åtta|nio|tio|elva|tolv|hälften|flertalet|majoriteten)\b"
+    r"\s+(?:riskbranschkunder\w*|av\s+tjänstens\s+kunder|av\s+kunderna\s+i\s+tjänsten)\b|"
+    r"\btjänsten\s+har\s+(?:en|ett|två|tre|fyra|fem|sex|sju|åtta|nio|tio|elva|tolv)\b", re.IGNORECASE)
+_LOKALT_BESLUT = re.compile(
+    r"\b(?:byrån|ledningen|styrelsen|vi)\s+(?:har\s+)?(?:beslutat|fastställt|godkänt|infört)\b|"
+    r"\b(?:rutinen|åtgärden|beslutet)\s+(?:har\s+)?(?:beslutats|fastställts|godkänts|införts)\b|"
+    r"\b(?:bevakning\w*|sakkunnig\w*)\b[^.!?]*\b(?:har\s+genomförts|är\s+(?:utförd|godkänd))\b", re.IGNORECASE)
+_SAKER_EFFEKT = re.compile(
+    r"\b(?:kontroll\w*|avstämning\w*|granskning\w*)\b[^.!?]*\b(?:säkerställer|garanterar|förhindrar)\b(?!\s+(?:inte|ej|aldrig)\b)", re.IGNORECASE)
+
+
+def _v8_pastaenden(svar: AISvar) -> list[str]:
+    fel = []
+    texter = [(f"Stycke {n}", s.text) for n, s in enumerate(svar.stycken, 1)]
+    texter += [(f"Oklarhet {n}", o.fraga) for n, o in enumerate(svar.oklarheter, 1)]
+    for plats, text in texter:
+        for mening in re.split(r"[.!?]", text):
+            if _FORDELNING.search(mening) and _KUNSKAPSLUCKA.search(mening):
+                fel.append(f"{plats} påstår kunskapsstatus om lokal fördelning. Utelämna påståendet; programmet återger lokala uppgifter och luckor.")
+            if _LOKALT_ANTAL.search(mening):
+                fel.append(f"{plats} antar lokalt antal eller fördelning. Gissa inga tjänstetal eller andelar; programmet återger dem.")
+            if _LOKALT_BESLUT.search(mening):
+                fel.append(f"{plats} påstår lokalt beslut eller genomförande. Beskriv bara ett uttryckligt förslag eller möjligt scenario.")
+            if _SAKER_EFFEKT.search(mening):
+                fel.append(f"{plats} intygar kontrolleffekt. Beskriv generell räckvidd och begränsning utan att intyga lokalt resultat.")
+    return fel

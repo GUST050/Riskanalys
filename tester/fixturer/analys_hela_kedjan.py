@@ -98,13 +98,15 @@ def skapa_fall(rb,rot: Path,*,variation=False) -> SyntetisktFall:
         'motivering':'Hotet prövas mot kundernas faktiska uppdrag och dokumenterade mandat; underlag kan användas för att dölja andra ändamål.',
         'belagg':('ab6:mandat',)}) for s in paket.gemensamma_scenarier)
     paket=paket.model_copy(update={'belagg':(*paket.belagg,*belagg),'gemensamma_scenarier':gem})
-    tjanster=tuple(_tjanst(rb,t,gem,variation=variation) for t in paket.tjanster)
+    motorresultat={t.tjanst:t for t in b.tjanster}
+    tjanster=tuple(_tjanst(rb,t,gem,motorresultat[t.tjanst],variation=variation) for t in paket.tjanster)
     paket=_bekrafta(paket.model_copy(update={'tjanster':tjanster}))
     return SyntetisktFall(rb,profil,b,paket,byramapp)
 
 
-def _tjanst(rb,t,gem,*,variation):
+def _tjanst(rb,t,gem,motorresultat,*,variation):
     id=t.tjanst
+    reduktion=p.faktisk_reduktion(motorresultat)
     lok=tuple(s.model_copy(update={'relevans':'relevant',
         'motivering':'Tjänstens egna arbetsmoment kan ge felaktiga underlag ett legitimt utseende. Kontrollen prövas mot ursprungshandlingar och kvarstående begränsningar.',
         'belagg':('ab6:mandat',)}) for s in t.scenarier)
@@ -128,10 +130,11 @@ def _tjanst(rb,t,gem,*,variation):
             utfall='Stickprovet är dokumenterat men bevisar inte att alla kundens transaktioner eller avsikter är kända.',
             belagg=('ab6:kontroll',),tackning='delvis' if rack else 'saknas',
             kvarstar='Betalningens existens styrker inte underlagets verkliga innebörd; externa betalningsled och kundens uppgifter kan fortfarande vara ofullständiga.'))
-    konflikt=any(c.tackning=='saknas' for c in prov)
+    saknad_tackning=any(c.tackning=='saknas' for c in prov)
+    konflikt=reduktion and saknad_tackning
     gap=(m.Analysgap(id=id+':kontrollbrist',typ='kontrollbrist',status='accepterad_kvarstaende_risk',
         beskrivning='Katalogens räckvidd är okänd för tjänstens kontroll; dokumenterat stickprov ersätter inte källbunden räckvidd.',
-        motivering='Känd begränsning redovisas med ansvar och frist. Detta godkänner inte motorns reduktion.',ansvar='Syntetisk metodansvarig',tidsfrist=date(2026,11,15)),) if konflikt else ()
+        motivering='Känd begränsning redovisas med ansvar och frist. Detta godkänner inte motorns reduktion.',ansvar='Syntetisk metodansvarig',tidsfrist=date(2026,11,15)),) if saknad_tackning else ()
     if konflikt:
         gap+= (m.Analysgap(id=id+':metodkonflikt',typ='metodkonflikt',status='oppet',
             beskrivning='Motorn reducerar risk men stöd för kontrollens scenariotäckning saknas.',
@@ -145,7 +148,7 @@ def _tjanst(rb,t,gem,*,variation):
         5:'Bekräftad extern KYC används med eget ansvar.',6:'Varje kataloghot har en explicit relevant tillämpning.',
         7:'Kund, kanal, geografi och egen verksamhet prövas separat.',8:'Faktorer samverkar i underlagskedjan.',
         9:'Egen erfarenhet och aktuell bevakning finns dokumenterad.',10:'Relevanta scenarier kräver kontrollprövning.',
-        11:'Relevant scenario lämnar dokumenterade begränsningar.',12:'Motorn redovisar faktisk reduktion.',
+        11:'Relevant scenario lämnar dokumenterade begränsningar.',12:'Motorn redovisar faktisk reduktion.' if reduktion else 'Motorn redovisar ingen faktisk reduktion.',
         13:'PT-utfallet behöver lokal rimlighetsprövning.',14:'TF prövas självständigt även vid lagligt ursprung.',
         15:'Sanktionsanknytning finns bekräftad i intaget.',16:'Riskbeslut behöver rutin och uppföljning.'}
     block=tuple(x.model_copy(update={'aktivering':'aktiv','motivering':forklaring[x.nummer]}) for x in t.block)
@@ -183,8 +186,8 @@ def _tjanst(rb,t,gem,*,variation):
         erfarenhetsbelagg=('ab6:bevakning',),
         pt_motivering='Motorns PT-utfall prövas mot hur felaktiga underlag kan legitimera inkomster eller kostnader. Uppdragets begränsade insyn och kontrollens belagda räckvidd måste hållas isär; utred metodkonflikten före attest.',
         tf_motivering='TF prövas separat: även lagliga inkomster kan föras vidare till otillåtna ändamål. Mottagarkedja och ändamål kan vara ofullständiga trots korrekt bokföring; sanktionskontroll ersätter inte denna prövning.',
-        reduktionsprovning='metodkonflikt' if konflikt else 'motiverad',
-        reduktionsmotivering='Motorns faktiska reduktion bevaras. Källräckvidd och genomförande prövas scenario för scenario; okänd räckvidd ger en öppen metodkonflikt och inget tyst alternativt risksteg.',
+        reduktionsprovning='ej_reduktion' if not reduktion else 'metodkonflikt' if konflikt else 'motiverad',
+        reduktionsmotivering=('Motorns faktiska reduktion bevaras. Källräckvidd och genomförande prövas scenario för scenario; okänd räckvidd ger en öppen metodkonflikt och inget tyst alternativt risksteg.' if reduktion else 'Motorn sänker inte tjänstens kvarstående nivå. Kontrollens begränsningar redovisas utan reduktionsanspråk.'),
         sektorsjamforelse='Tjänstens kundmix och mandat jämförs med sektorsbilden utan att byråns avgränsning automatiskt ändrar motorns nivå.',
         sanktioner='Bekräftad anknytning kräver lokal kontroll av aktuell träff och motpart; ingen kundåtgärd utförs av programmet.',
         slutsats='Behåll dokumenterad avgränsning och följ upp motsägelser före leverans. Olöst metod- eller underlagskonflikt hindrar slutlig attest; förslag är inte genomförande. Kundkännedom, övervakning och utbildning anpassas efter tjänstens scenarier.',
@@ -328,7 +331,29 @@ def syntetisk_expertkopia(rot):
     return regelrot,ladda_regelbas(regelrot)
 
 
-def bygg_bunden_kedja(rb,rot,*,regelrot,godkann=False,variation=False):
+def _positiv_bankavstamning(rb, paket):
+    """Den positiva syntetiska kopian prövar C-07 för felbetalning i bokföringen.
+
+    C-TJ-01 bär inte H-MOD-01:s sänkning. Den vanliga ogranskade fixturen
+    behåller sina luckor; detta tillägg används bara efter explicit syntetisk signering.
+    """
+    scenarier = {s.id: s for s in paket.gemensamma_scenarier}
+    analyser = []
+    for t in paket.tjanster:
+        if t.tjanst == 'T-RED-01':
+            lokala = {**scenarier, **{s.id: s for s in t.scenarier}}
+            rack = tuple(r.id for r in rb.kontroller['C-07'].rackvidd
+                         if r.tjanst == t.tjanst and r.beskrivningsstatus == 'beskriven' and 'H-MOD-01' in r.hot)
+            assert rack, 'Den positiva kopian kräver beskriven bankavstämning för H-MOD-01.'
+            tillagg = tuple(c.model_copy(update={'kontroll': 'C-07', 'rackvidd': rack, 'tackning': 'delvis',
+                'tillampning': 'Syntetiskt dokumenterad bankavstämning: konsulten utreder felbetalning och återföring till annat konto.'})
+                for c in t.kontroller if c.scenario in lokala and 'H-MOD-01' in lokala[c.scenario].hot)
+            t = t.model_copy(update={'kontroller': (*t.kontroller, *tillagg)})
+        analyser.append(t)
+    return paket.model_copy(update={'tjanster': tuple(analyser)})
+
+
+def bygg_bunden_kedja(rb,rot,*,regelrot,godkann=False,variation=False,formatversion=None):
     """Verkliga manifest och bindningar; godkann=True ENDAST syntetisk kopia."""
     from riskanalys.analys import lagring as l
     from riskanalys.profil.lagring import spara_profil
@@ -339,16 +364,31 @@ def bygg_bunden_kedja(rb,rot,*,regelrot,godkann=False,variation=False):
     f=skapa_fall(rb,rot,variation=variation)
     from tester.fixturer.skrivsvar_v7 import med_verksamhetsval
     f=replace(f,profil=med_verksamhetsval(rb,f.profil))
+    from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, V8
+    if (formatversion or AKTUELL_SKRIVVERSION)==V8:
+        from riskanalys.intag.fordelning import faltkoppling,underlagsbindning
+        upp=dict(f.profil.uppgifter)
+        if godkann:
+            # Explicit syntetiska, aktiva faktorbaser för det positiva V8-provet.
+            for id in ('P-GEO.antal_utland_agare','P-KUND.antal_riskbransch','P-KUND.antal_kontant'):
+                upp[id]=upp[id].model_copy(update={'varde':6})
+            f=replace(f,profil=harled_andelar(f.profil.model_copy(update={'uppgifter':upp}),rb))
+            upp=dict(f.profil.uppgifter)
+        for id,u in upp.items():
+            if faltkoppling(rb,id) and f.profil.ar_bekraftad(id):
+                upp[id]=u.model_copy(update={'underlagsbindning':underlagsbindning(rb,f.profil,id)})
+        f=replace(f,profil=f.profil.model_copy(update={'uppgifter':upp}))
     spara_profil(f.byramapp,f.profil)
     bm=kor_bedomning(f.byramapp,rb);b=las_bedomning(bm)
     from tester.fixturer.skrivsvar_v7 import tjanstspecifikt_svar_v7
     svar=[tjanstspecifikt_svar_v7(rb,f.profil,t,id) for id,t in tjanster_med_avsnitt(b)]
-    um=kor_skrivning(f.byramapp,rb,Testleverantor(svar),effort='medium')
+    um=kor_skrivning(f.byramapp,rb,Testleverantor(svar),effort='medium', **({'formatversion':formatversion} if formatversion else {}))
     registrera_handelse(f.byramapp,Handelse(datum=date(2026,10,1),typ='utvärdering',beskrivning='Syntetisk årlig utvärdering av tjänster och mandat.'))
     registrera_handelse(f.byramapp,Handelse(datum=date(2026,10,8),typ='uppdatering',beskrivning='Syntetisk separat komplettering om betalningsled; flyttar inte årsfristen.'))
     a=f.analys
     if godkann:
         if not (regelrot/'granskning.yaml').is_file():raise ValueError('Positiv kedja kräver uttryckligt signerad syntetisk tempkopia.')
+        a=_positiv_bankavstamning(rb,a)
         from tester.fixturer.v6_analys import _modellunderlag
         a=a.model_copy(update={'modellrisk':_modellunderlag(f.byramapp,rb,rot/'syntetisk-modellrapport',DAG)})
     a=_bekrafta(a.model_copy(update={'bindning':l.bygg_bindning(f.byramapp,rb,bm,um)}))
@@ -368,8 +408,10 @@ def bygg_bunden_kedja(rb,rot,*,regelrot,godkann=False,variation=False):
         d,fynd=las_granskning(gm)
         assert not fynd,fynd
         poster=()
+        from riskanalys.dokument.rapportpaket_v8 import las_presentation
+        presentation=las_presentation(gm,b,f.profil,regelbas=rb) if d.formatversion=='D-ARB-tjanst-v8' else None
         for avsnitt in d.avsnitt:
-            poster=registrera_sakgranskning(poster,d,f.profil,avsnitt.id,True,'FfR','Syntetisk dokumentgranskare',DAG,analysbindning=cas)
+            poster=registrera_sakgranskning(poster,d,f.profil,avsnitt.id,True,'FfR','Syntetisk dokumentgranskare',DAG,analysbindning=cas,presentation=presentation)
         spara_sakgranskningar(f.byramapp,poster)
     return BundenKedja(replace(f,bedomning=b,analys=a),bm,um,gm,regelrot)
 

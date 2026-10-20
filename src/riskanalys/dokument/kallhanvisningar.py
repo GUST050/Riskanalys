@@ -10,7 +10,7 @@ from riskanalys.regelverk.modeller import Regelbas
 _GEMENSAM = ' Gemensamma hänvisningar inom avsnittet.'
 _HISTORISKT_SUFFIX = re.compile(r'(?: Källor: (?:\[\d+(?:, s\. [\d, ]+)?\](?:, )?)+\.)?(?: Profilbelägg: bilaga B1\.)?$')
 _REGISTER = 'Källregister ['
-_KORTA_HANVISNINGAR = ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7')
+_KORTA_HANVISNINGAR = ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8')
 _Textpost = TypeVar('_Textpost', Textstycke, Tabellcell)
 
 
@@ -74,7 +74,7 @@ def _kallor(refs, rb: Regelbas, poster: dict, *, formatversion: str = 'D-ARB-tja
 
 def bygg_kallregister(dokument: Dokument, regelbas: Regelbas) -> dict[str, str]:
     """Stabila läsnummer för faktiskt refererade källor utanför B1:s inventarium."""
-    ny = dokument.formatversion in ('D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6', 'D-ARB-tjanst-v7')
+    ny = dokument.formatversion in ('D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8')
     poster = _poster(regelbas, rackvidd=ny)
     kallor = set()
     for avsnitt in dokument.avsnitt:
@@ -82,7 +82,7 @@ def bygg_kallregister(dokument: Dokument, regelbas: Regelbas) -> dict[str, str]:
             # B1:s inventarium är inte användning av källan. Flyttade beräkningar är det.
             texter = [cell for tabell in avsnitt.tabeller for rad in tabell.rader for cell in rad.celler] if ny else []
             # M1-förslaget använder sin källa, till skillnad från inventariets källversionsrader.
-            if dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7'):
+            if dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8'):
                 texter.extend(s for s in avsnitt.stycken if ar_m1_forslag(s.text))
         else:
             texter = [*avsnitt.stycken, *(cell for tabell in avsnitt.tabeller for rad in tabell.rader for cell in rad.celler)]
@@ -97,11 +97,11 @@ def med_kallhanvisningar(dokument: Dokument, regelbas: Regelbas) -> Dokument:
     Referens-ID:n bevaras för granskningsspåret. Sidor visas bara när en
     uttrycklig hänvisning anger sidan; ett katalog-ID är inte ett sidbelägg.
     """
-    if dokument.formatversion not in ('D-ARB-tjanst-v5', 'D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6', 'D-ARB-tjanst-v7'):
+    if dokument.formatversion not in ('D-ARB-tjanst-v5', 'D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8'):
         return dokument
     register = bygg_kallregister(dokument, regelbas)
-    ny = dokument.formatversion in ('D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6', 'D-ARB-tjanst-v7')
-    v6 = dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7')
+    ny = dokument.formatversion in ('D-ARB-tjanst-v5.1', 'D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8')
+    v6 = dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8')
     poster = _poster(regelbas, rackvidd=ny)
     def med_hanvisning(text: _Textpost, visade: set[tuple[str, int | None]] | None = None) -> _Textpost:
         kallor = _kallor(text.referenser, regelbas, poster, formatversion=dokument.formatversion)
@@ -128,11 +128,14 @@ def med_kallhanvisningar(dokument: Dokument, regelbas: Regelbas) -> Dokument:
         suffix = ' Källor: ' + ', '.join(delar) + '.' if delar else ''
         if profilbelagg:
             suffix += ' Profilbelägg: bilaga B1.'
-        etikett = (' Hänvisningar.' if dokument.formatversion == 'D-ARB-tjanst-v7' else _GEMENSAM) if forsta and suffix else ''
-        return text.model_copy(update={'text': utan_kallhanvisning(text.text, genererad_etikett=etikett) + etikett + suffix})
+        etikett = (' Hänvisningar.' if dokument.formatversion in ('D-ARB-tjanst-v7', 'D-ARB-tjanst-v8') else _GEMENSAM) if forsta and suffix else ''
+        # V8 byggs från originalvärden. Ett lokalt råsvar som slutar som en
+        # källhänvisning får inte tolkas som ett gammalt genererat suffix.
+        original = text.text if dokument.formatversion == 'D-ARB-tjanst-v8' else utan_kallhanvisning(text.text, genererad_etikett=etikett)
+        return text.model_copy(update={'text': original + etikett + suffix})
 
     def med_tabellhanvisningar(tabell: Dokumenttabell, visade: set[tuple[str, int | None]] | None = None) -> Dokumenttabell:
-        if dokument.formatversion not in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7'):
+        if dokument.formatversion not in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8'):
             return tabell.model_copy(update={'rader': tuple(rad.model_copy(update={
                 'celler': tuple(med_hanvisning(c) for c in rad.celler)}) for rad in tabell.rader)})
         rader = []
@@ -142,7 +145,7 @@ def med_kallhanvisningar(dokument: Dokument, regelbas: Regelbas) -> Dokument:
             if celler:
                 forsta = med_hanvisning(celler[0].model_copy(update={'referenser': refs}), visade)
                 celler = (forsta.model_copy(update={'referenser': celler[0].referenser}),
-                    *(c.model_copy(update={'text': utan_kallhanvisning(c.text)}) for c in celler[1:]))
+                    *(c if dokument.formatversion == 'D-ARB-tjanst-v8' else c.model_copy(update={'text': utan_kallhanvisning(c.text)}) for c in celler[1:]))
             rader.append(rad.model_copy(update={'celler': celler}))
         return tabell.model_copy(update={'rader': tuple(rader)})
 
@@ -150,7 +153,7 @@ def med_kallhanvisningar(dokument: Dokument, regelbas: Regelbas) -> Dokument:
     for a in dokument.avsnitt:
         if a.id == 'D-ARB.B1':
             reservkatalog = range(0)
-            if dokument.formatversion == 'D-ARB-tjanst-v7':
+            if dokument.formatversion in ('D-ARB-tjanst-v7', 'D-ARB-tjanst-v8'):
                 from riskanalys.dokument.tjanstavsnitt_v7 import RESERVKATALOG_RUBRIK
                 for n, rubrik in enumerate(a.underrubriker):
                     if rubrik.rubrik == RESERVKATALOG_RUBRIK:

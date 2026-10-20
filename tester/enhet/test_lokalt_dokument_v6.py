@@ -222,9 +222,7 @@ def test_v6_ren_byggare_laser_aldrig_privata_belaggsfiler(v6underlag, lokal, mon
     assert lokal.tjanster[0].samverkan in texter(d, huvud=True)
 
 
-# Planens redaktionella ordbudget för fyrtjänstfallet (designval, inte lagkrav eller fastställelsespärr).
-HUVUDTEXTMAL_MIN = 3500
-HUVUDTEXTMAL_MAX = 5000
+# Ordmått och rådgivande varning; användaren har tagit bort hårda redaktionella ordgränser.
 RIKTBUDGET = 4700
 AI_MAX_ORD = 4 * (160 + 220)
 LANGDVARNING = 'Redaktionell längdvarning'
@@ -255,24 +253,12 @@ def _bevarar_all_analys_och_varnar_vid_overskridande(fall, d, aitexter):
     return ordantal
 
 
-@pytest.fixture
-def realistiskt_fyrtjanstprov(tmp_path, regelbas_v1):
-    """Bygge, analysbevarande, varning och undre längdgräns får aldrig vara väntade fel."""
+def test_realistiskt_fyrtjanstprov_bevarar_analys_och_varnar_vid_behov(tmp_path, regelbas_v1):
+    """Byggfel och innehållsförlust är fel; ett visst ordtal är ingen godkännandegrind."""
     fall, d, aitexter = _fyrtjanstprov(tmp_path, regelbas_v1, variation=False, maxord=False)
     assert sum(len(text.split()) for text in aitexter) < AI_MAX_ORD
     ordantal = _bevarar_all_analys_och_varnar_vid_overskridande(fall, d, aitexter)
     print({'fall': 'normal', 'variation': False, **ordantal})
-    assert HUVUDTEXTMAL_MIN <= ordantal['huvudtext']
-    return ordantal
-
-
-def test_realistiskt_fyrtjanstprov_bevarar_analys_och_varnar_normalt(realistiskt_fyrtjanstprov):
-    assert realistiskt_fyrtjanstprov['huvudtext'] >= HUVUDTEXTMAL_MIN
-
-
-def test_realistiskt_fyrtjanstprov_haller_ovre_huvudtextmalet(realistiskt_fyrtjanstprov):
-    huvudord = realistiskt_fyrtjanstprov['huvudtext']
-    assert huvudord <= HUVUDTEXTMAL_MAX
 
 
 @pytest.mark.parametrize('eftertext', ['', ' Byråns egna tillägg står exakt kvar.\nÄven nästa rad.'])
@@ -518,7 +504,7 @@ def test_v6_bevarar_rattslig_omfattning_lanshinder_sektorskallor_och_bevakning(v
             assert any(ref.id in s.referenser and rb.kallor[ref.kalla].titel in s.text for s in metod.stycken)
     p = p.model_copy(update={'uppgifter': {**p.uppgifter, 'P-ORG.sateslan': p.uppgifter['P-ORG.sateslan'].model_copy(update={'status': 'saknas'})}})
     b = bedom(rb, valj(rb, p.byra.regelpaket, b.datum, p.byra.lan), p)
-    d = bygg_arb_v6(rb, p, b, {}, h, analys=None)
+    d = bygg_arb_v6(rb, p, b, {}, h, analys=None, formatversion='D-ARB-tjanst-v6')
     s = d.avsnitt_med_id()['D-ARB.2'].stycken[0]
     assert 'P-ORG.sateslan' in s.referenser
     assert faltnamn(rb, 'P-ORG.sateslan').lower() in s.text.lower()

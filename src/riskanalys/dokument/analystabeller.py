@@ -82,8 +82,8 @@ def scenariorad(s, rb, index, *, rubrik=None, tjanst=None):
         lokalcell(index.lista('belagg', s.belagg), refs))
 
 
-def bygg_scenariotabell(a, paket, rb, index):
-    rader = [scenariorad(s, rb, index, tjanst=a.tjanst) for s in a.scenarier]
+def scenariokopplingsgrupper(a, paket):
+    """Gemensam typad gruppoperation för visning och V8-ursprung."""
     gem = {s.id: s for s in paket.gemensamma_scenarier}
     grupper = {}
     for k in a.scenariokopplingar:
@@ -92,7 +92,12 @@ def bygg_scenariotabell(a, paket, rb, index):
         signatur = (k.tillampning, k.motivering, k.lokal_scenario, giltig,
                     s.relevans if s else None, s.belagg if s else ())
         grupper.setdefault(signatur, []).append((k, s))
-    for signatur, grupp in grupper.items():
+    return tuple(grupper.items())
+
+
+def bygg_scenariotabell(a, paket, rb, index):
+    rader = [scenariorad(s, rb, index, tjanst=a.tjanst) for s in a.scenarier]
+    for signatur, grupp in scenariokopplingsgrupper(a, paket):
         koppling, s = grupp[0]
         giltig = signatur[3]
         text = ('Bekräftad' if giltig else 'Obekräftad eller inaktuell. [VERIFIERA]') + ' tjänstekoppling: ' + koppling.tillampning + '.'

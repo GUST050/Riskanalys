@@ -27,6 +27,7 @@ from riskanalys.regelverk.modeller import (
     hot_dimensioner,
 )
 from riskanalys.regelverk.villkor import Faltvarde, Kunskap
+from riskanalys.regelverk.validering_scenario import tjanstkopplingsfel
 
 IAKTTAGET_SUFFIX = "_iakttagna_hot"
 TJANSTPREFIX = "P-TJ."
@@ -67,6 +68,9 @@ def bedom_scenarier(
     """
     if regelbas.metod.scenario is None:
         return ()
+    kopplingsfel = tjanstkopplingsfel(regelbas, tjanst)
+    if kopplingsfel:
+        raise RiskanalysFel(" ".join(kopplingsfel))
     sarbarheter, _ = _valda_sarbarheter(regelbas, tjanst, varden)
     _kontrollera_hotkopplingar(sarbarheter)
     iakttagna = iakttagna_hot(tjanst, varden, okanda)

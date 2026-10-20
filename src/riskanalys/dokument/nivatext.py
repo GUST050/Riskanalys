@@ -49,6 +49,8 @@ def tillampade_faktorer(t: Tjanstbedomning, rb: Regelbas, omraden: frozenset[str
 
 def _sparbegransning(t: Tjanstbedomning, rb: Regelbas) -> str:
     """Kräv identifierbara regler innan en beräkningsförklaring lämnas."""
+    if t.scenarier:
+        return _scenariosparbegransning(t, rb)
     m = rb.metod
     krav = {m.sannolikhet.id, m.konsekvens.id, m.terrorfinansiering.id}
     kanda = rb.alla_id()
@@ -62,6 +64,55 @@ def _sparbegransning(t: Tjanstbedomning, rb: Regelbas) -> str:
                                for r in m.riskmatris):
             return 'Begränsning: regelspåret saknar en matchande matrisrad för sparat utfall.'
     return ''
+
+
+def _scenariosparbegransning(t: Tjanstbedomning, rb: Regelbas) -> str:
+    """Scenariospår behöver egna metod- och matrisrader, inte den äldre summeringsregeln."""
+    m = rb.metod
+    metod = m.scenario
+    fel = 'Begränsning: saknat eller okänt regelspår; beräkningen kan inte förklaras säkert.'
+    if metod is None or metod.aggregering.id not in t.regelspar or any(r not in rb.alla_id() for r in t.regelspar):
+        return fel
+    for s in t.scenarier:
+        krav = {metod.hotniva.id, metod.sarbarhetsniva.id,
+                m.konsekvens.id if s.dimension == 'pt' else m.terrorfinansiering.id}
+        if (not krav <= set(s.regelspar) or not set(s.regelspar) <= set(t.regelspar)
+                or s.hot not in rb.hot or any(id not in rb.sarbarheter for id in s.sarbarheter)
+                or any(id not in rb.kontroller for id in s.tackande_kontroller)):
+            return fel
+        if s.dimension == 'pt' and not {metod.kvarstaende.id, m.kvarstaende_ej_belagd.id}.intersection(s.regelspar):
+            return fel
+        if not any(r.id in s.regelspar and (r.hot, r.sarbarhet, r.sannolikhet) ==
+                   (s.hotniva, s.sarbarhetsniva, s.sannolikhet) for r in metod.sannolikhetsmatris):
+            return 'Begränsning: regelspåret saknar en matchande sannolikhetsrad för scenariot.'
+        if not any(r.id in s.regelspar and (r.sannolikhet, r.konsekvens, r.risk) ==
+                   (s.sannolikhet, s.konsekvens, s.risk) for r in m.riskmatris):
+            return 'Begränsning: regelspåret saknar en matchande matrisrad för sparat scenario.'
+    return ''
+
+
+def _scenariorader(t: Tjanstbedomning, rb: Regelbas, begransning: str) -> list[Tabellrad]:
+    from riskanalys.dokument.scenariotabell import (scenarioforklaring, kontrollmening, hotnamn,
+                                                    scenarioreferenser)
+    rader = []
+    for s in t.scenarier:
+        refs = scenarioreferenser(t, s)
+        text = ((begransning + ' ') if begransning else '') + scenarioforklaring(rb, t, s, vikter=True)
+        text += ' ' + kontrollmening(rb, s)
+        text += ' Sårbarhetsskalan begränsas till låg–hög. Metodval; kontrollmål ersätter inte lokal täckningsprövning.'
+        text += ' Regelspår: ' + ', '.join(s.regelspar) + '.'
+        namn = s.dimension.upper() + ': ' + hotnamn(rb, s) + (' – avgör nivån' if s.avgorande else '')
+        utfall = _reduktion(s.risk, s.kvarstaende) if s.dimension == 'pt' else s.risk + '; ingen kontrollreduktion (TF)'
+        rader.append(Tabellrad(celler=(Tabellcell(text=namn, referenser=refs),
+                                      Tabellcell(text=text, referenser=refs), Tabellcell(text=utfall, referenser=refs))))
+    maxnamn = ', '.join(hotnamn(rb, s) for s in t.scenarier if s.dimension == 'pt' and s.kvarstaende == t.kvarstaende)
+    text = (f'Högsta scenario per dimension. PT före kontroll {t.inneboende.risk if t.inneboende else "saknas"}; '
+            f'TF {t.terrorfinansiering.risk if t.terrorfinansiering else "saknas"}. '
+            f'Högsta kvarstående PT-risk {t.kvarstaende}: {maxnamn}. Regelspår: {rb.metod.scenario.aggregering.id if rb.metod.scenario else "saknas"}.')
+    refs = tuple(dict.fromkeys((t.tjanst, *t.regelspar)))
+    rader.append(Tabellrad(celler=(Tabellcell(text='Tjänstens maxnivåer'), Tabellcell(text=text, referenser=refs),
+                                  Tabellcell(text=t.kvarstaende or 'Saknas', referenser=refs))))
+    return rader
 
 
 def _reduktion(fran: str, till: str | None) -> str:
@@ -78,11 +129,11 @@ def utfallsforklaring(t: Tjanstbedomning, regelbas: Regelbas) -> Dokumenttabell:
     refs = tuple(dict.fromkeys((t.tjanst, *t.regelspar, *t.tillampade_sarbarheter)))
     begransning = _sparbegransning(t, rb)
     katalog = rb.tjanster.get(t.tjanst)
-    rader = []
-    for namn, delrisk, grund, omraden in (
+    rader = _scenariorader(t, rb, begransning) if t.scenarier else []
+    for namn, delrisk, grund, omraden in (() if t.scenarier else (
         ('Penningtvätt', t.inneboende, katalog.grund_sannolikhet if katalog else None, PT_OMRADEN),
         ('Terrorfinansiering', t.terrorfinansiering, katalog.grund_tf_sannolikhet if katalog else None, TF_OMRADEN),
-    ):
+    )):
         if delrisk is None:
             berakning, utfall = 'Inget sparat motorutfall.', 'Ej bedömt'
         elif begransning or katalog is None:

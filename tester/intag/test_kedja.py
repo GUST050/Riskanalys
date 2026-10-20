@@ -5,7 +5,7 @@ from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
 from riskanalys.dokument.delskrivning import FORMATVERSION
 from riskanalys.dokument.skrivversion import AKTUELL_DOKUMENTVERSION as DOKUMENTFORMAT
 from riskanalys.dokument.leverantor import Testleverantor
-from riskanalys.dokument.skrivversion import DELAR_V7
+from riskanalys.dokument.skrivversion import delar_for_version
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
 from riskanalys.faststallelse.faststall import FASTSTALLDA
 from riskanalys.dokument.modeller import AvsnittsUtkast
@@ -13,7 +13,11 @@ from riskanalys.profil.lagring import spara_profil
 from riskanalys.intag.dokument import skapa_utkast
 from riskanalys.fel import RiskanalysFel
 from riskanalys.intag.tackning import tackning
-from tester.fixturer.m2 import bygg_delsvar
+from tester.fixturer.m2 import bygg_delsvar as historiska_delsvar
+
+
+def bygg_delsvar(rb, profil, bedomning):
+    return historiska_delsvar(rb, profil, bedomning, formatversion=DOKUMENTFORMAT)
 
 
 def test_hel_kedja_ger_word_utan_fritext_till_ai(tmp_path, rb_intag, klar):
@@ -26,13 +30,16 @@ def test_hel_kedja_ger_word_utan_fritext_till_ai(tmp_path, rb_intag, klar):
     fil=skapa_utkast(tmp_path,rb_intag,provider)
     assert fil.exists()
     dokument=Document(fil)
-    alltext='\n'.join(p.text for p in dokument.paragraphs)
+    alltext='\n'.join([*(p.text for p in dokument.paragraphs),
+                       *(c.text for t in dokument.tables for r in t.rows for c in r.cells)])
     assert text in alltext and 'UTKAST' in alltext
-    # V7: ett sammanhängande AI-anrop per tjänst; lokala bedömningar fogas in i dokumentet.
+    assert (fil.parent/'underlagsbilaga-UTKAST.docx').is_file()
+    # Aktuell standard: delordningen bestäms av det verkliga formatet.
+    delar = delar_for_version(DOKUMENTFORMAT)
     tjanster=tjanster_med_avsnitt(b)
     assert len(tjanster) == 3
-    assert len(provider.delanrop) == len(DELAR_V7)*len(tjanster) == 3
-    assert [a.del_id for a in provider.delanrop] == list(DELAR_V7)*len(tjanster)
+    assert len(provider.delanrop) == len(delar)*len(tjanster) == 3
+    assert [a.del_id for a in provider.delanrop] == list(delar)*len(tjanster)
     assert not provider.anrop
     assert all(text not in a.model_dump_json() for a in provider.delanrop)
     assert not (tmp_path/FASTSTALLDA).exists()

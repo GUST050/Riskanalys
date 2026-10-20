@@ -4,13 +4,20 @@ import pytest
 from riskanalys.dokument.arb_v6 import bygg_arb_v6
 from riskanalys.dokument.nivamotivering_v6 import berakningsmotivering, nivamotivering_stycken
 from riskanalys.granskning.kontroller import RISKAVSNITT
-from tester.enhet.test_arb_v6 import v6underlag  # noqa: F401  pytest-fixtur
+from tester.enhet.test_arb_v6 import v6underlag as _v6underlag
 from tester.enhet.test_lokalt_dokument_v6 import lokal  # noqa: F401  pytest-fixtur
 
 PT_BYRA = 'Byråns bedömning av penningtvättsrisken: '
 TF_BYRA = 'Byråns bedömning av TF-risken: '
 LIKA_PT = 'Byrån bedömer att fakturaflödenas ekonomiska innebörd avgör penningtvättsrisken i varje uppdrag.'
 LIKA_TF = 'Byrån bedömer att betalningsändamål och mottagare avgör risken för finansiering av terrorism här.'
+
+
+@pytest.fixture(scope='module')
+def v6underlag(regelbas_v1):
+    """Frys uttryckligen äldre summeringsmetod; scenariovägen provas separat."""
+    rb = regelbas_v1.model_copy(update={'metod': regelbas_v1.metod.model_copy(update={'scenario': None})})
+    return _v6underlag.__wrapped__(rb)
 
 
 def _bedomd(v6underlag, tjanst_id):

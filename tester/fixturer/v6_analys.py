@@ -73,10 +73,11 @@ def godkann_syntetisk_analys(byra,rb,bedomningsmapp,utkastmapp,rot,datum):
     a=a.model_copy(update={'gemensamma_scenarier':gem,'belagg':(*a.belagg,*belagg),
         'modellrisk':_modellunderlag(byra,rb,rot/'modell',datum)})
     tjanster=[]
+    motorresultat={x.tjanst:x for x in b.tjanster}
     for t in a.tjanster:
         # Each service gets only the common threats present in its own catalog.
         egna_gem=tuple(s for s in gem if set(s.hot)<=set(rb.tjanster[t.tjanst].hot))
-        t=_tjanst(rb,t,egna_gem,variation=False)
+        t=_tjanst(rb,t,egna_gem,motorresultat[t.tjanst],variation=False)
         t=t.model_copy(update={'leverantorer':(),
             'leverantorsmotivering':'Ingen extern KYC eller utkontraktering enligt den bekräftade profilen.',
             'reduktionsprovning':'ej_reduktion','reduktionsmotivering':'Motorns faktiska utfall har ingen kontrollreduktion.',

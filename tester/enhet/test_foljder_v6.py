@@ -169,6 +169,6 @@ def test_okand_storlek_ger_verifiera_i_metodens_omfattning(v6underlag):
     p = p.model_copy(update={'uppgifter': {**p.uppgifter, 'P-ORG.antal_anstallda': u}})
     b = bedom(rb, valj(rb, p.byra.regelpaket, b.datum, p.byra.lan), p)
     assert 'P-ORG.antal_anstallda' in b.proportionalitet.okanda_uppgifter
-    d = bygg_arb_v6(rb, p, b, {}, h, analys=None)
+    d = bygg_arb_v6(rb, p, b, {}, h, analys=None, formatversion='D-ARB-tjanst-v6')
     s = next(s for s in d.avsnitt_med_id()['D-ARB.2'].stycken if s.text.startswith('Vald omfattning enligt metod:'))
     assert VERIFIERA in s.text and 'Uppgifter saknas: ' + faltnamn(rb, 'P-ORG.antal_anstallda') in s.text

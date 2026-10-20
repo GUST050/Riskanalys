@@ -4,6 +4,7 @@ from riskanalys.dokument.lasta_v6 import lasta_stycken_v6
 from riskanalys.dokument.modeller import Avsnitt, Underrubrik
 from riskanalys.dokument.nivamotivering_v6 import nivamotivering_stycken
 from riskanalys.dokument.skrivversion import V7
+from riskanalys.dokument.scenariotabell import bygg_scenariotabell
 from riskanalys.dokument.tabeller import rad, tabell
 from riskanalys.dokument.analystabeller import lokalcell as cell
 from riskanalys.dokument.tjanstavsnitt import _ai_stycken
@@ -70,17 +71,21 @@ def bygg_tjanstavsnitt_v7(rb, profil, t, resultat, avsnitt_id, *, gransindex, lo
         ai = (lokaltext('Validerad AI-text saknas för tjänstens analys. Analysen behöver kompletteras och granskas '
             'innan dokumentet kan fastställas. Hela katalogunderlaget med villkor finns i bilaga B1. '
             'Lokala utfall och byråns bedömningar visas nedan. [VERIFIERA]', refs),)
-    poster = [*ai, *utfallsstycken(rb, profil, t, gransindex=gransindex,
-        fordelning=tjanstefordelning(rb, profil, t.tjanst)),
+    utfall = (() if t.scenarier else utfallsstycken(rb, profil, t, gransindex=gransindex,
+        fordelning=tjanstefordelning(rb, profil, t.tjanst)))
+    poster = [*ai, *utfall,
         *(s for del_id in ('hot', 'sarbarheter') for s in lasta_stycken_v6(rb, profil, t, del_id, gransindex=gransindex))]
     kategoristart = len(poster)
-    poster.append(lokaltext('Utfallen förklaras under Analys; relevansen under Lokal analys.', [t.tjanst]))
+    poster.append(lokaltext(
+        'Kontrollmål är metodval; faktisk täckning prövas nedan. Lokala faktorutfall och hela beräkningen: bilaga B1.'
+        if t.scenarier else 'Utfallen förklaras under Analys; relevansen under Lokal analys.', [t.tjanst, 'D-ARB.B1'] if t.scenarier else [t.tjanst]))
     lokalstart = len(poster)
     poster.extend(lokal or (lokaltext(_LOKAL_SAKNAS, [t.tjanst]),))
     nivastart = len(poster)
     poster.extend(nivamotivering_stycken(rb, t, analys, formatversion=V7))
     return Avsnitt(id=avsnitt_id, rubrik='Analys av ' + rb.tjanster[t.tjanst].namn.lower(), kalla='lokal',
         stycken=tuple(poster), underrubriker=tuple(Underrubrik(fore_stycke=p, rubrik=r) for p, r in (
-            (0, 'Analys'), (kategoristart, 'Kategorier'), (lokalstart, 'Lokal analys och slutsats'), (nivastart, 'Risknivå och motivering'))),
-        tabeller=(kategorioversikt(rb, profil, t, analys, gransindex=gransindex, position=kategoristart),
+            (0, 'Analys'), (kategoristart, 'Scenarier' if t.scenarier else 'Kategorier'), (lokalstart, 'Lokal analys och slutsats'), (nivastart, 'Risknivå och motivering'))),
+        tabeller=((bygg_scenariotabell(rb, t).model_copy(update={'fore_stycke': kategoristart}) if t.scenarier
+                   else kategorioversikt(rb, profil, t, analys, gransindex=gransindex, position=kategoristart)),
             *(tab.model_copy(update={'fore_stycke': lokalstart}) for tab in tabeller)), formatversion=V7)

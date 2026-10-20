@@ -99,7 +99,7 @@ def _ovriga(rb: Regelbas, profil: Profil, ids: tuple[str, ...]) -> str:
 
 
 def geografistycke_v6(rb: Regelbas, profil: Profil, tjanst: str, *,
-                      gransindex: Gransindex) -> tuple[Textstycke, ...]:
+                      gransindex: Gransindex, bevara_original: bool = False) -> tuple[Textstycke, ...]:
     """Geografins underlagsstycke i tjänstens sårbarhetsdel, med villkor, värde, period och källa."""
     ids = tuple(id for id in rb.tjanster[tjanst].sarbarheter if rb.sarbarheter[id].omrade == 'geo')
     if not ids:
@@ -110,6 +110,7 @@ def geografistycke_v6(rb: Regelbas, profil: Profil, tjanst: str, *,
     refs = [tjanst, *ids, *falt]
     slug = rb.tjanster[tjanst].erbjuds_falt.removesuffix('_erbjuds')
     skrivet: list[str] = []
+    originalspann=[]
     for mall, namn in GEOGRAFIBESKRIVNINGAR:
         ref = mall.format(slug=slug)
         if ref not in rb.falt:
@@ -117,9 +118,22 @@ def geografistycke_v6(rb: Regelbas, profil: Profil, tjanst: str, *,
         refs.append(ref)
         if _upprepar_beskrivning(rb, vy, ref, skrivet, gransindex):
             continue
-        skrivet.append(uppgiftstext(rb, vy, ref, namn=_GEMENSAMT_NAMN, gransindex=gransindex))
-        text += ' ' + uppgiftstext(rb, vy, ref, namn=namn, gransindex=gransindex)
-    return (last_stycke(text, refs),)
+        gemensam=uppgiftstext(rb, vy, ref, namn=_GEMENSAMT_NAMN, gransindex=gransindex,
+            bevara_textoriginal=bevara_original)
+        skrivet.append(gemensam)
+        insatt=uppgiftstext(rb, vy, ref, namn=namn, gransindex=gransindex,
+            bevara_textoriginal=bevara_original)
+        if bevara_original:
+            from riskanalys.dokument.profiloriginal_v8 import spann_for_profiltext
+            u=vy.uppgifter.get(ref)
+            offset=len(text)+1
+            originalspann.extend((a+offset,b+offset)
+                for a,b in spann_for_profiltext(rb,vy,ref,insatt))
+        text += ' ' + insatt
+    stycke=last_stycke(text, refs)
+    if originalspann:
+        stycke=stycke.model_copy(update={'literala_spann':tuple(originalspann)})
+    return (stycke,)
 
 
 def _upprepar_beskrivning(rb: Regelbas, profil: Profil, ref: str, skrivet: list[str], index: Gransindex) -> bool:
@@ -131,8 +145,9 @@ def _upprepar_beskrivning(rb: Regelbas, profil: Profil, ref: str, skrivet: list[
 
 
 def lasta_stycken_v6(rb: Regelbas, profil: Profil, t: Tjanstbedomning, del_id: str, *,
-                     gransindex: Gransindex) -> tuple[Textstycke, ...]:
+                     gransindex: Gransindex, bevara_original: bool = False) -> tuple[Textstycke, ...]:
     """Programmets låsta stycken i AI-delen hot eller sårbarheter."""
     if del_id == 'hot':
         return erfarenhetsstycke_v6(rb, profil, t, gransindex=gransindex)
-    return geografistycke_v6(rb, profil, t.tjanst, gransindex=gransindex)
+    return geografistycke_v6(rb, profil, t.tjanst, gransindex=gransindex,
+        bevara_original=bevara_original)

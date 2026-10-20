@@ -12,7 +12,7 @@ from riskanalys.dokument.modeller import (
     UnderlagUppgift,
 )
 from riskanalys.fel import RiskanalysFel
-from riskanalys.dokument.skrivversion import V6, V7
+from riskanalys.dokument.skrivversion import V6, V7, V8
 from riskanalys.intag.verksamhetsval import VERKSAMHETSVAL, erbjuds_aktuellt, verksamhetsval
 from riskanalys.profil.hantering import visa_varde, visa_varde_klartext, visa_grans, visa_andel_begransad
 from riskanalys.profil.modeller import Profil, Uppgift
@@ -164,7 +164,7 @@ def bygg_underlag(
         ),
         uppgifter=tuple(_verksamhetsuppgift(regelbas, profil, falt_id, gransindex=gransindex)
             for falt_id in tillatna if aktivt(regelbas.falt[falt_id], profil, regelbas)
-            and (formatversion != V7 or _galler_tjansten(regelbas, profil, falt_id, tjanst.id))),
+            and (formatversion not in (V7, V8) or _galler_tjansten(regelbas, profil, falt_id, tjanst.id))),
         regelspar=tjanstbedomning.regelspar + (tjanstbedomning.sanktionsrisk.regelspar if tjanstbedomning.sanktionsrisk else ()),
         undvik=tuple(UnderlagBrist(id=brist_id, namn=regelbas.bristmonster[brist_id].namn) for brist_id in lista.undvik),
     )
@@ -173,7 +173,7 @@ def bygg_underlag(
 def tillatna_falt(regelbas: Regelbas, formatversion: str = V6) -> tuple[str, ...]:
     """Äldre skrivformat behåller sin vy när nya verksamhetsval tillåts för V7."""
     return tuple(id for id in regelbas.tillatelselistor[AVSNITTSTYP].falt
-                 if formatversion == V7 or verksamhetsval(regelbas, id) is None)
+                 if formatversion in (V7, V8) or verksamhetsval(regelbas, id) is None)
 
 
 def faltets_tjanst(regelbas: Regelbas, falt_id: str) -> str | None:

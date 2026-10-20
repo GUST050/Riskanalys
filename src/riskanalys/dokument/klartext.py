@@ -82,7 +82,8 @@ def _kalltext(kalla: str) -> str:
 
 
 def uppgiftstext(regelbas: Regelbas, profil: Profil, falt_id: str, *, namn: str | None = None,
-                 med_id: bool = False, gransindex: dict[str, tuple[float, ...]] | None = None) -> str:
+                 med_id: bool = False, gransindex: dict[str, tuple[float, ...]] | None = None,
+                 bevara_textoriginal: bool = False) -> str:
     """'Kortnamn: värde (period …; källa: …; bekräftad …).' Fält-ID och källan som den är lagrad visas bara i bilagan (med_id)."""
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
@@ -90,11 +91,18 @@ def uppgiftstext(regelbas: Regelbas, profil: Profil, falt_id: str, *, namn: str 
     if med_id:
         rubrik = f"{rubrik} ({falt_id})"
     if not belagd_uppgift(regelbas, profil, falt_id):
+        if falt_id.endswith('_iakttagna_hot'):
+            return f"{rubrik}: egna iakttagelser är inte aktuellt bekräftade; katalogens hotnivå används utan höjning."
         return f"{rubrik}: aktuellt bekräftat underlag saknas. {VERIFIERA}"
     u = profil.uppgifter[falt_id]
     delar = [f"period {u.period.fran}–{u.period.till}"] if u.period else []
     delar += [f"källa: {u.kalla if med_id else _kalltext(u.kalla)}", f"bekräftad {u.datum}"]
-    varde = str(visa_varde_klartext(regelbas.falt[falt_id], u.varde, metodgranser(regelbas, falt_id, gransindex))).rstrip(".")
+    falt = regelbas.falt[falt_id]
+    varde = str(visa_varde_klartext(falt, u.varde, metodgranser(regelbas, falt_id, gransindex)))
+    if not (bevara_textoriginal and falt.typ == "text"):
+        varde = varde.rstrip(".")
+    if falt_id.endswith('_iakttagna_hot') and isinstance(u.varde, (list, tuple)):
+        varde = ', '.join(regelbas.hot[id].namn if id in regelbas.hot else str(id) for id in u.varde) or 'Inga iakttagna hot'
     return f"{rubrik}: {varde} ({'; '.join(delar)})."
 
 

@@ -43,7 +43,7 @@ def granska(
         *_b04(regelbas, bedomning, dokument),
         # V6:s lokala PT/TF-, scenario- och sårbarhetsprövningar valideras och
         # återbyggs nedan; den äldre AI-motiveringens stycketyp finns inte där.
-        *(_b12(regelbas, dokument) if dokument.formatversion not in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7") else []),
+        *(_b12(regelbas, dokument) if dokument.formatversion not in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8") else []),
         *_b16(regelbas, historik),
         *sektorsfynd(regelbas, bedomning, profil),
         *_analys(regelbas, bedomning, profil, dokument, historik, skrivresultat, analys, modellrapport, analysbrister_filer, granskningsdatum=granskningsdatum),
@@ -55,7 +55,10 @@ def granska(
 
 
 def _analys(rb, b, p, d, historik, resultat, analys=None, modellrapport=None, analysbrister_filer=(), *, granskningsdatum=None):
-    if d.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
+    if d.formatversion == "D-ARB-tjanst-v8":
+        from riskanalys.granskning.dokument_v8 import analysfynd_v8
+        return analysfynd_v8(rb,b,p,d,historik,resultat,analys=analys,modellrapport=modellrapport,analysbrister_filer=analysbrister_filer,granskningsdatum=granskningsdatum)
+    if d.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8"):
         from riskanalys.granskning.dokument_v6 import analysfynd_v6
         return analysfynd_v6(rb,b,p,d,historik,resultat,analys=analys,modellrapport=modellrapport,analysbrister_filer=analysbrister_filer,granskningsdatum=granskningsdatum)
     if d.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1"):
@@ -87,14 +90,23 @@ def _tackning(regelbas: Regelbas, urval: Urval, profil: Profil, dokument: Dokume
 def _preliminar(bedomning: Bedomning) -> list[dict[str, Any]]:
     if bedomning.status != "preliminär":
         return []
-    okanda = sorted({falt_id for tjanst in bedomning.tjanster for falt_id in tjanst.okanda_uppgifter})
+    okanda = {falt_id for tjanst in bedomning.tjanster for falt_id in tjanst.okanda_uppgifter}
+    if bedomning.proportionalitet:
+        okanda.update(bedomning.proportionalitet.okanda_uppgifter)
+    if okanda:
+        beskrivning = f"Bedömningen är preliminär. Okända uppgifter: {', '.join(sorted(okanda))}."
+        atgard = "Bekräfta uppgifterna med 'riskanalys bekrafta' och kör 'riskanalys bedom' igen."
+    else:
+        hinder = ' '.join(bedomning.omfattning.hinder) if bedomning.omfattning else ''
+        beskrivning = "Bedömningen är preliminär. " + (hinder or "Bedömningens omfattning behöver prövas.")
+        atgard = "Komplettera omfattningsunderlaget och åtgärda bedömningens hinder; kör 'riskanalys bedom' igen."
     return [
         {
             "typ": "tackning",
             "allvar": "hög",
             "grund": "ska_krav",
-            "beskrivning": f"Bedömningen är preliminär. Okända uppgifter: {', '.join(okanda)}.",
-            "atgard": "Bekräfta uppgifterna med 'riskanalys bekrafta' och kör 'riskanalys bedom' igen.",
+            "beskrivning": beskrivning,
+            "atgard": atgard,
         }
     ]
 
@@ -135,9 +147,9 @@ def _oppna_fragor(oklarheter: tuple[tuple[str, Oklarhet], ...]) -> list[dict[str
 
 def _sparbarhet(regelbas: Regelbas, dokument: Dokument, analys=None) -> list[dict[str, Any]]:
     kanda = regelbas.alla_id()
-    if dokument.formatversion in ("D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
+    if dokument.formatversion in ("D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8"):
         kanda = kanda | set(dokument.avsnitt_med_id())
-    if dokument.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
+    if dokument.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8"):
         from riskanalys.dokument.analysreferenser import bygg_analysreferenser
         kanda = kanda | set(bygg_analysreferenser(analys).etiketter)
     return [

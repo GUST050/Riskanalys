@@ -5,8 +5,11 @@ from docx.oxml.ns import qn
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 
 
-def formatera_dokument(word):
+def formatera_dokument(word, *, formatversion=None):
     for section in word.sections:
+        if formatversion == "D-ARB-tjanst-v8":
+            section.page_width=Mm(210)
+            section.page_height=Mm(297)
         section.left_margin=section.right_margin=Mm(18)
         section.top_margin=section.bottom_margin=Mm(19)
     normal=word.styles['Normal']
@@ -28,11 +31,26 @@ def formatera_dokument(word):
         word.styles[name].font.size=Pt(9)
 
 
-def formatera_tabell(word, table, id):
+def formatera_tabell(word, table, id, *, formatversion=None):
     antal=len(table.columns)
     vikter=({'TAB-KONTROLL':(20,17,25,38), 'TAB-TJANSTER':(27,18,22,33),
              'TAB-RISK':(32,17,17,14,20), 'TAB-ATGARDER':(19,34,13,13,21)}.get(id)
-            or ((22,56,22) if id.endswith('-utfall') else (25,39,36) if 'geografi' in id else (1,)*antal))
+            or ((23,9,19,12,8,17,12) if id.endswith('-motorscenarier')
+                else (22,56,22) if id.endswith('-utfall') else (25,39,36) if 'geografi' in id else (1,)*antal))
+    if formatversion == "D-ARB-tjanst-v8":
+        vikter = ({'v8-atgardsoversikt': (19, 12, 12, 14, 13, 30),
+                   'gemensamma-scenarier': (13, 32, 27, 14, 14),
+                   'v8-fria-falt': (31, 12, 23, 34),
+                   'TAB-MATRIS': (34, 22, 22, 22)}.get(id)
+                  or next((v for suffix,v in (
+                      ('-lokala-fakta',(20,31,20,29)),
+                      ('-scenarier',(13,32,27,14,14)),
+                      ('-motorfaktorer',(22,39,39)),
+                      ('-faktorregister',(13,18,43,26)),
+                      ('-kontrollprovning',(23,30,29,18)),
+                      ('-rutinatgarder',(15,43,20,22))) if id.endswith(suffix)), vikter))
+        if len(vikter) != antal:
+            vikter = (1,) * antal
     sek=word.sections[0]
     bredd=sek.page_width-sek.left_margin-sek.right_margin
     bredder=[int(bredd*v/sum(vikter)) for v in vikter]
@@ -61,5 +79,6 @@ def formatera_tabell(word, table, id):
                 p.paragraph_format.space_after=Pt(2)
                 p.paragraph_format.line_spacing=1.02
                 for run in p.runs:
-                    run.font.name='Arial';run.font.size=Pt(9.5)
+                    run.font.name='Arial'
+                    run.font.size=Pt((8.5 if nr==0 else 9) if id.endswith('-motorscenarier') else 9.5)
                     run.font.color.rgb=RGBColor(0,0,0)

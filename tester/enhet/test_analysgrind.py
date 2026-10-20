@@ -97,7 +97,7 @@ def test_v7_granskning_fryser_ofullstandig_analys_som_utkast(regelbas_v1,tmp_pat
     f=skapa_fall(regelbas_v1,tmp_path)
     spara_profil(f.byramapp,f.profil)
     bm=kor_bedomning(f.byramapp,regelbas_v1)
-    um=kor_skrivning(f.byramapp,regelbas_v1,Testleverantor(bygg_delsvar(regelbas_v1,f.profil,f.bedomning)))
+    um=kor_skrivning(f.byramapp,regelbas_v1,Testleverantor(bygg_delsvar(regelbas_v1,f.profil,f.bedomning)),formatversion='D-ARB-tjanst-v7')
     a=f.analys.model_copy(update={'bindning':bygg_bindning(f.byramapp,regelbas_v1,bm,um)})
     spara_analys(f.byramapp,a,forvantad_summa='')
     gm=kor_granskning(f.byramapp,regelbas_v1,DAG)
@@ -124,9 +124,9 @@ def test_fryst_analys_kraver_exakt_levande_register(tmp_path):
 
 
 @pytest.fixture(scope="module")
-def _byggd_kedja(tmp_path_factory,regelbas_v1):
+def historisk_v7_kedja(tmp_path_factory,regelbas_v1):
     tmp_path=tmp_path_factory.mktemp("ab5-kedja")
-    """Fullt syntetisk aktuell kedja, inga avstängda grindar eller produktionsattester."""
+    """Fryst historisk V7-kedja; inga avstängda grindar eller produktionsattester."""
     import shutil
     from riskanalys.regelverk.laddning import ladda_regelbas
     from tester.m2.test_m2_kedja import expertkopia
@@ -155,7 +155,7 @@ def _byggd_kedja(tmp_path_factory,regelbas_v1):
     profil=med_verksamhetsval(rb,harled_andelar(f.profil.model_copy(update={'uppgifter':upp}),rb))
     spara_profil(f.byramapp,profil)
     bm=kor_bedomning(f.byramapp,rb);b=las_bedomning(bm)
-    um=kor_skrivning(f.byramapp,rb,Testleverantor(bygg_delsvar(rb,profil,b,tjanstspecifik=True)))
+    um=kor_skrivning(f.byramapp,rb,Testleverantor(bygg_delsvar(rb,profil,b,tjanstspecifik=True)),formatversion='D-ARB-tjanst-v7')
     registrera_handelse(f.byramapp,Handelse(datum=DAG,typ='utvärdering',beskrivning='Syntetisk kontroll.'))
     (tmp_path/'rapport').mkdir()
     rapport,projektrot=projekt(api,rb,tmp_path/'rapport')
@@ -189,20 +189,84 @@ def _byggd_kedja(tmp_path_factory,regelbas_v1):
     return f.byramapp,r,rb,gm
 
 
+@pytest.fixture(scope="module")
+def _positiv_v8_kedja(tmp_path_factory,regelbas_v1):
+    """Aktuell V8-kedja med samma separata syntetiska positiv-fixtur som typfallen.
+
+    Fastställelse- och säkerhetsproven nedan ska nå sina egna assertioner från en
+    nollfyndskedja. V7-kontraktsproven använder den separata historiska fixturen.
+    """
+    from tester.fixturer.analys_hela_kedjan import syntetisk_expertkopia,bygg_bunden_kedja
+    from riskanalys.dokument.skrivversion import V8
+    rot=tmp_path_factory.mktemp("ab5-positiv-v8")
+    regelrot,rb=syntetisk_expertkopia(rot/"expert")
+    return bygg_bunden_kedja(rb,rot/"fall",regelrot=regelrot,godkann=True,formatversion=V8)
+
+
 @pytest.fixture
-def aktuell_kedja(_byggd_kedja,tmp_path):
+def aktuell_kedja(_positiv_v8_kedja,tmp_path):
     import shutil
-    byra,r,rb,gm=_byggd_kedja
+    k=_positiv_v8_kedja
     ny=tmp_path/'byra'
-    shutil.copytree(byra,ny)
-    return ny,r,rb,ny/'granskning'/gm.name
+    shutil.copytree(k.fall.byramapp,ny)
+    return ny,k.regelrot,k.fall.regelbas,ny/'granskning'/k.granskningsmapp.name
 
 
-def test_v7_paket_verifieras_utan_levande_modellregister(aktuell_kedja,monkeypatch):
+def test_aktiv_obesvarad_frivillig_fordelning_hindrar_inte_v8_faststallelse(tmp_path,monkeypatch):
+    """En frivillig lucka är synlig/okänd utan VERIFIERA i en fastställbar V8-kedja."""
+    import docx
+    import tester.fixturer.analys_hela_kedjan as kedja
+    from riskanalys.dokument.skrivversion import V8
+    from riskanalys.faststallelse.faststall import faststall,verifiera_version
+    from riskanalys.faststallelse.modeller import Beslut
+    from riskanalys.granskning.korning import las_granskning
+    from riskanalys.intag.fordelning import aktiverad,svarsbrist
+    from riskanalys.profil.modeller import Uppgift
+
+    falt='P-TJ.red01_antal_kontant'
+    original=kedja._profil
+    def utan_fordelningssvar(rb):
+        p=original(rb)
+        uppgifter=dict(p.uppgifter)
+        uppgifter[falt]=Uppgift()
+        return p.model_copy(update={'uppgifter':uppgifter})
+    monkeypatch.setattr(kedja,'_profil',utan_fordelningssvar)
+    regelrot,rb=kedja.syntetisk_expertkopia(tmp_path/'expert')
+    k=kedja.bygg_bunden_kedja(rb,tmp_path/'fall',regelrot=regelrot,godkann=True,formatversion=V8)
+
+    p=k.fall.profil
+    assert aktiverad(rb,p,falt)
+    assert svarsbrist(rb,p,falt) is None
+    assert rb.falt[falt].intag.obligatorisk is False
+    assert p.uppgifter[falt].varde is None
+    d,fynd=las_granskning(k.granskningsmapp)
+    assert not fynd,fynd
+
+    from riskanalys.dokument.lokaldata_v8 import uppgiftsrad
+    visning=uppgiftsrad(rb,p,falt).celler[1].text
+    assert 'Frivillig fördelning har inte lämnats' in visning
+    assert '[VERIFIERA]' not in visning
+
+    paket=faststall(k.fall.byramapp,regelrot,rb,
+        Beslut(organ='styrelsen',datum=DAG,namn='Syntetisk',roll='FfR'))
+    assert (paket/'allman-riskbedomning-v1.docx').is_file()
+    assert (paket/'underlagsbilaga-v1.docx').is_file()
+    assert verifiera_version(k.fall.byramapp,1)==[]
+    word_rows=[]
+    for name in ('allman-riskbedomning-v1.docx','underlagsbilaga-v1.docx'):
+        w=docx.Document(paket/name)
+        word_rows.extend(' | '.join(c.text for c in row.cells)
+            for table in w.tables for row in table.rows
+            if any('Frivillig fördelning har inte lämnats' in c.text for c in row.cells))
+    assert word_rows and all('[VERIFIERA]' not in row for row in word_rows)
+
+
+def test_v7_paket_verifieras_utan_levande_modellregister(historisk_v7_kedja,monkeypatch):
     import shutil
     from riskanalys.faststallelse.faststall import faststall,verifiera_version
     from riskanalys.faststallelse.modeller import Beslut
-    byra,r,rb,gm=aktuell_kedja
+    monkeypatch.setattr('riskanalys.faststallelse.faststall.FORMATVERSION','D-ARB-tjanst-v7')
+    byra,r,rb,gm=historisk_v7_kedja
     paket=faststall(byra,r,rb,Beslut(organ='styrelsen',datum=DAG,namn='Syntetisk',roll='FfR'))
     assert (paket/'analys/snapshot.json').is_file()
     assert len(list((paket/'analys/belagg').glob('*'))) >= 9
@@ -254,7 +318,11 @@ def test_andringsmatris_kraver_nytt_godkannande(aktuell_kedja,yta,monkeypatch):
         t=data['tjanster'][0]
         if yta=='svar':t['slutsats']='Ett ändrat lokalt svar.'
         elif yta=='scenario':data['gemensamma_scenarier'][0]['motivering']='Nytt förlopp.'
-        elif yta=='gap':t['gap'][0]['motivering']='Nytt gapbeslut.'
+        elif yta=='gap':
+            if not t['gap']:
+                t['gap'].append({'id':'syntetisk','typ':'kunskapslucka','beskrivning':'Syntetisk öppen lucka.',
+                    'status':'oppet','motivering':'Ursprunglig motivering.'})
+            t['gap'][0]['motivering']='Nytt gapbeslut.'
         elif yta=='sarbarhet':t['sarbarhetsprovningar'][0]['motivering']='Nytt underlag.'
         elif yta=='samverkan':t['samverkan']='Ändrad faktorprövning.'
         elif yta=='erfarenhet':t['erfarenhetsprovning']='Ny erfarenhetsprövning.'
@@ -292,13 +360,13 @@ def test_andring_mellan_granskning_och_publicering_stoppar_paket(aktuell_kedja,y
 
 
 @pytest.mark.parametrize('yta',['mening','cell','referens'])
-def test_v7_aterbyggs_fran_fryst_analys(aktuell_kedja,yta):
+def test_v7_aterbyggs_fran_fryst_analys(historisk_v7_kedja,yta):
     from riskanalys.granskning.analysunderlag import las_fryst_analys,fryst_modellrapport
     from riskanalys.granskning.dokument_v6 import analysfynd_v6
     from riskanalys.granskning.korning import las_granskning,granskningens_metadata,godkanda_utkast
     from riskanalys.bedomning.korning import las_bedomning,las_bedomningsprofil
     from riskanalys.drift.historik import las_historik
-    byra,r,rb,gm=aktuell_kedja
+    byra,r,rb,gm=historisk_v7_kedja
     meta=granskningens_metadata(gm);bm=byra/'bedomningar'/meta['bedomning']
     d,_=las_granskning(gm);snap=las_fryst_analys(gm)
     resultat,_=godkanda_utkast(byra,bm)
@@ -380,7 +448,7 @@ def test_kopians_manifest_maste_motsvara_granskad_bindning(aktuell_kedja,monkeyp
     assert not (byra/'faststallda/v1').exists()
 
 
-def test_v7_sakgranskning_kraver_aktuell_fryst_bindning_i_cli(aktuell_kedja,monkeypatch,capsys):
+def test_sakgranskning_kraver_aktuell_fryst_bindning_i_cli(aktuell_kedja,monkeypatch,capsys):
     from riskanalys.cli import main
     from riskanalys.faststallelse.sakgranskning import las_sakgranskningar
     from riskanalys.analys.lagring import las_analys,spara_analys
@@ -477,14 +545,18 @@ def _nytt_lokalt_beslut(aktuell_kedja,datum,*,godkand=True):
         bedomningsmapp=byra/'bedomningar'/meta['bedomning'],utkastmapp=byra/'utkast'/meta['utkast'])
 
 
-def _sakgodkann_fryst(byra,gm,datum):
-    from riskanalys.granskning.korning import las_granskning,granskningens_profil
+def _sakgodkann_fryst(byra,gm,datum,rb):
+    from riskanalys.granskning.korning import las_granskning,granskningens_profil,granskningens_bedomningsmapp
+    from riskanalys.bedomning.korning import las_bedomning
+    from riskanalys.dokument.rapportpaket_v8 import las_presentation
     from riskanalys.granskning.analysunderlag import las_fryst_analys
     from riskanalys.faststallelse.sakgranskning import spara_sakgranskningar
     d,_=las_granskning(gm);profil=granskningens_profil(byra,gm);cas=las_fryst_analys(gm).registersumma
+    bm=granskningens_bedomningsmapp(byra,gm)
+    presentation=las_presentation(gm,las_bedomning(bm),profil,regelbas=rb) if d.formatversion=='D-ARB-tjanst-v8' else None
     sak=()
     for av in d.avsnitt:
-        sak=registrera_sakgranskning(sak,d,profil,av.id,True,'FfR','Syntetisk dokumentgranskare',datum,analysbindning=cas)
+        sak=registrera_sakgranskning(sak,d,profil,av.id,True,'FfR','Syntetisk dokumentgranskare',datum,analysbindning=cas,presentation=presentation)
     spara_sakgranskningar(byra,sak)
 
 
@@ -521,7 +593,7 @@ def test_faststallelse_fore_lokal_attest_skapar_inget_paket(aktuell_kedja):
     byra,r,rb,_=aktuell_kedja
     _nytt_lokalt_beslut(aktuell_kedja,DAG+timedelta(days=1))
     gm=kor_granskning(byra,rb,DAG)
-    _sakgodkann_fryst(byra,gm,DAG)
+    _sakgodkann_fryst(byra,gm,DAG,rb)
     with pytest.raises(FaststallelseFel,match='2026-10-16'):
         faststall(byra,r,rb,Beslut(organ='styrelsen',datum=DAG,namn='Syntetisk',roll='FfR'))
     assert not (byra/'faststallda/v1').exists()
@@ -549,7 +621,7 @@ def test_lokal_attest_efter_bedomning_tillats_vid_samma_eller_senare_granskning(
     _nytt_lokalt_beslut(aktuell_kedja,DAG+timedelta(days=1))
     gm=kor_granskning(byra,rb,datum)
     assert las_granskning(gm)[1]==()
-    _sakgodkann_fryst(byra,gm,datum)
+    _sakgodkann_fryst(byra,gm,datum,rb)
     from riskanalys.cli import main
     monkeypatch.setenv('RISKANALYS_DATA',str(byra.parent))
     assert main(['sakgranska','byra','--avsnitt','D-ARB.6.1','--godkann','--namn','Syntetisk CLI',
@@ -568,7 +640,7 @@ def test_korrigerat_senaste_datum_ersatter_aldre_framtida_ja(aktuell_kedja):
     _nytt_lokalt_beslut(aktuell_kedja,DAG)
     gm=kor_granskning(byra,rb,DAG)
     assert las_granskning(gm)[1]==()
-    _sakgodkann_fryst(byra,gm,DAG)
+    _sakgodkann_fryst(byra,gm,DAG,rb)
     assert faststall(byra,r,rb,Beslut(organ='styrelsen',datum=DAG,namn='Syntetisk',roll='FfR')).is_dir()
 
 
@@ -587,7 +659,7 @@ def test_senaste_nej_ersatts_inte_av_aldre_ja_for_att_klara_datum(aktuell_kedja)
 FRAMTID = date(2099, 1, 1)
 
 
-def _spara_uppdragsandring(byra, uppdrag=None, rutin=None, gap=None):
+def _spara_uppdragsandring(byra, uppdrag=None, rutin=None):
     """Ändra första tjänstens svar via ordinarie lagring och bekräfta blocken på nytt."""
     from riskanalys.analys import lagring as l, provning as p
     from tester.fixturer.analys_hela_kedjan import _bekrafta
@@ -596,8 +668,6 @@ def _spara_uppdragsandring(byra, uppdrag=None, rutin=None, gap=None):
     andring = {'uppdragsprovning': t.uppdragsprovning.model_copy(update=uppdrag or {})}
     if rutin:
         andring['rutinatgarder'] = tuple(r.model_copy(update=rutin) for r in t.rutinatgarder)
-    if gap:
-        andring['gap'] = tuple(g.model_copy(update=gap) for g in t.gap)
     ny = _bekrafta(a.model_copy(update={'tjanster': (t.model_copy(update=andring), *a.tjanster[1:])}))
     return t.tjanst, l.spara_analys(byra, ny, forvantad_summa=p.registersumma(a))
 
@@ -637,11 +707,41 @@ def test_framtida_uppfoljning_godtas_i_last_beslutsvag(aktuell_kedja):
     from riskanalys.analys.tjanst import Analystjanst
     byra, r, rb, gm = aktuell_kedja
     tjanst, cas = _spara_uppdragsandring(byra, _uppdragsbeslut('kraver_atgard', DAG),
-        rutin={'status': 'beslutad', 'uppfoljning': FRAMTID}, gap={'tidsfrist': FRAMTID})
+        rutin={'status': 'beslutad', 'uppfoljning': FRAMTID})
     a = l.las_analys(byra)
-    assert any(g.tidsfrist == FRAMTID for g in a.tjanster[0].gap)
+    assert any(r.uppfoljning == FRAMTID for r in a.tjanster[0].rutinatgarder)
     Analystjanst(byra, rb).beslut(tjanst, True, 'Syntetisk datumgranskare', 'FfR', DAG, '', cas)
     assert p.gallande_beslut(l.las_analys(byra), tjanst).godkand
+
+
+def test_framtida_frist_pa_giltigt_hanterat_gap_godtas_i_last_beslutsvag(aktuell_kedja):
+    from riskanalys.analys import lagring as l, provning as p, modeller as m
+    from riskanalys.analys.tjanst import Analystjanst
+    from riskanalys.bedomning.korning import las_bedomning, las_bedomningsprofil
+    from tester.fixturer.analys_hela_kedjan import _bekrafta
+    from riskanalys.granskning.korning import granskningens_bedomningsmapp
+
+    byra, r, rb, gm = aktuell_kedja
+    a = l.las_analys(byra)
+    t = a.tjanster[0]
+    gap = m.Analysgap(id='syntetisk-framtida-frist', typ='kontrollbrist',
+        status='accepterad_kvarstaende_risk',
+        beskrivning='Avgränsad kontrollbrist är dokumenterad.',
+        motivering='Kvarstående risk har ansvarig och fastställd frist.',
+        ansvar='Syntetisk metodansvarig', tidsfrist=FRAMTID)
+    ny = _bekrafta(a.model_copy(update={'tjanster': (
+        t.model_copy(update={'gap': (gap,)}), *a.tjanster[1:])}))
+    cas = l.spara_analys(byra, ny, forvantad_summa=p.registersumma(a))
+
+    beslut = Analystjanst(byra, rb).beslut(t.tjanst, True,
+        'Syntetisk datumgranskare', 'FfR', DAG, '', cas)
+    efter = l.las_analys(byra)
+    assert beslut == p.registersumma(efter)
+    assert p.gallande_beslut(efter, t.tjanst).godkand
+    bedomningsmapp = granskningens_bedomningsmapp(byra, gm)
+    profil = las_bedomningsprofil(bedomningsmapp)
+    bedomning = las_bedomning(bedomningsmapp)
+    assert p.analysbrister(rb, profil, bedomning, efter) == ()
 
 
 def test_lagrat_godkannande_med_framtida_uppdragsbeslut_stoppar_dokumentet(aktuell_kedja):

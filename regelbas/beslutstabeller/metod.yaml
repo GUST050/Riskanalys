@@ -154,3 +154,168 @@ omfattning:
     - falt: P-RISK.hogrisktredjeland
       op: ==
       varde: true
+scenario:
+  hotniva:
+    id: BT-HOT-01
+    grund: metodval
+    forklaring: Källbunden hotnivå höjs ett steg, högst hög, när byrån har iakttagit hotet i tjänsten.
+      Saknat eller okänt svar ger ingen höjning och ingen sänkning. Ett steg är ogranskat metodval.
+    kallor: &id001
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    sakkunnig:
+      status: ej_granskad
+  sarbarhetsniva:
+    id: BT-SARB-01
+    grund: metodval
+    forklaring: Tjänstens egen grundnivå ändras med summan av tillämpade sårbarheter som möjliggör samma
+      hot och omfattar dimensionen. Golv låg, tak hög; ersättning gäller bara inom scenariot. Grundnivå,
+      effekter och summering är ogranskade metodval.
+    kallor: *id001
+    sakkunnig:
+      status: ej_granskad
+  sannolikhetsmatris:
+  - id: BT-SANN-02-01
+    grund: metodval
+    forklaring: Hotnivå låg och sårbarhetsnivå låg ger sannolikhet låg. Trenivåskalan och denna cell
+      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
+      eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: låg
+    sarbarhet: låg
+    sannolikhet: låg
+  - id: BT-SANN-02-02
+    grund: metodval
+    forklaring: Hotnivå låg och sårbarhetsnivå medel ger sannolikhet låg. Trenivåskalan och denna cell
+      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
+      eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: låg
+    sarbarhet: medel
+    sannolikhet: låg
+  - id: BT-SANN-02-03
+    grund: metodval
+    forklaring: Hotnivå låg och sårbarhetsnivå hög ger sannolikhet medel. Trenivåskalan och denna cell
+      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
+      eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: låg
+    sarbarhet: hög
+    sannolikhet: medel
+  - id: BT-SANN-02-04
+    grund: metodval
+    forklaring: Hotnivå medel och sårbarhetsnivå låg ger sannolikhet låg. Trenivåskalan och denna cell
+      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
+      eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: medel
+    sarbarhet: låg
+    sannolikhet: låg
+  - id: BT-SANN-02-05
+    grund: metodval
+    forklaring: Hotnivå medel och sårbarhetsnivå medel ger sannolikhet medel. Trenivåskalan och denna
+      cell är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande
+      krav eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: medel
+    sarbarhet: medel
+    sannolikhet: medel
+  - id: BT-SANN-02-06
+    grund: metodval
+    forklaring: Hotnivå medel och sårbarhetsnivå hög ger sannolikhet hög. Trenivåskalan och denna cell
+      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
+      eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: medel
+    sarbarhet: hög
+    sannolikhet: hög
+  - id: BT-SANN-02-07
+    grund: metodval
+    forklaring: Hotnivå hög och sårbarhetsnivå låg ger sannolikhet medel. Trenivåskalan och denna cell
+      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
+      eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: hög
+    sarbarhet: låg
+    sannolikhet: medel
+  - id: BT-SANN-02-08
+    grund: metodval
+    forklaring: Hotnivå hög och sårbarhetsnivå medel ger sannolikhet hög. Trenivåskalan och denna cell
+      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
+      eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: hög
+    sarbarhet: medel
+    sannolikhet: hög
+  - id: BT-SANN-02-09
+    grund: metodval
+    forklaring: Hotnivå hög och sårbarhetsnivå hög ger sannolikhet hög. Trenivåskalan och denna cell
+      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
+      eller en direkt avskrift av fyrgradig EU-matris.
+    kallor:
+    - SRC-LST-GOR-ARB
+    - SRC-TS-2026-14
+    - SRC-EU-SNRA-METOD
+    sakkunnig:
+      status: ej_granskad
+    hot: hög
+    sarbarhet: hög
+    sannolikhet: hög
+  kvarstaende:
+    id: BT-KVAR-03
+    grund: metodval
+    forklaring: Ett PT-scenario sänks högst ett steg, som lägst låg, om en kontroll riktar sig mot samma
+      hot i samma tjänst och har belagd utformning, genomförande och verksam effekt för samma period.
+      Annars ingen sänkning. TF sänks inte. Ett steg och valet av minst en kontroll är ogranskade metodval;
+      källan kräver effektprövning, inte ett visst avdrag.
+    kallor: *id001
+    sakkunnig:
+      status: ej_granskad
+  aggregering:
+    id: BT-TJ-01
+    grund: metodval
+    forklaring: Tjänstens inneboende och kvarstående risk är högsta scenariorisken per dimension. Alla
+      scenarier som delar högsta risk är avgörande. Maxregeln är ogranskat metodval, inte ett lagkrav.
+    kallor: *id001
+    sakkunnig:
+      status: ej_granskad

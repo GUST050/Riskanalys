@@ -9,6 +9,7 @@ from riskanalys.dokument.delvalidering import SANKTION_OMFORMULERAD
 from riskanalys.dokument.modeller import Dokument, Textstycke, Avsnitt
 from riskanalys.profil.hantering import visa_varde
 from riskanalys.profil.omfattning import aktivt
+from riskanalys.intag.fordelning import kan_ateranvandas
 
 SANKTIONSFALT = 'P-GEO.sanktionsanknytning'
 SANKTIONSNOTIS = (f'Frågan omformulerades {SANKTION_OMFORMULERAD}. '
@@ -26,6 +27,34 @@ def _med_omformuleringsnotis(text: str, profil, falt_id: str) -> str:
     if falt_id != SANKTIONSFALT or not _aldre_nej_svar(profil.uppgifter.get(falt_id)):
         return text
     return f'{text} {SANKTIONSNOTIS}'
+
+
+def _b1_falttext(rb, profil, falt, gransindex, *, bevara_original=False):
+    """Samma B1-visningsgren för byggaren och den aktuella originalkontrollen."""
+    from riskanalys.bedomning.erfarenheter import belagd_uppgift
+    from riskanalys.dokument.klartext import VERIFIERA, faltnamn, gemen, uppgiftstext
+    harledd = bool(falt.antalfalt and falt.basfalt)
+    if falt.personuppgift:
+        text = (f'{faltnamn(rb, falt.id)} ({falt.id}): '
+                'personuppgift hanteras lokalt i ansvarsfördelningen; källa och datum finns i profilen.')
+    elif harledd and not belagd_uppgift(rb, profil, falt.id):
+        text = (f'{faltnamn(rb, falt.id)} ({falt.id}): kan inte härledas; bekräfta '
+                f'{gemen(faltnamn(rb, falt.antalfalt))} och {gemen(faltnamn(rb, falt.basfalt))} '
+                f'för samma period. {VERIFIERA}')
+    else:
+        text = uppgiftstext(rb, profil, falt.id, med_id=True, gransindex=gransindex,
+                            bevara_textoriginal=bevara_original)
+    return _med_omformuleringsnotis(text, profil, falt.id)
+
+
+def _b1_falt_inkluderas(rb, profil, falt):
+    harledd = bool(falt.antalfalt and falt.basfalt)
+    if not (falt.intag or harledd) or falt.alias_for or not aktivt(falt,profil,rb):
+        return False
+    val = verksamhetsval(rb, falt.id)
+    if val and (not erbjuds_aktuellt(profil, val[0]) or not profil.ar_bekraftad(falt.id)):
+        return False
+    return kan_ateranvandas(rb, profil, falt.id)
 
 
 def med_intagsunderlag(dokument: Dokument, rb, profil, bedomning) -> Dokument:
@@ -64,33 +93,24 @@ def med_intagsunderlag(dokument: Dokument, rb, profil, bedomning) -> Dokument:
     return dokument.model_copy(update={'avsnitt':tuple(avsnitt)})
 
 
-def bygg_underlagsbilaga(rb, profil, *, gransindex: dict[str, tuple[float, ...]] | None = None):
+def bygg_underlagsbilaga(rb, profil, *, gransindex: dict[str, tuple[float, ...]] | None = None,
+                         bevara_original: bool = False):
     """Alla lokala intagsbelägg granskas i samma dokument; inga råsvar till AI."""
     if gransindex is None:
         gransindex = metodgransindex(rb)
-    from riskanalys.bedomning.erfarenheter import belagd_uppgift
-    from riskanalys.dokument.klartext import VERIFIERA, faltnamn, gemen, uppgiftstext
     stycken=[]
     for f in rb.falt.values():
         harledd=bool(f.antalfalt and f.basfalt)
-        if not (f.intag or harledd) or f.alias_for or not aktivt(f,profil,rb):
-            continue
-        val = verksamhetsval(rb, f.id)
-        if val and (not erbjuds_aktuellt(profil, val[0]) or not profil.ar_bekraftad(f.id)):
-            continue
-        if not kan_ateranvandas(rb, profil, f.id):
+        if not _b1_falt_inkluderas(rb,profil,f):
             # Valfri frånvaro eller gammalt underlag är ingen ny kompletteringsspärr.
             continue
-        # Personnamn återges via lokala rollplatshållare i huvudtexten.
-        if f.personuppgift:
-            text=f'{faltnamn(rb,f.id)} ({f.id}): personuppgift hanteras lokalt i ansvarsfördelningen; källa och datum finns i profilen.'
-        elif harledd and not belagd_uppgift(rb,profil,f.id):
-            # Stoppet är avsett: markeringen finns kvar tills antal och bas är bekräftade för samma period.
-            text=(f'{faltnamn(rb,f.id)} ({f.id}): kan inte härledas; bekräfta {gemen(faltnamn(rb,f.antalfalt))} '
-                  f'och {gemen(faltnamn(rb,f.basfalt))} för samma period. {VERIFIERA}')
-        else:
-            text=_med_omformuleringsnotis(uppgiftstext(rb,profil,f.id,med_id=True, gransindex=gransindex),profil,f.id)
-        stycken.append(Textstycke(typ='beskrivning',text=text,referenser=[f.id]))
+        u=profil.uppgifter.get(f.id)
+        text=_b1_falttext(rb,profil,f,gransindex,bevara_original=bevara_original)
+        spann=()
+        if bevara_original and u is not None:
+            from riskanalys.dokument.profiloriginal_v8 import b1_spann
+            spann=b1_spann(rb,profil,f.id,text)
+        stycken.append(Textstycke(typ='beskrivning',text=text,referenser=[f.id],literala_spann=spann))
     for k in rb.kallor.values():
         text=f'{k.id}: {k.titel}. Utgivare: {k.utgivare}; hämtad: {k.hamtad}; källa: {k.url}; kontrollsumma: {k.kontrollsumma or "ingen registrerad originalsumma"}. Registrering är inte byråns genomförda omvärldsbevakning.'
         stycken.append(Textstycke(typ='beskrivning',text=text,referenser=[k.id]))

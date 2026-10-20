@@ -106,7 +106,8 @@ def test_docx_har_v6_delar_per_tjanst_och_underlag_i_bilaga(tmp_path,regelbas_v1
         assert tuple(u.rubrik for u in a.underrubriker)==RUBRIKER_V6
         assert risk_rad(d,t.tjanst).celler[2].text.split(' Källor:')[0]==t.kvarstaende
         utfall=next(tab for tab in b1.tabeller if tab.id==t.tjanst+'-utfall')
-        assert t.kvarstaende in next(r for r in utfall.rader if r.celler[0].text.startswith('Penningtvätt')).celler[2].text
+        radnamn = 'Tjänstens maxnivåer' if t.scenarier else 'Penningtvätt'
+        assert t.kvarstaende in next(r for r in utfall.rader if r.celler[0].text.startswith(radnamn)).celler[2].text
     # Lokal fritext står i huvudtexten som lokal analys; ingen fritext når AI.
     tjanst=d.avsnitt_med_id()[tjanster_med_avsnitt(b)[0][0]]
     assert any(s.proveniens=='lokal' and 'SYNTETISK_LOKAL_EXPONERING' in s.text for s in tjanst.stycken)

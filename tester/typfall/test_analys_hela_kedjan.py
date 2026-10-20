@@ -13,11 +13,25 @@ def fall(regelbas_v1, tmp_path):
 
 def test_fyrtjanstfall_har_sakligt_bekraftade_64_block_och_32_val(fall):
     from riskanalys.analys.guide import arbetsborda
-    from riskanalys.analys.provning import faktisk_reduktion, blocksumma
+    from riskanalys.analys.provning import analysbrister, faktisk_reduktion, blocksumma, sankta_scenarier
     rb, p, b, a = fall.regelbas, fall.profil, fall.bedomning, fall.analys
     assert p.uppgifter['P-ORG.antal_anstallda'].varde == 7
     assert {t.tjanst for t in b.tjanster if t.erbjuds} == {'T-RED-01','T-RED-02','T-RED-03','T-RED-04'}
-    assert all(faktisk_reduktion(t) for t in b.tjanster if t.erbjuds)
+    from riskanalys.bedomning.motor import RISKNIVAER
+    assert {t.tjanst for t in b.tjanster if t.erbjuds and
+            RISKNIVAER.index(t.kvarstaende)<RISKNIVAER.index(t.inneboende.risk)} == {'T-RED-01','T-RED-02','T-RED-03','T-RED-04'}
+    # Motorns egna scenarier (inte fixturens härledning) visar vilka sänkningar spärren ska pröva.
+    erbjudna={t.tjanst:t for t in b.tjanster if t.erbjuds}
+    assert {id:{s.hot for s in sankta_scenarier(t)} for id,t in erbjudna.items()} == {
+        'T-RED-01':{'H-TJ-01','H-03','H-01','H-MOD-01'},'T-RED-02':{'H-TJ-02','H-03','H-01'},
+        'T-RED-03':{'H-TJ-03','H-03','H-01','H-MOD-02'},'T-RED-04':{'H-TJ-04','H-03','H-02'}}
+    assert all(faktisk_reduktion(t) for t in erbjudna.values())
+    fynd=analysbrister(rb,p,b,a)
+    for id in erbjudna:
+        # Byråns uttryckliga 'saknas' för den bärande kontrollen stoppar sänkningen av H-03.
+        assert (f'{id}: H-03: kontrollen täcker enligt byråns prövning inte scenariot; '
+                'rätta kontrolluppgifterna eller registrera metodkonflikt.') in fynd
+        assert f'{id}: Reduktionsprövningen stämmer inte med motorns faktiska reduktion.' not in fynd
     w = arbetsborda(a)
     assert (w.alltid, w.villkorade, w.bekraftade_block, w.unika_scenarier, w.gemensamma_val) == (40,24,64,12,32)
     assert sum(len(rb.tjanster[t.tjanst].hot) for t in a.tjanster) == 36
@@ -128,16 +142,21 @@ def test_fyrtjanstfall_hela_kedjan_med_syntetiska_kopieattester(positiv):
     assert all(not getattr(a.bindning,n).startswith('syntetisk') for n in ('bedomningsmanifest','utkastmanifest','kallunderlag','historik'))
     assert arbetsborda(a).bekraftade_block == 64 and len(a.beslut)==4
     assert [x.egen_granskning for x in a.beslut] == [True,False,True,False]
+    bokforing = next(t for t in a.tjanster if t.tjanst == 'T-RED-01')
+    assert any(c.scenario == 'gem:H-MOD-01' and c.kontroll == 'C-07' and c.tackning == 'delvis'
+               for c in bokforing.kontroller)
     d,fynd=las_granskning(k.granskningsmapp)
     assert fynd == ()
     assert las_fryst_analys(k.granskningsmapp).paket==a
-    assert d.formatversion=='D-ARB-tjanst-v7'
+    assert d.formatversion=='D-ARB-tjanst-v8'
     from riskanalys.dokument.matning import dokumentord
     matt = dokumentord(d, f.profil)
-    print({'fall': 'positiv-V7-kedja', **matt})
-    assert any('Redaktionell längdvarning' in s.text for a in d.avsnitt for s in a.stycken) == (matt['huvudtext'] > 4700)
+    print({'fall': 'positiv-V8-kedja-separat-syntetisk-fixtur', **matt})
+    assert any('Redaktionell längdvarning' in s.text for a in d.avsnitt for s in a.stycken) == (matt['huvudtext'] > 5000)
     paket=faststall(f.byramapp,k.regelrot,f.regelbas,Beslut(organ='styrelsen',namn='Syntetisk beslutsfattare',roll='FfR',datum=date_dag()))
     assert verifiera_manifest(paket)==[] and verifiera_version(f.byramapp,1)==[]
+    assert (paket/'allman-riskbedomning-v1.docx').is_file()
+    assert (paket/'underlagsbilaga-v1.docx').is_file()
     assert (paket/'analys/snapshot.json').is_file()
     assert len(list((paket/'analys/belagg').iterdir())) >= 9
     for ref in (a.modellrisk.projektrapport,a.modellrisk.modellfiler,a.modellrisk.valideringsrapport):

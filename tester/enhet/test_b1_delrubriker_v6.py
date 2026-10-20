@@ -23,11 +23,11 @@ from tester.fixturer.m2 import DAG
 B1 = 'D-ARB.B1'
 MED_ANALYS = ('Profiluppgifter', 'Källversioner', 'Omfattningsregel', 'Gemensamma resonemang per tjänst',
               'Källbunden kontrollräckvidd', 'Lokal analys och belägg', 'Scenarioreferenser',
-              'Delanalyser och analysblock', 'Kompletteringspunkter', 'Beräkningsunderlag',
+              'Delanalyser och analysblock', 'Kompletteringspunkter', 'Lokala faktorutfall', 'Beräkningsunderlag',
               'Regelvis sakkunnigstatus', 'Källregister')
 UTAN_ANALYS = ('Profiluppgifter', 'Källversioner', 'Omfattningsregel', 'Gemensamma resonemang per tjänst',
                'Källbunden kontrollräckvidd',
-               'Lokal analys och belägg', 'Beräkningsunderlag', 'Regelvis sakkunnigstatus', 'Källregister')
+               'Lokal analys och belägg', 'Lokala faktorutfall', 'Beräkningsunderlag', 'Regelvis sakkunnigstatus', 'Källregister')
 
 
 def _analysblock(s, rb):
@@ -47,6 +47,8 @@ TILLHOR = {
     'Analysblock': _analysblock,
     'Delanalyser och analysblock': _analysblock,
     'Kompletteringspunkter': lambda s, rb: s.text.startswith('Kompletteringspunkt: '),
+    'Lokala faktorutfall': lambda s, rb: s.proveniens == 'lokal' and 'enligt byråns underlag' in s.text
+        and bool(set(s.referenser) & set(rb.sarbarheter)),
     'Beräkningsunderlag': lambda s, rb: s.text.startswith('Beräkningsunderlag för '),
     'Regelvis sakkunnigstatus': lambda s, rb: s.text.startswith(('Regelvis sakkunnigstatus: ', 'Förslag till sakkunnig, M1')),
     'Källregister': lambda s, rb: s.text.startswith('Källregister ['),
@@ -148,6 +150,18 @@ def test_m1_forslaget_visas_aldrig_utanfor_b1_med_lokal_analys(v6underlag, lokal
             assert not [t for t in texter if 'Förslag till sakkunnig, M1' in t or 'ingen reduktion utan belagd' in t], a.id
 
 
+def _aldre_kallkatalog(rb, kalla):
+    """Regelbas som äldre källkataloger: källan saknas och ingen katalogpost hänvisar till den.
+
+    Från 2.0.0 anför sårbarheternas scenariokopplingar SRC-LST-GOR-ARB. En variant som bara tar bort
+    källan skulle ge en verkligt trasig hänvisning i stället för att efterlikna en äldre katalog.
+    """
+    sarbarheter = {id: s.model_copy(update={'kallor': tuple(k for k in s.kallor if k != kalla)})
+                   for id, s in rb.sarbarheter.items()}
+    kallor = {id: k for id, k in rb.kallor.items() if id != kalla}
+    return rb.model_copy(update={'kallor': kallor, 'sarbarheter': sarbarheter})
+
+
 @pytest.mark.parametrize('med_analys', [False, True])
 @pytest.mark.parametrize('med_m1_kalla', [False, True])
 def test_m1_byggs_och_granskas_utan_okand_kalla(v6underlag, lokal, med_analys, med_m1_kalla):
@@ -155,10 +169,7 @@ def test_m1_byggs_och_granskas_utan_okand_kalla(v6underlag, lokal, med_analys, m
     from riskanalys.granskning.kontroller import granska
     from riskanalys.regelverk.urval import valj
     rb, p, b, resultat, h = v6underlag
-    kallor = dict(rb.kallor)
-    if not med_m1_kalla:
-        del kallor['SRC-LST-GOR-ARB']
-    variant = rb.model_copy(update={'kallor': kallor})
+    variant = rb if med_m1_kalla else _aldre_kallkatalog(rb, 'SRC-LST-GOR-ARB')
     fore = variant.model_dump_json()
     analys = lokal if med_analys else None
     d = bygg_arb_v6(variant, p, b, resultat, h, analys=analys)

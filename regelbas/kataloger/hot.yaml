@@ -10,6 +10,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-02
   namn: Brottsvinster redovisas som intäkter
   beskrivning: Pengar från brott blandas in i en lagligt bedriven verksamhet och redovisas som försäljning,
@@ -22,6 +29,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-03
   namn: Oförklarade in- och utflöden
   beskrivning: Insättningar, uttag och överföringar saknar underlag eller affärsmässig förklaring och
@@ -35,6 +49,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-01
   namn: Utnyttjande av löpande bokföring
   beskrivning: Osanna fakturor och brottsvinster redovisas som vanliga affärshändelser.
@@ -45,6 +66,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-02
   namn: Utnyttjande av bokslut och årsredovisning
   beskrivning: Övertygande årsredovisning och förfalskade underlag kan legitimera brottsvinster eller
@@ -56,6 +84,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-03
   namn: Utnyttjande av deklarationer och deklarationsombud
   beskrivning: Osanna deklarationsunderlag kan dölja skatteundandragande och legitimera brottsvinster.
@@ -66,6 +101,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-04
   namn: Utnyttjande av lönehantering
   beskrivning: Osanna löner kan legitimera brottsvinster; osanna fakturor kan finansiera svart arbetskraft.
@@ -76,6 +118,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-05
   namn: Utnyttjande av betalningar och attest i kundens namn
   beskrivning: Ogrundade utlandsbetalningar, återbetalning till annat konto och slussning av medel kan
@@ -87,6 +136,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-06
   namn: Utnyttjande av klientmedelskonto
   beskrivning: Konto i byråns namn kan dölja vilken kund eller företrädare som står bakom medlen.
@@ -97,6 +153,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-07
   namn: Utnyttjande av ekonomisk rådgivning och ekonomichefstjänster
   beskrivning: Professionell kompetens kan användas för att skapa trovärdiga underlag och strukturera
@@ -108,6 +171,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-08
   namn: Utnyttjande av skatterådgivning utöver deklarationer
   beskrivning: Komplexa företagsstrukturer, brevlådeföretag och slussbolag kan dölja pengars ursprung.
@@ -118,6 +188,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.20'
     sida: 126
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.20, s. 126) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-09
   namn: Utnyttjande av bolagsbildning, lagerbolag och bolagsförmedling
   beskrivning: Historikbolag med kvarvarande konton och registreringar kan bli brottsverktyg och kringgå
@@ -129,6 +206,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.25'
     sida: 144
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.25, s. 144) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-10
   namn: Utnyttjande av registrerad adress eller postadress
   beskrivning: Adress- och posttjänster kan dölja verksamhetens verkliga plats och ge sken av legitim
@@ -140,6 +224,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.26'
     sida: 147
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.26, s. 147) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TJ-11
   namn: Utnyttjande av styrelseuppdrag eller bolagsrättsligt ansvar
   beskrivning: Företrädaruppdrag kan möjliggöra bolag som brottsverktyg och dölja den faktiska kontrollen.
@@ -150,6 +241,13 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.25'
     sida: 144
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.25, s. 144) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-MOD-01
   namn: Felbetalning med återföring till annat konto
   beskrivning: En skenbar felbetalning förs tillbaka till en annan mottagare och ger brottsvinster en
@@ -162,6 +260,13 @@
   - kalla: SRC-VAGL-2025-03
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 16
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-VAGL-2025-03 (Tillvägagångssätt, fysisk PDF-sida 16) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-MOD-02
   namn: Moms- och karusellupplägg med osanna underlag
   beskrivning: Fakturor och redovisning kan ge sken av varuhandel utan styrkt leverans. Moms- och skattebedrägerier
@@ -174,6 +279,13 @@
   - kalla: SRC-VAGL-2025-03
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 23
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-VAGL-2025-03 (Tillvägagångssätt, fysisk PDF-sida 23) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-MOD-03
   namn: Bolag som förbrukningsvara och dolda företrädare
   beskrivning: Kortlivade eller övertagna företag används för att samla och föra vidare brottsvinster.
@@ -187,6 +299,13 @@
   - kalla: SRC-FIPO-FORETAG-2026
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 1
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-FORETAG-2026 (Tillvägagångssätt, fysisk PDF-sida 1) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-MOD-04
   namn: Snabba direktbetalningar och skiktning
   beskrivning: Brottsvinster från bedrägerier eller narkotika delas mellan många konton och flyttas snabbt
@@ -199,6 +318,13 @@
   - kalla: SRC-FIPO-SWISH-2025
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 1
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-SWISH-2025 (Tillvägagångssätt, fysisk PDF-sida 1) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TF-01
   namn: Insamling och vidareförmedling för terrorism
   beskrivning: Företag eller föreningar tar emot många mindre insättningar och för medel vidare, inom
@@ -212,6 +338,13 @@
   - kalla: SRC-FIPO-TF-2025
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 2
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-TF-2025 (Tillvägagångssätt, fysisk PDF-sida 2) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TF-02
   namn: Terrorfinansiering via hawala, krypto eller transitländer
   beskrivning: Medel förs via mellanhänder, penningöverföring, hawala eller kryptotillgångar för att dölja
@@ -228,6 +361,13 @@
   - kalla: SRC-FIPO-TF-2025
     avsnitt: Hawala, kryptovalutor och dolda syften; fysisk PDF-sida
     sida: 2
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-TF-2025 (Tillvägagångssätt, fysisk PDF-sida 1) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
 - id: H-TF-03
   namn: Föreningar eller bolag döljer ändamålet med finansiering
   beskrivning: Juridiska personer med skenbar verksamhetsbeskrivning eller företrädare används för att
@@ -241,3 +381,10 @@
   - kalla: SRC-FIPO-TF-2025
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 4
+  niva: medel
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-TF-2025 (Tillvägagångssätt, fysisk PDF-sida 4) beskriver tillvägagångssättets
+    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
+    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
+    nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad

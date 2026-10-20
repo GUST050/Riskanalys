@@ -1,6 +1,6 @@
 # Scenariomotor: hot och sårbarheter som blir risker
 
-**Status:** designförslag 2026-10-18, inte godkänt. Bygger vidare på [huvudspecen](2026-10-08-riskanalys-design.md) avsnitt 7 och revision 35. Inga sakkunnigstatusar ändras.
+**Status:** tekniskt implementerad och verifierad 2026-10-18 enligt [genomförandeplanen](../plans/2026-10-18-scenariomotor.md): 2 685 passerade, ett bortvalt livetest. Bygger vidare på [huvudspecens](2026-10-08-riskanalys-design.md) revision 36. Samtliga nivåer, kopplingar och matrisval är fortfarande ogranskade metodval; M1–M4 och verklig sakkunnigprövning återstår. Inga sakkunnigstatusar ändras.
 
 ## Varför
 
@@ -55,7 +55,7 @@ Därför kan dokumentet inte motivera nivån med den kedja som tillsynen efterfr
 
 ### Begrepp
 
-- **Scenario** = (tjänst, hot). Tjänstens hotlista i `tjanster.yaml` avgör vilka scenarier som finns. PT-scenarier är alla hot. TF-scenarier är hot med `galler_tf: true`.
+- **Scenario** = (tjänst, hot, dimension). Tjänstens hotlista i `tjanster.yaml` avgör vilka scenarier som finns; hotets `dimensioner` anger PT, TF eller båda. Utan uttryckliga dimensioner gäller bara TF för `H-TF-*`, PT och TF för övriga hot med `galler_tf: true`, annars bara PT.
 - **Möjliggörande sårbarhet**: ny katalogkoppling `Sarbarhet.hot: tuple[str, ...]`, de hot som sårbarheten kan göra verkliga. Varje koppling motiveras i `metodmotivering` och har källa.
 
 ### Steg 1: hotnivå H (låg, medel, hög)
@@ -75,7 +75,7 @@ Därför kan dokumentet inte motivera nivån med den kedja som tillsynen efterfr
 
 ### Steg 3: sannolikhet P
 
-Ny metodmatris `BT-SANN-02` (H × V), där sårbarheten väger tyngre i enlighet med EU-metodens 40/60:
+Ny metodmatris `BT-SANN-02` (H × V), inspirerad av EU-metodens 40/60. Den tregradiga matrisen nedan är projektets eget diskreta metodval, inte en direkt återgivning eller validering av SNRA:s modell för kvarstående risk:
 
 | H \ V | låg | medel | hög |
 |---|---|---|---|
@@ -108,6 +108,7 @@ Valt upplägg:
 4. **Byrån kan bara stoppa en sänkning, aldrig skapa en.** Motorn läser inte den lokala analysen, eftersom analysen byggs på och binds till bedömningen; det skulle ge ett kretslopp.
    - I stället prövar den befintliga spärren för faktisk reduktion (block 12 i `analys/provning.py`) varje scenario som motorn har sänkt.
    - Om byråns kontrollprövning för scenariots hot anger täckningen `saknas`, uppstår ett blockerande fynd som hindrar fastställelse. Byrån åtgärdar det genom att rätta kontrolluppgifterna i profilen och bedöma om, eller genom att dokumentera en metodkonflikt.
+   - Varje sänkt motorscenario behöver också positiv lokal prövning av samma hot och minst en kontroll bland dess `tackande_kontroller`. Saknad matchning eller ett positivt svar om en annan kontroll är inte stöd för sänkningen. Ordinarie beläggs- och räckviddskrav gäller fortfarande. Osänkta scenariers kontrollbrister hanteras i kontroll-/gapprövningen utan krav på att också de ska få reduktion.
    - Utan lokal analys gäller katalogen ensam, och de befintliga spärrarna för saknad analys gäller som idag. (Claudes beslut 2026-10-18.)
 
 Kostnad om fel: om katalogens mål blir för breda sänks scenarier som kontrollen inte täcker. Det motverkas av krav på källa per hot, av byråns möjlighet att stänga sänkningen och av sakkunnig prövning.
@@ -128,7 +129,7 @@ Ett okänt villkor ger preliminärt utfall enligt sårbarhetens `vid_okant`, som
   - nytt `niva: Sannolikhet`, obligatoriskt i metod 2,
   - nytt `nivamotivering: str`.
 - `Sarbarhet`:
-  - nytt `hot: tuple[str, ...]`; tomt betyder att sårbarheten inte möjliggör något scenario, och regelbasvalideringen varnar,
+  - nytt `hot: tuple[str, ...]`; utan scenariometod kan det vara tomt. Med scenariometod blockerar valideringen tom eller lokalt overksam hot-/dimensionskoppling,
   - `Effekt.sannolikhet` tillåts −2…2 utom 0.
 - `Kontroll`: nytt `riktar_sig_mot: tuple[Riktning, ...]`, där `Riktning` består av `tjanst`, `hot`, `kallor`, `grund` och `motivering`.
 - `Tjanstbedomning`: nytt valfritt fält `scenarier: tuple[Scenariobedomning, ...] = ()`. Befintliga fält (`inneboende`, `terrorfinansiering`, `kvarstaende`, `tillampade_sarbarheter`, `regelspar`) behålls och fylls med tjänstens maxvärden, så att äldre konsumenter fungerar.
@@ -183,6 +184,19 @@ Detta är sakarbete med källor, inte kod:
 4. **Katalogarbetet görs i bygget.** Byggaren tar fram hotnivåer och kopplingar med källor, märkta `metodval` och `ej_granskad`. Regelbasvalideringen **underkänner** metod 2 om en sårbarhet saknar koppling till något hot, så att risken aldrig sänks tyst. Typfallsjämförelsen ska förklara varje nivå som sjunker jämfört med dagens motor.
 5. **Lokala scenarier.** Den lokala analysens scenarier (`Scenarioanalys` med `hot`) kopplas till motorns scenarier via hot-ID och förblir byråns kvalitativa prövning. Spärren för faktisk reduktion i `analys/provning.py` (block 12) prövas per motorscenario med sänkning i stället för per tjänst. Dokumentets scenariotabell ersätter kategoriöversikten; den lokala scenariotabellen står kvar.
 
+## Granskningspreciseringar vid Codex övertagande 2026-10-18
+
+- En sårbarhet som tjänsten listar får inte sakna en verksam koppling till tjänstens egna hot och dimensioner. Enbart ett existerande hot-ID någon annanstans i katalogen räcker inte; om en faktor avgränsas från en tjänst måste det vara uttryckligt och motiverat.
+- Ersättningsregler tillämpas inom scenariot efter hot- och dimensionsfilter. Den tidigare globala tjänstelistan får inte styra vilka sårbarheter ett scenario förlorar.
+- Modellidentiteten omfattar den nya beräkningsmodulen och dess beroenden. Äldre modellrapporters frysta filförteckningar behålls för historisk verifiering.
+- Alla avgörande scenarier redovisas. Identiska beräkningsförklaringar får grupperas i huvudtexten med samtliga hot namngivna; B1 bevarar varje scenarios fullständiga beräkning och regelspår. Huvudtextens längd mäts mot samma syntetiska föreprov.
+- Nya regelkällor serialiseras bara när de finns. Äldre regelbaser och sparade bedömningar utan scenariofält behåller sina innehållssummor.
+
 ## Lämnat åt byggaren
 
-Modulindelning, namn på hjälpfunktioner, tabellens exakta layout inom ordbudgeten, och hur scenariofälten serialiseras så att äldre summor består.
+Modulindelning, namn på hjälpfunktioner, tabellens exakta läsbara layout, och hur scenariofälten serialiseras så att äldre summor består.
+
+
+## Förtydligat längdbeslut 2026-10-18
+
+Användaren har tagit bort hårda redaktionella ordgränser, inklusive det tidigare normalprovets absoluta tak. Ordmått och rådgivande längdvarning finns kvar. Fullständiga lokala svar, samtliga scenarioberäkningar och spårbarhet får inte kapas för ett ordtal. Läsbarhet och faktiska upprepningar bedöms redaktionellt; en längre huvudtext är inte i sig ett programfel eller en exportspärr. AI-delarnas separata skrivkontrakt är oförändrat.

@@ -36,7 +36,6 @@ FORE_SCENARIO = {
     "v0_inga": "7f58c7a64e86da1e000179d01241eb9a6b191c74343bbab44bfe3832a3022f79",
     "v0_ej": "1cc6fb59536fd7b7bb28241762c23b0d7512dc118db3ead8e0006358afa5b05d",
     "v0_okand": "f42199fcb2ffa336675510f10bf7934e9f8ceba59e2b8d66d23db6199ca4ba08",
-    "repo_komplett": "6733b7c9d8bdf07fa1dba02aae7af99bfa43546cc950cd601dc45d5182f89326",
 }
 V0_FALL = {
     "v0_real": {},
@@ -48,13 +47,13 @@ V0_FALL = {
 
 
 def _regel(regel_id: str) -> dict:
-    return {"id": regel_id, "grund": "metodval", "forklaring": "Testregel."}
+    return {"id": regel_id, "grund": "metodval", "forklaring": "Testregel.", "kallor": ["SRC-1"]}
 
 
 def _scenariometod() -> dict:
     matris = [
         {"id": SANN_ID[(hot, sarbarhet)], "hot": hot, "sarbarhet": sarbarhet, "sannolikhet": sannolikhet,
-         "grund": "metodval", "forklaring": f"Hotnivå {hot} och sårbarhetsnivå {sarbarhet}."}
+         "grund": "metodval", "forklaring": f"Hotnivå {hot} och sårbarhetsnivå {sarbarhet}.", "kallor": ["SRC-1"]}
         for (hot, sarbarhet), sannolikhet in SANN_02.items()
     ]
     return {"hotniva": _regel("BT-HOT-01"), "sarbarhetsniva": _regel("BT-SARB-01"), "sannolikhetsmatris": matris,
@@ -238,6 +237,7 @@ def test_sarbarhet_som_galler_bada_hojer_bade_pt_och_tf(filer, ladda):
 
 def test_negativ_effekt_sanker_sarbarhetsnivan_med_golv_lag(filer, ladda):
     filer["kataloger/sarbarheter.yaml"][1]["effekt"] = {"sannolikhet": -2}
+    filer["kataloger/sarbarheter.yaml"][1]["vid_okant"] = "preliminart_galler_ej"
     rb = ladda(filer)
     assert validera(rb) == []
     t = _bedom(rb, {"P-B": 0.5})
@@ -520,16 +520,16 @@ def test_regelbas_v0_med_okand_uppgift_ger_byteidentisk_bedomning(profil_fabrik)
     assert _summa(bedomning) == FORE_SCENARIO["v0_okand"]
 
 
-def test_repots_regelbas_utan_scenariometod_ger_byteidentisk_bedomning():
-    from riskanalys.profil.hantering import skapa_profil
-    from tester.fixturer.m2 import komplett_profil
+def test_repots_regelbas_scenariometod_ar_deterministisk():
+    from tester.fixturer.arb_kedja import syntetisk_profil
 
     rb = ladda_regelbas()
-    assert rb.metod.scenario is None
-    byra = Byra(id="syntetisk", regelpaket="RP-RED-VG", datum=date(2026, 10, 10), lan="Västra Götaland")
-    profil = komplett_profil(rb, skapa_profil(rb, byra))
-    bedomning = bedom(rb, valj(rb, byra.regelpaket, byra.datum, byra.lan), profil)
-    assert _summa(bedomning) == FORE_SCENARIO["repo_komplett"]
+    profil = syntetisk_profil(rb)
+    urval = valj(rb, profil.byra.regelpaket, profil.byra.datum, profil.byra.lan)
+    forsta, andra = bedom(rb, urval, profil), bedom(rb, urval, profil)
+    assert _summa(forsta) == _summa(andra)
+    assert forsta.regelbas_version == '2.0.0'
+    assert all(t.scenarier for t in forsta.tjanster if t.erbjuds)
 
 
 def test_sparad_aldre_bedomning_utan_scenarier_lases_och_serialiseras_byteidentiskt(profil_fabrik):
@@ -539,3 +539,23 @@ def test_sparad_aldre_bedomning_utan_scenarier_lases_och_serialiseras_byteidenti
     assert all(t.scenarier == () for t in last.tjanster)
     assert last.model_dump_json() == sparad
     assert hashlib.sha256(sparad.encode()).hexdigest() == FORE_SCENARIO["v0_belagd"]
+
+
+@pytest.mark.parametrize('hot', [('H-SAKNAS-I-TJANST',), ('H-TF-1',)])
+def test_motorn_stoppar_tillampad_sarbarhet_utan_verksam_koppling(filer, ladda, hot):
+    """Också direktanrop utan föregående regelbasvalidering ska stoppa ett tyst bortfall."""
+    filer['kataloger/sarbarheter.yaml'][0]['hot'] = hot
+    rb = ladda(filer)
+    with pytest.raises(RiskanalysFel, match='S-1.*verksam'):
+        _bedom(rb, {'P-A': 0.5})
+
+
+def test_okant_negativt_villkor_sanker_aldrig_scenariot(filer, ladda):
+    filer['kataloger/sarbarheter.yaml'][0]['effekt']['sannolikhet'] = -1
+    # Även felaktig, ovaliderad framtida katalog får inte ge sänkning genom uteblivet svar.
+    filer['kataloger/sarbarheter.yaml'][0]['vid_okant'] = 'preliminart_galler'
+    t = _bedom(ladda(filer), okanda=('P-A',))
+    s = _scenario(t, 'H-1')
+    assert s.sarbarheter == ()
+    assert s.sarbarhetsniva == 'medel'
+    assert t.status == 'preliminär'

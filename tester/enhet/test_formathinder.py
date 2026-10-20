@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from riskanalys.dokument.skrivversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION, V5, V6
+from riskanalys.dokument.skrivversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION, V5, V6, V7, V8
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Textstycke
 from riskanalys.faststallelse import faststall as faststallmodul
 from riskanalys.faststallelse.modeller import Beslut
@@ -15,6 +15,7 @@ from riskanalys.regelverk.laddning import ladda_regelbas
 
 def _avsnitt(id, version):
     return Avsnitt(id=id, rubrik="Analys", kalla="ai",
+                   leveransdel="lasrapport" if version == V8 else None,
                    stycken=(Textstycke(typ="beskrivning", text="Text.", referenser=["T-RED-01"]),), formatversion=version)
 
 
@@ -41,7 +42,7 @@ def test_aktuellt_format_i_alla_tjansteavsnitt_godtas():
     assert formathinder(ladda_regelbas(), _dok(_avsnitt("D-ARB.6.1", FORMATVERSION), _avsnitt("D-ARB.2", FORMATVERSION))) == []
 
 
-@pytest.mark.parametrize('version', [V5, V6])
+@pytest.mark.parametrize('version', [V5, V6, V7])
 def test_historiskt_format_stoppar_ny_faststallelse(version):
     (hinder,) = formathinder(ladda_regelbas(), _dok(_avsnitt('D-ARB.6.1', version)))
     assert f'har formatet {version}, men aktuellt format är {FORMATVERSION}.' in hinder

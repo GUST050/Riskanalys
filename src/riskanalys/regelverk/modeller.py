@@ -401,6 +401,15 @@ class Regel(Strikt):
     id: str
     grund: Grund
     forklaring: str
+    kallor: tuple[str, ...] = ()
+
+    @model_serializer(mode="wrap")
+    def serialisera(self, handler):
+        """Källor på nya regler får inte ändra äldre reglers innehållssummor."""
+        data = handler(self)
+        if not self.kallor:
+            data.pop("kallor", None)
+        return data
 
 
 class Sannolikhetsrad(Regel):

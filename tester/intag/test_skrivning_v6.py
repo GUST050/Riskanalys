@@ -54,7 +54,7 @@ def test_promptidentitet_skiller_v6_fran_historiskt_v5():
     assert promptsumma('testleverantor', 'hot', formatversion='D-ARB-tjanst-v6') != gammal
 
 
-def test_ny_skrivkorning_sparar_v7_manifest_och_en_del(tmp_path, rb_intag, klar):
+def test_ny_skrivkorning_sparar_v8_manifest_och_en_del(tmp_path, rb_intag, klar):
     from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
     from riskanalys.dokument.skrivning import kor_skrivning, las_skrivresultat
     from riskanalys.dokument.underlag import tjanster_med_avsnitt
@@ -63,11 +63,11 @@ def test_ny_skrivkorning_sparar_v7_manifest_och_en_del(tmp_path, rb_intag, klar)
     spara_profil(tmp_path, klar)
     b = las_bedomning(kor_bedomning(tmp_path, rb_intag))
     from tester.fixturer.m2 import bygg_delsvar
-    lev = Testleverantor(bygg_delsvar(rb_intag, klar, b))
+    lev = Testleverantor(bygg_delsvar(rb_intag, klar, b, formatversion='D-ARB-tjanst-v8'))
     mapp = kor_skrivning(tmp_path, rb_intag, lev)
     metadata = las_manifest(mapp).metadata
-    assert metadata['format'] == 'D-ARB-tjanst-v7'
-    assert metadata['skrivformat'] == 'D-ARB-tjanst-v7'
+    assert metadata['format'] == 'D-ARB-tjanst-v8'
+    assert metadata['skrivformat'] == 'D-ARB-tjanst-v8'
     assert all(tuple(d.del_id for d in r.delar) == ('analys',) for r in las_skrivresultat(mapp))
 
 

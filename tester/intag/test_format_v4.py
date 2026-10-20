@@ -15,8 +15,8 @@ def _avsnitt(version):
                    formatversion=version)
 
 
-def test_aktuellt_skrivformat_ar_v7():
-    assert FORMATVERSION == "D-ARB-tjanst-v7"
+def test_aktuellt_skrivformat_ar_v8():
+    assert FORMATVERSION == "D-ARB-tjanst-v8"
 
 
 def test_dokument_i_v3_kan_fortfarande_lasas():

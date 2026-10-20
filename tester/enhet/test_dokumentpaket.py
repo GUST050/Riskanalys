@@ -34,3 +34,15 @@ def test_aldre_word_far_inte_nya_falt_eller_bilagesidbrytning(tmp_path,regelbas,
     word=docx.Document(path)
     assert 'TOC ' not in word.element.xml
     assert not word.paragraphs[-1].paragraph_format.page_break_before
+
+
+def test_v8_lokala_tabellceller_ar_literal_men_aldre_format_byter_roll(tmp_path,regelbas,profil_fabrik,real_varden):
+    from riskanalys.dokument.rendering import renderat_avsnitt
+    profil=profil_fabrik(regelbas,real_varden)
+    tab=Dokumenttabell(id='lokal',rubrik='Syntetisk',kolumner=('Original',),fore_stycke=0,
+        rader=(Tabellrad(celler=(Tabellcell(text='{roll:OkandRoll}',proveniens='lokal'),)),))
+    for version in ('D-ARB-tjanst-v7','D-ARB-tjanst-v8'):
+        a=Avsnitt(id='D-ARB.1',rubrik='Prov',kalla='lokal',stycken=(),tabeller=(tab,),formatversion=version,
+            leveransdel='lasrapport' if version.endswith('v8') else None)
+        cell=renderat_avsnitt(a,profil).tabeller[0].rader[0].celler[0].text
+        assert cell==('{roll:OkandRoll}' if version.endswith('v8') else '[VERIFIERA: OkandRoll]')

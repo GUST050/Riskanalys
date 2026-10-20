@@ -67,7 +67,9 @@ def _kallor(regelbas: Regelbas) -> list[str]:
         for post in (*regelbas.lydelser.values(), *regelbas.krav.values())
         for fel in _saknas(post.id, (post.kalla,), regelbas.kallor, "källan ")
     ]
-    return med_lista + med_en
+    metodkallor = [fel for regel in regelbas.metod.regler()
+                  for fel in _saknas(regel.id, regel.kallor, regelbas.kallor, "källan ")]
+    return med_lista + med_en + metodkallor
 
 
 def _lydelser(regelbas: Regelbas) -> list[str]:

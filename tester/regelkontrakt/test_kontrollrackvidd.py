@@ -61,9 +61,9 @@ def test_rackvidd_trimmar_text_och_precis_hanvisning(regelbas_v1):
 def test_tom_rackvidd_bevarar_historiska_objektsummor():
     rb = ladda_regelbas(Path(__file__).resolve().parents[1] / "fixturer/regelbas_v0")
     assert rb.paketets_innehallssumma("RP-RED-VG") == "sha256:55d2dc582f5e7fa6cb31a9c7976e335a766d7ce153607efb613a8e2e40a784ef"
-    # Fryst 1.3.0-payload: endast räckvidd och dess nytillagda källor utelämnas.
+    # Fryst 1.3.0-payload: senare räckvidd, scenariomål och källor utelämnas.
     nu = ladda_regelbas().kontroller["C-07"]
-    gammal = nu.model_copy(update={"rackvidd": (), "kallor": ("SRC-TS-2026-14", "SRC-NRA-2024-25")})
+    gammal = nu.model_copy(update={"rackvidd": (), "riktar_sig_mot": (), "kallor": ("SRC-TS-2026-14", "SRC-NRA-2024-25")})
     assert _summa(utan_granskningsmetadata(gammal.model_dump(mode="json"))) == "sha256:be0a12923658e8b9babd58fef01c4e651b48e58569cfa01657c3bd15363404e4"
     kontroll = rb.kontroller["C-07"]
     assert kontroll.rackvidd == ()
@@ -126,7 +126,7 @@ def test_rackvidd_andrar_inte_motorutfall(regelbas_v1, profil_fabrik, real_varde
 
 def test_katalogens_rackvidd_ar_ogranskad_och_avgransad(regelbas_v1):
     rb = regelbas_v1
-    assert rb.version == "1.6.0"
+    assert rb.version == "2.0.0"
     assert not validera(rb)
     for t in rb.tjanster.values():
         for id in t.kontroller:
@@ -181,7 +181,7 @@ def test_aldre_oangiven_beskrivningsstatus_bevarar_v1_4_summor(regelbas_v1):
         ('C-TJ-01', 'sha256:f2515458e07ba4a2b313035f1e6463d67c52d768d25c5763ab3405e53b22ceeb', 'sha256:3b1a378209fc2f19cd4fbc76982b125e5dca761b91b80fbe561ecd86a6b25778'),
     ]:
         kontroll = regelbas_v1.kontroller[id]
-        aldre = kontroll.model_copy(update={'rackvidd': tuple(r.model_copy(update={'beskrivningsstatus': None}) for r in kontroll.rackvidd)})
+        aldre = kontroll.model_copy(update={'riktar_sig_mot': (), 'rackvidd': tuple(r.model_copy(update={'beskrivningsstatus': None}) for r in kontroll.rackvidd)})
         assert _summa(utan_granskningsmetadata(aldre.rackvidd[0].model_dump(mode='json'))) == eget
         assert _summa(utan_granskningsmetadata(aldre.model_dump(mode='json'))) == foralder
 

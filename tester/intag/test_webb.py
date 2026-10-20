@@ -83,21 +83,34 @@ def test_tom_profil_genom_hela_formularet_till_word(webb,lan,filial,paket,rb_int
     assert anrop(s,'skapa',dict(csrf=s.csrf,revision='',lan=lan,filial='ja' if filial else 'nej',datum=str(DAG),kalla='Test',roll='Test'))[0]==200
     exempel=komplett_profil(rb_intag,t.profil())
     antal=0
+    grupper=0
     while True:
         status,html,_=anrop(s)
         assert status==200
         m=re.search(r'name="falt" value="([^"]+)"',html)
-        if not m:break
-        id=m[1];u=exempel.uppgifter[id];f=rb_intag.falt[id]
-        data=dict(csrf=s.csrf,revision=profilrevision(t.profil()),falt=id,text=visa_varde(f,u.varde),kalla='Syntetiskt underlag',datum=str(DAG),roll='Test',status='bekräftad')
-        if f.periodkrav:data.update(period_fran=str(u.period.fran),period_till=str(u.period.till))
-        status,html,_=anrop(s,'svar',data)
+        grupp=re.search(r'name="grupp" value="([^"]+)"',html)
+        if not m and not grupp:break
+        if grupp:
+            data=dict(csrf=s.csrf,revision=profilrevision(t.profil()),grupp=grupp[1],bekrafta='ja',underlag='eget',kalla='Syntetiskt underlag',datum=str(DAG),roll='Test')
+            for id in dict.fromkeys(re.findall(r'name="text_([^"]+)"',html)):
+                u=exempel.uppgifter[id];f=rb_intag.falt[id]
+                data['text_'+id]=visa_varde(f,u.varde)
+                data['status_'+id]=''
+                if f.periodkrav:data.update(period_fran=str(u.period.fran),period_till=str(u.period.till))
+            status,html,_=anrop(s,'samlat',data)
+            grupper+=1
+        else:
+            id=m[1];u=exempel.uppgifter[id];f=rb_intag.falt[id]
+            data=dict(csrf=s.csrf,revision=profilrevision(t.profil()),falt=id,text=visa_varde(f,u.varde),kalla='Syntetiskt underlag',datum=str(DAG),roll='Test',status='bekräftad')
+            if f.periodkrav:data.update(period_fran=str(u.period.fran),period_till=str(u.period.till))
+            status,html,_=anrop(s,'svar',data)
         assert status==200,html
         antal+=1
         assert antal<250
     assert t.oversikt().komplett, t.oversikt()
     assert t.profil().byra.regelpaket==paket
     assert antal>50
+    assert grupper>=4
     b=las_bedomning(kor_bedomning(t.mapp,rb_intag))
     s.leverantor=Testleverantor(bygg_delsvar(rb_intag,t.profil(),b))
     skrivdata=dict(csrf=s.csrf,revision=profilrevision(t.profil()),skrivtoken=s.skrivtoken(profilrevision(t.profil())))
@@ -188,3 +201,38 @@ def test_utvardering_uppdaterar_word_utan_nytt_ai_anrop(webb,klar,rb_intag):
         doc=Document(BytesIO(r.read()))
     text='\n'.join(p.text for p in doc.paragraphs)
     assert str(DAG) in text and 'Datum för utvärdering saknas' not in text
+
+
+def test_v8_bada_downloads_och_uppdatering_utan_ai(regelbas_v1,tmp_path,monkeypatch):
+    import shutil
+    from tester.fixturer.analys_hela_kedjan import bygg_bunden_kedja
+    from riskanalys.dokument.skrivversion import V8
+    from riskanalys.dokument.export import kor_export_utkast
+    from riskanalys.analys.lagring import las_analys,spara_analys
+    from riskanalys.analys.provning import registersumma
+    from riskanalys.intag.dokument import las_utkast
+    from datetime import date
+    monkeypatch.setenv('RISKANALYS_DATA',str(tmp_path/'data'))
+    k=bygg_bunden_kedja(regelbas_v1,tmp_path/'kedja',regelrot=None,formatversion=V8)
+    f=k.fall;t=Intagstjanst('syntetisk',f.regelbas);t.mapp=f.byramapp
+    s=skapa_server(t);s.utkast=kor_export_utkast(f.byramapp,date.today())/'allman-riskbedomning-UTKAST.docx'
+    s.utkastrevision=profilrevision(t.profil())
+    trad=threading.Thread(target=s.serve_forever,daemon=True);trad.start()
+    try:
+        assert anrop(s,'word')[0]==200
+        status,_,h=anrop(s,'underlag')
+        assert status==200 and 'underlagsbilaga-UTKAST.docx' in h['Content-Disposition']
+        assert 'Hämta underlagsbilaga' in anrop(s,'?oversikt=1')[1]
+        a=las_analys(f.byramapp);tj=a.tjanster[0]
+        nytt=a.model_copy(update={'tjanster':(tj.model_copy(update={'pt_motivering':tj.pt_motivering+' Ny lokal uppgift.'}),*a.tjanster[1:])})
+        spara_analys(f.byramapp,nytt,forvantad_summa=registersumma(a))
+        assert anrop(s,'word')[0]==400 and anrop(s,'underlag')[0]==400
+        def ingen_ai(*a,**k):pytest.fail('Uppdatering får inte anropa AI')
+        monkeypatch.setattr('riskanalys.intag.dokument.kor_skrivning',ingen_ai)
+        assert anrop(s,'uppdaterautkast',{'csrf':s.csrf,'revision':s.utkastrevision})[0]==200
+        assert anrop(s,'word')[0]==200 and anrop(s,'underlag')[0]==200
+        # Även huvudnedladdningen måste kontrollera den andra delen.
+        (s.utkast.parent/'underlagsbilaga-UTKAST.docx').unlink()
+        assert anrop(s,'word')[0]==400
+    finally:
+        s.shutdown();s.server_close();trad.join(timeout=2)

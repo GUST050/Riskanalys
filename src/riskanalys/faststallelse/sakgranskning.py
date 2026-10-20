@@ -32,12 +32,19 @@ def granskad_summa(avsnitt: Avsnitt, profil: Profil) -> str:
 
 
 def _har_struktur(dokument: Dokument) -> bool:
-    return dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7") or any(a.underrubriker for a in dokument.avsnitt)
+    return dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8") or any(a.underrubriker for a in dokument.avsnitt)
 
 
-def struktur_summa(dokument: Dokument) -> str:
+def struktur_summa(dokument: Dokument, *, presentation=None) -> str:
     """Titel, format och faktisk avsnittsordning i det granskade dokumentet."""
-    if dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
+    if dokument.formatversion == "D-ARB-tjanst-v8":
+        from riskanalys.dokument.rapportvyer import vystruktur
+        return for_text(json.dumps({'titel': dokument.titel, 'format': dokument.formatversion,
+            'presentation': presentation.model_dump(mode='json') if presentation else None, 'vyer': vystruktur(dokument), 'avsnitt': [(a.id,a.rubrik,a.visningsnummer,a.leveransdel,
+                [(u.fore_stycke,u.rubrik) for u in a.underrubriker],
+                [(t.id,t.fore_stycke,t.rubrik,t.kolumner) for t in a.tabeller]) for a in dokument.avsnitt]},
+            ensure_ascii=False,separators=(',', ':')))
+    if dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8"):
         return for_text(json.dumps({"titel": dokument.titel, "format": dokument.formatversion,
             "avsnitt": [(a.id, a.rubrik, a.visningsnummer,
                          [(u.fore_stycke, u.rubrik) for u in a.underrubriker],
@@ -69,9 +76,11 @@ def registrera_sakgranskning(
     namn: str | None,
     datum: date,
     kommentar: str | None = None,
-    *, analysbindning: str | None = None,
+    *, analysbindning: str | None = None, presentation=None,
 ) -> tuple[Sakgranskning, ...]:
     """Returnerar sakgranskningarna med en ny post för avsnittet så som det ser ut med profilens namn."""
+    if dokument.formatversion == "D-ARB-tjanst-v8" and presentation is None:
+        raise SakgranskningsFel("V8 kräver fullständig presentation före sakgranskning.")
     avsnitt = dokument.avsnitt_med_id().get(avsnitt_id)
     if avsnitt is None:
         tillgangliga = ", ".join(dokument.avsnitt_med_id())
@@ -84,7 +93,7 @@ def registrera_sakgranskning(
         avsnitt=avsnitt.id,
         analysbindning=analysbindning,
         kontrollsumma=granskad_summa(avsnitt, profil),
-        dokumentstruktur=struktur_summa(dokument) if _har_struktur(dokument) else None,
+        dokumentstruktur=struktur_summa(dokument, presentation=presentation) if _har_struktur(dokument) else None,
         godkand=godkand,
         roll=roll,
         namn=namn.strip(),
@@ -96,24 +105,26 @@ def registrera_sakgranskning(
 
 def galler_sakgranskning(
     sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None,
-    *, analysbindning: str | None = None,
+    *, analysbindning: str | None = None, presentation=None,
 ) -> Sakgranskning | None:
     """Den senaste sakgranskningen av avsnittet i exakt den lydelse som exporten skulle få."""
+    if dokument and dokument.formatversion == "D-ARB-tjanst-v8" and presentation is None:
+        return None
     summa = granskad_summa(avsnitt, profil)
     ny_struktur = bool(dokument and _har_struktur(dokument))
     poster = sakgranskningar
-    if dokument and dokument.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7"):
+    if dokument and dokument.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8"):
         senaste = next((post for post in reversed(poster) if post.avsnitt == avsnitt.id), None)
         poster = (senaste,) if senaste is not None else ()
     giltiga = [post for post in poster if post.avsnitt == avsnitt.id and post.kontrollsumma == summa
                and post.analysbindning == analysbindning
-               and (post.dokumentstruktur == struktur_summa(dokument) if post.dokumentstruktur and dokument
+               and (post.dokumentstruktur == struktur_summa(dokument, presentation=presentation) if post.dokumentstruktur and dokument
                     else not post.dokumentstruktur and not ny_struktur)]
     return giltiga[-1] if giltiga else None
 
 
-def sakgranskningsstatus(sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None, *, analysbindning: str | None = None) -> str:
-    galler = galler_sakgranskning(sakgranskningar, avsnitt, profil, dokument, analysbindning=analysbindning)
+def sakgranskningsstatus(sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Avsnitt, profil: Profil, dokument: Dokument | None = None, *, analysbindning: str | None = None, presentation=None) -> str:
+    galler = galler_sakgranskning(sakgranskningar, avsnitt, profil, dokument, analysbindning=analysbindning, presentation=presentation)
     if galler is not None:
         utfall = "godkänt" if galler.godkand else f"underkänt ({galler.kommentar})"
         return f"{utfall} {galler.datum.isoformat()} av {galler.namn}, roll {galler.roll}"

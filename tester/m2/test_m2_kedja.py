@@ -70,9 +70,14 @@ def kedja(tmp_path,paket,lan,negativ=None):
     kor(env,'utvardera','testbyra','--beskrivning','Syntetisk teknisk prövning','--datum',str(DAG))
     godkann_syntetisk_analys(byra,rb,mapp,senaste_korning(byra,'utkast','skriv'),tmp_path/'lokala-underlag',DAG)
     kor(env,'granska','testbyra','--datum',str(DAG),*arg)
-    kor(env,'exportera','testbyra','--utkast','--datum',str(DAG))
+    kor(env,'exportera','testbyra','--utkast','--datum',str(DAG),*arg)
     d,f=las_granskning(senaste_korning(byra,'granskning','granska'))
-    assert d.formatversion == 'D-ARB-tjanst-v7'
+    assert d.formatversion == 'D-ARB-tjanst-v8'
+    if not negativ:
+        exp=senaste_korning(byra,'export','exportera testbyra')
+        wordfiler=tuple(exp.glob('*.docx'))
+        assert len(wordfiler)==2, wordfiler
+        assert verifiera_manifest(exp)==[]
     if not negativ:assert not f,f
     for a in d.avsnitt:kor(env,'sakgranska','testbyra','--avsnitt',a.id,'--godkann','--namn','Syntetisk testperson','--datum',str(DAG),*arg)
     if negativ=='belagg':

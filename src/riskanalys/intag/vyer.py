@@ -28,6 +28,7 @@ def foreslagen_roll(profil,sessionsroll=''):
 def sida(s, innehall, fel=''):
     tjanstelank=f'<a href="{s.prefix}tjanster">Byråns tjänster</a>' if s.tjanst.finns() else ''
     if s.tjanst.finns():tjanstelank+=f'<a href="{s.prefix}analys">Lokal verksamhetsanalys</a>'
+    if s.tjanst.finns():tjanstelank+=f'<a href="{s.prefix}samlat">Samlade frågor</a>'
     varning=f'<div class="error" role="alert"><h2>Kontrollera svaret</h2>{e(str(fel))}</div>' if fel else ''
     return f'<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Riskanalys – intag</title><style>{CSS}</style></head><body><main><nav><a href="{s.prefix}">Fortsätt intaget</a><a href="{s.prefix}?oversikt=1">Svar och kompletteringar</a><a href="{s.prefix}register">Företagsuppgifter</a>{tjanstelank}</nav>{varning}{innehall}<hr><small>Uppgifter sparas på den här datorn. Namn och fritext skickas inte till AI. Stäng terminalen med Ctrl+C när du är klar.</small></main></body></html>'
 
@@ -70,12 +71,19 @@ def fragesida(s,id=None,data=None,fel=''):
     p=s.tjanst.profil();qs=fragor(s.tjanst.rb,p)
     q=next((q for q in qs if q.falt.id==id),None) if id else next((q for q in qs if q.falt.intag.obligatorisk and not q.besvarad and p.uppgifter.get(q.falt.id,Uppgift()).status!='föreslagen'),None)
     if not q:return oversikt(s,fel,p,qs)
+    from riskanalys.intag.samlade import grupp_for, hamta_grupp
+    from riskanalys.intag.samladvy import samladsida, grupplank
+    grupp = grupp_for(s.tjanst.rb, q.falt)
+    if id is None and grupp and len(hamta_grupp(s.tjanst.rb, p, grupp).falt) > 1:
+        return samladsida(s, grupp)
     f=q.falt;u=kompatibilitetsvy(p,s.tjanst.rb).uppgifter.get(f.id,Uppgift());d=data if data is not None else {}
     gransindex=metodgransindex(s.tjanst.rb)
     value=d.get('text',visa_varde_klartext(f,u.varde,metodgranser(s.tjanst.rb,f.id,gransindex)) if u.varde is not None else '')
     t=s.tjanst.oversikt(p)
     nu=sum(q.falt.intag.obligatorisk and not q.besvarad and p.uppgifter.get(q.falt.id,Uppgift()).status!='föreslagen' for q in qs)
     html=f'<p class="eyebrow">3. Komplettera verksamheten</p><p class="hint">{t.besvarade} uppgifter bekräftade · {nu} frågor att besvara nu. Följdfrågor anpassas efter dina tjänster; okända svar finns i översikten.</p><progress value="{t.besvarade}" max="{max(t.antal,1)}"></progress><h1>{e(f.fraga)}</h1><p class="hint">{e(f.varfor)}</p>'
+    if grupp:
+        html += f'<p><a href="{e(grupplank(s.prefix, grupp), quote=True)}">Besvara närliggande frågor tillsammans</a></p>'
     if not f.intag.obligatorisk:
         html += '<p class="hint">Svaret är valfritt inför utkastet. Du kan lämna frågan obesvarad och fortsätta via översikten.</p>'
     if f.intag:
@@ -149,7 +157,11 @@ def oversikt(s,fel='',profil=None,qs=None):
         html+='<h2>Skapa allmän riskbedömning som Word-utkast</h2><p>AI skriver riskavsnitten från tillåtna strukturerade uppgifter. Ett API-anrop till Claude kan kosta pengar. Beskrivningar sätts in lokalt. Resultatet är ett Word-utkast med granskningsbilaga vid öppna fynd.</p>'
         html+=f'<form method="post" action="{s.prefix}skriv">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('skrivtoken',s.skrivtoken(profilrevision(p)))+'<button>Skapa Word-utkast med Claude</button></form>'
     if s.utkast:
-        html+=f'<p><a class="button" href="{s.prefix}word">Hämta Word-utkast</a></p>'
+        html+=f'<p><a class="button" href="{s.prefix}word">Hämta Word-rapport</a></p>'
+        if (s.utkast.parent/'underlagsbilaga-UTKAST.docx').is_file():
+            html+=f'<p><a class="button" href="{s.prefix}underlag">Hämta underlagsbilaga</a></p><p>Läs båda delarna tillsammans för fullständig dokumentation.</p>'
+        html+='<p>Efter ändringar i lokal analys eller utvärdering kan du granska och uppdatera Word från befintlig AI-text. Ändrade verksamhetsfakta kräver en ny skrivning.</p>'
+        html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+'<button>Uppdatera Word-utkast utan nya AI-anrop</button></form>'
     from riskanalys.drift.historik import las_historik
     historik=las_historik(s.tjanst.mapp)
     html+='<h2>Utvärdering och uppföljning</h2>'

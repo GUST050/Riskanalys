@@ -152,7 +152,8 @@ def _utan_ersatta(valda: tuple[Sarbarhet, ...]) -> tuple[Sarbarhet, ...]:
 
 def _galler(sarbarhet: Sarbarhet, utfall: Utfall) -> bool:
     if utfall.sanning is Sanning.OKANT:
-        return sarbarhet.vid_okant == "preliminart_galler"
+        # Ett uteblivet svar kan aldrig styrka en framtida riskminskande faktor.
+        return sarbarhet.effekt.sannolikhet > 0 and sarbarhet.vid_okant == "preliminart_galler"
     return utfall.sanning is Sanning.SANT
 
 

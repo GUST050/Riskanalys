@@ -12,7 +12,7 @@ PERIOD=Period(fran=date(2026,1,1),till=date(2026,9,30))
 def komplett_profil(rb,p):
     upp={}
     for k,f in rb.falt.items():
-        if f.alias_for or f.basfalt or k.endswith(('_attest', '_betalningsmandat', '_bankinsyn')):
+        if f.alias_for or f.basfalt or k.endswith(('_attest', '_betalningsmandat', '_bankinsyn', '_iakttagna_hot')):
             # Frivilliga nya verksamhetsval lämnas obesvarade om ett prov inte väljer dem uttryckligen.
             upp[k]=Uppgift();continue
         v={'bool':False,'heltal':0,'tal':0.,'text':'Syntetiskt testnamn','datum':DAG,'andel':0.}.get(f.typ)
@@ -84,7 +84,7 @@ def _regelbas_for_delsvar():
 
 def bygg_delsvar(rb, profil, bedomning, *, formatversion="D-ARB-tjanst-v7", tjanstspecifik=False):
     from riskanalys.dokument.skrivversion import delar_for_version
-    if formatversion == "D-ARB-tjanst-v7":
+    if formatversion in ("D-ARB-tjanst-v7", "D-ARB-tjanst-v8"):
         from tester.fixturer.skrivsvar_v7 import godkant_svar_v7, tjanstspecifikt_svar_v7
         bygg = tjanstspecifikt_svar_v7 if tjanstspecifik else godkant_svar_v7
         return [bygg(rb, profil, t, id) for id, t in tjanster_med_avsnitt(bedomning)]

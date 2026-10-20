@@ -11,10 +11,21 @@
   kallor:
   - SRC-NRA-2024-25
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  hot:
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-02
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Riskbranscher kan ge osanna underlag, blandade
+    intäkter och svårförklarade flöden. H-01 följer Länsstyrelsens fakturaexempel; H-03 avser flöden även
+    i rådgivnings- och bolagsuppdrag.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-KUND-02
   namn: Kunder med betydande kontanthantering
   omrade: kund
@@ -30,10 +41,19 @@
   - SRC-PTL
   - SRC-VAGL-2025-03
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  hot:
+  - H-02
+  - H-03
+  - H-TF-01
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Kontanter försvårar spårning av intäkters ursprung
+    och insamlade medels vidareförmedling.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-KANAL-01
   namn: Digitalt underlag utan tillgång till bankdata
   omrade: kanal
@@ -51,10 +71,22 @@
   kallor:
   - SRC-TS-2026-14
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  hot:
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Utan bankdata kan underlag inte följas till
+    faktisk betalning, motpart eller vidareföring; fakturor och skenbara återbetalningar kan förbli oupptäckta.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-VERK-01
   namn: Juniora konsulter arbetar självständigt
   omrade: verk
@@ -68,10 +100,30 @@
   kallor:
   - SRC-TS-2026-14
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  hot:
+  - H-01
+  - H-03
+  - H-TJ-01
+  - H-TJ-02
+  - H-TJ-03
+  - H-TJ-04
+  - H-TJ-05
+  - H-TJ-06
+  - H-TJ-07
+  - H-TJ-08
+  - H-TJ-09
+  - H-TJ-10
+  - H-TJ-11
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Självständigt arbete utan tillräcklig erfarenhet
+    kan missa osanna underlag och avvikande flöden. De generiska tjänstehoten kopplas endast till denna
+    verksamhetsspecifika granskningssvaghet.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-GEO-01
   namn: Transaktioner med utlandsanknytning
   omrade: geo
@@ -85,11 +137,21 @@
   galler: bada
   kallor:
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
+  - SRC-TS-2026-14
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
   ersatter: []
+  hot:
+  - H-03
+  - H-TF-01
+  - H-TF-02
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Utlandsled försvårar prövningen av flödens
+    syfte, ursprung och slutmottagare; kopplingen H-03 följer tillsynsrapportens utlands- och utbildningsexempel.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-KOMB-01
   namn: Riskbransch kombinerad med svagt bankunderlag
   omrade: kanal
@@ -107,6 +169,7 @@
   galler: penningtvatt
   kallor:
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
@@ -114,6 +177,16 @@
   ersatter:
   - S-KUND-01
   - S-KANAL-01
+  hot:
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-02
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Riskbranschens underlag är svårare att pröva
+    när bankflöden saknas. Ersättning av de enskilda faktorerna sker endast i scenarier där denna kombination
+    själv verkar.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-TJ-01
   namn: 'Transaktionsnära uppdrag: red05'
   omrade: tj
@@ -127,11 +200,21 @@
   galler: penningtvatt
   kallor:
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
   ersatter: []
+  hot:
+  - H-TJ-05
+  - H-03
+  - H-MOD-01
+  - H-MOD-04
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Betalningsmandat kan verkställa ogrundade överföringar,
+    återföring till annat konto och snabb vidareföring.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-TJ-02
   namn: 'Transaktionsnära uppdrag: red06'
   omrade: tj
@@ -145,11 +228,20 @@
   galler: penningtvatt
   kallor:
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
   ersatter: []
+  hot:
+  - H-TJ-06
+  - H-03
+  - H-MOD-01
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Medel på byråns konto kan skymma kunden bakom
+    transaktionen och möjliggöra återföring till annan mottagare.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-TJ-03
   namn: 'Transaktionsnära uppdrag: bolag01'
   omrade: tj
@@ -163,11 +255,22 @@
   galler: penningtvatt
   kallor:
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-NRA-2024-25
+    avsnitt: 7.25 (scenariokoppling)
+    sida: 144
   ersatter: []
+  hot:
+  - H-TJ-09
+  - H-MOD-03
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Bolagsbildning och förmedling kan ge dolda
+    företrädare tillgång till juridisk person, konto och historik.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-TJ-04
   namn: 'Transaktionsnära uppdrag: bolag03'
   omrade: tj
@@ -181,17 +284,29 @@
   galler: penningtvatt
   kallor:
   - SRC-NRA-2024-25
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-NRA-2024-25
+    avsnitt: 7.25 (scenariokoppling)
+    sida: 144
   ersatter: []
+  hot:
+  - H-TJ-11
+  - H-MOD-03
+  metodmotivering: 'Scenariokoppling (ogranskat metodval): Företrädarmandat kan legitimera bolag där någon
+    annan utövar den verkliga kontrollen.'
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-01
   namn: Nära kundrelation kan försvaga oberoende granskning
   beskrivning: En nära relation kan göra att avvikelser förbises eller att kundkännedomen blir otillräcklig.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Minskad vaksamhet
+    i nära relationer kan göra att underlag, flöden och bakomliggande kontroll inte ifrågasätts.'
   omrade: kund
   grund: metodval
   villkor:
@@ -203,16 +318,27 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 8
+  hot:
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-02
   namn: PEP, familjemedlem eller känd medarbetare bland kunder eller huvudmän
   beskrivning: PEP-anknytning kräver särskild prövning; den är ingen uppgift om brott.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): PEP-anknytning kräver
+    fördjupad prövning av tillgångars ursprung och syfte; otillräcklig sådan prövning kan dölja avvikande
+    flöden. Anknytningen är inget bevis om brott.'
   omrade: kund
   grund: metodval
   villkor:
@@ -224,16 +350,22 @@
   galler: bada
   kallor:
   - SRC-VAGL-2025-03
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-VAGL-2025-03
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 18
+  hot:
+  - H-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-03
   namn: Komplex eller svårförklarad ägarstruktur
   beskrivning: Komplexitet kan försvåra identifiering av verklig huvudman och transaktionernas syfte.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Otydliga ägarled kan
+    dölja både den faktiska kontrollen över bolaget och flödens mottagare eller ändamål.'
   omrade: kund
   grund: metodval
   villkor:
@@ -245,18 +377,26 @@
   galler: bada
   kallor:
   - SRC-VAGL-2025-03
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-VAGL-2025-03
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 21
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-04
   namn: Utländsk ägarstruktur med behov av ytterligare verifiering
   beskrivning: Begränsad insyn i utländska konstruktioner kan försvåra verifiering; utländskt ägande är
     inte i sig brottsligt.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
-    nej i indikatorfältet kan inte utesluta den exponeringen.
+    nej i indikatorfältet kan inte utesluta den exponeringen. Scenariokoppling (ogranskat metodval): Svårverifierade
+    utländska ägarled kan skymma verklig kontroll och internationella flödens slutmottagare.'
   omrade: kund
   grund: metodval
   villkor:
@@ -272,17 +412,32 @@
   galler: bada
   kallor:
   - SRC-VAGL-2025-03
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-VAGL-2025-03
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 20
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-02
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-05
   namn: Ideella föreningar eller liknande organisationsformer
   beskrivning: Insamling och vidareförmedling av medel kan missbrukas för terrorfinansiering; organisationsformen
     är inte ensam bevis för missbruk.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Insamling och vidareförmedling
+    via ideella organisationer kan dölja terrorismändamål. Finanspolisens TF-lägesbild (fysisk PDF-sida 2)
+    beskriver också mönstret som många överföringar från okända avsändare som förs vidare; därför kopplas
+    faktorn även till oförklarade in- och utflöden, som gäller både penningtvätt och TF. Lägesbilden varken
+    stöder eller utesluter uttryckligen en koppling till penningtvätt; den anger (sida 4) att TF ofta går
+    via samma kanaler som penningtvätt. Kopplingen till penningtvätt är ett konservativt, ogranskat metodval
+    i avvaktan på sakkunnig prövning: faktorn har tidigare höjt penningtvättsrisken, och att ta bort den
+    höjningen vore en sänkning som kräver sakkunnigbeslut.'
   omrade: kund
   grund: metodval
   villkor:
@@ -294,16 +449,27 @@
   galler: bada
   kallor:
   - SRC-FIPO-TF-2025
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-FIPO-TF-2025
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Möjliggörare; samma kanaler som penningtvätt; fysisk PDF-sida
+    sida: 4
+  hot:
+  - H-03
+  - H-TF-01
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-06
   namn: Företrädare med återkommande kortlivade bolag
   beskrivning: Återkommande kortlivade bolag kan dölja ett brottsupplägg och försvåra uppföljning.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Kortlivade bolag försvårar
+    uppföljning av återkommande flöden och kan dölja samma aktör bakom flera juridiska personer.'
   omrade: kund
   grund: metodval
   villkor:
@@ -315,17 +481,24 @@
   galler: bada
   kallor:
   - SRC-VAGL-2025-03
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-VAGL-2025-03
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 18
+  hot:
+  - H-03
+  - H-MOD-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-07
   namn: Övertagna bolag eller täta byten av företrädare
   beskrivning: Övertagna bolags registreringar och konton kan användas i nya upplägg utan att förändringen
     upptäcks.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Byten av företrädare
+    kan skymma förändrad faktisk kontroll och nya användningar av befintliga konton och flöden.'
   omrade: kund
   grund: metodval
   villkor:
@@ -337,17 +510,25 @@
   galler: bada
   kallor:
   - SRC-FIPO-FORETAG-2026
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-FIPO-FORETAG-2026
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 4
+  hot:
+  - H-03
+  - H-MOD-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-08
   namn: Kundrelation etablerad utan fysiskt möte
   beskrivning: Distanskontakt kan försvåra identitetsverifiering och förståelse av verksamheten.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
-    nej i indikatorfältet kan inte utesluta den exponeringen.
+    nej i indikatorfältet kan inte utesluta den exponeringen. Scenariokoppling (ogranskat metodval): Svag
+    verifiering vid distanskontakt kan skymma faktisk kund, företrädare och ändamålet med flöden eller
+    finansiering.'
   omrade: kanal
   grund: metodval
   villkor:
@@ -363,16 +544,24 @@
   galler: bada
   kallor:
   - SRC-VAGL-2025-03
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-VAGL-2025-03
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 18
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-09
   namn: Ombud eller tredje part i kundkontakt eller leverans
   beskrivning: Mellanhänder kan begränsa insynen i den verkliga kunden och hur tjänsten används.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Mellanhänder kan skymma
+    kunden bakom flödet, den verkliga kontrollen och finansieringens slutmottagare.'
   omrade: kanal
   grund: metodval
   villkor:
@@ -384,16 +573,26 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 8
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-02
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-10
   namn: Extern leverantör för kundkännedom eller AML
   beskrivning: Extern teknik eller leverantör ersätter inte personalens vaksamhet eller byråns ansvar.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Otillräcklig egen
+    kontroll av extern kundkännedom kan lämna faktisk kontroll, transaktionssyfte och finansieringsändamål
+    oprövade.'
   omrade: kanal
   grund: metodval
   villkor:
@@ -405,18 +604,27 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 8
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-11
   namn: Relevant anknytning till EU-högrisktredjeland
   beskrivning: Aktuell EU-lista och anknytning måste kontrolleras; programmet innehåller ingen automatisk
     landlista.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
-    nej i indikatorfältet kan inte utesluta den exponeringen.
+    nej i indikatorfältet kan inte utesluta den exponeringen. Scenariokoppling (ogranskat metodval): Svaga
+    skydd i högrisktredjeland kan försvåra uppföljning av flöden och bakomliggande mottagare; landanknytning
+    är inte i sig ett brott.'
   omrade: geo
   grund: metodval
   villkor:
@@ -432,16 +640,24 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 9
+  hot:
+  - H-03
+  - H-TF-02
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-12
   namn: Relevant anknytning till land eller område med korruption
   beskrivning: Korruption kan försämra tillförlitligheten i identitets-, ägar- och transaktionsunderlag.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Korruptionsanknytning
+    kan dölja tillgångars ursprung och faktisk kontroll bakom bolag och flöden.'
   omrade: geo
   grund: metodval
   villkor:
@@ -453,16 +669,23 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 9
+  hot:
+  - H-03
+  - H-MOD-03
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-13
   namn: Relevant anknytning till land med svagt AML-regelverk
   beskrivning: Ett ineffektivt regelverk kan begränsa kontroller och spårbarhet i betalningskedjan.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Svagt AML-regelverk
+    kan försvåra spårning och verifiering av internationella flöden och mellanhänder.'
   omrade: geo
   grund: metodval
   villkor:
@@ -474,18 +697,26 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 9
+  hot:
+  - H-03
+  - H-TF-02
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-14
   namn: Relevant anknytning till utsatt område i Sverige
   beskrivning: Lokala riskförhållanden ska analyseras tillsammans med tjänstens funktion; adressen innebär
     inte att en kund är kriminell.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
-    nej i indikatorfältet kan inte utesluta den exponeringen.
+    nej i indikatorfältet kan inte utesluta den exponeringen. Scenariokoppling (ogranskat metodval): Geografiskt
+    utsatt verksamhet kan ge svårare prövning av flödens ursprung och insamlingars ändamål; områdestillhörighet
+    är ingen brottspresumtion.'
   omrade: geo
   grund: metodval
   villkor:
@@ -501,16 +732,24 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 9
+  hot:
+  - H-03
+  - H-TF-01
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-15
   namn: Personal eller uppdragstagare saknar relevant aktuell utbildning
   beskrivning: Bristande utbildning kan leda till att avvikande underlag och flöden inte upptäcks.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Utbildningsbrister
+    kan göra falska fakturor och oförklarade utlandsflöden oupptäckta, enligt Länsstyrelsens exempel.
+    Verksamhetens kompetens behövs även för att känna igen varje tjänsts egna missbruk och TF-modus.'
   omrade: verk
   grund: metodval
   villkor:
@@ -522,17 +761,38 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 10
+  hot:
+  - H-01
+  - H-03
+  - H-TF-01
+  - H-TF-02
+  - H-TF-03
+  - H-TJ-01
+  - H-TJ-02
+  - H-TJ-03
+  - H-TJ-04
+  - H-TJ-05
+  - H-TJ-06
+  - H-TJ-07
+  - H-TJ-08
+  - H-TJ-09
+  - H-TJ-10
+  - H-TJ-11
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-16
   namn: En person utför uppdrag, kontroll och alla ansvarsfunktioner
   beskrivning: Avsaknad av oberoende kontroll är här en metodtolkning av organisation och ansvar; ensam
     verksamhet är inte ett generellt lagbrott.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): När utförare och kontrollant
+    är samma person saknas oberoende ifrågasättande av underlag, flöden, ägarbild och tjänstens eget missbruk.'
   omrade: verk
   grund: metodval
   villkor:
@@ -544,17 +804,37 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 10
+  hot:
+  - H-01
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TJ-01
+  - H-TJ-02
+  - H-TJ-03
+  - H-TJ-04
+  - H-TJ-05
+  - H-TJ-06
+  - H-TJ-07
+  - H-TJ-08
+  - H-TJ-09
+  - H-TJ-10
+  - H-TJ-11
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-17
   namn: Ekonomiskt beroende av en eller få kunder påverkar kontrollen
   beskrivning: Ekonomiskt beroende kan försvaga möjligheten att ifrågasätta kunden; indikatorn är ett
     metodval för verksamhetsspecifika omständigheter.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Kundberoende kan försvåra
+    kritiska frågor om underlag, medelsursprung, ägande och tjänstens egna arbetsmoment.'
   omrade: verk
   grund: metodval
   villkor:
@@ -566,16 +846,37 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 10
+  hot:
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-03
+  - H-TJ-01
+  - H-TJ-02
+  - H-TJ-03
+  - H-TJ-04
+  - H-TJ-05
+  - H-TJ-06
+  - H-TJ-07
+  - H-TJ-08
+  - H-TJ-09
+  - H-TJ-10
+  - H-TJ-11
+  sakkunnig:
+    status: ej_granskad
 - id: S-ARB-18
   namn: Utkontrakterade delar av uppdrag eller AML-arbete
   beskrivning: Utkontraktering kan begränsa överblick och ansvarsfördelning; byråns ansvar kvarstår.
-  metodmotivering: Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
+  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras.
+    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Utkontraktering kan
+    ge insynsgap i underlagsgranskning, flödesuppföljning, kundkännedom och de egna tjänstemomenten; ansvar
+    och vaksamhet kvarstår.'
   omrade: verk
   grund: metodval
   villkor:
@@ -587,7 +888,26 @@
   galler: bada
   kallor:
   - SRC-TS-2026-14
+  - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 8
+  hot:
+  - H-01
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TJ-01
+  - H-TJ-02
+  - H-TJ-03
+  - H-TJ-04
+  - H-TJ-05
+  - H-TJ-06
+  - H-TJ-07
+  - H-TJ-08
+  - H-TJ-09
+  - H-TJ-10
+  - H-TJ-11
+  sakkunnig:
+    status: ej_granskad

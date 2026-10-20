@@ -187,7 +187,9 @@ def test_motorns_nivaer_och_regelspar_paverkar_inte_begaran(tmp_path, rb_intag, 
 
 
 def test_uppgift_utanfor_tillatelselistan_som_andrar_nivan_ger_samma_begaran_vid_omforsok(tmp_path, rb_intag, klar):
-    profiler = [_med(rb_intag, klar, {"P-RISK.pep": v}) for v in (True, False)]
+    # Nära relation (S-ARB-01) höjer bland annat H-02, som ingen av tjänstens kontroller riktar sig mot i
+    # regelbas 2.0.0; därför ändras kvarstående risk. PEP höjer bara det kontrolltäckta H-03 och räcker inte längre.
+    profiler = [_med(rb_intag, klar, {"P-RISK.nara_relation": v}) for v in (True, False)]
     kvarstaende = set()
     for nummer, profil in enumerate(profiler):
         mapp = tmp_path / str(nummer)
@@ -323,3 +325,48 @@ def test_restgrupp_pa_synligt_geografifalt(tmp_path, rb_intag, klar):
     profiler = [_med(rb_intag, klar, {"P-GEO.antal_utland_transaktion": n}) for n in (3,96,97,99)]
     assert _lika(rb_intag,profiler)
     assert _lika(rb_intag,profiler,_svar_med_nivakandidater)
+
+
+def test_v8_privata_variationer_bevarar_hela_begaran_och_retry(tmp_path, rb_intag, klar):
+    """Ändrat privat innehåll får ändra lokala fynd men inga externa bytes eller försök."""
+    from tester.fixturer.skrivsvar_v7 import godkant_svar_v7, med_verksamhetsval
+    version = 'D-ARB-tjanst-v8'
+    p = med_verksamhetsval(rb_intag, klar)
+    avsnitt, t = tjanst_for_prov(tmp_path, rb_intag, p)
+    bra = godkant_svar_v7(rb_intag, p, t, avsnitt)
+    bra = bra.model_copy(update={'stycken': [*bra.stycken, AIStycke(
+        typ='analys', referenser=[t.tjanst], text='Anna Svenssons roll behöver hållas åtskild från kunden.') ]})
+    fel = bra.model_copy(update={'stycken': [*bra.stycken, AIStycke(
+        typ='analys', referenser=[t.tjanst], text='Fördelningen på tjänstens kunder saknas.') ]})
+    andra = _med(rb_intag, p, {
+        'P-TJ.red01_arbetssatt': 'PRIVAT ARBETSSÄTT',
+        'P-TJ.red01_antal_riskbransch': 7,
+        'P-TJ.red01_antal_kontant': 9,
+        'P-ROLL.ffr_namn': 'Anna Svensson',
+    })
+    utfall = [rb_intag.kontroller[k].utfall_falt for k in rb_intag.tjanster[t.tjanst].kontroller
+              if rb_intag.kontroller[k].utfall_falt]
+    luckor = andra.model_copy(update={'uppgifter': {**andra.uppgifter,
+        'P-TJ.red01_antal_riskbransch': Uppgift(),
+        **{id: Uppgift() for id in utfall}}})
+    varianter = [p, andra, luckor]
+    begaranden = []
+    resultat = []
+    assert utfall and p.uppgifter[utfall[0]] != luckor.uppgifter[utfall[0]]
+    for nummer, profil in enumerate(varianter):
+        plats = tmp_path / f"privat-variant-{nummer}"
+        plats.mkdir()
+        avsnitt_variant, t_variant = tjanst_for_prov(plats, rb_intag, profil)
+        lev = Testleverantor([fel, 'felaktig JSON', bra])
+        res = skriv_tjanst(lev, rb_intag, profil, t_variant, avsnitt_variant, formatversion=version,
+            effort='medium', personnamn=personnamn(profil, rb_intag), spara=lambda *args: None)
+        begaranden.append([a.model_dump_json() for a in lev.delanrop])
+        resultat.append(res.del_('analys'))
+    assert len(begaranden[0]) == len(begaranden[1]) == len(begaranden[2]) == 3
+    assert begaranden[0] == begaranden[1] == begaranden[2]
+    assert all([f.fel for f in d.forsok] == [f.fel for f in resultat[0].forsok] for d in resultat[1:])
+    assert any('fördelning' in f for f in resultat[0].forsok[0].fel)
+    assert not resultat[0].mall and resultat[1].mall and resultat[2].mall
+    assert resultat[1].lokal_sparr == resultat[2].lokal_sparr == 'personnamn'
+    assert 'PRIVAT ARBETSSÄTT' not in ''.join(begaranden[0])
+    assert all(d.forsok[-1].svar for d in resultat)

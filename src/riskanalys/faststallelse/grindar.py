@@ -1,6 +1,7 @@
 """Villkor för fastställelse (spec 10). Varje hinder är en mening som säger vad som saknas."""
 
 from dataclasses import dataclass
+from riskanalys.dokument.presentation_v8 import Presentation
 from datetime import date
 
 from riskanalys.analys.modeller import Analyspaket
@@ -39,6 +40,7 @@ class Faststallelseunderlag:
     granskningsdatum: date
     analys: Analyspaket | None = None
     analysbindning: str | None = None
+    presentation: Presentation | None = None
 
 
 def hinder_for_faststallelse(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]:
@@ -143,7 +145,7 @@ def _paragrafkarta(underlag: Faststallelseunderlag) -> list[str]:
 def _sakgranskning(underlag: Faststallelseunderlag) -> list[str]:
     hinder = []
     for avsnitt in underlag.dokument.avsnitt:
-        galler = galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument, analysbindning=underlag.analysbindning)
+        galler = galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument, analysbindning=underlag.analysbindning, presentation=underlag.presentation)
         if galler is None:
             hinder.append(f"Avsnitt {avsnitt.id} är inte sakgranskat i nuvarande lydelse.")
         elif not galler.godkand:
@@ -165,7 +167,7 @@ def _kronologi(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]
     sakgranskade = [
         galler.datum
         for avsnitt in underlag.dokument.avsnitt
-        if (galler := galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument, analysbindning=underlag.analysbindning)) is not None
+        if (galler := galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument, analysbindning=underlag.analysbindning, presentation=underlag.presentation)) is not None
     ]
     faststallda = [handelse.datum for handelse in underlag.historik.handelser if handelse.typ == FASTSTALLELSE]
     tidigare = (

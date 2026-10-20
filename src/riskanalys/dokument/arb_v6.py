@@ -42,6 +42,7 @@ B1_DELRUBRIKER = (
 (PROFILUPPGIFTER, KALLVERSIONER, OMFATTNINGSREGEL, GEMENSAMMA_RESONEMANG, KONTROLLRACKVIDD, LOKAL_ANALYS,
  SCENARIOREFERENSER, ANALYSBLOCK, DELANALYSER_OCH_ANALYSBLOCK, KOMPLETTERINGSPUNKTER, BERAKNINGSUNDERLAG,
  SAKKUNNIGSTATUS, KALLREGISTER) = B1_DELRUBRIKER
+B1_DELRUBRIKER = (*B1_DELRUBRIKER, 'Lokala faktorutfall')
 _DRIFT = 'B1:s {delnamn} har inte den väntade formen; uppdatera delindelningen i arb_v6 så att rubrikerna inte flyttas.'
 ALDRE_UTKAST = ("AI-utkastet för {avsnitt} kan inte användas i dokumentformatet {format}. Utkastets identitet visar "
                 "att det skrevs i ett äldre format eller inte av den aktuella skrivaren. Kör 'riskanalys skriv' igen "
@@ -115,14 +116,19 @@ def _sammanfoga_delar(delar) -> tuple[tuple, tuple, tuple]:
     return stycken, rubriker, tabeller
 
 
-def bilaga_b1_v6(rb, profil, bedomning, analys, *, refindex, brister, tillampningskarta, metodposter, gransindex, reservkatalog=()) -> Avsnitt:
+def bilaga_b1_v6(rb, profil, bedomning, analys, *, refindex, brister, tillampningskarta, metodposter, gransindex, reservkatalog=(), bevara_original=False) -> Avsnitt:
     """B1 före källregistret: varje del får sin rubrik i modellen på delens första stycke."""
     from riskanalys.dokument.intagsunderlag import bygg_underlagsbilaga
     from riskanalys.dokument.uppfoljning import omfattningsregel_i_bilaga
     from riskanalys.dokument.tjanstavsnitt_v7 import RESERVKATALOG_RUBRIK
-    underlag = bygg_underlagsbilaga(rb, profil, gransindex=gransindex)
+    underlag = bygg_underlagsbilaga(rb, profil, gransindex=gransindex, bevara_original=bevara_original)
     profiluppgifter, kallversioner = _profil_och_kallversioner(underlag, rb)
     berakning, utfall = _berakningsdel(rb, bedomning)
+    from riskanalys.dokument.utfall_v6 import utfallsstycken
+    from riskanalys.intag.fordelning import tjanstefordelning
+    faktorutfall = tuple(s for _, t in tjanster_med_avsnitt(bedomning) if t.scenarier
+        for s in utfallsstycken(rb, profil, t, gransindex=gransindex,
+                              fordelning=tjanstefordelning(rb, profil, t.tjanst)))
     status = stycke('Regelvis sakkunnigstatus: ' + '; '.join(f'{r.id}: {_sakkunnigstatus(r)}' for r in metodposter) + '.',
                     [r.id for r in metodposter])
     # Äldre frysta källunderlag saknar vägledningen; lägg bara till det källbundna förslaget när den finns.
@@ -134,6 +140,7 @@ def bilaga_b1_v6(rb, profil, bedomning, analys, *, refindex, brister, tillampnin
         (GEMENSAMMA_RESONEMANG, tuple(tillampningskarta), ()),
         (KONTROLLRACKVIDD, _rackviddsstycken(rb, bedomning), ()),
         *_analysdelar(analys, analysbilaga(analys, profil, rb, refindex, brister), brister),
+        ('Lokala faktorutfall', faktorutfall, ()),
         (BERAKNINGSUNDERLAG, berakning, utfall),
         (SAKKUNNIGSTATUS, metodstycken, ()),
         (RESERVKATALOG_RUBRIK, reservkatalog, ()),
@@ -235,7 +242,13 @@ def bygg_arb_v6(rb, profil, bedomning, resultat, historik, *, analys: Analyspake
         risk = tuple(a.model_copy(update={'tabeller': tuple(utan_redundant_hotkolumn(t) for t in a.tabeller)}) for a in risk)
     tabellavsnitt, tabellresonemang = sammanfor_identiska_tabelltexter((gemensamt, *risk))
     gemensamt, *risk = tabellavsnitt
-    gemensam_analys = avsnitt('D-ARB.5', 'Gemensamma lokala resonemang', (*gemensamma_resonemang, *tabellresonemang), kalla='lokal')
+    scenarioberakningar = ()
+    if version == V7 and any(t.scenarier for t in bedomning.tjanster):
+        from riskanalys.dokument.scenariotabell import sammanfor_scenarioforklaringar
+        risk, scenarioberakningar = sammanfor_scenarioforklaringar(risk, rb,
+            startnummer=len(gemensamma_resonemang) + len(tabellresonemang) + 1)
+    gemensam_analys = avsnitt('D-ARB.5', 'Gemensamma lokala resonemang',
+        (*gemensamma_resonemang, *tabellresonemang, *scenarioberakningar), kalla='lokal')
     bilaga = bilaga_b1_v6(rb, profil, bedomning, analys, refindex=refindex, brister=brister,
         tillampningskarta=tillampningskarta, metodposter=metodposter, gransindex=index,
         reservkatalog=reservkatalog_i_b1(rb, profil, bedomning, resultat, gransindex=index) if version == V7 else ())

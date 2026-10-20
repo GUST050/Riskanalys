@@ -57,19 +57,20 @@ def _b09(rb, p, t, id, index):
     return []
 
 
-def _b10(rb, p, t, id, aktuellt, forvantat, index):
-    if _oforandrade(aktuellt, forvantat, geografistycke_v6(rb, p, t.tjanst, gransindex=index)):
+def _b10(rb, p, t, id, aktuellt, forvantat, index, *, bevara_original=False):
+    if _oforandrade(aktuellt, forvantat, geografistycke_v6(
+            rb, p, t.tjanst, gransindex=index, bevara_original=bevara_original)):
         return []
     return [_fynd(rb, 'B-10', id, 'Den geografiska sårbarheten saknar programmets spårbara underlagsmotivering, '
                   'eller motiveringen är ändrad.', ATGARD_B10)]
 
 
-def lasta_fynd_v6(rb, p, b, d, forvantat, *, gransindex):
+def lasta_fynd_v6(rb, p, b, d, forvantat, *, gransindex, bevara_original=False):
     """Fynd per erbjuden tjänst; d är granskningens dokument och forvantat en ny v6-byggnad av samma underlag."""
     aktuella, forvantade = d.avsnitt_med_id(), forvantat.avsnitt_med_id()
     fynd = []
     for id, t in tjanster_med_avsnitt(b):
         aktuellt, mal = aktuella.get(id), forvantade.get(id)
         fynd.extend((*_b15(rb, p, t, id, aktuellt, mal, gransindex), *_b09(rb, p, t, id, gransindex),
-                     *_b10(rb, p, t, id, aktuellt, mal, gransindex)))
+                     *_b10(rb, p, t, id, aktuellt, mal, gransindex, bevara_original=bevara_original)))
     return fynd

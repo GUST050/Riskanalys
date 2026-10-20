@@ -85,6 +85,7 @@ def analysfynd(regelbas, bedomning, profil, dokument, utkast=None):
 
 _MALLORSAK = {
     None: "kunde inte skrivas maskinellt och består av programmets mall",
+    "last_text": "återgav lokalt låst underlag och har ersatts av programmets mall; lokal komplettering och sakgranskning krävs",
     "personnamn": "innehöll ett bekräftat personnamn och har ersatts av programmets mall",
 }
 

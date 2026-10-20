@@ -11,7 +11,6 @@ import yaml
 from pydantic import ValidationError
 
 from riskanalys.fel import RiskanalysFel
-from riskanalys.lagring.yamlfil import las_yaml, spara_yaml
 from riskanalys.profil.modeller import Profil
 
 PROFILFIL = Path("profil") / "profil.yaml"
@@ -62,11 +61,23 @@ def spara_profil(byramapp: Path, profil: Profil, revision: str | None = None) ->
 
 
 def las_profil(byramapp: Path) -> Profil:
+    return las_profilsnapshot(byramapp)[0]
+
+
+def las_profilsnapshot(byramapp: Path) -> tuple[Profil, bytes]:
+    """Validera och återge exakt samma bytes; profilspararen publicerar med atomiskt namnbyte."""
     sokvag = byramapp / PROFILFIL
     if not sokvag.is_file():
         raise RiskanalysFel(f"Profilen saknas i {byramapp}. Skapa byrån med 'riskanalys ny'.")
     try:
-        return Profil.model_validate(las_yaml(sokvag))
+        innehall = sokvag.read_bytes()
+        data = yaml.safe_load(innehall.decode('utf-8'))
+    except (OSError, UnicodeDecodeError) as fel:
+        raise RiskanalysFel(f"Filen {sokvag} kan inte läsas som UTF-8. Rätta filen eller återställ från säkerhetskopian.") from fel
+    except yaml.YAMLError as fel:
+        raise RiskanalysFel(f"Filen {sokvag} är inte giltig YAML: {fel}") from fel
+    try:
+        return Profil.model_validate(data), innehall
     except ValidationError as fel:
         platser = ", ".join(".".join(str(del_) for del_ in post["loc"]) for post in fel.errors()[:3])
         raise RiskanalysFel(

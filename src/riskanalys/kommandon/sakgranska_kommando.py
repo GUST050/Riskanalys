@@ -59,12 +59,23 @@ def _kor_sakgranska_last(args: argparse.Namespace) -> int:
     dokument, _ = las_granskning(granskningsmapp)
     profil = granskningens_profil(byramapp, granskningsmapp)
     sakgranskningar = las_sakgranskningar(byramapp)
+    presentation = None
+    rb = None
+    if dokument.formatversion == 'D-ARB-tjanst-v8':
+        from riskanalys.dokument.rapportpaket_v8 import las_presentation
+        rb = ladda_giltig_regelbas(args.regelbas)
+        presentation=las_presentation(granskningsmapp,
+            las_bedomning(granskningens_bedomningsmapp(byramapp,granskningsmapp)),profil,regelbas=rb)
+        print('Läsrapport och kompletterande underlagsbilaga ska granskas tillsammans.')
+        for del_ in presentation.delar:
+            print(f'{del_.leveransdel} – {del_.placering}')
+            for rad in del_.rader:print(rad.text)
     analysbindning = None
-    if dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7'):
+    if dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8'):
         from riskanalys.granskning.analysunderlag import las_fryst_analys, aktuell_analys_hinder
         analysbindning = las_fryst_analys(granskningsmapp).registersumma
         if args.godkann or args.underkann:
-            rb = ladda_giltig_regelbas(args.regelbas)
+            rb = rb or ladda_giltig_regelbas(args.regelbas)
             hinder = aktuell_analys_hinder(byramapp,rb,granskningsmapp,args.datum or date.today(),krav_godkand=args.godkann)
             if hinder:raise SakgranskningsFel(' '.join(hinder))
     if args.godkann or args.underkann:
@@ -80,16 +91,16 @@ def _kor_sakgranska_last(args: argparse.Namespace) -> int:
             args.namn,
             args.datum or date.today(),
             args.kommentar,
-            analysbindning=analysbindning,
+            analysbindning=analysbindning, presentation=presentation,
         )
         spara_sakgranskningar(byramapp, nya)
-        print(f"{args.avsnitt}: {sakgranskningsstatus(nya, dokument.avsnitt_med_id()[args.avsnitt], profil, dokument, analysbindning=analysbindning)}")
+        print(f"{args.avsnitt}: {sakgranskningsstatus(nya, dokument.avsnitt_med_id()[args.avsnitt], profil, dokument, analysbindning=analysbindning, presentation=presentation)}")
         return 0
     if args.avsnitt:
         avsnitt = dokument.avsnitt_med_id().get(args.avsnitt)
         if avsnitt is None:
             raise SakgranskningsFel(f"Avsnittet {args.avsnitt} finns inte i dokumentet.")
-        print(f"{avsnitt.id} {avsnitt.rubrik} ({sakgranskningsstatus(sakgranskningar, avsnitt, profil, dokument, analysbindning=analysbindning)})")
+        print(f"{avsnitt.id} {avsnitt.rubrik} ({sakgranskningsstatus(sakgranskningar, avsnitt, profil, dokument, analysbindning=analysbindning, presentation=presentation)})")
         tjanst = dict(tjanster_med_avsnitt(las_bedomning(granskningens_bedomningsmapp(byramapp, granskningsmapp))))
         if avsnitt.id in tjanst:
             print(beskriv_motorns_nivaer(tjanst[avsnitt.id]))
@@ -100,7 +111,7 @@ def _kor_sakgranska_last(args: argparse.Namespace) -> int:
         print(beskriv_avsnitt(renderat_avsnitt(avsnitt, profil)))
         return 0
     for avsnitt in dokument.avsnitt:
-        print(f"{avsnitt.id} {avsnitt.rubrik}: {sakgranskningsstatus(sakgranskningar, avsnitt, profil, dokument, analysbindning=analysbindning)}")
+        print(f"{avsnitt.id} {avsnitt.rubrik}: {sakgranskningsstatus(sakgranskningar, avsnitt, profil, dokument, analysbindning=analysbindning, presentation=presentation)}")
     print(f"Visa ett avsnitt med 'riskanalys sakgranska {args.byra} --avsnitt <ID>'.")
     return 0
 

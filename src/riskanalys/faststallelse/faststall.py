@@ -226,6 +226,7 @@ def _underlag(byramapp: Path, regelbas: Regelbas, granskningsmapp: Path) -> Fast
     return Faststallelseunderlag(
         analys=snapshot.paket if snapshot else None,
         analysbindning=snapshot.registersumma if snapshot else None,
+        presentation=_presentation(granskningsmapp,bedomning,dokument,las_bedomningsprofil(bedomningsmapp),regelbas),
         regelbas=regelbas,
         urval=valj(regelbas, bedomning.regelpaket, bedomning.datum, bedomning.lan),
         profil=las_bedomningsprofil(bedomningsmapp),
@@ -279,7 +280,18 @@ def _bygg_paket(
     spara_historik(pagaende, underlag.historik.med(_faststallelse(beslut, version)))
     spara_yaml(pagaende / BESLUTSFIL, beslut.model_dump(mode="python"))
     statusrad = faststalld_status(beslut.organ, beslut.datum, version)
-    rendera_docx(underlag.dokument, underlag.profil, statusrad, pagaende / paketfil(version))
+    if underlag.dokument.formatversion == 'D-ARB-tjanst-v8':
+        from riskanalys.dokument.rapportpaket_v8 import Leverans, LEVERANSFIL
+        from riskanalys.dokument.rapportvyer import bygg_rapportvyer
+        from riskanalys.dokument.rendering import rendera_rapportvyer
+        leverans=Leverans(datum=beslut.datum,bedomning=metadata['bedomning'],granskning=granskningsmapp.name,
+                         version=version,organ=beslut.organ)
+        rendera_rapportvyer(bygg_rapportvyer(underlag.dokument),underlag.profil,statusrad,pagaende,
+            analys=underlag.analys,fynd=underlag.fynd,bedomning=underlag.bedomning,
+            presentation=underlag.presentation,leverans=leverans)
+        (pagaende/LEVERANSFIL).write_text(leverans.model_dump_json(indent=2),encoding='utf-8')
+    else:
+        rendera_docx(underlag.dokument, underlag.profil, statusrad, pagaende / paketfil(version))
 
 
 def _metadata(underlag: Faststallelseunderlag, beslut: Beslut, version: int, granskningsmapp: Path) -> dict[str, str]:
@@ -303,3 +315,10 @@ def _publicera(pagaende: Path, slutlig: Path) -> Path:
     """Det enda steget som gör versionen synlig. Ett namnbyte inom samma mapp sker helt eller inte alls."""
     pagaende.rename(slutlig)
     return slutlig
+
+
+def _presentation(granskningsmapp, bedomning, dokument, profil, regelbas):
+    if dokument.formatversion == 'D-ARB-tjanst-v8':
+        from riskanalys.dokument.rapportpaket_v8 import las_presentation
+        return las_presentation(granskningsmapp,bedomning,profil,regelbas=regelbas)
+    return None

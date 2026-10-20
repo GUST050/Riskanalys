@@ -57,7 +57,28 @@
       sida: 3
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-RED-01
+    hot:
+    - H-03
+    - H-MOD-01
+    kallor:
+    - SRC-VAGL-2025-03
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Avstämning kan identifiera oförklarade differenser och transaktioner utan underlag
+      (H-03) och återföring till annat konto (H-MOD-01) i de tillgängliga bankflödena; SRC-NRA-2024-25
+      7.19 s. 123 nämner båda mönstren. Tjänstens eget hot H-TJ-01 (osanna underlag och brottsvinster
+      som vanliga affärshändelser) är inte mål: avstämningen visar att betalning och underlag stämmer
+      överens, men räckvidden anger att en matchande faktura inte styrker att affären är verklig. Av
+      samma skäl är H-01, H-02 och H-MOD-02 inte mål. H-MOD-04 är inte prövat som mål och ger ingen
+      sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
+      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
+      effekt. Räckviddens begränsningar kvarstår. Källstöd: SRC-VAGL-2025-03, fysisk PDF-sida 16–17;
+      SRC-NRA-2024-25, 7.19 s. 123.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-01
   namn: Kontroll av löpande bokföring
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -103,7 +124,29 @@
       sida: 123
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-RED-01
+    hot:
+    - H-TJ-01
+    - H-01
+    - H-03
+    kallor:
+    - SRC-VAGL-2025-03
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Underlagsprövning och frågor om affärssyfte riktas mot tjänstens eget missbruk, att
+      osanna underlag och brottsvinster redovisas som vanliga affärshändelser (H-TJ-01), mot fakturor
+      utan verklig prestation (H-01) och mot oförklarade flöden i bokföringen (H-03). SRC-NRA-2024-25
+      7.19 s. 122–123 beskriver att konsulten kan användas för att få falska underlag och fakturor att
+      framstå som riktiga och att otillräcklig kundkännedom gör att transaktioner utan underlag inte
+      upptäcks; SRC-VAGL-2025-03 fysisk PDF-sida 16 och 23 anger att sådana omständigheter utreds genom
+      frågor och begärda underlag. H-02, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger
+      ingen sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
+      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
+      effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-02
   namn: Kontroll av bokslut och årsredovisning
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -149,7 +192,28 @@
       sida: 123
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-RED-02
+    hot:
+    - H-TJ-02
+    - H-01
+    - H-03
+    kallor:
+    - SRC-VAGL-2025-03
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Prövning av bokslutsunderlag och avvikande flöden riktas mot tjänstens eget missbruk,
+      att en övertygande årsredovisning och förfalskade underlag legitimerar brottsvinster (H-TJ-02),
+      mot osanna verifikationer (H-01) och mot oförklarade belopp (H-03). SRC-NRA-2024-25 7.19 s. 123
+      beskriver bokslut och övertygande årsredovisning på felaktiga grunder och transaktioner utan
+      underlag; SRC-VAGL-2025-03 fysisk PDF-sida 23 nämner räkenskaper som inte stödjer
+      årsredovisningen. H-02, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen
+      sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
+      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
+      effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-03
   namn: Kontroll av deklarationer och deklarationsombud
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -195,7 +259,30 @@
       sida: 123
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-RED-03
+    hot:
+    - H-TJ-03
+    - H-01
+    - H-03
+    - H-MOD-02
+    kallor:
+    - SRC-VAGL-2025-03
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Prövning av deklarationsunderlag riktas mot tjänstens eget missbruk, osanna
+      deklarationsunderlag (H-TJ-03), mot osanna fakturor (H-01) och momsunderlag utan verklig affär
+      (H-MOD-02) samt mot avvikande flöden som syns i underlaget (H-03). SRC-NRA-2024-25 7.19 s. 122–123
+      räknar skattedeklarationer och deklarationsombud till sektorn och beskriver falska underlag och
+      transaktioner utan underlag; SRC-VAGL-2025-03 fysisk PDF-sida 23 nämner osanna fakturor och
+      karusellbedrägeri. H-03 avser bara flöden som syns i deklarationsunderlaget; kontrollen har inte
+      generell insyn i alla betalningsled. H-02, H-MOD-01 och H-MOD-04 är inte prövade som mål och ger
+      ingen sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
+      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
+      effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-04
   namn: Kontroll av lönehantering
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -241,7 +328,28 @@
       sida: 123
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-RED-04
+    hot:
+    - H-TJ-04
+    - H-02
+    - H-03
+    kallor:
+    - SRC-VAGL-2025-03
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Prövning av löneunderlag och betalningssyfte riktas mot tjänstens eget missbruk, osanna
+      löner som legitimerar brottsvinster eller finansierar svart arbetskraft (H-TJ-04), mot
+      brottsvinster som redovisas som intäkter (H-02) och mot oförklarade löneflöden (H-03).
+      SRC-NRA-2024-25 7.19 s. 123 beskriver brottsvinster som bokförs som försäljning och tas ut som lön
+      och utdelning samt osanna fakturor som avlönar svart arbetskraft; SRC-VAGL-2025-03 fysisk PDF-sida
+      17 beskriver samma uttag som lön och utdelning. H-01, H-MOD-01, H-MOD-02 och H-MOD-04 är inte
+      prövade som mål och ger ingen sänkning. TF-hoten sänks inte av kontroller i metoden och är inte
+      mål. Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal
+      utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-05
   namn: Kontroll av betalningar och attest i kundens namn
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -287,7 +395,28 @@
       sida: 123
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-RED-05
+    hot:
+    - H-TJ-05
+    - H-03
+    - H-MOD-01
+    kallor:
+    - SRC-VAGL-2025-03
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Prövning av betalningsunderlag och mottagare riktas mot tjänstens eget missbruk,
+      ogrundade utlandsbetalningar och slussning via betalningsuppdraget (H-TJ-05), mot oförklarade
+      överföringar (H-03) och begärd återföring till annat konto (H-MOD-01). SRC-NRA-2024-25 7.19 s. 123
+      nämner felbetalning till annat konto och verksamhetsfrämmande utlandsbetalningar; SRC-VAGL-2025-03
+      fysisk PDF-sida 16–17 beskriver felbetalningar och utlandsbetalningar som ska granskas närmare.
+      H-01, H-02, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks
+      inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans
+      granskningsmoment, inte belägg för lokal utformning, genomförande eller effekt. Räckviddens
+      begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-06
   namn: Kontroll av klientmedelskonto
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -333,7 +462,26 @@
       sida: 123
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-RED-06
+    hot:
+    - H-TJ-06
+    - H-03
+    kallor:
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Prövning av kund, syfte och ägarbild bakom klientmedelsflöden riktas mot tjänstens eget
+      missbruk, att konto i byråns namn döljer vilken kund eller företrädare som står bakom medlen
+      (H-TJ-06), och mot oförklarade in- och utbetalningar (H-03). SRC-NRA-2024-25 7.19 s. 123 beskriver
+      att varken företaget eller dess företrädare behöver stå som kontoinnehavare när klientmedelskonton
+      används, samt otillräcklig kundkännedom. Byråns konto ger inte automatiskt kunskap om medlens
+      ursprung. H-01, H-02, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen
+      sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
+      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
+      effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-07
   namn: Kontroll av ekonomisk rådgivning och ekonomichefstjänster
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -379,7 +527,26 @@
       sida: 123
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-RED-07
+    hot:
+    - H-TJ-07
+    - H-03
+    kallor:
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Prövning av underlag och transaktioners affärssyfte inom rådgivningsuppdraget riktas
+      mot tjänstens eget missbruk, att kompetensen används för trovärdiga underlag och strukturerade
+      transaktioner (H-TJ-07), och mot oförklarade flöden (H-03). SRC-NRA-2024-25 7.19 s. 123 beskriver
+      att konsulten kan skapa dokument och underlag som ger ett trovärdigt intryck och dölja
+      penningtvättstransaktioner. Rådgivningsmandatet ger inte generell underlagskontroll. H-01, H-02,
+      H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks
+      inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans
+      granskningsmoment, inte belägg för lokal utformning, genomförande eller effekt. Räckviddens
+      begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-08
   namn: Kontroll av skatterådgivning utöver deklarationer
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -421,7 +588,28 @@
       sida: 126
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-SKATT-01
+    hot:
+    - H-TJ-08
+    - H-03
+    - H-MOD-03
+    kallor:
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Verifiering av underlag, syfte och ägarbild inom skatterådgivningen riktas mot
+      tjänstens eget missbruk, komplexa strukturer, brevlådeföretag och slussbolag som döljer pengars
+      ursprung (H-TJ-08), mot oförklarade flöden i upplägget (H-03) och mot dolda företrädare
+      (H-MOD-03). SRC-NRA-2024-25 7.20 s. 126–127 beskriver samma strukturer, att de försvårar
+      spårningen av pengarnas ursprung, att osanna underlag ger transaktioner en skenbar förklaring och
+      att kundkännedom och kontroll av kundens ekonomiska situation behövs mot anonymitet bakom komplexa
+      ägarstrukturer. Kontrollen omfattar därmed alla tre PT-hot i tjänsten; TF-hoten H-TF-01 och
+      H-TF-03 är inte mål, och s. 128 anger inga kända TF-modus för sektorn. Bredden är ett ogranskat
+      metodval som sakkunnig bör pröva. Katalogmål är en metodtolkning av källans granskningsmoment,
+      inte belägg för lokal utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-09
   namn: Kontroll av bolagsbildning, lagerbolag och bolagsförmedling
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -463,7 +651,28 @@
       sida: 144
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-BOLAG-01
+    hot:
+    - H-TJ-09
+    - H-03
+    - H-MOD-03
+    kallor:
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Verifiering av identitet, faktisk ägarkontroll, syfte och köpeskillingens ursprung vid
+      bolagsbildning och bolagsförmedling riktas mot tjänstens eget missbruk, historikbolag som blir
+      brottsverktyg (H-TJ-09), mot oförklarade flöden vid överföringen av köpeskillingen (H-03) och mot
+      dolda företrädare (H-MOD-03). SRC-NRA-2024-25 7.25 s. 144–145 beskriver historikbolag som
+      brottsverktyg, att flera mindre belopp från olika konton gör pengarnas ursprung svårt att upptäcka
+      och att kundkännedom med uppgifter om kundens ekonomiska situation och pengarnas ursprung krävs.
+      Kontrollen omfattar därmed alla tre PT-hot i tjänsten; TF-hoten H-TF-01 och H-TF-03 är inte mål,
+      och s. 146 anger inga kända TF-modus för sektorn. Bredden är ett ogranskat metodval som sakkunnig
+      bör pröva. Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal
+      utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-10
   namn: Kontroll av registrerad adress eller postadress
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -505,7 +714,26 @@
       sida: 147
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-BOLAG-02
+    hot:
+    - H-TJ-10
+    - H-MOD-03
+    kallor:
+    - SRC-NRA-2024-25
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Verifiering av kunden och den faktiska ägarkontrollen vid adresstjänsten riktas mot
+      tjänstens eget missbruk, adress som döljer verksamhetens verkliga plats (H-TJ-10), och mot dolda
+      företrädare och målvakter (H-MOD-03). SRC-NRA-2024-25 7.26 s. 147 beskriver att hotaktörer
+      använder adresser för att verka anonymt, kan anlita en målvakt och att anonymiteten beror på hur
+      noggrann kundkännedomen är. H-03 är inte mål: källan beskriver inte att kundens flöden passerar
+      adresstjänsten, och frågan om pengarnas ursprung på s. 148 gäller kundkännedomen, inte en
+      granskning av flöden som tjänsten inte hanterar. TF-hoten sänks inte av kontroller i metoden och
+      är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal
+      utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-TJ-11
   namn: Kontroll av styrelseuppdrag eller bolagsrättsligt ansvar
   beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
@@ -547,7 +775,28 @@
       sida: 144
     sakkunnig:
       status: ej_granskad
-
+  riktar_sig_mot:
+  - tjanst: T-BOLAG-03
+    hot:
+    - H-TJ-11
+    - H-MOD-03
+    kallor:
+    - SRC-NRA-2024-25
+    - SRC-VAGL-2025-03
+    - SRC-LST-GOR-ARB
+    grund: metodval
+    motivering: 'Prövning av ägarbild och verkligt syfte med företrädaruppdrag riktas mot tjänstens eget
+      missbruk, att uppdraget möjliggör bolag som brottsverktyg och döljer den faktiska kontrollen
+      (H-TJ-11), och mot dolda företrädare (H-MOD-03). SRC-VAGL-2025-03 fysisk PDF-sida 17 beskriver
+      målvakter som uppträder som ledningspersoner utan att vara bolagets verkliga företrädare;
+      SRC-NRA-2024-25 7.25 s. 144 beskriver bolag som brottsverktyg. H-03 är inte mål: ingen registrerad
+      källa beskriver kontroll av flöden genom företrädaruppdraget, och SRC-NRA-2024-25 7.27 s. 149 har
+      inte hot- eller sårbarhetsbedömt styrelserepresentation. Om uppdraget ger insyn i bolagets flöden
+      är en öppen fråga för sakkunnig. TF-hoten sänks inte av kontroller i metoden och är inte mål.
+      Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal utformning,
+      genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+  sakkunnig:
+    status: ej_granskad
 - id: C-SANK
   namn: Kontroll av sanktionsanknytning
   beskrivning: Utred identitet, ägande/kontroll, tillämpliga förbud och eventuella tillstånd.

@@ -8091,3 +8091,383 @@
     - P-TJ.bolag03_erbjuds
     grund: metodval
     obligatorisk: false
+- id: P-TJ.red01_iakttagna_hot
+  typ: flerval
+  fraga: 'Löpande bokföring: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red01_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-01
+  - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
+  intag:
+    grupp: P-TJ
+    ordning: 601
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red01_erbjuds
+    grund: metodval
+- id: P-TJ.red02_iakttagna_hot
+  typ: flerval
+  fraga: 'Bokslut och årsredovisning: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red02_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-02
+  - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
+  intag:
+    grupp: P-TJ
+    ordning: 602
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red02_erbjuds
+    grund: metodval
+- id: P-TJ.red03_iakttagna_hot
+  typ: flerval
+  fraga: 'Deklarationer och deklarationsombud: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red03_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-03
+  - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
+  intag:
+    grupp: P-TJ
+    ordning: 603
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red03_erbjuds
+    grund: metodval
+- id: P-TJ.red04_iakttagna_hot
+  typ: flerval
+  fraga: 'Lönehantering: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red04_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-04
+  - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
+  intag:
+    grupp: P-TJ
+    ordning: 604
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red04_erbjuds
+    grund: metodval
+- id: P-TJ.red05_iakttagna_hot
+  typ: flerval
+  fraga: 'Betalningar och attest i kundens namn: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red05_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-05
+  - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
+  intag:
+    grupp: P-TJ
+    ordning: 605
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red05_erbjuds
+    grund: metodval
+- id: P-TJ.red06_iakttagna_hot
+  typ: flerval
+  fraga: 'Klientmedelskonto: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red06_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-06
+  - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
+  intag:
+    grupp: P-TJ
+    ordning: 606
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red06_erbjuds
+    grund: metodval
+- id: P-TJ.red07_iakttagna_hot
+  typ: flerval
+  fraga: 'Ekonomisk rådgivning och ekonomichefstjänster: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red07_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-07
+  - H-03
+  - H-01
+  - H-02
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-04
+  - H-TF-01
+  - H-TF-02
+  intag:
+    grupp: P-TJ
+    ordning: 607
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red07_erbjuds
+    grund: metodval
+- id: P-TJ.skatt01_iakttagna_hot
+  typ: flerval
+  fraga: 'Skatterådgivning utöver deklarationer: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.skatt01_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-08
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
+  intag:
+    grupp: P-TJ
+    ordning: 608
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.skatt01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag01_iakttagna_hot
+  typ: flerval
+  fraga: 'Bolagsbildning, lagerbolag och bolagsförmedling: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag01_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-09
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
+  intag:
+    grupp: P-TJ
+    ordning: 609
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.bolag01_erbjuds
+    grund: metodval
+- id: P-TJ.bolag02_iakttagna_hot
+  typ: flerval
+  fraga: 'Registrerad adress eller postadress: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag02_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-10
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
+  intag:
+    grupp: P-TJ
+    ordning: 610
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.bolag02_erbjuds
+    grund: metodval
+- id: P-TJ.bolag03_iakttagna_hot
+  typ: flerval
+  fraga: 'Styrelseuppdrag eller bolagsrättsligt ansvar: Vilka hot har ni iakttagit i den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-11
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
+  intag:
+    grupp: P-TJ
+    ordning: 611
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
