@@ -46,6 +46,40 @@ Alla 40 tjänsteutfall blir PT hög, kvarstående hög och TF mycket hög (se [g
 
 Ett alternativ som bara lägger till tjänstevis fördelning (D3 B nedan) ändrar därför **inte** dessa fall. De identiska nivåerna kan vara rimliga för just den här byrån. Kontrasterna visar att metoden inte *kan* skilja tjänsterna åt, men inte att den *borde* göra det för denna profil. Det är skälet till att prov 1 behövs.
 
+## Prov 3: provkörda alternativ för D6 och D9
+
+Skript: [`docs/research/verktyg/metodalternativ.py`](../../research/verktyg/metodalternativ.py). Alternativen sätts bara i minnet; regelbasen och motorns kod är oförändrade. Profilerna är syntetiska (profil A med bankdata och belagda kontroller). Cell: *PT före / PT efter kontroll / TF*. Kolumnerna visar bokföring (representativ för redovisningstjänsterna) respektive skatterådgivning (representativ för skatte- och bolagstjänsterna). MH = mycket hög.
+
+| Profil | I dag | D6 B betydande | D6 C1 TF-kopplade | D6 C2 H-03 bara PT | D9 B två områden | D9 B + D6 B |
+|---|---|---|---|---|---|---|
+| Ingen faktor | M/M/M · H/M/M | M/M/M · H/M/M | M/M/M · H/M/M | M/M/M · H/M/M | M/M/M · H/M/M | M/M/M · H/M/M |
+| En utlandstransaktion | H/M/H · H/M/H | H/M/M · H/M/M | H/M/H · H/M/H | H/M/H · H/M/H | M/M/M · H/M/M | M/M/M · H/M/M |
+| Kontanter | H/H/H · H/M/H | H/H/M · H/M/M | H/H/H · H/M/H | H/H/H · H/M/H | M/M/M · H/M/M | M/M/M · H/M/M |
+| PEP | H/M/H · H/M/H | H/M/M · H/M/M | H/M/M · H/M/M | H/M/M · H/M/M | M/M/M · H/M/M | M/M/M · H/M/M |
+| Enmansbyrå (S-ARB-16) | H/M/H · H/M/H | H/M/M · H/M/M | H/M/H · H/M/H | H/M/M · H/M/H | M/M/M · H/M/M | M/M/M · H/M/M |
+| Enmansbyrå + utland | H/M/MH · H/M/MH | H/M/H · H/M/H | H/M/MH · H/M/MH | H/M/H · H/M/H | H/M/H · H/M/H | H/M/M · H/M/M |
+| Distans + extern KYC (samma område) | H/M/MH · H/M/MH | H/M/H · H/M/H | H/M/MH · H/M/MH | H/M/M · H/M/MH | M/M/M · H/M/M | M/M/M · H/M/M |
+| Utland + distans + extern KYC | H/M/MH · H/M/MH | H/M/H · H/M/H | H/M/MH · H/M/MH | H/M/H · H/M/MH | H/M/H · H/M/H | H/M/M · H/M/M |
+| Ideell + PEP | H/M/MH · H/M/MH | H/M/H · H/M/H | H/M/H · H/M/H | H/M/H · H/M/H | M/M/M · H/M/M | M/M/M · H/M/M |
+| Riskbransch + kontanter + utland + nära relation | H/H/MH · H/M/MH | H/H/H · H/M/H | H/H/MH · H/M/MH | H/H/MH · H/M/MH | H/M/H · H/M/H | H/M/M · H/M/M |
+
+| Alternativ | Enskilda faktorer (av 24) som ger PT hög / TF hög eller mer i bokföring | H7.1-kontrasterna |
+|---|---|---|
+| I dag | 24 / 20 | Alla tio fall: H/H/MH i alla fyra tjänster |
+| D6 B | 24 / 0 | Alla tio fall: H/H/H |
+| D6 C1 | 24 / 15 | Oförändrat mot i dag |
+| D6 C2 | 24 / 9 | Oförändrat mot i dag |
+| D9 B | 0 / 0 | Bokslut och deklaration får kvarstående M i nio fall; i fallet *ingen belagd effekt* förblir de H. Bokföring och lön förblir H/H/MH. |
+| D9 B + D6 B | 0 / 0 | Som D9 B, men TF hög i stället för mycket hög |
+
+**Iakttagelser** (fakta om alternativen, inte rekommendationer):
+
+1. **D6 B** sänker TF ett steg nästan överallt och gör *mycket hög* oåtkomlig. Det ändrar inte vilka byråer som skiljer sig åt, bara nivån.
+2. **D6 C1** ändrar lite, eftersom de flesta faktorer redan är kopplade till något TF-hot i katalogen. **D6 C2** gör större skillnad, eftersom H-03 i dag samlar nästan alla faktorer i TF.
+3. **D9 B** är det enda provade alternativet som ger skillnader mellan H7.1-fallen. Kontrolleffekten når då tjänstens kvarstående nivå i bokslut och deklaration, och försvinner när effekten inte är belagd. Det är en skillnad i rätt riktning, men inget facit visar att nivåerna är riktiga.
+4. **D9 B** gör samtidigt att PEP, högrisktredjeland eller ideell kund *ensamma* aldrig höjer nivån. Penningtvättslagen kräver skärpta åtgärder för kunder i högrisktredjeländer och för personer i politiskt utsatt ställning (3 kap. 17 och 19 §§). Det gäller kundåtgärder, inte direkt den allmänna riskbedömningens nivå, men en sådan regel behöver uttrycklig motivering. Ett mellanläge vore att vissa namngivna faktorer höjer ensamma.
+5. **D9 B räknar faktorer i samma område som en orsak.** Distans och extern KYC (båda kanal) höjer därför inte tillsammans. Om områdena är rätt indelning för oberoende orsaker är en sakfråga.
+
 ## Beslutsfrågor och alternativ
 
 Inget alternativ är prövat mot ett sakligt facit. Att ett alternativ ger fler olika nivåer visar inte i sig att metoden blir bättre. Målet är att verkliga skillnader i exponering, mandat och kontroll behandlas med hållbar motivering, inte spridning för dess egen skull.
@@ -58,7 +92,8 @@ Alla alternativ förutsätter samma princip: en ändring ges ny regelversion och
 |---|---|---|
 | A Behåll | Konsekvensen är alltid allvarlig. | 20/24 enskilda faktorer ger TF hög; två faktorer ger mycket hög. |
 | B Betydande konsekvens | Samma sannolikhetsväg men konsekvens betydande. | Alla enskilda faktorer ger TF måttlig. Två faktorer i samma TF-scenario ger hög. *Mycket hög* nås aldrig. |
-| C Endast TF-specifika faktorer | Bara faktorer med visad TF-kedja (till exempel utland, ideell, högrisktredjeland, kontanter) räknas i TF-scenarierna. Övriga syns i PT. | Ej kört. Kräver en genomgång faktor för faktor av `galler`. I dag är 20 av 24 faktorer markerade för både PT och TF. |
+| C1 Bara TF-kopplade faktorer | En faktor räknas i TF bara om katalogen kopplar den till minst ett H-TF-hot. Fem faktorer saknar sådan koppling (S-ARB-02, 06, 07, 12, 17). | 15/24 enskilda faktorer ger TF hög (i dag 20). Kombinationer når fortfarande mycket hög. Se prov 3. |
+| C2 H-03 bara PT | Scenariot H-03 *oförklarade in- och utflöden* räknas bara som PT. TF avgörs av de tre H-TF-scenarierna. | 9/24 enskilda faktorer ger TF hög. Skatte- och bolagstjänster når fortfarande mycket hög med två TF-kopplade faktorer. Se prov 3. |
 | D Kvalitativ TF | Ingen matris. TF beskrivs per scenario med motiverad nivå. | Ej kört. Kräver ny modell för motivering och granskning. |
 
 Att pröva: projektets egna källanteckningar säger att NRA anger inga kända TF-tillvägagångssätt för skatterådgivning (s. 128) och bolagstjänster (s. 146). Finanspolisens lägesbild är rapporteringsbaserad. Det finns ingen regel om att TF ska vara lägre än PT.
@@ -68,7 +103,7 @@ Att pröva: projektets egna källanteckningar säger att NRA anger inga kända T
 | Alternativ | Innebörd | Effekt |
 |---|---|---|
 | A Behåll | Varje faktor ger +1, tak *hög*. | En faktor ger samma nivå som åtta. Se iakttagelse 1. |
-| B Två oberoende orsaker | Sårbarhetsnivån höjs först när minst två faktorer från olika områden möjliggör samma scenario. | Ingen enskild faktor höjer längre PT. Raderna i prov 1 blir M för redovisningstjänsterna. Fyrtjänstbyrån förblir hög (H-03 har åtta faktorer från flera områden). |
+| B Två oberoende orsaker | Sårbarhetsnivån höjs ett steg per område (kund, kanal, geografi, verksamhet, tjänst) utöver det första som möjliggör samma scenario. | Ingen enskild faktor och inga faktorer från samma område höjer längre. Fyrtjänstbyrån förblir hög inneboende, men bokslut och deklaration får måttlig kvarstående när kontrollernas effekt är belagd. Se prov 3. |
 | C Se över `> 0`-trösklar | Andel eller antal i stället för "minst en", till exempel för utlandstransaktion och distanskund. | Ändrar vilka byråer som utlöser faktorn, inte metoden i övrigt. Trösklarna behöver källstöd eller märkning som metodval. |
 | D Egen regel för enmansbyrå | S-ARB-16 bedöms mot byråns storlek, där en ensam person inte är en brist i sig utan kräver annan kompensation. | Redovisningstjänsterna i en enmansbyrå utan andra faktorer går från H till M. Skatte- och bolagstjänster är höga redan genom grundnivån. |
 
