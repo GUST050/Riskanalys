@@ -12,6 +12,7 @@ För varje par:
 2. **Ange för varje led om B jämfört med A ger** *högre*, *lägre*, *oförändrat* eller *otillräckligt underlag*. Leden är scenariots relevans, sannolikhet, konsekvens och kontrollens effekt. Ange vilka scenarier (hot) svaret gäller.
 3. **Ange därefter om tjänstens sammanfattade nivå påverkas.** En skillnad kan ändra ett scenario utan att tjänstens högsta nivå ändras. Det är ett giltigt svar.
 4. **Fyll i motivering, källa, osäkerhet, beslutsfattare och datum.**
+5. **Före steg 4: precisera godkända svar.** *Högre* eller *lägre* räcker för den första diskussionen. Innan något kodas ska varje godkänt svar ange förväntad nivå eller exakt beräkningsregel, separat för PT före kontroll, kvarstående PT och TF. Även en motiverat oförändrad nivå dokumenteras.
 
 *Otillräckligt underlag* är ett giltigt svar. Det betyder att frågan inte kan avgöras med nuvarande källor, inte att svaret är *oförändrat*.
 
@@ -36,6 +37,14 @@ Kolumnen *Dagens modell* visar programmets nuvarande utfall som jämförelse, in
 | Ansvarig beslutsfattare (namn, roll) | |
 | Datum | |
 
+**Inför steg 4** (fylls i först när svaret ovan är godkänt):
+
+| Mått | Förväntad nivå i A | Förväntad nivå i B | Eller exakt beräkningsregel | Motivering om oförändrad |
+|---|---|---|---|---|
+| PT före kontroll | | | | |
+| Kvarstående PT | | | | |
+| TF | | | | |
+
 ## Par 1: exponering inom tjänsten (D3, D9)
 
 | | A | B |
@@ -46,17 +55,27 @@ Kolumnen *Dagens modell* visar programmets nuvarande utfall som jämförelse, in
 
 Tilläggsfråga: ska en kund med utlandstransaktion i en *annan* tjänst påverka denna tjänst? (D3)
 
-## Par 2: mandat (D3, D8)
+## Par 2: mandat, med samma bankinsyn (D3, D8)
 
 | | A | B |
 |---|---|---|
-| Fast | Lönehantering, samma 45 kunder, samma period, samma kundfaktorer och kontroller | |
-| Skillnad | Kunden verkställer löneutbetalningarna; byrån beräknar lön och upprättar arbetsgivardeklaration utan betalningsmandat | Byrån verkställer löneutbetalningarna enligt kundens attest, med betalningsmandat och full bankinsyn |
+| Fast | Lönehantering, samma 45 kunder, samma period, samma kundfaktorer och kontroller. Bankinsynen är lika i A och B: full insyn i lönekontot. | |
+| Skillnad | Kunden verkställer löneutbetalningarna; byrån beräknar lön och upprättar arbetsgivardeklaration utan betalningsmandat | Byrån verkställer löneutbetalningarna enligt kundens attest, med betalningsmandat |
 | Dagens modell | Identiska nivåer; mandat påverkar inte motorn (H7.7) | |
 
 Tilläggsfråga: påverkar mandatet *vilka hot* som är relevanta, *hur sannolika* de är, *vad kontrollerna kan upptäcka*, eller flera av dessa?
 
-## Par 3: kontrollens effekt – okänt är inte frånvarande (D8)
+## Par 3: bankinsyn, med samma mandat (D3, D8)
+
+| | A | B |
+|---|---|---|
+| Fast | Lönehantering, samma 45 kunder, samma period, samma kundfaktorer och kontroller. Mandatet är lika i A och B: byrån har inget betalningsmandat. | |
+| Skillnad | Ingen bankinsyn; byrån ser löneunderlag men inte faktiska utbetalningar | Full insyn i lönekontot; byrån ser faktiska utbetalningar och mottagare |
+| Dagens modell | Identiska nivåer. Tjänstens bankinsyn påverkar inte motorn; byråns andel kunder med bankdata gör det (S-KANAL-01). | |
+
+Tilläggsfråga: ska bankinsyn påverka sannolikheten, vad kontrollerna kan upptäcka, eller båda? Ska tjänstens bankinsyn ersätta byråns gemensamma andel?
+
+## Par 4: kontrollens effekt – okänt är inte frånvarande (D8)
 
 Samma tjänst, kunder, period och scenarier. Bara uppgiften om kontrollens effekt skiljer sig. Jämför B och C var för sig mot A.
 
@@ -67,7 +86,7 @@ Samma tjänst, kunder, period och scenarier. Bara uppgiften om kontrollens effek
 
 Tilläggsfråga: ska B (okänt) och C (belagt verkningslös) behandlas lika i nivån, och hur ska skillnaden synas i rapporten?
 
-## Par 4: täckningsgrad (D8)
+## Par 5: täckningsgrad (D8)
 
 | | A | B |
 |---|---|---|
@@ -77,7 +96,7 @@ Tilläggsfråga: ska B (okänt) och C (belagt verkningslös) behandlas lika i ni
 
 Tilläggsfråga: ska delvis täckning ge någon effekt, och i så fall hur ska den redovisas på en skala med fyra nivåer?
 
-## Par 5: enmansbyrå prövad genom arbetssätt (D9)
+## Par 6: enmansbyrå prövad genom arbetssätt (D9)
 
 Samma kunder, tjänster och period. Ingen annan riskfaktor. Jämför B, C och D var för sig mot A.
 
@@ -90,7 +109,7 @@ Tilläggsfrågor:
 - Är antalet personer i sig en sårbarhet, eller avgör kompetens, kontroll och oberoende granskning?
 - Behöver intaget en uppgift om extern granskning eller andra kompenserande arbetssätt?
 
-## Par 6: terrorfinansiering (D6)
+## Par 7: terrorfinansiering (D6)
 
 | | A | B |
 |---|---|---|
@@ -101,6 +120,20 @@ Tilläggsfrågor:
 Tilläggsfrågor:
 - Vad mäter konsekvensen för terrorfinansiering, och ska den alltid vara *allvarlig*?
 - Vilka faktorer har en visad kedja till terrorfinansiering i just denna tjänst?
+
+## Par 8: sammanvägning till tjänstens nivå (D5)
+
+**Beslutsfråga:** Ska det högsta relevanta scenariot alltid bestämma tjänstens nivå, även när exponeringen är liten? Vilken information om exponeringens omfattning och övriga scenarier ska visas?
+
+| | A | B |
+|---|---|---|
+| Fast | Löpande bokföring, 100 kunder, samma period och kontroller. Enda faktorn är kunder etablerade utan fysiskt möte (S-ARB-08), som i bokföring bara möjliggör H-03. | |
+| Skillnad | 1 av 100 kunder etablerade utan fysiskt möte | 40 av 100 kunder etablerade utan fysiskt möte |
+| Dagens modell | Båda: PT hög (H-03), övriga sex PT-scenarier måttliga, kvarstående PT måttlig, TF hög. Tjänsten får H-03:s nivå; övriga scenarier syns bara i scenariotabellen. | |
+
+Tilläggsfrågor:
+- Ska tjänstens nivå vara det högsta relevanta scenariot (max), eller ska exponeringens omfattning kunna påverka den sammanfattade nivån?
+- Om max behålls: ska rapporten intill nivån visa andel exponerade kunder, antal scenarier på maxnivån och vilka scenarier som är otäckta?
 
 ## Efter ifyllandet
 
