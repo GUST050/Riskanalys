@@ -17,7 +17,8 @@ from riskanalys.granskning.kontroller import granska
 from riskanalys.granskning.modeller import Fynd
 from riskanalys.lagring.yamlfil import las_modell
 from riskanalys.lagring.korningar import avslutade_korningar, ny_korningsmapp, senaste_korning
-from riskanalys.lagring.manifest import las_manifest, manifestets_metadata, skriv_manifest, verifiera_manifest
+from riskanalys.lagring.kontrollsumma import for_fil
+from riskanalys.lagring.manifest import MANIFESTNAMN, las_manifest, manifestets_metadata, skriv_manifest, verifiera_manifest
 from riskanalys.profil.modeller import Profil
 from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.regelverk.urval import valj
@@ -110,6 +111,8 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
         "dokumentformat": dokument.formatversion,
         "bedomning": bedomningsmapp.name,
         "utkast": utkastmapp.name if utkastmapp else "",
+        # Analysbindning version 2 binder inte utkastet; granskningen binder därför det använda utkastet själv.
+        "utkastmanifest": for_fil(utkastmapp / MANIFESTNAMN) if utkastmapp else "",
         "historik": historikens_kontrollsumma(byramapp),
         "blockerande": str(sum(1 for post in fynd if post.allvar == "blockerande")),
         "datum": granskningsdatum.isoformat(),
@@ -164,6 +167,10 @@ def andrade_kallor(byramapp: Path, granskningsmapp: Path) -> list[str]:
         f"AI-utkasten är ändrade efter skrivningen. {rad}"
         for rad in (verifiera_manifest(byramapp / UTKAST / metadata["utkast"]) if metadata["utkast"] else [])
     ]
+    # Äldre granskningar saknar nyckeln; deras analysbindning version 1 binder utkastet.
+    bundet = las_manifest(granskningsmapp).metadata.get("utkastmanifest")
+    if bundet and not utkast and for_fil(byramapp / UTKAST / metadata["utkast"] / MANIFESTNAMN) != bundet:
+        utkast.append("AI-utkastens manifest har ändrats efter granskningen.")
     return [*bedomning, *utkast]
 
 

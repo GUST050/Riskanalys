@@ -11,7 +11,7 @@ import secrets
 from pydantic import ValidationError
 import yaml
 
-from riskanalys.analys.modeller import Analyspaket, Analysbindning, Analysbeslut
+from riskanalys.analys.modeller import BINDNINGSVERSION, Analyspaket, Analysbindning, Analysbeslut
 from riskanalys.drift.modellrisk import Modellbelagg
 from riskanalys.analys.provning import (analysbrister, registersumma, registrera_beslut,
                                       summa, svarssumma, underlagssumma)
@@ -203,7 +203,8 @@ def las_belaggsfil(byramapp: Path,fil: str,kontrollsumma: str) -> bytes:
         raise RiskanalysFel('Beläggskopian saknas eller har en otillåten sökväg. Importera den igen.') from exc
 
 
-def bygg_bindning(byramapp: Path,rb,bedomningsmapp: Path,utkastmapp: Path) -> Analysbindning:
+def bygg_bindning(byramapp: Path,rb,bedomningsmapp: Path,utkastmapp: Path,*,version: int = BINDNINGSVERSION) -> Analysbindning:
+    """Utkastet valideras alltid; bara version 1 tar med dess manifest i sakbindningen."""
     from riskanalys.bedomning.korning import kontrollera_aktuell,las_bedomning
     from riskanalys.profil.lagring import las_profil,profilrevision
     from riskanalys.lagring.manifest import MANIFESTNAMN,las_manifest,verifiera_manifest
@@ -239,9 +240,10 @@ def bygg_bindning(byramapp: Path,rb,bedomningsmapp: Path,utkastmapp: Path) -> An
     kallunderlag=summa(dict(kallor={k:v.model_dump(mode='json') for k,v in sorted(rb.kallor.items())},
         lydelser={k:v.model_dump(mode='json') for k,v in sorted(rb.lydelser.items())}))
     return Analysbindning(byra=p.byra.id,profilrevision=profilrevision(p),
-        bedomningsmanifest=for_fil(bedomningsmapp/MANIFESTNAMN),utkastmanifest=for_fil(utkastmapp/MANIFESTNAMN),
+        bedomningsmanifest=for_fil(bedomningsmapp/MANIFESTNAMN),
+        utkastmanifest=for_fil(utkastmapp/MANIFESTNAMN) if version==1 else None,
         regelbas=rb.kontrollsumma,kallunderlag=kallunderlag,historik=historikens_kontrollsumma(byramapp),
-        bedomningsdatum=b.datum,modell=modellbindning(rb))
+        bedomningsdatum=b.datum,modell=modellbindning(rb),bindningsversion=version)
 
 
 def analysaktualitetshinder(byramapp: Path,rb,paket: Analyspaket,datum: date,*,
@@ -250,7 +252,8 @@ def analysaktualitetshinder(byramapp: Path,rb,paket: Analyspaket,datum: date,*,
     from riskanalys.drift.modellrisk import modellriskhinder
     fel=[]
     try:
-        if bygg_bindning(byramapp,rb,bedomningsmapp,utkastmapp)!=paket.bindning:
+        # Varje paket prövas med sin egen bindningsalgoritm; version 1 binder fortsatt utkastet.
+        if bygg_bindning(byramapp,rb,bedomningsmapp,utkastmapp,version=paket.bindning.bindningsversion)!=paket.bindning:
             fel.append('Analysens underlag har ändrats. Förnya och granska analysen.')
     except RiskanalysFel as exc:fel.append(str(exc))
     for b in paket.belagg:

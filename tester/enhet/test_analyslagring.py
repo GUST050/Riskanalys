@@ -411,3 +411,71 @@ def test_atomiskt_namnbyte_anvander_samma_kontrollerade_kataloghandtag(lagring,p
     lagring.spara_analys(byra,paket,forvantad_summa='')
     assert (flyttad/'analys.yaml').is_file()
     assert list(annan.iterdir())==[]
+
+
+def _nytt_ai_utkast(byra,rb,b):
+    """Ett nytt skrivförsök med samma profil, bedömning och modell."""
+    from riskanalys.dokument.skrivning import kor_skrivning
+    from riskanalys.dokument.leverantor import Testleverantor
+    from riskanalys.dokument.underlag import tjanster_med_avsnitt
+    from riskanalys.dokument.skrivversion import delar_for_version
+    from tester.fixturer.m2 import godkant_delsvar
+    svar=[godkant_delsvar(d,t) for _,t in tjanster_med_avsnitt(b) for d in delar_for_version('D-ARB-tjanst-v6')]
+    return kor_skrivning(byra,rb,Testleverantor(svar),formatversion="D-ARB-tjanst-v6")
+
+
+def test_bindningsversion_1_serialiseras_som_tidigare(paket):
+    from riskanalys.analys.modeller import Analysbindning
+    data=paket.bindning.model_dump(mode='json')
+    assert 'bindningsversion' not in data and data['utkastmanifest']=='u'
+    assert Analysbindning.model_validate(data)==paket.bindning
+
+
+def test_bindningsversion_2_saknar_ai_utkast():
+    from pydantic import ValidationError
+    from riskanalys.analys.modeller import Analysbindning
+    falt=dict(byra='s',profilrevision='p',bedomningsmanifest='b',regelbas='r',kallunderlag='k',historik='',
+              bedomningsdatum=date(2026,10,1),modell='m')
+    ny=Analysbindning(bindningsversion=2,**falt)
+    data=ny.model_dump(mode='json')
+    assert data['bindningsversion']==2 and 'utkastmanifest' not in data
+    assert Analysbindning.model_validate(data)==ny
+    with pytest.raises(ValidationError):Analysbindning(bindningsversion=2,utkastmanifest='u',**falt)
+    with pytest.raises(ValidationError):Analysbindning(**falt)
+
+
+def test_nytt_ai_utkast_bevarar_sakbindningen(lagring,verklig_skrivkedja):
+    from riskanalys.analys.utkast import forifyll_analys
+    from riskanalys.analys.provning import underlagssumma
+    byra,rb,profil,b,bm,um=verklig_skrivkedja
+    um2=_nytt_ai_utkast(byra,rb,b)
+    assert lagring.bygg_bindning(byra,rb,bm,um,version=1)!=lagring.bygg_bindning(byra,rb,bm,um2,version=1)
+    bindning=lagring.bygg_bindning(byra,rb,bm,um)
+    assert bindning.bindningsversion==2 and bindning==lagring.bygg_bindning(byra,rb,bm,um2)
+    paket=forifyll_analys(rb,profil,b,bindning)
+    fore=underlagssumma(paket)
+    hinder=lagring.analysaktualitetshinder(byra,rb,paket,b.datum,bedomningsmapp=bm,utkastmapp=um2,krav_modellrisk=False)
+    assert not any('underlag har ändrats' in h for h in hinder),hinder
+    assert underlagssumma(paket.model_copy(update={'bindning':lagring.bygg_bindning(byra,rb,bm,um2)}))==fore
+
+
+def test_aldre_bindning_provas_med_historisk_algoritm(lagring,verklig_skrivkedja):
+    from riskanalys.analys.utkast import forifyll_analys
+    byra,rb,profil,b,bm,um=verklig_skrivkedja
+    paket=forifyll_analys(rb,profil,b,lagring.bygg_bindning(byra,rb,bm,um,version=1))
+    assert paket.bindning.bindningsversion==1
+    def hinder(utkast):
+        return lagring.analysaktualitetshinder(byra,rb,paket,b.datum,bedomningsmapp=bm,utkastmapp=utkast,krav_modellrisk=False)
+    assert not any('underlag har ändrats' in h for h in hinder(um))
+    assert any('underlag har ändrats' in h for h in hinder(_nytt_ai_utkast(byra,rb,b)))
+
+
+def test_andrad_profil_upphaver_sakbindningen(lagring,verklig_skrivkedja):
+    from riskanalys.analys.utkast import forifyll_analys
+    from riskanalys.profil.lagring import spara_profil
+    byra,rb,profil,b,bm,um=verklig_skrivkedja
+    paket=forifyll_analys(rb,profil,b,lagring.bygg_bindning(byra,rb,bm,um))
+    upp=dict(profil.uppgifter);id=next(iter(upp));upp[id]=upp[id].model_copy(update={'kalla':'Ändrat källunderlag'})
+    spara_profil(byra,profil.model_copy(update={'uppgifter':upp}))
+    hinder=lagring.analysaktualitetshinder(byra,rb,paket,b.datum,bedomningsmapp=bm,utkastmapp=um,krav_modellrisk=False)
+    assert hinder

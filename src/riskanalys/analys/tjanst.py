@@ -74,22 +74,26 @@ class Analystjanst:
                 for b in n.belagg:
                     l.las_belaggsfil(self.mapp, b.fil, b.kontrollsumma)
 
-    def _underlag(self):
+    def _underlag(self, version=m.BINDNINGSVERSION):
         um = senaste_korning(self.mapp, UTKAST, 'skriv ' + self.mapp.name)
         namn = las_manifest(um).metadata.get('bedomning', '')
         if not namn or Path(namn).name != namn:
             raise RiskanalysFel('Skrivutkastets bedömningsreferens är ogiltig. Skapa ett nytt utkast.')
         bm = self.mapp / BEDOMNINGAR / namn
-        bindning = l.bygg_bindning(self.mapp, self.rb, bm, um)
+        bindning = l.bygg_bindning(self.mapp, self.rb, bm, um, version=version)
         return bm, um, bindning
 
     def _last(self, revision, *, aktuell=True):
+        """Returnerar aktuell bindning; ett sparat paket prövas mot sin egen bindningsversion."""
         paket = l.las_analys(self.mapp)
         if (p.registersumma(paket) if paket else '') != revision:
             raise RiskanalysFel('Analysen har ändrats i en annan flik. Läs om sidan före nästa svar.')
         bm, um, bindning = self._underlag()
-        if aktuell and paket and paket.bindning != bindning:
-            raise RiskanalysFel('Analysens underlag har ändrats. Jämför förifyllnaden och förnya bindningen före nästa svar.')
+        if aktuell and paket:
+            version = paket.bindning.bindningsversion
+            sparad = bindning if version == bindning.bindningsversion else self._underlag(version)[2]
+            if paket.bindning != sparad:
+                raise RiskanalysFel('Analysens underlag har ändrats. Jämför förifyllnaden och förnya bindningen före nästa svar.')
         return paket, bm, um, bindning
 
     def status(self, datum=None):

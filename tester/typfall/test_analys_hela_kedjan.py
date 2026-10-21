@@ -139,7 +139,8 @@ def test_fyrtjanstfall_hela_kedjan_med_syntetiska_kopieattester(positiv):
     k=positiv;f=k.fall;a=las_analys(f.byramapp)
     assert a.bindning == bygg_bindning(f.byramapp,f.regelbas,k.bedomningsmapp,k.utkastmapp)
     assert a.bindning.modell.startswith('sha256:')
-    assert all(not getattr(a.bindning,n).startswith('syntetisk') for n in ('bedomningsmanifest','utkastmanifest','kallunderlag','historik'))
+    assert all(not getattr(a.bindning,n).startswith('syntetisk') for n in ('bedomningsmanifest','kallunderlag','historik'))
+    assert a.bindning.bindningsversion==2 and a.bindning.utkastmanifest is None
     assert arbetsborda(a).bekraftade_block == 64 and len(a.beslut)==4
     assert [x.egen_granskning for x in a.beslut] == [True,False,True,False]
     bokforing = next(t for t in a.tjanster if t.tjanst == 'T-RED-01')

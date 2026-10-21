@@ -4,7 +4,7 @@ from pathlib import PurePosixPath
 from typing import Literal
 import re
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
 from riskanalys.profil.modeller import Period
 from riskanalys.drift.modellrisk import Modellriskunderlag
 
@@ -186,16 +186,37 @@ class Tjansteanalys(Fryst):
         return self
 
 
+BINDNINGSVERSION = 2
+
+
 class Analysbindning(Fryst):
+    """Version 1 binder även AI-utkastet; version 2 binder bara sakunderlaget.
+
+    Ny AI-text prövas i stället genom sakgranskningen av den renderade texten. Version 1
+    serialiseras byteidentiskt med tidigare paket och uppgraderas aldrig automatiskt.
+    """
     byra: str
     profilrevision: str
     bedomningsmanifest: str
-    utkastmanifest: str
+    utkastmanifest: str | None = None
     regelbas: str
     kallunderlag: str
     historik: str
     bedomningsdatum: date
     modell: str
+    bindningsversion: Literal[1, 2] = 1
+
+    @model_validator(mode='after')
+    def utkast_efter_version(self):
+        if (self.bindningsversion == 1) != (self.utkastmanifest is not None):
+            raise ValueError('Bindningsversion 1 kräver AI-utkastets manifest; version 2 får inte ha det.')
+        return self
+
+    @model_serializer(mode='wrap')
+    def _historiskt_format(self, handler):
+        data = handler(self)
+        data.pop('bindningsversion' if self.bindningsversion == 1 else 'utkastmanifest', None)
+        return data
 
 
 class Analysbeslut(Fryst):
