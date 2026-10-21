@@ -4,7 +4,7 @@ from riskanalys.analys.provning import gallande_beslut
 from riskanalys.dokument.analysreferenser import bygg_analysreferenser
 from riskanalys.dokument.analystabeller import bygg_scenariotabell, bygg_rutinatgarder, lokalcell, scenarioetikett, status
 from riskanalys.dokument.delskrivning import kontrollera_resultat
-from riskanalys.dokument.lasta_v6 import lasta_stycken_v6
+from riskanalys.dokument.gemensamt_v8 import tjanstens_erfarenhetsstycke, tjanstens_geografistycke
 from riskanalys.dokument.lokaldata_v8 import tjanstefakta
 from riskanalys.dokument.lokalblock_v8 import lokala_block
 from riskanalys.dokument.modeller import Avsnitt, Underrubrik
@@ -79,9 +79,9 @@ def bygg_tjanstavsnitt_v8(rb, profil, t, resultat, avsnitt_id, *, gransindex, an
             delar[1].append(s)
     else:
         delar[1].append(lokaltext('Validerad AI-text saknas. Komplettera och granska analysen. Fullständigt katalogunderlag finns i underlagsbilaga B1. [VERIFIERA]',(t.tjanst,'D-ARB.B1')))
-    # Dessa krav återges lokalt även när byråns gemensamma underlag finns i B1.
-    delar[2].extend(s for del_ in ('hot','sarbarheter') for s in lasta_stycken_v6(
-        rb,profil,t,del_,gransindex=gransindex,bevara_original=True))
+    # Byråns gemensamma underlag står i avsnittet Gemensamt faktaunderlag; tjänstens egen prövning står här.
+    delar[2].extend((*tjanstens_erfarenhetsstycke(rb,profil,t,gransindex=gransindex),
+                     *tjanstens_geografistycke(rb,profil,t.tjanst,gransindex=gransindex)))
     if a is not None:
         beslut = gallande_beslut(paket,t.tjanst) if paket else None
         status_text = ('Registrerat analysgodkännande saknas. [VERIFIERA]' if beslut is None else

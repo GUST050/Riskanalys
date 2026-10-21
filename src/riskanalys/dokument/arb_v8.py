@@ -8,6 +8,8 @@ from riskanalys.dokument.arb_v5_1 import METODFRAGOR, _sakkunnigstatus
 from riskanalys.dokument.arb_v6 import bilaga_b1_v6, med_kallregisterrubrik, utvarderingsavsnitt_v6, _oppna_metodfragor
 from riskanalys.dokument.delskrivning import Tjanstresultat
 from riskanalys.dokument.kallhanvisningar import med_kallhanvisningar, bygg_kallregister
+from riskanalys.dokument.gemensamt_v8 import (GEMENSAMT_ID, GEMENSAMT_RUBRIK, gemensamma_geografistycken,
+                                             gemensamt_erfarenhetsstycke)
 from riskanalys.dokument.lokaldata_v8 import kundoverlapp
 from riskanalys.dokument.modeller import Avsnitt, Dokument
 from riskanalys.dokument.radata_v8 import komplettera_radata
@@ -79,9 +81,12 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
         stycke('Gemensamma händelseförlopp. Tjänstens egen relevans, avvikelser och begränsningar prövas i varje tjänsteavsnitt.'),),
         (tabell('gemensamma-scenarier','Gemensamma händelseförlopp',('Scenario','Händelseförlopp','Betydelse','Hot','Belägg'),
             (scenariorad(s,rb,refindex) for s in analys.gemensamma_scenarier)),) if analys and analys.gemensamma_scenarier else ())
-    lokal=avsnitt('D-ARB.5','Lokala prövningar och begränsningar',(
-        lokaltext('Lokal relevans, osäkerhet, egna lärdomar och samverkan står vid respektive tjänst. '
-                  'Fullständiga ursprungliga lokala svar med fältsökvägar finns i den kompletterande underlagsbilagan B1.',('D-ARB.B1',)),))
+    lokal=avsnitt(GEMENSAMT_ID,GEMENSAMT_RUBRIK,(
+        lokaltext('Byråövergripande underlag redovisas här en gång. Varje tjänsteavsnitt anger tjänstens egen exponering, '
+                  'lokala betydelse och avvikelser. Fullständiga ursprungliga lokala svar med fältsökvägar finns i den '
+                  'kompletterande underlagsbilagan B1.',('D-ARB.B1',)),
+        *gemensamt_erfarenhetsstycke(rb,profil,bedomning,gransindex=index),
+        *gemensamma_geografistycken(rb,profil,bedomning,gransindex=index)))
     kontroller=avsnitt('D-ARB.7','Källbunden kontrollräckvidd',rackviddsoversikt(rb,bedomning,formatversion=V8))
     risk=tuple(bygg_tjanstavsnitt_v8(rb,profil,t,resultat.get(id),id,gransindex=index,analys=analys)
                for id,t in tjanster_med_avsnitt(bedomning))

@@ -95,6 +95,20 @@ def uppgiftsrad(rb, profil, id):
     return rad(*(lokalcell(x, (id,)) for x in (namn, varde, period, kalla)))
 
 
+KALLNOT = 'Enligt källnoten ovan.'
+
+
+def _med_kallnot(rader):
+    """Identisk källa, datum och status på flera rader skrivs en gång; avvikande rader behåller sin källa."""
+    texter = [r.celler[3].text for r in rader if r.celler[3].text.startswith('Källa: ')]
+    vanligast = max(set(texter), key=texter.count, default=None)
+    if vanligast is None or texter.count(vanligast) < 2:
+        return None, rader
+    nya = tuple(r.model_copy(update={'celler': (*r.celler[:3], r.celler[3].model_copy(update={'text': KALLNOT}))})
+                if r.celler[3].text == vanligast else r for r in rader)
+    return vanligast, nya
+
+
 def tjanstefakta(rb, profil, t):
     slug = rb.tjanster[t.tjanst].erbjuds_falt.removesuffix('_erbjuds')
     ids = tuple(slug+'_'+s for s in TJANSTEFALT if slug+'_'+s in rb.falt)
@@ -102,8 +116,15 @@ def tjanstefakta(rb, profil, t):
     text = 'Antalen avser tjänstens egna kunder; fördelningarna är separata och styrker inget specifikt faktoröverlapp.'
     if len(perioder) > 1:
         text += ' Uppgifterna har olika perioder eller saknar period; ingen procent eller jämförbar fördelning härleds.'
-    return (lokaltext(text, ids),), tabell(t.tjanst+'-lokala-fakta', 'Uppdrag, mandat, insyn och lokal fördelning',
-        ('Uppgift', 'Värde', 'Period', 'Källa och status'), (uppgiftsrad(rb, profil, id) for id in ids))
+    kallnot, rader = _med_kallnot(tuple(uppgiftsrad(rb, profil, id) for id in ids))
+    stycke = lokaltext(text, ids)
+    if kallnot:
+        start = len(text) + len(' Källnot för tabellen: ')
+        # Källtexten är lokal originaltext och återges bokstavligt, som i tabellcellen.
+        stycke = stycke.model_copy(update={'text': text + ' Källnot för tabellen: ' + kallnot,
+                                           'literala_spann': ((start, start + len(kallnot)),)})
+    return (stycke,), tabell(t.tjanst+'-lokala-fakta', 'Uppdrag, mandat, insyn och lokal fördelning',
+        ('Uppgift', 'Värde', 'Period', 'Källa och status'), rader)
 
 
 def kundoverlapp(rb, profil, bedomning):

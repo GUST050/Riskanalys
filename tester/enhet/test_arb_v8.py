@@ -189,13 +189,18 @@ def test_v8_olika_id_med_samma_visningsnamn_slar_inte_ihop_nivaskal(v8fall):
     assert any(s.hot in x.text for x in poster) and any(s2.hot in x.text for x in poster)
 
 
-@pytest.mark.parametrize('ref,regel',[('P-BESK.geografi','B-10'),('P-VERK.antal_rapporter','B-15')])
-def test_v8_lasta_krav_kan_inte_flyttas_bort_fran_tjansten(v8fall,ref,regel):
+@pytest.mark.parametrize('avsnitt,urval,regel',[
+    ('D-ARB.5', lambda s: 'P-BESK.geografi' in s.referenser, 'B-10'),
+    ('D-ARB.5', lambda s: 'P-VERK.antal_rapporter' in s.referenser, 'B-15'),
+    ('D-ARB.6.1', lambda s: s.text.startswith('Geografi i tjänsten:'), 'B-10'),
+    ('D-ARB.6.1', lambda s: s.text.startswith('Egen rapportering och erfarenhet gäller hela byrån'), 'B-15'),
+])
+def test_v8_gemensamt_underlag_och_tjanstens_provning_kan_inte_tas_bort(v8fall,avsnitt,urval,regel):
     from riskanalys.granskning.dokument_v8 import analysfynd_v8
     f,r=v8fall
     d=bygg(f,r)
-    a=d.avsnitt_med_id()['D-ARB.6.1']
-    nya=tuple(s for s in a.stycken if not(s.proveniens=='regelbas' and ref in s.referenser))
+    a=d.avsnitt_med_id()[avsnitt]
+    nya=tuple(s for s in a.stycken if not(s.proveniens=='regelbas' and urval(s)))
     assert len(nya)<len(a.stycken)
     a=a.model_copy(update={'stycken':nya})
     fel=analysfynd_v8(f.regelbas,f.bedomning,f.profil,d.model_copy(update={'avsnitt':tuple(a if x.id==a.id else x for x in d.avsnitt)}),Historik(),r,analys=f.analys)
@@ -217,21 +222,21 @@ def test_v8_geografiskt_aterbygge_och_tamperkontroll_anvander_originalbevarande_
     # Samma riktiga V8-dokument på båda sidor ska inte ge falska B-10.
     assert b10(d) == []
 
-    a = d.avsnitt_med_id()['D-ARB.6.1']
+    a = d.avsnitt_med_id()['D-ARB.5']
     geo = next(s for s in a.stycken if 'P-BESK.geografi' in s.referenser and 'Sårbarheten gäller om' in s.text)
     old_value = f.profil.uppgifter['P-BESK.geografi'].varde
     assert old_value and old_value in geo.text
     wrong_motivation = geo.model_copy(update={'text': geo.text.replace(old_value, old_value + ' Ändrad.', 1)})
     tampered = a.model_copy(update={'stycken': tuple(wrong_motivation if s is geo else s for s in a.stycken)})
     with_motivation_tamper = d.model_copy(update={'avsnitt': tuple(tampered if x.id == a.id else x for x in d.avsnitt)})
-    assert [(x.get('avsnitt'), x.get('regel')) for x in b10(with_motivation_tamper)] == [('D-ARB.6.1', 'B-10')]
+    assert [(x.get('avsnitt'), x.get('regel')) for x in b10(with_motivation_tamper)] == [('D-ARB.5', 'B-10')]
 
     source = f.profil.uppgifter['P-BESK.geografi'].kalla
     assert source and source in geo.text
     wrong_source = geo.model_copy(update={'text': geo.text.replace(source, source + ' ändrad', 1)})
     tampered = a.model_copy(update={'stycken': tuple(wrong_source if s is geo else s for s in a.stycken)})
     with_source_tamper = d.model_copy(update={'avsnitt': tuple(tampered if x.id == a.id else x for x in d.avsnitt)})
-    assert [(x.get('avsnitt'), x.get('regel')) for x in b10(with_source_tamper)] == [('D-ARB.6.1', 'B-10')]
+    assert [(x.get('avsnitt'), x.get('regel')) for x in b10(with_source_tamper)] == [('D-ARB.5', 'B-10')]
 
     period = re.search(r'\d{4}-\d{2}-\d{2}–\d{4}-\d{2}-\d{2}', geo.text)
     assert period, geo.text
@@ -239,7 +244,17 @@ def test_v8_geografiskt_aterbygge_och_tamperkontroll_anvander_originalbevarande_
     wrong_period_post = geo.model_copy(update={'text': wrong_period})
     tampered = a.model_copy(update={'stycken': tuple(wrong_period_post if s is geo else s for s in a.stycken)})
     with_period_tamper = d.model_copy(update={'avsnitt': tuple(tampered if x.id == a.id else x for x in d.avsnitt)})
-    assert [(x.get('avsnitt'), x.get('regel')) for x in b10(with_period_tamper)] == [('D-ARB.6.1', 'B-10')]
+    assert [(x.get('avsnitt'), x.get('regel')) for x in b10(with_period_tamper)] == [('D-ARB.5', 'B-10')]
+
+    # Tjänstens egen geografi kontrolleras i tjänsten.
+    tj = d.avsnitt_med_id()['D-ARB.6.1']
+    egen = next(s for s in tj.stycken if s.text.startswith('Geografi i tjänsten:'))
+    varde = f.profil.uppgifter['P-TJ.red01_geografi'].varde
+    assert varde and varde in egen.text
+    andrad = egen.model_copy(update={'text': egen.text.replace(varde, varde + ' Ändrad.', 1)})
+    tampered = tj.model_copy(update={'stycken': tuple(andrad if s is egen else s for s in tj.stycken)})
+    med_tjanstfel = d.model_copy(update={'avsnitt': tuple(tampered if x.id == tj.id else x for x in d.avsnitt)})
+    assert [(x.get('avsnitt'), x.get('regel')) for x in b10(med_tjanstfel)] == [('D-ARB.6.1', 'B-10')]
 
 
 def test_v8_radata_visar_inte_privata_modellfelakter(v8fall):
@@ -405,15 +420,17 @@ def test_v8_faktiska_profiloperationer_bevarar_text_och_typad_kalla(v8fall, tmp_
     rendered_syfte=renderat_avsnitt(syfte,p)
     assert 'Byrå {roll:OkandRoll}' in rendered_syfte.stycken[0].text
     assert 'Ansvarsmotiv {roll:Ansvarsfunktion}' in rendered_syfte.stycken[2].text
-    geografi=next(a for a in d.avsnitt if a.id.startswith('D-ARB.6') and
-        any('P-BESK.geografi' in s.referenser for s in a.stycken))
-    rendered_geografi=renderat_avsnitt(geografi,p)
-    geo_text=' '.join(s.text for s in rendered_geografi.stycken)
+    # Byråns geografi står i det gemensamma faktaunderlaget, tjänstens geografi i tjänsten.
+    gemensamt=renderat_avsnitt(d.avsnitt_med_id()['D-ARB.5'],p)
+    geo_text=' '.join(s.text for s in gemensamt.stycken if 'P-BESK.geografi' in s.referenser)
     assert 'Byrågeografi {roll:OkandRoll}' in geo_text
     assert 'Geografikälla {roll:FfR}' in geo_text
     if geoid in p.uppgifter:
-        assert 'Tjänstegeografi {roll:FfR}' in geo_text
-        assert 'Tjänstegeografikälla {roll:OkandRoll}' in geo_text
+        tjanst=next(a for a in d.avsnitt if a.id.startswith('D-ARB.6') and
+            any(geoid in s.referenser for s in a.stycken))
+        tj_text=' '.join(s.text for s in renderat_avsnitt(tjanst,p).stycken if geoid in s.referenser)
+        assert 'Tjänstegeografi {roll:FfR}' in tj_text
+        assert 'Tjänstegeografikälla {roll:OkandRoll}' in tj_text
     bevakning=d.avsnitt_med_id()['D-ARB.11']
     rendered_bevakning=renderat_avsnitt(bevakning,p)
     assert 'Lokal relevans {roll:OkandRoll}' in rendered_bevakning.stycken[0].text
@@ -849,3 +866,36 @@ def test_v8_atgardstabellens_kallfalt_omfattar_slutkriterium_och_prioritet(v8fal
     data = analys.model_dump(mode='json')
     assert los_pointer(data, '/tjanster/0/rutinatgarder/0/klart_nar') == 'Alla avvikelser utredda.'
     assert los_pointer(data, '/tjanster/0/rutinatgarder/0/prioritet') == 'hög'
+
+
+def test_v8_faktatabell_samlar_identisk_kalla_i_en_kallnot(v8fall):
+    from riskanalys.dokument.lokaldata_v8 import KALLNOT, tjanstefakta
+    f, _ = v8fall
+    t = next(x for x in f.bedomning.tjanster if x.tjanst == 'T-RED-01')
+    (stycke,), tab = tjanstefakta(f.regelbas, f.profil, t)
+    kallor = [r.celler[3].text for r in tab.rader]
+    assert kallor.count(KALLNOT) >= 2
+    assert 'Källnot för tabellen: Källa: ' in stycke.text
+    (a, b), = stycke.literala_spann
+    assert stycke.text[a:b].startswith('Källa: ') and stycke.text[b:] == ''
+
+
+def test_v8_avvikande_kalla_star_kvar_pa_raden_och_roll_bevaras_i_kallnot(v8fall):
+    from riskanalys.dokument.lokaldata_v8 import KALLNOT, tjanstefakta
+    from riskanalys.dokument.modeller import Avsnitt
+    from riskanalys.dokument.rendering import renderat_avsnitt
+    f, _ = v8fall
+    t = next(x for x in f.bedomning.tjanster if x.tjanst == 'T-RED-01')
+    upp = dict(f.profil.uppgifter)
+    upp['P-TJ.red01_attest'] = upp['P-TJ.red01_attest'].model_copy(update={'kalla': 'Avvikande källa {roll:FfR}'})
+    for id in upp:
+        if id.startswith('P-TJ.red01_') and id != 'P-TJ.red01_attest' and upp[id].kalla:
+            upp[id] = upp[id].model_copy(update={'kalla': 'Gemensam {roll:Ansvarsfunktion}'})
+    profil = f.profil.model_copy(update={'uppgifter': upp})
+    (stycke,), tab = tjanstefakta(f.regelbas, profil, t)
+    rad = next(r for r in tab.rader if 'P-TJ.red01_attest' in r.celler[0].referenser)
+    assert rad.celler[3].text.startswith('Källa: Avvikande källa {roll:FfR}')
+    avsnitt = Avsnitt(id='prov', rubrik='Prov', kalla='lokal', stycken=(stycke,))
+    renderat = renderat_avsnitt(avsnitt, profil).stycken[0].text
+    kallnot = renderat.split('Källnot för tabellen: ', 1)[1]
+    assert kallnot.startswith('Källa: Gemensam {roll:Ansvarsfunktion}')
