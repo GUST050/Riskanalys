@@ -146,7 +146,7 @@ def test_tio_standardfloden_bevarar_kropp_radata_och_alla_fynd(rapportfall):
                      lokal.samverkan, lokal.reduktionsmotivering):
             if text:
                 assert text in huvud
-        motor = next(tab for tab in section.tabeller if tab.id.endswith('-motorscenarier'))
+        motor = next(tab for tab in d.avsnitt_med_id()['D-ARB.B1'].tabeller if tab.id == t.tjanst + '-motorscenarier')
         assert len(motor.rader) == len(t.scenarier)
         kontroll = next(tab for tab in section.tabeller if tab.id.endswith('-kontrollprovning'))
         assert len(kontroll.rader) == (2 if t.tjanst == 'T-RED-01' else 1)

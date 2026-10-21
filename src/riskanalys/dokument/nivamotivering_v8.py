@@ -157,3 +157,27 @@ def ej_godtagna_sankningar(rb, profil, paket, a, t):
             f'Tjänstens redovisade kvarstående PT-nivå {t.kvarstaende} bygger på sänkningar som inte är godtagna. '
             f'Utan dem är nivån minst {hogsta}. [VERIFIERA]'), referenser=[t.tjanst, 'D-ARB.B1'], proveniens='lokal'))
     return tuple(poster)
+
+
+BERAKNINGSUNDERLAG = 'Beräkningsunderlag'
+
+
+def nivarad(t):
+    """Tjänstens sammanfattade nivåer i läsrapporten; beräkningstabellerna står i B1."""
+    pt = t.inneboende.risk if t.inneboende else 'okänd'
+    tf = t.terrorfinansiering.risk if t.terrorfinansiering else 'okänd'
+    return Textstycke(typ='motivering', text=(
+        f'Tjänstens nivå enligt motorn: PT före kontroll {pt}, kvarstående PT {t.kvarstaende or "okänd"}, TF {tf}. '
+        'De avgörande skälen följer nedan. Samtliga motorutfall och tjänstens fullständiga beräkningsspår står i '
+        f'underlagsbilaga B1 under {BERAKNINGSUNDERLAG}.'),
+        referenser=[t.tjanst, *t.regelspar, 'D-ARB.B1'], proveniens='regelbas')
+
+
+def berakningstabeller(rb, t):
+    """Tjänstens fullständiga beräkningsspår för B1, i samma ordning som tidigare i tjänsteavsnittet.
+
+    En tabell utan rader (till exempel faktorregistret utan faktorer och bärande kontroller) utelämnas.
+    """
+    if not t.scenarier:
+        return ()
+    return tuple(x for x in (scenariotabell(rb, t), faktortabell(rb, t), faktorregister(rb, t)) if x is not None)

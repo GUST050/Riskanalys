@@ -74,10 +74,12 @@ def test_typat_faktorregister_bevarar_namn_id_scenarier_och_ursprung(v8fall):
     f,r=v8fall;d=bygg(f,r)
     karta={p['placering']:p for p in bygg_ursprungskarta(d,f.regelbas,f.profil,f.bedomning,r,Historik(),f.analys)}
     inputs={'bedomning':f.bedomning.model_dump(mode='json'),'regelbas':f.regelbas.model_dump(mode='json')}
+    b1=d.avsnitt_med_id()['D-ARB.B1']
     for aid,t in tjanster_med_avsnitt(f.bedomning):
         a=d.avsnitt_med_id()[aid]
-        register=next(x for x in a.tabeller if x.id.endswith('-faktorregister'))
-        faktorer=next(x for x in a.tabeller if x.id.endswith('-motorfaktorer'))
+        # Registret och faktortabellen står i B1 under tjänstens ID.
+        register=next(x for x in b1.tabeller if x.id==t.tjanst+'-faktorregister')
+        faktorer=next(x for x in b1.tabeller if x.id==t.tjanst+'-motorfaktorer')
         poster=faktorregisterposter(f.regelbas,t)
         assert len(register.rader)==len({('s',x) for s in t.scenarier for x in s.sarbarheter}|{('k',x) for s in t.scenarier for x in s.tackande_kontroller})
         for n,post in enumerate(poster):
@@ -86,7 +88,7 @@ def test_typat_faktorregister_bevarar_namn_id_scenarier_och_ursprung(v8fall):
             expected=tuple(i for i,s in enumerate(t.scenarier) if post.id in (s.sarbarheter if post.typ=='sarbarhet' else s.tackande_kontroller))
             assert post.scenarioindex==expected
             for m in range(4):
-                p=karta[f'{aid}/tabeller/{register.id}/rader/{n}/celler/{m}']
+                p=karta[f'D-ARB.B1/tabeller/{register.id}/rader/{n}/celler/{m}']
                 values=[los_pointer(inputs[i['kalla']],i['pointer']) for i in p['ingangar'] if i['kalla'] in inputs]
                 if m==2: assert post.namn in values
         assert all('[' not in c.text for rad in faktorer.rader for c in rad.celler[1:])

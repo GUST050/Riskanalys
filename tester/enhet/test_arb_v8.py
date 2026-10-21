@@ -98,9 +98,14 @@ def test_v8_hittar_inte_pa_kundoverlapp(regelbas_v1, tmp_path, fall):
 def test_v8_nivaskal_star_vid_varje_tjanst(v8fall):
     f, r = v8fall
     d = bygg(f, r)
+    b1 = d.avsnitt_med_id()['D-ARB.B1']
     for id, t in tjanster_med_avsnitt(f.bedomning):
         a = d.avsnitt_med_id()[id]
-        tab = next(tab for tab in a.tabeller if tab.id.endswith('-motorscenarier'))
+        # Fullständiga motorutfall står i B1; tjänsten visar nivåerna och de avgörande skälen.
+        assert not any(tab.id.endswith(('-motorscenarier', '-motorfaktorer', '-faktorregister')) for tab in a.tabeller)
+        assert (f'Tjänstens nivå enligt motorn: PT före kontroll {t.inneboende.risk}, kvarstående PT {t.kvarstaende}, '
+                f'TF {t.terrorfinansiering.risk}.') in texter(a)
+        tab = next(tab for tab in b1.tabeller if tab.id == t.tjanst + '-motorscenarier')
         assert len(tab.rader) == len(t.scenarier)
         assert 'Konsekvens' in tab.kolumner and 'Sårbarhetsnivå' in tab.kolumner
         for s in t.scenarier:
@@ -464,11 +469,11 @@ def test_v8_faktiska_profiloperationer_bevarar_text_och_typad_kalla(v8fall, tmp_
 def test_v8_scenariovag_delar_tabellbredd_utan_att_tappa_faktorer(v8fall):
     f,r=v8fall
     d=bygg(f,r)
+    b1=d.avsnitt_med_id()['D-ARB.B1']
     for id,t in tjanster_med_avsnitt(f.bedomning):
-        a=d.avsnitt_med_id()[id]
-        motor=next(x for x in a.tabeller if x.id.endswith('-motorscenarier'))
+        motor=next(x for x in b1.tabeller if x.id==t.tjanst+'-motorscenarier')
         assert len(motor.kolumner)<=7
-        faktorer=next(x for x in a.tabeller if x.id.endswith('-motorfaktorer'))
+        faktorer=next(x for x in b1.tabeller if x.id==t.tjanst+'-motorfaktorer')
         assert len(faktorer.rader)<=len(t.scenarier)
         for s in t.scenarier:
             rad=next(rad for rad in faktorer.rader if f'{s.hot}, {s.dimension.upper()}' in rad.celler[0].text)
@@ -900,6 +905,7 @@ def test_v8_avvikande_kalla_star_kvar_pa_raden_och_roll_bevaras_i_kallnot(v8fall
     kallnot = renderat.split('Källnot för tabellen: ', 1)[1]
     assert kallnot.startswith('Källa: Gemensam {roll:Ansvarsfunktion}')
 
+
 def test_v8_kallnot_ar_deterministisk_vid_lika_vanliga_kallor():
     """Vid lika antal väljs första förekomsten i tabellen, oberoende av processens hashfrö."""
     import os, subprocess, sys
@@ -920,3 +926,26 @@ print(_med_kallnot(rader)[0])
                                   check=True).stdout.strip())
     assert utfall == {'Källa: A.'}
 
+
+def test_v8_hela_rapporten_byggs_med_tomt_faktorregister(regelbas_v1):
+    """Utan riskfaktorer och utan bedömd kontrolleffekt finns inget faktorregister att flytta till B1."""
+    from types import SimpleNamespace
+    from riskanalys.bedomning.motor import bedom
+    from riskanalys.regelverk.urval import valj
+    from tester.fixturer.arb_kedja import andrat
+    from tester.fixturer.faktorer import faktorprofil
+    from riskanalys.dokument.arb_v8 import bygg_arb_v8
+    rb = regelbas_v1
+    profil = faktorprofil(rb, (), med_bankdata=True)
+    for id in [id for id in profil.uppgifter if id.startswith('P-KONTROLL.') and id.endswith('.effekt')]:
+        profil = andrat(profil, id, varde='ej_bedömd')
+    b = bedom(rb, valj(rb, profil.byra.regelpaket, profil.byra.datum, profil.byra.lan), profil)
+    tom = [t for t in b.tjanster if t.erbjuds and t.scenarier
+           and not any(s.sarbarheter or s.tackande_kontroller for s in t.scenarier)]
+    assert tom, 'Provet kräver minst en tjänst utan faktorer och bärande kontroller.'
+    f = SimpleNamespace(regelbas=rb, profil=profil, bedomning=b)
+    d = bygg_arb_v8(rb, profil, b, skriv(f), Historik(), analys=None)
+    b1 = d.avsnitt_med_id()['D-ARB.B1']
+    for t in tom:
+        assert any(tab.id == t.tjanst + '-motorscenarier' for tab in b1.tabeller)
+        assert not any(tab.id == t.tjanst + '-faktorregister' for tab in b1.tabeller)

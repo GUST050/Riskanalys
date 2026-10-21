@@ -8,7 +8,7 @@ from riskanalys.dokument.gemensamt_v8 import tjanstens_erfarenhetsstycke, tjanst
 from riskanalys.dokument.lokaldata_v8 import tjanstefakta
 from riskanalys.dokument.lokalblock_v8 import lokala_block
 from riskanalys.dokument.modeller import Avsnitt, Underrubrik
-from riskanalys.dokument.nivamotivering_v8 import ej_godtagna_sankningar, nivaskal, scenariotabell, faktortabell, faktorregister
+from riskanalys.dokument.nivamotivering_v8 import ej_godtagna_sankningar, nivarad, nivaskal
 from riskanalys.dokument.skrivversion import V8
 from riskanalys.dokument.tabeller import rad, tabell
 from riskanalys.dokument.tjanstavsnitt import _ai_stycken
@@ -98,6 +98,8 @@ def bygg_tjanstavsnitt_v8(rb, profil, t, resultat, avsnitt_id, *, gransindex, an
         tabeller[4].append(kontrolltabell(a,paket,rb,index))
         tabeller[5].append(bygg_rutinatgarder(a,index))
     niva = nivaskal(rb,t,a)
+    if t.scenarier:
+        delar[3].append(nivarad(t))
     if a is not None:
         # Byråns PT- och TF-bedömning är nivåskälets två sista stycken; positionen registreras här.
         bind(niva[-2],('pt_motivering','reduktionsmotivering','reduktionsprovning'))
@@ -106,10 +108,9 @@ def bygg_tjanstavsnitt_v8(rb, profil, t, resultat, avsnitt_id, *, gransindex, an
     if paket and a is not None:
         delar[3].extend(bind(s,('kontroller','scenarier','scenariokopplingar'))
                         for s in ej_godtagna_sankningar(rb,profil,paket,a,t))
-    tabeller[3].append(scenariotabell(rb,t) if t.scenarier else kategorioversikt(rb,profil,t,a,gransindex=gransindex,position=0))
-    if t.scenarier:
-        tabeller[3].append(faktortabell(rb,t))
-        tabeller[3].append(faktorregister(rb,t))
+    # Fullständiga motorutfall, faktorer och register står i B1 (berakningstabeller); här står nivå och avgörande skäl.
+    if not t.scenarier:
+        tabeller[3].append(kategorioversikt(rb,profil,t,a,gransindex=gransindex,position=0))
     # Varje fråga får synlig osäkerhet om dess uppgifter saknas, aldrig ett positivt standardpåstående.
     reserv = ('Lokal uppdragsanalys saknas.', 'Lokal modusanalys saknas.', 'Lokal sårbarhetsprövning saknas.',
               'Lokal nivåmotivering saknas.', 'Faktisk kontrollprövning saknas.', 'Åtgärdsprövning saknas.')

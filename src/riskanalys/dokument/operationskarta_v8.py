@@ -36,7 +36,7 @@ def operationskarta(rb, profil, bedomning, resultat, analys):
                     kallor+= (('regelbas',f'/{katalog}/{post.id}/'+('id' if m==1 else 'namn')),)
                 if m==3:
                     kallor+=tuple(('bedomning',f'/tjanster/{bi}/scenarier/{i}/{f}') for i in post.scenarioindex for f in ('hot','dimension'))
-                karta[f'{avsnitt}/tabeller/{t.tjanst}-faktorregister/rader/{n}/celler/{m}']=kallor
+                karta[f'D-ARB.B1/tabeller/{t.tjanst}-faktorregister/rader/{n}/celler/{m}']=kallor
         if a is None:
             continue
         # Urvalet läser alltid beslutens tjänst. Hashunderlaget läses bara om ett kandidatbeslut finns.
@@ -78,6 +78,11 @@ def operationskarta(rb, profil, bedomning, resultat, analys):
                 lagg(f'{avsnitt}/tabeller/{a.tjanst}-scenarier/rader/{n}/celler/{m}',*pointers)
         bi=next(i for i,x in enumerate(bedomning.tjanster) if x.tjanst==t.tjanst)
         start=section.underrubriker[3].fore_stycke
+        if t.scenarier:
+            # Nivåraden står först i nivådelen och återger tjänstens sparade nivåer.
+            karta[f'{avsnitt}/stycken/{start}']=tuple(('bedomning',f'/tjanster/{bi}/{f}')
+                for f in ('inneboende','kvarstaende','terrorfinansiering','regelspar'))
+            start+=1
         for n,grupp in enumerate(g for g in berakningsgrupper(t) if g[0].avgorande or avgor_efter(t,g[0])):
             members=[i for i,x in enumerate(t.scenarier) if x in grupp]
             karta[f'{avsnitt}/stycken/{start+n}']=tuple(('bedomning',f'/tjanster/{bi}/scenarier/{i}/{f}')

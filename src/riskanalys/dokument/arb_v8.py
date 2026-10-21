@@ -54,6 +54,20 @@ def atgardsoversikt(rb,bedomning,analys):
     ),(tabell('v8-atgardsoversikt','Tjänsternas åtgärder',('Tjänst','Åtgärds-ID','Status','Ansvar','Uppföljning','Fulltext'),rader),))
 
 
+def med_berakningstabeller(rb,bedomning,bilaga):
+    """Tjänsternas motortabeller placeras i B1 direkt efter respektive tjänsts utfallstabell."""
+    from riskanalys.dokument.nivamotivering_v8 import BERAKNINGSUNDERLAG, berakningstabeller
+    start=next((u.fore_stycke for u in bilaga.underrubriker if u.rubrik==BERAKNINGSUNDERLAG),len(bilaga.stycken))
+    flyttas={t.tjanst:berakningstabeller(rb,t) for _,t in tjanster_med_avsnitt(bedomning)}
+    tabeller=[]
+    for tab in bilaga.tabeller:
+        tabeller.append(tab)
+        tj=tab.id.removesuffix('-utfall') if tab.id.endswith('-utfall') else None
+        tabeller.extend(x.model_copy(update={'fore_stycke':tab.fore_stycke}) for x in flyttas.pop(tj,()))
+    tabeller.extend(x.model_copy(update={'fore_stycke':start}) for rest in flyttas.values() for x in rest)
+    return bilaga.model_copy(update={'tabeller':tuple(tabeller)})
+
+
 def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,modellrapport=None) -> Dokument:
     from riskanalys.dokument.arb import _syfte,_metod
     from riskanalys.dokument.uppfoljning import bevakningsavsnitt,kort_omfattningsstycke,uppfoljningsstycken
@@ -94,6 +108,7 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
         metodposter=metodposter,gransindex=index,reservkatalog=reservkatalog_i_b1(rb,profil,bedomning,resultat,gransindex=index),
         bevara_original=True)
     bilaga=bilaga.model_copy(update={'formatversion':V8,'leveransdel':'underlagsbilaga','visningsnummer':'B1'})
+    bilaga=med_berakningstabeller(rb,bedomning,bilaga)
     uppfoljning=utvarderingsavsnitt_v6(historik)
     uppfoljning=uppfoljning.model_copy(update={'stycken':(*uppfoljning.stycken,*uppfoljningsstycken(rb,profil,gransindex=index,formatversion=V8))})
     poster=(oversikt,syfte,metod,tjanster,gemensamt,lokal,kontroller,*risk,atgardsoversikt(rb,bedomning,analys),uppfoljning,

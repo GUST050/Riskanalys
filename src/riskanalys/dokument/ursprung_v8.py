@@ -77,8 +77,9 @@ def bygg_ursprungskarta(dokument,rb,profil,bedomning,resultat,historik,analys):
                     for m in range(len(r.celler)):
                         operationer[f'D-ARB.B1/tabeller/{tab.id}/rader/{n}/celler/{m}']=(('analys',pointer),)
     karta=[]
-    def lagg(placering,text,*,avsnitt=None,post=None,ingangar=(),statisk=False,motor=False):
+    def lagg(placering,text,*,avsnitt=None,post=None,ingangar=(),statisk=False,motor=False,tjanst=None):
         refs=tuple(getattr(post,'referenser',()))
+        tjanst_id=tjanst or (avsnitt_tj.get(avsnitt.id) if avsnitt else None)
         kallor=[*ingangar,*operationer.get(placering,())]
         if not statisk:
             for ref in refs:
@@ -94,8 +95,8 @@ def bygg_ursprungskarta(dokument,rb,profil,bedomning,resultat,historik,analys):
         if post is not None and getattr(post,'proveniens',None)=='ai':
             slag='ai'
             # AI-styckets index kommer från samma byggoperation, inte textsökning.
-        if not statisk and motor and avsnitt and avsnitt.id in avsnitt_tj:
-            kallor.append(('bedomning',f'/tjanster/{tjindex[avsnitt_tj[avsnitt.id]]}'))
+        if not statisk and motor and tjanst_id in tjindex:
+            kallor.append(('bedomning',f'/tjanster/{tjindex[tjanst_id]}'))
         if not statisk and avsnitt:
             if avsnitt.id=='D-ARB.10':
                 kallor.append(('historik',''))
@@ -131,8 +132,11 @@ def bygg_ursprungskarta(dokument,rb,profil,bedomning,resultat,historik,analys):
                 for m,c in enumerate(r.celler):
                     ing=()
                     motor=tab.id.endswith(('-motorscenarier','-motorfaktorer','-faktorregister','-utfall'))
+                    # Motortabellerna står i B1; tjänsten anges av tabellens ID.
+                    tabelltjanst=next((tab.id.removesuffix(x) for x in ('-motorscenarier','-motorfaktorer',
+                        '-faktorregister','-utfall') if tab.id.endswith(x)),None)
                     if tab.id.endswith(('-motorscenarier','-motorfaktorer')):
-                        ti=tjindex[avsnitt_tj[a.id]]
+                        ti=tjindex[tabelltjanst]
                         falt=(('hot','hotniva','sarbarhetsniva','sannolikhet','konsekvens','risk','kvarstaende')
                               if tab.id.endswith('-motorscenarier') else ('hot','sarbarheter','tackande_kontroller'))[m]
                         index = (n,)
@@ -142,5 +146,5 @@ def bygg_ursprungskarta(dokument,rb,profil,bedomning,resultat,historik,analys):
                             grupp = faktorgrupper(t)[n]
                             index = tuple(i for i, scenario in enumerate(t.scenarier) if scenario in grupp)
                         ing=tuple(('bedomning',f'/tjanster/{ti}/scenarier/{i}/{falt}') for i in index)
-                    lagg(bas+f'/rader/{n}/celler/{m}',c.text,avsnitt=a,post=c,ingangar=ing,motor=motor)
+                    lagg(bas+f'/rader/{n}/celler/{m}',c.text,avsnitt=a,post=c,ingangar=ing,motor=motor,tjanst=tabelltjanst)
     return tuple(karta)
