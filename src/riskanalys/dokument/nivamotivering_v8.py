@@ -120,3 +120,40 @@ def faktorregister(rb,t):
         rader.append(Tabellrad(celler=tuple(Tabellcell(text=v,referenser=post.referenser,proveniens='regelbas') for v in varden)))
     return Dokumenttabell(id=t.tjanst+'-faktorregister',rubrik='Tjänstens faktor och kontrollregister',
         kolumner=('Typ','ID','Fullständigt namn','Scenarier'),rader=tuple(rader),fore_stycke=0)
+
+
+_ORSAKER = {
+    'saknas': lambda k: 'byråns prövning anger att den bärande kontrollen inte täcker scenariot',
+    'oprovat': lambda k: 'hotet saknar en relevant lokal scenarioprövning',
+    'motstridig': lambda k: f'byråns prövningar av {k} är motstridiga',
+    'obelagd': lambda k: f'den tillräckliga täckningen av {k} saknar beskriven räckvidd eller aktuellt genomförandebelägg',
+    'delvis': lambda k: f'byråns prövning visar bara delvis täckning av {k}, vilket inte räcker för ett helt kontrollavdrag',
+    'stod': lambda k: f'det saknas en positiv lokal prövning av den bärande kontrollen {k} i ett relevant scenario',
+}
+
+
+def ej_godtagna_sankningar(rb, profil, paket, a, t):
+    """Läsbar förklaring per motorsänkning som den lokala prövningen inte godtar.
+
+    Det frysta motorresultatet skrivs inte om; texten anger att sänkningen inte gäller.
+    """
+    from riskanalys.analys.provning import ej_godtagna_sankningar as skal
+    from riskanalys.bedomning.motor import RISKNIVAER
+    if not t.scenarier:
+        return ()
+    per_scenario = {}
+    for b in skal(rb, profil, paket, a, t):
+        per_scenario.setdefault(id(b.scenario), (b.scenario, []))[1].append(_ORSAKER[b.orsak](', '.join(b.kontroller)))
+    poster = []
+    for s, orsaker in per_scenario.values():
+        poster.append(Textstycke(typ='motivering', text=(
+            f'Motorns sänkning av {hotnamn(rb, s)} [{s.hot}] från {s.risk} till {s.kvarstaende} är inte godtagen '
+            f'av den lokala prövningen: {"; ".join(dict.fromkeys(orsaker))}. Till dess prövningen kompletterats '
+            f'eller metodkonflikten avgjorts gäller scenariots inneboende nivå {s.risk}, och analysen kan inte '
+            'godkännas. [VERIFIERA]'), referenser=[t.tjanst, *scenarioreferenser(t, s), 'D-ARB.B1'], proveniens='lokal'))
+    hogsta = max((s.risk for s, _ in per_scenario.values()), key=RISKNIVAER.index, default=None)
+    if hogsta and t.kvarstaende and RISKNIVAER.index(t.kvarstaende) < RISKNIVAER.index(hogsta):
+        poster.append(Textstycke(typ='motivering', text=(
+            f'Tjänstens redovisade kvarstående PT-nivå {t.kvarstaende} bygger på sänkningar som inte är godtagna. '
+            f'Utan dem är nivån minst {hogsta}. [VERIFIERA]'), referenser=[t.tjanst, 'D-ARB.B1'], proveniens='lokal'))
+    return tuple(poster)

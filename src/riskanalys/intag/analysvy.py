@@ -26,6 +26,7 @@ NAMN = {
     'tackning': 'Kontrollens bedömda scenariotäckning', 'rutin_id': 'Rutinens ID',
     'rutin_version': 'Rutinens version', 'atgard': 'Konkret åtgärd',
     'utlosare_eller_frekvens': 'Utlösare eller frekvens', 'uppfoljning': 'Datum för uppföljning',
+    'klart_nar': 'När är åtgärden klar? (slutkriterium)', 'prioritet': 'Beslutad prioritet',
     'reduktionsprovning': 'Prövning av den faktiskt beräknade reduktionen',
     'sektorsjamforelse': 'Jämförelse med sektorsbilden', 'beslutsstatus': 'Förslag eller faktiskt beslut',
     'modellansvarig': 'Ansvarig för byråns modellriskhantering', 'utvarderad': 'Datum för byråns utvärdering',
@@ -71,6 +72,7 @@ VALTEXT = {
     'oppet': 'Öppet', 'atgardat': 'Åtgärdat', 'accepterad_kvarstaende_risk': 'Accepterad kvarstående risk',
     'vasentligt': 'Väsentligt', 'ovrigt': 'Övrigt', 'atgardat': 'Åtgärdat',
     'ej_reduktion': 'Motorn har inte sänkt nivån', 'motiverad': 'Reduktionen har belagt stöd',
+    'ej_beslutad': 'Ej beslutad',
 }
 
 

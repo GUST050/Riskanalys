@@ -1,7 +1,9 @@
 """Rena innehållsprövningar; kontrollerar inte levande filer eller modellkod."""
 import json
 import re
+from dataclasses import dataclass
 from datetime import date
+from typing import Literal
 from riskanalys.fel import RiskanalysFel
 from riskanalys.lagring.kontrollsumma import for_text
 from riskanalys.analys.modeller import Analysbeslut, Analyspaket
@@ -118,7 +120,10 @@ def gallande_beslut(paket: Analyspaket, tjanst: str) -> Analysbeslut | None:
     return None
 
 
+# Positiv observation kräver räckvidd och genomförandebelägg. Bara tillräcklig täckning bär
+# ett helt kontrollavdrag; delvis täckning ensam räcker inte före ett metodbeslut (D8).
 POSITIV_TACKNING = ('bedomd_tillracklig','delvis')
+TILLRACKLIGT_STOD = ('bedomd_tillracklig',)
 
 
 def _sankt(fran, till) -> bool:
@@ -147,29 +152,109 @@ def _rackviddshot(rb, tjanst, c) -> frozenset:
                      and rack[id].beskrivningsstatus=='beskriven' for h in rack[id].hot)
 
 
-def scenarioreduktionsbrister(rb, a, t, scenarier, relevanta) -> tuple[str,...]:
+@dataclass(frozen=True)
+class Sankningsbrist:
+    """Ett skäl till att den lokala prövningen inte godtar motorns sänkning av ett scenario."""
+    scenario: object
+    orsak: Literal['saknas','oprovat','motstridig','obelagd','delvis','stod']
+    kontroller: tuple[str,...]
+
+
+def sankningsbrister(rb, profil, a, t, scenarier, relevanta, belagg) -> tuple[Sankningsbrist,...]:
     """Spärren per sänkt motorscenario: byrån kan stoppa en sänkning, aldrig skapa en.
 
     `scenarier` är tjänstens effektiva lokala scenarier (lokala och aktuellt bekräftade
-    samma-kopplingar); `relevanta` de av dem som byrån bedömt relevanta.
+    samma-kopplingar); `relevanta` de av dem som byrån bedömt relevanta; `belagg` paketets
+    belägg per ID. En tillräcklig observation bär sänkningen bara om den uppfyller samma
+    beläggskrav som granskningen ställer på en positiv kontrollobservation.
     """
-    fel=[]
+    brister=[]
     for s in sankta_scenarier(t):
+        def brist(orsak,kontroller=s.tackande_kontroller):
+            brister.append(Sankningsbrist(s,orsak,tuple(kontroller)))
         med_hot={id for id,x in scenarier.items() if s.hot in x.hot}
         provade=[c for c in a.kontroller if c.scenario in med_hot and c.kontroll in s.tackande_kontroller]
         if any(c.tackning=='saknas' for c in provade):
-            fel.append(f'{s.hot}: kontrollen täcker enligt byråns prövning inte scenariot; '
-                       'rätta kontrolluppgifterna eller registrera metodkonflikt.')
+            brist('saknas')
         if not med_hot&relevanta:
-            fel.append(f'{s.hot}: motorn sänker scenariot men hotet saknar relevant lokal scenarioprövning; '
-                       'pröva hotet i ett relevant scenario eller registrera metodkonflikt.')
+            brist('oprovat')
             continue
-        stod=any(c.scenario in relevanta and c.tackning in POSITIV_TACKNING
-                 and s.hot in _rackviddshot(rb,a.tjanst,c) for c in provade)
-        if not stod:
-            fel.append(f'{s.hot}: motorns sänkning saknar positiv lokal prövning av en bärande kontroll '
-                       f'({", ".join(s.tackande_kontroller)}) i ett relevant scenario med hotet; '
-                       'pröva kontrollen för scenariot eller registrera metodkonflikt.')
+        stodjande=[c for c in provade if c.scenario in relevanta and s.hot in _rackviddshot(rb,a.tjanst,c)]
+        angivna={c.kontroll for c in stodjande if c.tackning in TILLRACKLIGT_STOD}
+        oklara={c.kontroll for c in stodjande if c.tackning in ('delvis','okand')}
+        if angivna&oklara:
+            # Ett tillräckligt utfall i ett scenario får inte dölja ett svagare för samma kontroll och hot.
+            brist('motstridig',sorted(angivna&oklara))
+        belagda=[c for c in stodjande if c.tackning in TILLRACKLIGT_STOD
+                 and not positiva_observationsbrister(rb,profil,a,c,scenarier,belagg)]
+        if not belagda:
+            brist('obelagd' if angivna else 'delvis' if any(c.tackning=='delvis' for c in stodjande) else 'stod')
+    return tuple(brister)
+
+
+def scenarioreduktionsbrister(rb, profil, a, t, scenarier, relevanta, belagg) -> tuple[str,...]:
+    texter={
+        'saknas':lambda b:f'{b.scenario.hot}: kontrollen täcker enligt byråns prövning inte scenariot; '
+            'rätta kontrolluppgifterna eller registrera metodkonflikt.',
+        'oprovat':lambda b:f'{b.scenario.hot}: motorn sänker scenariot men hotet saknar relevant lokal scenarioprövning; '
+            'pröva hotet i ett relevant scenario eller registrera metodkonflikt.',
+        'motstridig':lambda b:f'{b.scenario.hot}: byråns prövningar av bärande kontroll ({", ".join(b.kontroller)}) '
+            'är motstridiga; ange en samlad bedömning av täckningen eller registrera metodkonflikt.',
+        'obelagd':lambda b:f'{b.scenario.hot}: den tillräckliga täckningen av bärande kontroll ({", ".join(b.kontroller)}) '
+            'saknar beskriven räckvidd eller aktuellt genomförandebelägg och bär därför inte sänkningen. '
+            'Komplettera beläggen eller registrera metodkonflikt.',
+        'delvis':lambda b:f'{b.scenario.hot}: byråns prövning visar bara delvis täckning av bärande kontroll '
+            f'({", ".join(b.kontroller)}); delvis täckning räcker inte som stöd för ett helt '
+            'kontrollavdrag. Komplettera prövningen eller registrera metodkonflikt.',
+        'stod':lambda b:f'{b.scenario.hot}: motorns sänkning saknar positiv lokal prövning av en bärande kontroll '
+            f'({", ".join(b.kontroller)}) i ett relevant scenario med hotet; '
+            'pröva kontrollen för scenariot eller registrera metodkonflikt.',
+    }
+    return tuple(texter[b.orsak](b) for b in sankningsbrister(rb,profil,a,t,scenarier,relevanta,belagg))
+
+
+def effektiva_scenarier(paket, a) -> tuple[dict,frozenset]:
+    """Tjänstens lokala scenarier och aktuellt bekräftade samma-kopplingar, samt de relevanta.
+
+    Samma regel som `_tjanstbrister` använder; ogiltiga kopplingar prövas där som fel.
+    """
+    gem={s.id:s for s in paket.gemensamma_scenarier}
+    scenarier={s.id:s for s in a.scenarier}
+    for kop in a.scenariokopplingar:
+        s=gem.get(kop.scenario)
+        if s is not None and kop.tillampning=='samma' and kop.bekraftad and kop.scenariosumma==scenariosumma(s):
+            scenarier[s.id]=s
+    return scenarier,frozenset(id for id,s in scenarier.items() if s.relevans=='relevant')
+
+
+def ej_godtagna_sankningar(rb, profil, paket, a, t) -> tuple[Sankningsbrist,...]:
+    """Skälen per sänkt motorscenario som den lokala prövningen inte godtar, för rapportens förklaring."""
+    scenarier,relevanta=effektiva_scenarier(paket,a)
+    return sankningsbrister(rb,profil,a,t,scenarier,relevanta,{b.id:b for b in paket.belagg})
+
+
+def positiva_observationsbrister(rb, profil, a, c, scenarier, belagg) -> tuple[str,...]:
+    """Beläggskraven för en positiv kontrollobservation (tillräcklig eller delvis täckning)."""
+    from riskanalys.bedomning.erfarenheter import belagd_uppgift
+    fel=[]
+    kontroll=rb.kontroller.get(c.kontroll)
+    rack={r.id:r for r in kontroll.rackvidd} if kontroll else {}
+    s=scenarier.get(c.scenario)
+    relevanta_r=[rack[id] for id in c.rackvidd if id in rack and rack[id].tjanst==a.tjanst
+                and getattr(rack[id],'beskrivningsstatus',None)=='beskriven'
+                and s and bool(set(rack[id].hot)&set(s.hot))]
+    if not relevanta_r:
+        fel.append(f'{c.scenario}: positiv täckning saknar beskriven relevant källräckvidd.')
+    # A catalog source or ordinary profile total cannot prove execution of this control.
+    f=kontroll.genomforande_falt if kontroll else None
+    u=profil.uppgifter.get(f)
+    faktiskt_belagt=bool(f and belagd_uppgift(rb,profil,f) and u and u.varde=='belagt')
+    if not faktiskt_belagt:
+        fel.append(f'{c.scenario}: positivt genomförande motsäger profilens värde eller saknar aktuellt belagt genomförande; rätta intaget.')
+    genomfort=bool(faktiskt_belagt and any(id in belagg and (belagg[id].dokument or
+        f in belagg[id].profilfalt) for id in c.belagg))
+    if not genomfort:
+        fel.append(f'{c.scenario}: aktuellt genomförandebelägg för kontrollen saknas.')
     return tuple(fel)
 
 
@@ -307,10 +392,10 @@ def _tjanstbrister(rb,profil,t,a,paket,gem,belagg,krav,sektorsavvikelse):
         text(a.reduktionsmotivering,'Reduktionsmotivering')
         if t.scenarier:
             # Bara sänkta motorscenarier behöver reduktionsstöd; övriga brister prövas som kontroll/gap.
-            for brist in scenarioreduktionsbrister(rb,a,t,scenarier,relevanta):k(False,brist)
+            for brist in scenarioreduktionsbrister(rb,profil,a,t,scenarier,relevanta,belagg):k(False,brist)
         else:
             for id in relevanta:
-                k(any(c.scenario==id and c.tackning in POSITIV_TACKNING for c in a.kontroller),
+                k(any(c.scenario==id and c.tackning in TILLRACKLIGT_STOD for c in a.kontroller),
                   f'{id}: faktisk reduktion saknar belagd scenariotäckning; registrera metodkonflikt.')
     for g in a.gap:
         text(g.beskrivning,g.id);text(g.motivering,g.id);refs(g.belagg,g.id,kravs=g.status=='atgardat')
@@ -373,20 +458,7 @@ def _kontroller_rutiner(a,rb,profil,katalog,scenarier,relevanta,belagg,text,refs
         rack={r.id:r for r in kontroll.rackvidd} if kontroll else {}
         for id in c.rackvidd:k(id in rack,f'Okänd räckvidd {id} för kontrollen.')
         if c.tackning in ('bedomd_tillracklig','delvis'):
-            s=scenarier.get(c.scenario)
-            relevanta_r=[rack[id] for id in c.rackvidd if id in rack and rack[id].tjanst==a.tjanst
-                        and getattr(rack[id],'beskrivningsstatus',None)=='beskriven'
-                        and s and bool(set(rack[id].hot)&set(s.hot))]
-            k(bool(relevanta_r),f'{c.scenario}: positiv täckning saknar beskriven relevant källräckvidd.')
-            # A catalog source or ordinary profile total cannot prove execution of this control.
-            from riskanalys.bedomning.erfarenheter import belagd_uppgift
-            f=kontroll.genomforande_falt if kontroll else None
-            u=profil.uppgifter.get(f)
-            faktiskt_belagt=bool(f and belagd_uppgift(rb,profil,f) and u and u.varde=='belagt')
-            k(faktiskt_belagt,f'{c.scenario}: positivt genomförande motsäger profilens värde eller saknar aktuellt belagt genomförande; rätta intaget.')
-            genomfort=bool(faktiskt_belagt and any(id in belagg and (belagg[id].dokument or
-                f in belagg[id].profilfalt) for id in c.belagg))
-            k(genomfort,f'{c.scenario}: aktuellt genomförandebelägg för kontrollen saknas.')
+            for brist in positiva_observationsbrister(rb,profil,a,c,scenarier,belagg):k(False,brist)
         if c.tackning=='saknas':
             k(any(g.typ=='kontrollbrist' for g in a.gap),f'{c.scenario}: saknad kontroll kräver dokumenterad kontrollbrist.')
     k(bool(a.rutinatgarder),'Slutsatsen kräver konkret rutin/åtgärd eller motiverad oförändrad rutin.')
@@ -398,6 +470,10 @@ def _kontroller_rutiner(a,rb,profil,katalog,scenarier,relevanta,belagg,text,refs
         if all(rutin):
             b=belagg.get(r.rutinbelagg)
             k(bool(b and b.dokument and b.kontrollsumma),f'{r.id}: rutinen kräver privat dokumentkopia.')
-        if r.status in ('beslutad','genomford'):k(bool(r.ansvar and r.uppfoljning),f'{r.id}: beslut kräver ansvar och uppföljning.')
+        if r.status in ('beslutad','genomford'):
+            k(bool(r.ansvar and r.uppfoljning),f'{r.id}: beslut kräver ansvar och uppföljning.')
+            # Äldre poster kompletteras inför nytt beslut; status är aldrig belägg för riskreduktion.
+            k(_saktext(r.klart_nar),f'{r.id}: beslutad åtgärd kräver ett slutkriterium (klart när).')
+            k(r.prioritet!='ej_beslutad',f'{r.id}: beslutad åtgärd kräver en beslutad prioritet.')
         refs(r.belagg,r.id,kravs=r.status=='genomford')
         if r.status=='genomford':k(all(rutin),f'{r.id}: genomförd åtgärd kräver aktuell rutin.')

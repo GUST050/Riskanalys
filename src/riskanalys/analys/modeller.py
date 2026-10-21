@@ -128,6 +128,18 @@ class Rutinatgard(Fryst):
     utlosare_eller_frekvens: str = ''
     uppfoljning: date | None = None
     belagg: tuple[str, ...] = ()
+    klart_nar: str = ''
+    prioritet: Literal['ej_beslutad','hög','medel','låg'] = 'ej_beslutad'
+
+    @model_serializer(mode='wrap')
+    def _historiskt_format(self, handler):
+        """Ej ifyllda nya fält utelämnas, så att äldre poster behåller sina bytes och kontrollsummor."""
+        data = handler(self)
+        if self.klart_nar == '':
+            data.pop('klart_nar', None)
+        if self.prioritet == 'ej_beslutad':
+            data.pop('prioritet', None)
+        return data
 
 
 class Analysgap(Fryst):

@@ -4,7 +4,8 @@ from riskanalys.analys.modeller import Analyspaket, Rutinatgard
 
 
 def _nyckel(post):
-    return post.atgard, post.rutin_id, post.rutin_version
+    # Olika slutkriterium eller prioritet är olika åtgärder, även med samma text.
+    return post.atgard, post.rutin_id, post.rutin_version, post.klart_nar, post.prioritet
 
 
 @dataclass(frozen=True)

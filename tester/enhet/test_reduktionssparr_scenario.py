@@ -27,6 +27,23 @@ def stod_text(hot, kontroller):
             'eller registrera metodkonflikt.')
 
 
+def delvis_text(hot, kontroller=(BAR,)):
+    return (f'{TJ}: {hot}: byråns prövning visar bara delvis täckning av bärande kontroll '
+            f'({", ".join(kontroller)}); delvis täckning räcker inte som stöd för ett helt kontrollavdrag. '
+            'Komplettera prövningen eller registrera metodkonflikt.')
+
+
+def konflikt_text(hot, kontroller=(BAR,)):
+    return (f'{TJ}: {hot}: byråns prövningar av bärande kontroll ({", ".join(kontroller)}) är motstridiga; '
+            'ange en samlad bedömning av täckningen eller registrera metodkonflikt.')
+
+
+def obelagd_text(hot, kontroller=(BAR,)):
+    return (f'{TJ}: {hot}: den tillräckliga täckningen av bärande kontroll ({", ".join(kontroller)}) saknar '
+            'beskriven räckvidd eller aktuellt genomförandebelägg och bär därför inte sänkningen. '
+            'Komplettera beläggen eller registrera metodkonflikt.')
+
+
 def oprovat_text(hot):
     return (f'{TJ}: {hot}: motorn sänker scenariot men hotet saknar relevant lokal scenarioprövning; '
             'pröva hotet i ett relevant scenario eller registrera metodkonflikt.')
@@ -60,7 +77,7 @@ def _motor(fall, sankta, *, utan_scenarier=False):
     return fall.bedomning.model_copy(update={'tjanster': tuple(ny if x.tjanst == TJ else x for x in fall.bedomning.tjanster)})
 
 
-def _positiv(scenario, tackning='delvis', kontroll=BAR):
+def _positiv(scenario, tackning='bedomd_tillracklig', kontroll=BAR):
     return m.Kontrollprovning(scenario=scenario, kontroll=kontroll, rackvidd=(RACKVIDD,),
         tillampning='Ansvarig konsult stämmer av kontoutdrag mot bokfört underlag och utreder differenser.',
         utfall='Stickprovet visar dokumenterade avstämningar; dolda led omfattas inte.',
@@ -123,9 +140,35 @@ def test_aldre_bedomning_utan_scenarier_foljer_tjanstenivan(fall):
 
 # --- spärren i block 12 -----------------------------------------------------------------------
 
-def test_delvis_positiv_bararande_kontroll_ger_inget_fynd(fall):
-    # Andra scenarier har kontroll som saknas och en accepterad kontrollbrist; de är inte sänkta.
-    assert _brister(fall, _motor(fall, SANKTA), _analys(fall, ersatt=_stod(fall))) == ()
+def test_delvis_ensam_racker_inte_for_helt_avdrag(fall):
+    stod = {k: _positiv(k, 'delvis') for k in _stod(fall)}
+    assert _brister(fall, _motor(fall, SANKTA), _analys(fall, ersatt=stod)) == (
+        delvis_text('H-03'), delvis_text('H-MOD-01'))
+
+
+def test_delvis_ar_fortsatt_giltig_observation_utan_sankning(fall):
+    # En delvis observation i ett scenario som motorn inte sänker kräver inget reduktionsstöd.
+    stod = {**_stod(fall), 'gem:H-01': _positiv('gem:H-01', 'delvis')}
+    fynd = _brister(fall, _motor(fall, SANKTA), _analys(fall, ersatt=stod))
+    assert not any('delvis täckning räcker inte' in x for x in fynd)
+
+
+def test_motstridiga_observationer_av_bararande_kontroll_blockerar(fall):
+    stod = _stod(fall)
+    a = next(x for x in fall.analys.tjanster if x.tjanst == TJ)
+    prov = (tuple(c for c in a.kontroller if c.scenario not in stod) + tuple(stod.values())
+            + (_positiv('gem:H-03', 'delvis'),))
+    assert _brister(fall, _motor(fall, SANKTA), _analys(fall, kontroller=prov)) == (konflikt_text('H-03'),)
+
+
+def test_tillrackligt_stod_i_annat_scenario_doljer_inte_konflikt(fall):
+    stod = {**_stod(fall), 'gem:H-03': _positiv('gem:H-03', 'okand')}
+    a = next(x for x in fall.analys.tjanster if x.tjanst == TJ)
+    lokal = m.Scenarioanalys(id=TJ + ':avstamning', hot=('H-03',), rubrik='Syntetiskt avstämningsförlopp',
+        handelseforlopp='Oförklarade flöden passerar avstämningen.', relevans='relevant',
+        motivering='Prövat mot uppdragets mandat och tillgängliga underlag.', belagg=('ab6:mandat',))
+    paket = _analys(fall, ersatt={**stod, lokal.id: _positiv(lokal.id)}, scenarier=(*a.scenarier, lokal))
+    assert konflikt_text('H-03') in _brister(fall, _motor(fall, SANKTA), paket)
 
 
 def test_bedomd_tillracklig_bararande_kontroll_ger_inget_fynd(fall):
@@ -269,3 +312,66 @@ def test_aldre_bedomning_behaller_dagens_sparr(fall):
     assert f'{TJ}: gem:H-01: faktisk reduktion saknar belagd scenariotäckning; registrera metodkonflikt.' in fynd
     assert not any('motorns sänkning' in x or 'kontrollen täcker enligt byråns prövning' in x or
                    'motorn sänker scenariot' in x for x in fynd)
+
+
+# --- rapportens förklaring av ej godtagna sänkningar --------------------------------------------
+
+def _avsnittstext(fall, motor, paket):
+    from riskanalys.dokument.tjanstavsnitt_v8 import bygg_tjanstavsnitt_v8
+    from riskanalys.regelverk.granser import metodgransindex
+    t = next(x for x in motor.tjanster if x.tjanst == TJ)
+    avsnitt = bygg_tjanstavsnitt_v8(fall.regelbas, fall.profil, t, None, 'D-ARB.4',
+                                    gransindex=metodgransindex(fall.regelbas), analys=paket)
+    return [s.text for s in avsnitt.stycken]
+
+
+def test_rapporten_forklarar_ej_godtagen_sankning_per_scenario(fall):
+    stod = {**_stod(fall), 'gem:H-03': _positiv('gem:H-03', 'delvis')}
+    texter = [x for x in _avsnittstext(fall, _motor(fall, SANKTA), _analys(fall, ersatt=stod)) if 'inte godtagen' in x]
+    assert len(texter) == 1
+    assert '[H-03]' in texter[0] and 'från hög till måttlig' in texter[0]
+    assert 'bara delvis täckning av C-07' in texter[0]
+    assert 'inneboende nivå hög' in texter[0] and '[VERIFIERA]' in texter[0]
+
+
+def test_rapporten_tiger_nar_sankningen_har_tillrackligt_stod(fall):
+    texter = _avsnittstext(fall, _motor(fall, SANKTA), _analys(fall, ersatt=_stod(fall)))
+    assert not any('inte godtagen' in x for x in texter)
+
+
+def test_rapporten_anger_nar_tjanstens_niva_bygger_pa_ej_godtagen_sankning(fall):
+    t = next(x for x in fall.bedomning.tjanster if x.tjanst == TJ)
+    alla = {s.hot: (BAR,) for s in t.scenarier if s.dimension == 'pt'}
+    motor = _motor(fall, alla)
+    # Bara H-MOD-01 har stöd; det höga H-03-scenariot saknar godtaget stöd och bär tjänstens nivå.
+    texter = _avsnittstext(fall, motor, _analys(fall, ersatt={'gem:H-MOD-01': _positiv('gem:H-MOD-01')}))
+    assert any('Tjänstens redovisade kvarstående PT-nivå måttlig bygger på' in x and 'minst hög' in x for x in texter)
+    # Med stöd för H-03 avgörs nivån bara av måttliga ej godtagna sänkningar: ingen tjänstemening.
+    texter = _avsnittstext(fall, motor, _analys(fall, ersatt=_stod(fall)))
+    assert not any('Tjänstens redovisade kvarstående' in x for x in texter)
+
+
+def test_rapportens_skal_motsvarar_spärrens_fynd(fall):
+    stod = {**_stod(fall), 'gem:H-03': _positiv('gem:H-03', 'delvis')}
+    paket = _analys(fall, ersatt=stod)
+    motor = _motor(fall, SANKTA)
+    t = next(x for x in motor.tjanster if x.tjanst == TJ)
+    a = next(x for x in paket.tjanster if x.tjanst == TJ)
+    skal = p.ej_godtagna_sankningar(fall.regelbas, fall.profil, paket, a, t)
+    assert [(b.scenario.hot, b.orsak) for b in skal] == [('H-03', 'delvis')]
+    assert _brister(fall, motor, paket) == (delvis_text('H-03'),)
+
+
+def test_tillracklig_tackning_utan_genomforandebelagg_forklaras_i_rapporten(fall):
+    stod = {k: c.model_copy(update={'belagg': ()}) for k, c in _stod(fall).items()}
+    paket = _analys(fall, ersatt=stod)
+    motor = _motor(fall, SANKTA)
+    fynd = _brister(fall, motor, paket)
+    assert any('aktuellt genomförandebelägg för kontrollen saknas' in x for x in fynd)
+    assert obelagd_text('H-03') in fynd and obelagd_text('H-MOD-01') in fynd
+    t = next(x for x in motor.tjanster if x.tjanst == TJ)
+    a = next(x for x in paket.tjanster if x.tjanst == TJ)
+    assert [(b.scenario.hot, b.orsak) for b in p.ej_godtagna_sankningar(fall.regelbas, fall.profil, paket, a, t)] == [
+        ('H-03', 'obelagd'), ('H-MOD-01', 'obelagd')]
+    texter = [x for x in _avsnittstext(fall, motor, paket) if 'inte godtagen' in x]
+    assert len(texter) == 2 and all('saknar beskriven räckvidd eller aktuellt genomförandebelägg' in x for x in texter)

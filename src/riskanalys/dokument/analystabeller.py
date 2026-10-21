@@ -138,6 +138,13 @@ def bygg_kontrollprovning(a, rb, index):
         ('Scenario', 'Kontroll', 'Lokal tillämpning och utfall', 'Täckning och begränsning', 'Belägg'), rader) if rader else None
 
 
+def _prioritet_och_slut(r):
+    """Visas bara när de angetts, så att äldre tabeller behåller sin text."""
+    delar = ([f'Prioritet: {r.prioritet}.'] if r.prioritet != 'ej_beslutad' else []) + (
+        [f'Klart när: {r.klart_nar}'.rstrip('.') + '.'] if r.klart_nar else [])
+    return ''.join(' ' + d for d in delar)
+
+
 def bygg_rutinatgarder(a, index):
     rader = []
     for r in a.rutinatgarder:
@@ -145,5 +152,6 @@ def bygg_rutinatgarder(a, index):
         rutin = f'{r.rutin_id}, version {r.rutin_version}' if r.rutin_id and r.rutin_version else 'Rutin saknas'
         rader.append(rad(lokalcell(scenarioetikett(index, r.scenarier), refs), lokalcell(r.atgard, refs),
             lokalcell(f'{status(r.status)}. {rutin}.', refs),
-            lokalcell(f'Ansvar: {r.ansvar or "inte beslutat"}. Utlösare/frekvens: {r.utlosare_eller_frekvens}. Uppföljning: {r.uppfoljning or "inte beslutad"}.', refs)))
+            lokalcell(f'Ansvar: {r.ansvar or "inte beslutat"}. Utlösare/frekvens: {r.utlosare_eller_frekvens}. Uppföljning: {r.uppfoljning or "inte beslutad"}.'
+                      + _prioritet_och_slut(r), refs)))
     return tabell(a.tjanst+'-rutinatgarder', 'Risk, rutin och åtgärd', ('Scenario', 'Konkret åtgärd', 'Status och rutin', 'Ansvar och uppföljning'), rader) if rader else None

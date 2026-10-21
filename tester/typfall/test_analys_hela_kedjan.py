@@ -144,7 +144,7 @@ def test_fyrtjanstfall_hela_kedjan_med_syntetiska_kopieattester(positiv):
     assert arbetsborda(a).bekraftade_block == 64 and len(a.beslut)==4
     assert [x.egen_granskning for x in a.beslut] == [True,False,True,False]
     bokforing = next(t for t in a.tjanster if t.tjanst == 'T-RED-01')
-    assert any(c.scenario == 'gem:H-MOD-01' and c.kontroll == 'C-07' and c.tackning == 'delvis'
+    assert any(c.scenario == 'gem:H-MOD-01' and c.kontroll == 'C-07' and c.tackning == 'bedomd_tillracklig'
                for c in bokforing.kontroller)
     d,fynd=las_granskning(k.granskningsmapp)
     assert fynd == ()

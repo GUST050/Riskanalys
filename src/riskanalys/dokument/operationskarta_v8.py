@@ -59,7 +59,10 @@ def operationskarta(rb, profil, bedomning, resultat, analys):
                     pointers.extend(f'/belagg/{i}/period' for i,b in enumerate(analys.belagg) if b.id in ids)
                 lagg(f'{avsnitt}/tabeller/{a.tjanst}-kontrollprovning/rader/{n}/celler/{m}',*pointers)
         for n,r in enumerate(a.rutinatgarder):
-            cols=(('scenarier',),('atgard',),('status','rutin_id','rutin_version'),('ansvar','utlosare_eller_frekvens','uppfoljning'))
+            # Slutkriterium och prioritet visas, serialiseras och spåras bara när de angetts.
+            nya=tuple(f for f in ('klart_nar','prioritet') if f in r.model_dump())
+            cols=(('scenarier',),('atgard',),('status','rutin_id','rutin_version'),
+                  ('ansvar','utlosare_eller_frekvens','uppfoljning',*nya))
             for m,fields in enumerate(cols):
                 lagg(f'{avsnitt}/tabeller/{a.tjanst}-rutinatgarder/rader/{n}/celler/{m}',*(f'{bas}/rutinatgarder/{n}/{f}' for f in fields))
         for n,s in enumerate(a.scenarier):
@@ -79,10 +82,7 @@ def operationskarta(rb, profil, bedomning, resultat, analys):
             members=[i for i,x in enumerate(t.scenarier) if x in grupp]
             karta[f'{avsnitt}/stycken/{start+n}']=tuple(('bedomning',f'/tjanster/{bi}/scenarier/{i}/{f}')
                 for i in members for f in type(t.scenarier[i]).model_fields)+(('bedomning',f'/tjanster/{bi}/kvarstaende'),)
-        # De lokala PT/TF-texterna är de två sista nivåstyckena; fast byggkontrakt, inte språklig inferens.
-        start=section.underrubriker[3].fore_stycke; slut=section.underrubriker[4].fore_stycke
-        lagg(f'{avsnitt}/stycken/{slut-2}',bas+'/pt_motivering',bas+'/reduktionsmotivering',bas+'/reduktionsprovning')
-        lagg(f'{avsnitt}/stycken/{slut-1}',bas+'/tf_motivering')
+        # De lokala PT/TF-texternas positioner registreras av bygg_tjanstavsnitt_v8 när styckena byggs.
     for n,s in enumerate(analys.gemensamma_scenarier if analys else ()):
         for m,fields in enumerate((('id','rubrik'),('handelseforlopp',),('relevans','motivering','delanalyser'),('hot','rubrik'),('belagg',))):
             lagg(f'D-ARB.4/tabeller/gemensamma-scenarier/rader/{n}/celler/{m}',*(f'/gemensamma_scenarier/{n}/{f}' for f in fields))

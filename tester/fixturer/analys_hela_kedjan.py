@@ -336,16 +336,21 @@ def _positiv_bankavstamning(rb, paket):
 
     C-TJ-01 bär inte H-MOD-01:s sänkning. Den vanliga ogranskade fixturen
     behåller sina luckor; detta tillägg används bara efter explicit syntetisk signering.
+    Delvis täckning bär inte ett helt kontrollavdrag, så den signerade kopian anger
+    uttryckligen tillräcklig täckning där fixturen annars har delvis.
     """
     scenarier = {s.id: s for s in paket.gemensamma_scenarier}
     analyser = []
     for t in paket.tjanster:
+        t = t.model_copy(update={'kontroller': tuple(
+            c.model_copy(update={'tackning': 'bedomd_tillracklig'}) if c.tackning == 'delvis' else c
+            for c in t.kontroller)})
         if t.tjanst == 'T-RED-01':
             lokala = {**scenarier, **{s.id: s for s in t.scenarier}}
             rack = tuple(r.id for r in rb.kontroller['C-07'].rackvidd
                          if r.tjanst == t.tjanst and r.beskrivningsstatus == 'beskriven' and 'H-MOD-01' in r.hot)
             assert rack, 'Den positiva kopian kräver beskriven bankavstämning för H-MOD-01.'
-            tillagg = tuple(c.model_copy(update={'kontroll': 'C-07', 'rackvidd': rack, 'tackning': 'delvis',
+            tillagg = tuple(c.model_copy(update={'kontroll': 'C-07', 'rackvidd': rack, 'tackning': 'bedomd_tillracklig',
                 'tillampning': 'Syntetiskt dokumenterad bankavstämning: konsulten utreder felbetalning och återföring till annat konto.'})
                 for c in t.kontroller if c.scenario in lokala and 'H-MOD-01' in lokala[c.scenario].hot)
             t = t.model_copy(update={'kontroller': (*t.kontroller, *tillagg)})

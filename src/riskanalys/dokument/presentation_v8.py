@@ -36,7 +36,8 @@ def fulla_atgarder(word, analys):
     word.add_paragraph('Källa: frysta tjänstevisa Rutinatgard-poster. Inget fält hämtas från fynd eller analysgap.')
     etiketter={'id':'Åtgärds-ID','scenarier':'Scenarier','atgard':'Åtgärdstext','rutin_id':'Rutin-ID',
                'rutin_version':'Rutinversion','rutinbelagg':'Rutinbelägg','status':'Åtgärdsstatus','ansvar':'Ansvar',
-               'utlosare_eller_frekvens':'Utlösare eller frekvens','uppfoljning':'Uppföljning','belagg':'Belägg'}
+               'utlosare_eller_frekvens':'Utlösare eller frekvens','uppfoljning':'Uppföljning','belagg':'Belägg',
+               'klart_nar':'Klart när','prioritet':'Prioritet'}
     for t in analys.tjanster:
         for post in t.rutinatgarder:
             word.add_heading(f'{t.tjanst}, åtgärd {post.id}',level=2)

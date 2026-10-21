@@ -810,3 +810,42 @@ def test_v8_d9_ursprung_foljer_visad_tjanst_och_atgard(v8fall,gren):
             assert len(paths)==1
             assert los_pointer(a.model_dump(mode='json'),paths[0])==v
         assert tuple(c.text for c in row.celler[1:5])==(r.id,status(r.status),r.ansvar,str(r.uppfoljning))
+
+
+def test_v8_pt_och_tf_motivering_sparas_till_sina_falt_trots_ej_godtagna_sankningar(v8fall):
+    from riskanalys.dokument.operationskarta_v8 import operationskarta
+    from riskanalys.dokument.underlag import tjanster_med_avsnitt
+    f, r = v8fall
+    d = bygg(f, r)
+    karta = operationskarta(f.regelbas, f.profil, f.bedomning, r, f.analys)
+    avsnitt = {a.id: a for a in d.avsnitt}
+    forklarade = 0
+    for avsnitt_id, t in tjanster_med_avsnitt(f.bedomning):
+        ti = next(i for i, a in enumerate(f.analys.tjanster) if a.tjanst == t.tjanst)
+        for n, s in enumerate(avsnitt[avsnitt_id].stycken):
+            kallor = {p for _, p in karta.get(f'{avsnitt_id}/stycken/{n}', ())}
+            if s.text.startswith('Byråns bedömning av penningtvättsrisken'):
+                assert f'/tjanster/{ti}/pt_motivering' in kallor
+            elif s.text.startswith('Byråns bedömning av TF-risken'):
+                assert kallor == {f'/tjanster/{ti}/tf_motivering'}
+            else:
+                assert not kallor & {f'/tjanster/{ti}/pt_motivering', f'/tjanster/{ti}/tf_motivering'}, s.text[:80]
+            if 'är inte godtagen av den lokala prövningen' in s.text:
+                forklarade += 1
+                assert f'/tjanster/{ti}/kontroller' in kallor
+    assert forklarade, 'Provfallet ska innehålla minst en ej godtagen sänkning.'
+
+
+def test_v8_atgardstabellens_kallfalt_omfattar_slutkriterium_och_prioritet(v8fall):
+    from riskanalys.dokument.operationskarta_v8 import operationskarta
+    f, r = v8fall
+    a = f.analys.tjanster[0]
+    rutin = a.rutinatgarder[0].model_copy(update={'klart_nar': 'Alla avvikelser utredda.', 'prioritet': 'hög'})
+    analys = f.analys.model_copy(update={'tjanster': (a.model_copy(update={'rutinatgarder': (rutin,)}), *f.analys.tjanster[1:])})
+    karta = operationskarta(f.regelbas, f.profil, f.bedomning, r, analys)
+    cell = next(v for k, v in karta.items() if k.endswith(f'{a.tjanst}-rutinatgarder/rader/0/celler/3'))
+    assert {p for _, p in cell} >= {'/tjanster/0/rutinatgarder/0/klart_nar', '/tjanster/0/rutinatgarder/0/prioritet'}
+    from riskanalys.dokument.ursprung_v8 import los_pointer
+    data = analys.model_dump(mode='json')
+    assert los_pointer(data, '/tjanster/0/rutinatgarder/0/klart_nar') == 'Alla avvikelser utredda.'
+    assert los_pointer(data, '/tjanster/0/rutinatgarder/0/prioritet') == 'hög'

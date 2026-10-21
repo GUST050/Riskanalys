@@ -209,6 +209,28 @@ def test_rutinatgard_skiljer_forslag_beslut_och_genomforande(api,komplett):
         fel=p.analysbrister(rb,profil,b,nytt)
         assert any('anges tillsammans' in f for f in fel)
         assert any('ansvar och uppföljning' in f for f in fel)
+        assert any('kräver ett slutkriterium' in f for f in fel)
+        assert any('kräver en beslutad prioritet' in f for f in fel)
+
+
+def test_foreslagen_atgard_kraver_inget_slutkriterium_eller_prioritet(api,komplett):
+    _,p,_=api
+    rb,profil,b,paket=komplett
+    a=paket.tjanster[0]
+    assert a.rutinatgarder[0].status=='foreslagen'
+    fel=p.analysbrister(rb,profil,b,paket)
+    assert not any('slutkriterium' in f or 'beslutad prioritet' in f for f in fel)
+
+
+def test_beslutad_atgard_med_slutkriterium_och_prioritet(api,komplett):
+    _,p,_=api
+    rb,profil,b,paket=komplett
+    a=paket.tjanster[0];r=a.rutinatgarder[0]
+    andrat=r.model_copy(update={'status':'beslutad','ansvar':'Ada','uppfoljning':FRAMTID,
+        'klart_nar':'Alla öppna löneavvikelser är utredda och dokumenterade.','prioritet':'hög'})
+    nytt=paket.model_copy(update={'tjanster':(a.model_copy(update={'rutinatgarder':(andrat,)}),)})
+    fel=p.analysbrister(rb,profil,b,nytt)
+    assert not any('slutkriterium' in f or 'beslutad prioritet' in f for f in fel)
 
 
 def test_lokal_analys_tacker_alltid_varje_erbjuden_tjanst(api,komplett):
@@ -571,7 +593,8 @@ def test_framtida_uppfoljning_och_frist_hindrar_inte_godkannande(api,komplett):
     rb,profil,b,paket=komplett
     dag=_attestdag(paket)
     a=paket.tjanster[0]
-    rutin=a.rutinatgarder[0].model_copy(update={'status':'beslutad','ansvar':'Ada','uppfoljning':FRAMTID})
+    rutin=a.rutinatgarder[0].model_copy(update={'status':'beslutad','ansvar':'Ada','uppfoljning':FRAMTID,
+        'klart_nar':'Rutinen är uppdaterad och kommunicerad.','prioritet':'medel'})
     gap=m.Analysgap(id='g',typ='kontrollbrist',beskrivning='Känd avgränsad kontrollbrist.',
         status='accepterad_kvarstaende_risk',motivering='Kvarstående risk med ansvar och frist.',ansvar='Ada',tidsfrist=FRAMTID)
     paket=_bekraftad(p,paket.model_copy(update={'tjanster':(a.model_copy(update={'rutinatgarder':(rutin,),'gap':(gap,)}),)}))

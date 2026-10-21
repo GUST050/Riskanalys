@@ -196,3 +196,18 @@ def test_oversikt_visar_sparad_forfattare_och_granskare():
     html = analysoversikt(p, prefix='/p/')
     assert 'Syntetisk Ada' in html and 'Syntetisk Bo' in html and 'Ansvarig' in html
     assert 'Samma person har skrivit och godkänt' not in html
+
+
+def test_atgardsrad_har_slutkriterium_och_prioritet_utan_forval():
+    from riskanalys.intag.analysvy import blockformular
+    from riskanalys.intag.analysformular import las_blockformular
+    html = blockformular(paket(), 'T-0', 16, prefix='/p/', csrf='c', revision='r')
+    namn = Kontroller(html).namn
+    assert any(n and n.endswith('.klart_nar') for n in namn)
+    assert any(n and n.endswith('.prioritet') for n in namn)
+    assert '>Ej beslutad</option>' in html
+    r = las_blockformular(paket(), 'T-0', 16, {'operation': 'spara', 'forfattare': 'Anna', 'aktivering': 'aktiv',
+        'rutinatgarder.0.anvand': 'ja', 'rutinatgarder.0.id': 'ny', 'rutinatgarder.0.atgard': 'Utred avvikelser.',
+        'rutinatgarder.0.klart_nar': 'Alla avvikelser är utredda.', 'rutinatgarder.0.prioritet': 'hög'})
+    ny = next(x for x in r.tjanst.rutinatgarder if x.id == 'ny')
+    assert (ny.klart_nar, ny.prioritet) == ('Alla avvikelser är utredda.', 'hög')

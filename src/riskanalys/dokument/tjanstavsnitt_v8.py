@@ -8,7 +8,7 @@ from riskanalys.dokument.lasta_v6 import lasta_stycken_v6
 from riskanalys.dokument.lokaldata_v8 import tjanstefakta
 from riskanalys.dokument.lokalblock_v8 import lokala_block
 from riskanalys.dokument.modeller import Avsnitt, Underrubrik
-from riskanalys.dokument.nivamotivering_v8 import nivaskal, scenariotabell, faktortabell, faktorregister
+from riskanalys.dokument.nivamotivering_v8 import ej_godtagna_sankningar, nivaskal, scenariotabell, faktortabell, faktorregister
 from riskanalys.dokument.skrivversion import V8
 from riskanalys.dokument.tabeller import rad, tabell
 from riskanalys.dokument.tjanstavsnitt import _ai_stycken
@@ -97,7 +97,15 @@ def bygg_tjanstavsnitt_v8(rb, profil, t, resultat, avsnitt_id, *, gransindex, an
             tabeller[1].append(bygg_scenariotabell(a,paket,rb,index))
         tabeller[4].append(kontrolltabell(a,paket,rb,index))
         tabeller[5].append(bygg_rutinatgarder(a,index))
-    delar[3].extend(nivaskal(rb,t,a))
+    niva = nivaskal(rb,t,a)
+    if a is not None:
+        # Byråns PT- och TF-bedömning är nivåskälets två sista stycken; positionen registreras här.
+        bind(niva[-2],('pt_motivering','reduktionsmotivering','reduktionsprovning'))
+        bind(niva[-1],('tf_motivering',))
+    delar[3].extend(niva)
+    if paket and a is not None:
+        delar[3].extend(bind(s,('kontroller','scenarier','scenariokopplingar'))
+                        for s in ej_godtagna_sankningar(rb,profil,paket,a,t))
     tabeller[3].append(scenariotabell(rb,t) if t.scenarier else kategorioversikt(rb,profil,t,a,gransindex=gransindex,position=0))
     if t.scenarier:
         tabeller[3].append(faktortabell(rb,t))

@@ -707,7 +707,8 @@ def test_framtida_uppfoljning_godtas_i_last_beslutsvag(aktuell_kedja):
     from riskanalys.analys.tjanst import Analystjanst
     byra, r, rb, gm = aktuell_kedja
     tjanst, cas = _spara_uppdragsandring(byra, _uppdragsbeslut('kraver_atgard', DAG),
-        rutin={'status': 'beslutad', 'uppfoljning': FRAMTID})
+        rutin={'status': 'beslutad', 'uppfoljning': FRAMTID,
+              'klart_nar': 'Rutinen är uppdaterad och kommunicerad.', 'prioritet': 'medel'})
     a = l.las_analys(byra)
     assert any(r.uppfoljning == FRAMTID for r in a.tjanster[0].rutinatgarder)
     Analystjanst(byra, rb).beslut(tjanst, True, 'Syntetisk datumgranskare', 'FfR', DAG, '', cas)
