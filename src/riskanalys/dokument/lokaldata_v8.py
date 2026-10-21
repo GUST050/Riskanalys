@@ -101,7 +101,8 @@ KALLNOT = 'Enligt källnoten ovan.'
 def _med_kallnot(rader):
     """Identisk källa, datum och status på flera rader skrivs en gång; avvikande rader behåller sin källa."""
     texter = [r.celler[3].text for r in rader if r.celler[3].text.startswith('Källa: ')]
-    vanligast = max(set(texter), key=texter.count, default=None)
+    # max över listan behåller första förekomsten vid lika antal; en mängd skulle bero på hashfrö.
+    vanligast = max(texter, key=texter.count, default=None)
     if vanligast is None or texter.count(vanligast) < 2:
         return None, rader
     nya = tuple(r.model_copy(update={'celler': (*r.celler[:3], r.celler[3].model_copy(update={'text': KALLNOT}))})

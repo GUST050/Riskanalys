@@ -899,3 +899,24 @@ def test_v8_avvikande_kalla_star_kvar_pa_raden_och_roll_bevaras_i_kallnot(v8fall
     renderat = renderat_avsnitt(avsnitt, profil).stycken[0].text
     kallnot = renderat.split('Källnot för tabellen: ', 1)[1]
     assert kallnot.startswith('Källa: Gemensam {roll:Ansvarsfunktion}')
+
+def test_v8_kallnot_ar_deterministisk_vid_lika_vanliga_kallor():
+    """Vid lika antal väljs första förekomsten i tabellen, oberoende av processens hashfrö."""
+    import os, subprocess, sys
+    from pathlib import Path
+    kod = '''
+from riskanalys.dokument.lokaldata_v8 import _med_kallnot
+from riskanalys.dokument.analystabeller import lokalcell
+from riskanalys.dokument.tabeller import rad
+rader = tuple(rad(*(lokalcell(x, ("P-X",)) for x in ("U", "V", "P", k)))
+              for k in ("Källa: A.", "Källa: B.", "Källa: A.", "Källa: B."))
+print(_med_kallnot(rader)[0])
+'''
+    rot = Path(__file__).resolve().parents[2]
+    utfall = set()
+    for frö in ('0', '1', '2', '3', '7', '42'):
+        env = {**os.environ, 'PYTHONHASHSEED': frö, 'PYTHONPATH': str(rot / 'src')}
+        utfall.add(subprocess.run([sys.executable, '-c', kod], env=env, capture_output=True, text=True,
+                                  check=True).stdout.strip())
+    assert utfall == {'Källa: A.'}
+
