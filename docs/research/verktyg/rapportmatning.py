@@ -1,7 +1,7 @@
 """Mät V8-rapporten för H7.1:s fyrtjänstfall: ord per avsnitt och leveransdel, och upprepade stycken.
 
 Syntetiska uppgifter och Testleverantor; inga AI-anrop. Körs från repots rot:
-.venv/bin/python docs/research/verktyg/rapportmatning.py
+.venv/bin/python docs/research/verktyg/rapportmatning.py [H7.1-fall, standard fyra_tjanster]
 """
 import re
 import sys
@@ -22,16 +22,25 @@ def ord(text):
     return len(text.split())
 
 
+TJANSTNAMN = ()
+
+
 def normalisera(text):
-    """Tjänstenamn och ID:n byts mot platshållare så att mallupprepning mellan tjänster syns."""
+    """Tjänstenamn, ID:n och tal byts mot platshållare. Mäter likartad struktur, inte samma sakuppgift."""
+    for namn in TJANSTNAMN:
+        text = text.replace(namn, '#').replace(namn.lower(), '#')
     text = re.sub(r'\b(T|H|S|C|KR|BT)-[A-Z0-9-]+\b', '#', text)
     return re.sub(r'\d+', '0', text)
 
 
 def main():
+    global TJANSTNAMN
     rb = ladda_regelbas()
+    TJANSTNAMN = tuple(t.namn for t in rb.tjanster.values())
     with tempfile.TemporaryDirectory() as rot:
-        f = bygg_rapportlasprov(rb, Path(rot).resolve(), 'fyra_tjanster')
+        fall = sys.argv[1] if len(sys.argv) > 1 else 'fyra_tjanster'
+        print('Provfall:', fall)
+        f = bygg_rapportlasprov(rb, Path(rot).resolve(), fall)
         d = bygg_arb_v8(rb, f.profil, f.bedomning, skriv(f), Historik(), analys=f.analys)
     delar = defaultdict(int)
     rader = []
@@ -48,6 +57,15 @@ def main():
     print('\nAvsnitt (del, id, rubrik, ord i stycken, ord i tabeller):')
     for rad in sorted(rader, key=lambda x: -(x[3] + x[4]))[:25]:
         print(f'  {rad[0]:12} {rad[1]:14} {rad[2]:55} {rad[3]:6} {rad[4]:6}')
+    tjanster = sorted({a for _, a, _ in texter if a.startswith('D-ARB.6.')})
+    ordagrant = set.intersection(*({t for _, a, t in texter if a == x} for x in tjanster)) if tjanster else set()
+    struktur = set.intersection(*({normalisera(t) for _, a, t in texter if a == x} for x in tjanster)) if tjanster else set()
+    forsta = [t for _, a, t in texter if tjanster and a == tjanster[0]]
+    totalt = sum(ord(t) for t in forsta)
+    print(f'\nFörsta tjänsteavsnittet {tjanster[0] if tjanster else "-"}: {totalt} ord. Text som finns i alla {len(tjanster)} tjänster:')
+    print(f'  ordagrant identisk:            {sum(ord(t) for t in forsta if t in ordagrant):5} ord')
+    print(f'  likartad struktur (namn, ID och tal utbytta, ej ordagrann): '
+          f'{sum(ord(t) for t in forsta if t not in ordagrant and normalisera(t) in struktur):5} ord')
     print('\nUpprepade texter (minst 12 ord), sorterade efter totala ord:')
     grupper = defaultdict(list)
     for del_, avsnitt, text in texter:
