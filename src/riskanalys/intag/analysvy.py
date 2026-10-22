@@ -262,7 +262,7 @@ def analyssida(s, query=None, data=None, fel=''):
         from riskanalys.intag.gemensamvy import byraanalys,tillampningar,tackningsformular
         html+='<nav><a href="'+e(s.prefix,quote=True)+'analys?byraanalys=ja">1. Gemensam byråanalys</a><span>2. Tjänsternas tillämpning</span><span>3. Slutsats och granskning</span></nav>'
         if 'byraanalys' in q:
-            return sida(s,html+byraanalys(paket,s.prefix,s.csrf,status.revision,q,d,rb=s.tjanst.rb),fel)
+            return sida(s,html+byraanalys(paket,s.prefix,s.csrf,status.revision,q,d,rb=s.tjanst.rb,bedomning=status.bedomning),fel)
         if 'tjanst' in q and ('tillampningar' in q or not any(x in q for x in ('block','scenario','granska','tackning'))):
             tid=q['tjanst'][0]
             html+=tillampningar(s.tjanst.rb,status.profil,status.bedomning,paket,tid,s.prefix,s.csrf,status.revision,d)
@@ -273,7 +273,7 @@ def analyssida(s, query=None, data=None, fel=''):
             if b is None:raise RiskanalysFel('Välj en tjänst ur analysöversikten.')
             return sida(s,html+tackningsformular(s.tjanst.rb,paket,b,s.prefix,s.csrf,status.revision,q,d),fel)
         if not q:
-            html+=byraanalys(paket,s.prefix,s.csrf,status.revision,rb=s.tjanst.rb)
+            html+=byraanalys(paket,s.prefix,s.csrf,status.revision,rb=s.tjanst.rb,bedomning=status.bedomning)
     if 'forslag' in q:
         nytt = t.forslag(schema=paket.schemaversion)
         html += '<h1>Jämför ny förifyllnad</h1><p>Manuella svar bevaras; aktuella profilbelägg uppdateras med källa, datum och period och nya tjänster får ogranskade utkast. En förnyad bindning upphäver tidigare block- och scenariobekräftelser; läs och pröva dem mot aktuella fakta igen.</p>'

@@ -94,3 +94,16 @@ def las_tackning(data,rb=None,paket=None):
     if set(data)-(tillatna|META|{'tjanst','operation'}):raise RiskanalysFel('Prövningen innehåller okända fält.')
     if data.get('operation') not in ('visa','spara'):raise RiskanalysFel('Visa eller spara den aktuella prövningen uttryckligen.')
     return m.Tackningsprovning.model_validate(raw)
+
+
+def las_helhet(data):
+    import json
+    from pydantic import TypeAdapter
+    from riskanalys.analys.engangssvar import GemensamCell
+    if set(data)-(META|{'bekrafta','tjanster','celler'}) or data.get('bekrafta')!='ja':
+        raise RiskanalysFel('Bekräfta uttryckligen det visade gemensamma underlaget utan extra fält.')
+    try:
+        celler=TypeAdapter(tuple[GemensamCell,...]).validate_json(data.get('celler',''))
+    except (ValueError,RecursionError) as exc:
+        raise RiskanalysFel('Läs om översikten med exakt de visade tjänsterna och posterna.') from exc
+    return ids(data.get('tjanster','')),celler

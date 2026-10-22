@@ -38,3 +38,14 @@ def visa_tackning(tjanst,fil,id,forfattare):
     prov=tackning(fil).model_copy(update={'forfattare':tjanst._forfattare(forfattare)})
     prov=prov.model_copy(update={'visad_summa':tackningssumma(tjanst.rb,p,t,prov)})
     print(yaml.safe_dump(prov.model_dump(mode='json'),allow_unicode=True,sort_keys=False))
+
+
+def helhet(fil):
+    from riskanalys.analys.engangssvar import GemensamCell
+    try:storlek=fil.stat().st_size
+    except OSError as exc:raise RiskanalysFel('Välj en befintlig fil med det visade underlaget.') from exc
+    if storlek>65536:raise RiskanalysFel('Underlagsfilen är för stor. Välj den aktuella översiktens celler.')
+    raw=las(fil)
+    if not isinstance(raw,dict) or set(raw)!={'tjanster','celler'}:
+        raise RiskanalysFel('Filen ska innehålla exakt tjanster och celler från den visade översikten.')
+    return TypeAdapter(tuple[str,...]).validate_python(raw['tjanster']),TypeAdapter(tuple[GemensamCell,...]).validate_python(raw['celler'])

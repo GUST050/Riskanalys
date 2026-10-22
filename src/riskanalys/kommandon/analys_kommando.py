@@ -16,6 +16,7 @@ def lagg_till(underparsers):
     parser = underparsers.add_parser('analys', help='Guidad lokal analys, status och separat mänskligt beslut.')
     parser.add_argument('byra')
     operation = parser.add_mutually_exclusive_group()
+    operation.add_argument('--bekrafta-byraunderlag',type=Path,help='Bekräfta exakt visade celler i alla valda tjänster.')
     operation.add_argument('--bekrafta-tillampningar',type=Path,help='Bekräfta uttryckligen markerade gäller-poster från en lista av GemensamReferens.')
     operation.add_argument('--tillampningsfil',type=Path,help='Spara ett typat tjänsteställningstagande för en visad gemensam post.')
     operation.add_argument('--visa-tackningsprovning',type=Path,help='Visa en täckningsprövning med aktuell innehållssumma utan att spara.')
@@ -51,7 +52,7 @@ def lagg_till(underparsers):
 
 
 def kor(args):
-    muterar = any((args.overfor_schema,args.bekrafta_tillampningar,args.tillampningsfil,args.tackningsprovning,args.forifyll, args.fornya, args.importfil, args.belagg, args.modellrapport, args.modellrisk, args.godkann, args.underkann, args.bekrafta_block, args.scenarioval))
+    muterar = any((args.overfor_schema,args.bekrafta_byraunderlag,args.bekrafta_tillampningar,args.tillampningsfil,args.tackningsprovning,args.forifyll, args.fornya, args.importfil, args.belagg, args.modellrapport, args.modellrisk, args.godkann, args.underkann, args.bekrafta_block, args.scenarioval))
     if muterar and args.revision is None:
         raise RiskanalysFel('Ange --revision med registersumman från aktuell analysstatus.')
     if args.overfor_schema and not args.jamfort:
@@ -67,7 +68,10 @@ def kor(args):
         if args.visa_tackningsprovning:
             gem.visa_tackning(t,args.visa_tackningsprovning,args.tjanst,args.forfattare)
             return 0
-        if args.bekrafta_tillampningar:
+        if args.bekrafta_byraunderlag:
+            ids,celler=gem.helhet(args.bekrafta_byraunderlag)
+            t.bekrafta_byraunderlag(ids,celler,args.revision,args.forfattare)
+        elif args.bekrafta_tillampningar:
             t.bekrafta_tillampningar(args.tjanst,gem.referenser(args.bekrafta_tillampningar),args.revision,args.forfattare)
         elif args.tillampningsfil:
             ref,app=gem.tillampning(args.tillampningsfil)

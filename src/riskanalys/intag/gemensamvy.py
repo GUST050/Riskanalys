@@ -30,7 +30,7 @@ def _falt(modell,objekt,*,utan=(),data=None,kataloger=None):
     return ''.join(_kontroll(k,grundtyp(f.annotation),getattr(objekt,k),data or {},kataloger) for k,f in modell.model_fields.items() if k not in utan)
 
 
-def byraanalys(paket,prefix,csrf,revision,query=None,data=None,rb=None):
+def byraanalys(paket,prefix,csrf,revision,query=None,data=None,rb=None,bedomning=None):
     q=query or {};d=data or {};html='<h1>1. Gemensam byråanalys</h1><p>Beskriv och belägg förhållandena en gång. Tjänsterna prövar sedan betydelsen. Antaganden är fortfarande antaganden efter tillämpning.</p>'
     valt=q.get('post',[''])[0];slag=q.get('slag',['sarbarhet'])[0]
     for typ,poster in (('sarbarhet',paket.gemensamma_sarbarhetsprovningar),('verksamhet',paket.gemensamma_verksamhetsposter)):
@@ -39,7 +39,14 @@ def byraanalys(paket,prefix,csrf,revision,query=None,data=None,rb=None):
             html+='<article><h2>'+e(NAMN.get(getattr(p,'omrade',getattr(p,'slag','')),p.id))+'</h2><p>'+e(getattr(p,'beskrivning',getattr(p,'text','')))+' · '+e(p.status)+'</p><a href="'+e(href,quote=True)+'">Redigera gemensamt underlag</a></article>'
     href=prefix+'analys?'+urlencode({'byraanalys':'ja','post':'ny','slag':'sarbarhet'})
     html+='<p><a href="'+e(href,quote=True)+'">Lägg till egen sårbarhet eller motiverad frånvaro</a></p>'
-    if not valt:return html
+    if not valt:
+        from riskanalys.intag.analysvy import _lasbar
+        for post in (*paket.gemensamma_sarbarhetsprovningar,*paket.gemensamma_verksamhetsposter):
+            html+='<details><summary>Hela underlaget: '+e(post.id)+'</summary><p>'+e(_lasbar(post))+'</p></details>'
+        if bedomning is not None:
+            from riskanalys.intag.engangsvy import helhet
+            html+=helhet(paket,bedomning,prefix,csrf,revision)
+        return html
     modell=m.GemensamSarbarhetsprovning if slag=='sarbarhet' else m.GemensamVerksamhetspost
     poster=paket.gemensamma_sarbarhetsprovningar if slag=='sarbarhet' else paket.gemensamma_verksamhetsposter
     p=next((p for p in poster if p.id==valt),None)

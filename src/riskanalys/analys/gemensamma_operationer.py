@@ -100,3 +100,14 @@ class GemensammaOperationer:
             if key(p) not in {key(x) for x in a.tackningsprovningar}:prov=(*prov,p)
             a=a.model_copy(update={'tackningsprovningar':prov,'forfattare':self._forfattare(forfattare)})
             return self._spara(byt_tjanst(paket,a),forvantad_summa=revision)
+
+    def bekrafta_byraunderlag(self,tjanster,celler,revision,forfattare):
+        from riskanalys.analys.engangssvar import bygg_gemensam_bekraftelse
+        with l.analyslas(self.mapp):
+            paket,bm,_,_=self._last(revision);gemensamt(paket)
+            bedomning=las_bedomning(bm)
+            erbjudna={t.tjanst for t in bedomning.tjanster if t.erbjuds is True}
+            if set(tjanster)-erbjudna:
+                raise RiskanalysFel('Välj endast erbjudna tjänster ur aktuell bedömning.')
+            nytt=bygg_gemensam_bekraftelse(paket,tjanster,celler,self._forfattare(forfattare))
+            return self._spara(nytt,forvantad_summa=revision)
