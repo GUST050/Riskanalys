@@ -59,7 +59,9 @@ def test_planval_visas_per_rad_och_belagg_bevaras(tjanst, server):
     assert 'name="plan_T-RED-01"' in html and 'name="plan_T-RED-02"' in html
     assert 'Bevara hela underlaget' in html and 'Metodansvarig' in html
     assert 'value="alternativ"' in html
-    assert 'name="tjanst_P-TJ.red01_erbjuds" value="ja" checked' in html
+    import re
+    val = re.search(r'name="tjanst_P-TJ.red01_erbjuds"[^>]*>(.*?)</select>', html, re.S)
+    assert val and '<option value="ja" selected>' in val.group(1)
     data.update({'plan_T-RED-01': 'alternativ', 'plan_T-RED-02': 'tva'})
     assert anrop(server, 'tjanster', data)[0] == 200
     p = tjanst.profil()

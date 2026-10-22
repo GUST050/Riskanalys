@@ -429,3 +429,19 @@ def test_korrigerad_import_far_fornya_inaktuell_bindning_utan_gammal_bekraftelse
     assert p.bindning == aktuell.bindning
     assert all(b.bekraftad_summa is None for a in p.tjanster for b in a.block)
     assert not p.beslut
+
+
+def test_schema_tva_import_rensar_bekraftelser_och_forbjuder_tyst_schemabyte(analysmiljo,tmp_path):
+    from riskanalys.analys.tjanst import Analystjanst
+    from riskanalys.fel import RiskanalysFel
+    s,t=analysmiljo;at=Analystjanst(t.mapp,t.rb)
+    at.starta('',schema=2);p=las_analys(t.mapp)
+    assert p.schemaversion==2
+    q=p.model_copy(update={'tjanster':tuple(a.model_copy(update={'sarbarhetstillampningar':tuple(x.model_copy(update={'bekraftad':True}) for x in a.sarbarhetstillampningar)}) for a in p.tjanster)})
+    fil=tmp_path/'schema2.json';fil.write_text(q.model_dump_json())
+    at.importera_svar(fil,'Syntetisk',registersumma(p));n=las_analys(t.mapp)
+    assert not any(x.bekraftad for a in n.tjanster for x in a.sarbarhetstillampningar)
+    from riskanalys.analys.utkast import forifyll_analys
+    q=at.forslag(schema=1);fil.write_text(q.model_dump_json())
+    with pytest.raises(RiskanalysFel,match='byta schema'):at.importera_svar(fil,'Syntetisk',registersumma(n))
+    assert las_analys(t.mapp)==n

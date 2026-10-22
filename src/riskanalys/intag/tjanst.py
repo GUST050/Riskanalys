@@ -51,6 +51,11 @@ class Intagstjanst:
         nytt=p
         for uppgift in svar:
             nytt=besvara(self.rb,nytt,uppgift)
+            if uppgift.status=='okänt' and any(t.erbjuds_falt==uppgift.falt for t in self.rb.tjanster.values()):
+                # Tidigare ja/nej finns i profilhistoriken, men är inte det nya osäkra svaret.
+                u=nytt.uppgifter[uppgift.falt].model_copy(update={'varde':None,'kalla':uppgift.kalla,
+                    'datum':uppgift.datum,'bekraftad_av':uppgift.roll,'inaktuell':False})
+                nytt=nytt.model_copy(update={'uppgifter':{**nytt.uppgifter,uppgift.falt:u}})
         from riskanalys.profil.forandringar import spara_andring
         return spara_andring(self.mapp,self.rb,nytt,revision,rattelse=rattelse,planval=planval)
 

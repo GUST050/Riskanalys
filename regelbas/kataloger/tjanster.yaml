@@ -58,6 +58,19 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Kontering och löpande bokföring
+  - Reskontra, avstämningar och periodrapporter
+  befogenheter:
+  - Åtkomst till kundens bokföring enligt uppdragsavtalet; attest och betalningsmandat prövas separat
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-RED-02
   namn: Bokslut och årsredovisning
   sektor: redovisning
@@ -117,6 +130,19 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Bokslutsarbete och avstämningar
+  - Upprättande av årsredovisning
+  befogenheter:
+  - Upprätta bokslutsunderlag enligt uppdraget; beslut, underskrift och inlämningsbehörighet behöver avgränsas
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-RED-03
   namn: Deklarationer och deklarationsombud
   sektor: redovisning
@@ -176,6 +202,19 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Upprättande av deklarationer
+  - Deklarationsombud inom avtalad omfattning
+  befogenheter:
+  - Inlämning och åtkomst som deklarationsombud måste bekräftas för uppdraget
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-RED-04
   namn: Lönehantering
   sektor: redovisning
@@ -235,6 +274,18 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Löneberedning och lönerapportering
+  befogenheter:
+  - Åtkomst till löneunderlag; eventuell bankinsyn och verkställande av löner prövas separat
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-RED-05
   namn: Betalningar och attest i kundens namn
   sektor: redovisning
@@ -295,6 +346,18 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Utföra eller attestera betalningar i kundens namn
+  befogenheter:
+  - Betalnings- eller attestmandat med gränser, kundens godkännande och bankinsyn behöver beskrivas
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-RED-06
   namn: Klientmedelskonto
   sektor: redovisning
@@ -355,6 +418,18 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Hantering av klientmedel för kundens räkning
+  befogenheter:
+  - Dispositionsrätt, kontohavare, avstämning och tillåtna överföringar måste klarläggas
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-RED-07
   namn: Ekonomisk rådgivning och ekonomichefstjänster
   sektor: redovisning
@@ -414,6 +489,19 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Ekonomisk rådgivning och rapportering
+  - Ekonomichefsuppdrag enligt uppdragsavtalet
+  befogenheter:
+  - Rådgivning respektive beslut, attest och företrädarskap avgränsas uttryckligen
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-SKATT-01
   namn: Skatterådgivning utöver deklarationer
   sektor: skatt
@@ -469,6 +557,19 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-SKATT
+  arbetsmoment:
+  - Rådgivning om skatter och avgifter
+  - Rådgivning om gränsöverskridande skatteupplägg när det ingår
+  befogenheter:
+  - Rådgivarens tillgång till underlag och eventuella ombudsbehörighet behöver bekräftas
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-BOLAG-01
   namn: Bolagsbildning, lagerbolag och bolagsförmedling
   sektor: bolag
@@ -525,6 +626,18 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-BOLAG
+  arbetsmoment:
+  - Bildande och förmedling av juridiska personer
+  befogenheter:
+  - Uppdragets ombuds-, företrädar- och förmedlingsbefogenheter avgränsas mot kundens beslut
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-BOLAG-02
   namn: Registrerad adress eller postadress
   sektor: adress
@@ -580,6 +693,18 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-ADRESS
+  arbetsmoment:
+  - Tillhandahållande av registrerad adress eller postadress
+  befogenheter:
+  - Rätt att ta emot eller vidarebefordra post och eventuell annan representation behöver klarläggas
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
 - id: T-BOLAG-03
   namn: Styrelseuppdrag eller bolagsrättsligt ansvar
   sektor: bolag
@@ -636,3 +761,15 @@
     tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
     viktning kräver tjänstevis relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-BOLAG
+  arbetsmoment:
+  - Uppdrag som styrelseledamot eller bolagsrättsligt ansvarig åt kund
+  befogenheter:
+  - Uppdragets besluts- och företrädarbefogenheter behöver beskrivas och prövas
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad

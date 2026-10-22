@@ -41,6 +41,9 @@ class Analystjanst:
     def _katalogreferenser(self, paket):
         if any(set(b.profilfalt) - set(self.rb.falt) for b in paket.belagg):
             raise RiskanalysFel('Välj profilfält ur den aktuella intagskatalogen.')
+        for g in paket.gemensamma_sarbarhetsprovningar:
+            if set(g.sarbarheter)-set(self.rb.sarbarheter) or set(g.hot)-set(self.rb.hot) or set(g.profilfalt)-set(self.rb.falt):
+                raise RiskanalysFel('Välj gemensamma faktorer, hot och profilfält ur den aktuella katalogen.')
         for s in paket.gemensamma_scenarier:
             if set(s.hot) - set(self.rb.hot):
                 raise RiskanalysFel('Välj gemensamma hot ur den aktuella källkatalogen.')
@@ -52,6 +55,11 @@ class Analystjanst:
                 raise RiskanalysFel('Lokala kataloghot måste höra till tjänsten.')
             if any(set(s.sarbarheter) - set(self.rb.sarbarheter) for s in t.sarbarhetsprovningar):
                 raise RiskanalysFel('Välj sårbarheter ur den aktuella källkatalogen.')
+            for app in t.sarbarhetstillampningar:
+                if app.post not in {g.id for g in paket.gemensamma_sarbarhetsprovningar} or any(x.hot not in self.rb.hot for x in app.hotkopplingar):
+                    raise RiskanalysFel('Tillämpningen hänvisar till okänd gemensam post eller hot.')
+            if any(x.post not in {g.id for g in paket.gemensamma_verksamhetsposter} for x in t.verksamhetstillampningar):
+                raise RiskanalysFel('Tillämpningen hänvisar till okänd verksamhetspost.')
             for k in t.kontroller:
                 if k.kontroll not in kat.kontroller:
                     raise RiskanalysFel('Välj kontroller som hör till tjänsten.')
@@ -102,17 +110,17 @@ class Analystjanst:
             s = l.las_analyssnapshot_last(self.mapp, self.rb, datum or date.today(), bedomningsmapp=bm, utkastmapp=um)
             return Analysstatus(s.paket, s.registersumma, s.brister, las_profil(self.mapp), las_bedomning(bm))
 
-    def forslag(self):
+    def forslag(self, *, schema=1):
         with l.analyslas(self.mapp):
             bm, _, bindning = self._underlag()
-            return forifyll_analys(self.rb, las_profil(self.mapp), las_bedomning(bm), bindning)
+            return forifyll_analys(self.rb, las_profil(self.mapp), las_bedomning(bm), bindning, schema=schema)
 
-    def starta(self, revision):
+    def starta(self, revision, *, schema=1):
         with l.analyslas(self.mapp):
             paket, bm, _, bindning = self._last(revision)
             if paket:
                 raise RiskanalysFel('Analysen finns redan. Läs den sparade analysen.')
-            nytt = forifyll_analys(self.rb, las_profil(self.mapp), las_bedomning(bm), bindning)
+            nytt = forifyll_analys(self.rb, las_profil(self.mapp), las_bedomning(bm), bindning, schema=schema)
             return self._spara(nytt, forvantad_summa=revision)
 
     def fornya(self, revision):
@@ -121,8 +129,8 @@ class Analystjanst:
             paket, bm, _, bindning = self._last(revision, aktuell=False)
             if paket is None:
                 raise RiskanalysFel('Starta ett analysutkast först.')
-            forslag = forifyll_analys(self.rb, las_profil(self.mapp), las_bedomning(bm), bindning)
-            tjanster = tuple(t.model_copy(update={'block': tuple(b.model_copy(update={'bekraftad_summa': None}) for b in t.block), 'scenariokopplingar': tuple(k.model_copy(update={'bekraftad': False}) for k in t.scenariokopplingar)}) for t in paket.tjanster)
+            forslag = forifyll_analys(self.rb, las_profil(self.mapp), las_bedomning(bm), bindning, schema=paket.schemaversion)
+            tjanster = tuple(t.model_copy(update={'sarbarhetstillampningar':tuple(x.model_copy(update={'bekraftad':False}) for x in t.sarbarhetstillampningar), 'verksamhetstillampningar':tuple(x.model_copy(update={'bekraftad':False}) for x in t.verksamhetstillampningar), 'tackningsprovningar':tuple(x.model_copy(update={'visad_summa':None}) for x in t.tackningsprovningar), 'block': tuple(b.model_copy(update={'bekraftad_summa': None}) for b in t.block), 'scenariokopplingar': tuple(k.model_copy(update={'bekraftad': False}) for k in t.scenariokopplingar)}) for t in paket.tjanster)
             tjanster += tuple(t for t in forslag.tjanster if t.tjanst not in {a.tjanst for a in paket.tjanster})
             gemensamma = paket.gemensamma_scenarier + tuple(s for s in forslag.gemensamma_scenarier if s.id not in {a.id for a in paket.gemensamma_scenarier})
             belagg = tuple(b for b in paket.belagg if not b.profilfalt) + forslag.belagg
@@ -189,9 +197,11 @@ class Analystjanst:
         namn = self._forfattare(forfattare)
         with l.analyslas(self.mapp):
             paket, _, _, bindning = self._last(revision, aktuell=False)
+            if paket and inkommande.schemaversion!=paket.schemaversion:
+                raise RiskanalysFel('Vanlig svarimport får inte byta schema. Använd uttrycklig överföring till schema 2.')
             if inkommande.bindning != bindning:
                 raise RiskanalysFel('Svarfilen gäller ett annat underlag. Jämför den aktuella förifyllnaden.')
-            tjanster = tuple(t.model_copy(update={'forfattare': namn, 'block': tuple(b.model_copy(update={'bekraftad_summa': None}) for b in t.block), 'scenariokopplingar': tuple(k.model_copy(update={'bekraftad': False}) for k in t.scenariokopplingar)}) for t in inkommande.tjanster)
+            tjanster = tuple(t.model_copy(update={'sarbarhetstillampningar':tuple(x.model_copy(update={'bekraftad':False}) for x in t.sarbarhetstillampningar), 'verksamhetstillampningar':tuple(x.model_copy(update={'bekraftad':False}) for x in t.verksamhetstillampningar), 'tackningsprovningar':tuple(x.model_copy(update={'visad_summa':None}) for x in t.tackningsprovningar), 'forfattare': namn, 'block': tuple(b.model_copy(update={'bekraftad_summa': None}) for b in t.block), 'scenariokopplingar': tuple(k.model_copy(update={'bekraftad': False}) for k in t.scenariokopplingar)}) for t in inkommande.tjanster)
             nytt = inkommande.model_copy(update={'tjanster': tjanster, 'beslut': paket.beslut if paket else (), 'modellrisk': inkommande.modellrisk.model_copy(update={'godkand': False}) if inkommande.modellrisk else None})
             if paket:
                 nytt = self._ateranvand_bekraftelser(paket, nytt)

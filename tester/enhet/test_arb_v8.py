@@ -949,3 +949,10 @@ def test_v8_hela_rapporten_byggs_med_tomt_faktorregister(regelbas_v1):
     for t in tom:
         assert any(tab.id == t.tjanst + '-motorscenarier' for tab in b1.tabeller)
         assert not any(tab.id == t.tjanst + '-faktorregister' for tab in b1.tabeller)
+
+
+def test_schema_tva_avvisas_tydligt_fore_rapportstod(v8fall):
+    f,r=v8fall
+    p=f.analys.model_copy(update={'schemaversion':2})
+    with pytest.raises(RiskanalysFel,match='schema 2.*rapport'):
+        bygg(replace(f,analys=p),r)

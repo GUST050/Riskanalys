@@ -357,15 +357,22 @@ class Hantera(BaseHTTPRequestHandler):
         s=self.server
         ids=tuple(t.erbjuds_falt for t in s.tjanst.rb.tjanster.values())
         planfalt={'plan_'+t.id for t in s.tjanst.rb.tjanster.values()}
-        if set(data)-{'csrf','revision','hela_listan','underlag','kalla','roll','datum'}-{'tjanst_'+id for id in ids}-planfalt:
+        if set(data)-{'csrf','revision','hela_listan','underlag','kalla','roll','datum','urvalsformat'}-{'tjanst_'+id for id in ids}-planfalt:
             raise RiskanalysFel('Tjänstelistan innehåller okända uppgifter eller planval.')
         markers={k.removeprefix('tjanst_'):v for k,v in data.items() if k.startswith('tjanst_')}
-        if set(markers)-set(ids) or any(v!='ja' for v in markers.values()):
+        nytt_format=data.get('urvalsformat')=='2'
+        if data.get('urvalsformat') not in (None,'2') or set(markers)-set(ids) or (nytt_format and (set(markers)!=set(ids) or any(v not in ('ja','nej','okant','bevara') for v in markers.values()))) or (not nytt_format and any(v!='ja' for v in markers.values())):
             raise RiskanalysFel('Välj bara tjänster ur den visade listan. Läs om sidan.')
         from riskanalys.intag.underlag import vald_kalla
         p=s.tjanst.profil()
         kalla=vald_kalla(s.tjanst.rb,p,s.tjanst.rb.falt[ids[0]],data)
-        svar=tuple(IntagSvar(falt=id,text='ja' if id in markers else 'nej',kalla=kalla,roll=data.get('roll',''),datum=formulardatum(data,'datum')) for id in ids)
+        dag=formulardatum(data,'datum')
+        if not kalla.strip() or not data.get('roll','').strip() or dag>date.today():
+            raise RiskanalysFel('Ange gemensamt underlag, ansvarig funktion och datum senast idag för tjänsteurvalet.')
+        svar=tuple(IntagSvar(falt=id,text='' if markers.get(id)=='okant' else markers[id] if nytt_format else 'ja' if id in markers else 'nej',
+            status='okänt' if nytt_format and markers[id]=='okant' else 'bekräftad',
+            motivering='Osäker vid genomgång av tjänsteutbudet; behöver kontrolleras.' if nytt_format and markers[id]=='okant' else '',
+            kalla=kalla,roll=data['roll'],datum=dag) for id in ids if not nytt_format or markers[id]!='bevara')
         from riskanalys.profil.modeller import Planval
         val=tuple(Planval(tjanst=t.id,plan_id=data['plan_'+t.id]) for t in s.tjanst.rb.tjanster.values() if data.get('plan_'+t.id))
         s.tjanst.spara_flera(svar,data.get('revision',''),planval=val)

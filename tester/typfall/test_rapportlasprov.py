@@ -231,7 +231,13 @@ def test_v7_frysta_anropsbytes_och_motor_bestaar(regelbas_v1,tmp_path):
     rot=frys_b_offline(f,tmp_path/'fryst')
     h=json.loads((rot/'manifest.json').read_text())['filer']
     assert h['forvantade-anropsbytes.json']=='9c043a4d83c7aaa0a54f57e68f023db9a5ca12cbc5a937992828cb69fe8bdb47'
-    assert h['bedomning.json']=='09b519f8d5f7ef960ff6dc5cb324a85753ff9ccb825f51e98ff1986ef2c15d39'
+    # Källbunden katalogmetadata ändrar bindningen, inte den frysta motorberäkningen.
+    from hashlib import sha256
+    bedomning=json.loads((rot/'bedomning.json').read_text())
+    assert bedomning['regelbas_kontrollsumma']==regelbas_v1.kontrollsumma
+    bedomning['regelbas_kontrollsumma']='sha256:7e0f77726a35b5e9fd47b8d324b43236cbeab5ded78c107ccfe54570cc97285f'
+    gamla_bytes=(json.dumps(bedomning,ensure_ascii=False,sort_keys=True,indent=2)+'\n').encode()
+    assert sha256(gamla_bytes).hexdigest()=='09b519f8d5f7ef960ff6dc5cb324a85753ff9ccb825f51e98ff1986ef2c15d39'
     assert h['profil.json']=='5d105915d92480d8fbdff77f077fd0c342c7f38a840c9dbbb219f869348f9caa'
 
 

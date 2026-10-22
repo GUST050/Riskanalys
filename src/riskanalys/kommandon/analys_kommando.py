@@ -27,6 +27,7 @@ def lagg_till(underparsers):
     operation.add_argument('--underkann', action='store_true')
     operation.add_argument('--bekrafta-block', type=int, choices=range(1,17), metavar='1–16', help='Bekräfta ett tidigare visat blocks aktuella svar.')
     operation.add_argument('--scenarioval', help='Bekräfta ett tidigare visat gemensamt scenario för en tjänst.')
+    parser.add_argument('--schema',type=int,choices=(1,2),default=1,help='Uttryckligt analysschema för förifyllnad/förslag.')
     parser.add_argument('--revision', default=None, help='Registersumma från aktuell status; tom sträng för första utkastet.')
     parser.add_argument('--tjanst')
     parser.add_argument('--namn', default='')
@@ -55,10 +56,10 @@ def kor(args):
     dag = args.datum or date.today()
     try:
         if args.forslag:
-            print(yaml.safe_dump(t.forslag().model_dump(mode='json'), allow_unicode=True, sort_keys=False))
+            print(yaml.safe_dump(t.forslag(schema=args.schema).model_dump(mode='json'), allow_unicode=True, sort_keys=False))
             return 0
         if args.forifyll:
-            t.starta(args.revision)
+            t.starta(args.revision,schema=args.schema)
         elif args.fornya:
             t.fornya(args.revision)
         elif args.importfil:

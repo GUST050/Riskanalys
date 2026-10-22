@@ -76,6 +76,8 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
     if any(not isinstance(r,Tjanstresultat) or r.formatversion != V8 for r in resultat.values()):
         raise RiskanalysFel('V8 kräver nya versionsbundna V8-skrivresultat. Skriv och granska på nytt; äldre utkast får inte märkas om.')
     index = gransindex if gransindex is not None else metodgransindex(rb)
+    if analys and analys.schemaversion==2:
+        raise RiskanalysFel('Analys i schema 2 saknar ännu rapportstöd i denna mellanleverans. Använd inte grenen i verklig verksamhet före B5.')
     refindex=bygg_analysreferenser(analys)
     brister=analysbrister(rb,profil,bedomning,analys) if analys else ()
     metodposter=(*rb.metod.regler(),*rb.metod.riskmatris)

@@ -6,30 +6,40 @@ from riskanalys.intag.tjanst import profilrevision
 
 
 def lista(s,p,data=None):
-    d=data or {};html='<section class="proposal"><h2>Välj byråns tjänster på en sida</h2><p>Markera alla tjänster ni faktiskt erbjuder. Uppgifterna behöver komma från din genomgång av verksamheten; SCB:s SNI-kod besvarar inte detta.</p>'
+    d=data or {};html='<section class="proposal"><h2>Välj byråns tjänster på en sida</h2><p>Välj bort tjänster som inte ingår och markera osäkra rader. Förslagen sparar inga uppgifter förrän du bekräftar urvalet. SCB:s SNI-kod besvarar inte detta.</p>'
     from riskanalys.intag.planvalsvy import behov_for_erbjudanden, planvalsfalt
     from riskanalys.profil.omfattning import kompatibilitetsvy
     vy=kompatibilitetsvy(p,s.tjanst.rb)
-    val={t.erbjuds_falt:(d.get('tjanst_'+t.erbjuds_falt)=='ja' if data is not None else
-         bool(vy.ar_bekraftad(t.erbjuds_falt) and vy.uppgifter[t.erbjuds_falt].varde is True))
+    val={t.erbjuds_falt:(d.get('tjanst_'+t.erbjuds_falt,'bevara') if d.get('urvalsformat')=='2' else
+         'ja' if d.get('tjanst_'+t.erbjuds_falt)=='ja' else 'nej') if data is not None else
+         'bevara' if t.erbjuds_falt in vy.uppgifter and vy.uppgifter[t.erbjuds_falt].status!='saknas' else 'ja'
          for t in s.tjanst.rb.tjanster.values()}
-    behov={b.tjanst:b for b in behov_for_erbjudanden(s,p,val)}
+    behov={b.tjanst:b for b in behov_for_erbjudanden(s,p,
+        {id:v=='ja' for id,v in val.items() if v in ('ja','nej')})}
     jamfor=data is not None and d.get('revision')!=profilrevision(p)
     if jamfor:
         html+='<p class="error">Profilen har ändrats. Ditt urval och underlag är bevarade. Jämför med de nu sparade erbjudandena och planerna nedan innan du bekräftar igen.</p>'
-    html+=f'<form method="post" action="{s.prefix}tjanster">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))
+    html+=f'<form method="post" action="{s.prefix}tjanster">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('urvalsformat','2')
     html+='<div class="tjanster">'
     for t in s.tjanst.rb.tjanster.values():
         id=t.erbjuds_falt;u=p.uppgifter.get(id)
-        checked=val[id]
-        html+=f'<label class="check"><input type="checkbox" name="tjanst_{e(id)}" value="ja" {"checked" if checked else ""}><span>{e(t.namn)}<br><small class="hint">{e(t.beskrivning)}</small></span></label>'
+        html+=f'<label for="tjanst-{e(t.id)}">{e(t.namn)}</label><p>{e(t.beskrivning)}</p>'
+        html+=f'<select id="tjanst-{e(t.id)}" name="tjanst_{e(id)}" required>'
+        for v,namn in (('bevara','Behåll sparad uppgift'),('ja','Erbjuds – bekräftas vid sparning'),('nej','Erbjuds inte'),('okant','Osäker – sparas som okänt')):
+            html+=f'<option value="{v}" {"selected" if val[id]==v else ""}>{namn}</option>'
+        html+='</select>'
+        html+='<details><summary>Ogranskat förslag till tjänstens innehåll</summary><p>Kontrollera mot uppdragsavtalet. Förslagen är inte belägg för vad byrån gör.</p>'
+        for rubrik,poster in (('Arbetsmoment',t.arbetsmoment),('Befogenheter att pröva',t.befogenheter),('Kompletteringsfrågor',t.kompletteringsfragor)):
+            if poster:
+                html+=f'<h3>{rubrik}</h3><ul>'+''.join(f'<li>{e(x)}</li>' for x in poster)+'</ul>'
+        html+='</details>'
         if jamfor:
             sparat='ja' if vy.ar_bekraftad(id) and vy.uppgifter[id].varde is True else 'nej' if vy.ar_bekraftad(id) and vy.uppgifter[id].varde is False else 'okänt'
-            html+=f'<p>Nu sparat: {sparat}. Ditt bevarade val: {"ja" if checked else "nej"}.</p>'
+            html+=f'<p>Nu sparat: {sparat}. Ditt bevarade val: {e(val[id])}.</p>'
         if t.id in behov:
             html+=planvalsfalt(s,behov[t.id],'plan_'+t.id,d.get('plan_'+t.id,''))
-    html+='</div><p>Denna genomgång ersätter tjänstesvaren. Ändrade erbjudanden kan kräva att tidigare följdsvar kontrolleras igen.</p>'
-    html+='<label class="check"><input type="checkbox" name="hela_listan" value="ja" '+('checked ' if d.get('hela_listan')=='ja' and not jamfor else '')+'required> Jag har kontrollerat hela listan och bekräftar att omarkerade tjänster inte erbjuds.</label>'
+    html+='</div><p>Behåll sparad uppgift ändrar inga tidigare värden eller belägg. Ja och nej ersätter svaret med angivet underlag; osäker blir aldrig ett bekräftat ja. Ändrade erbjudanden kan kräva att följdsvar kontrolleras igen.</p>'
+    html+='<label class="check"><input type="checkbox" name="hela_listan" value="ja" '+('checked ' if d.get('hela_listan')=='ja' and not jamfor else '')+'required> Jag har kontrollerat hela listan och bekräftar mina val per rad.</label>'
     from riskanalys.intag.underlagsvy import underlagsval
     f=s.tjanst.rb.falt[next(iter(s.tjanst.rb.tjanster.values())).erbjuds_falt]
     html+=underlagsval(s,p,f,data,formid='tjanst')

@@ -374,6 +374,17 @@ class Tjanst(Strikt):
     grund_konsekvens: Konsekvens
     grund_tf_sannolikhet: Sannolikhet
     kallor: tuple[str, ...] = Field(min_length=1)
+    arbetsmoment: tuple[str, ...] = ()
+    befogenheter: tuple[str, ...] = ()
+    kompletteringsfragor: tuple[str, ...] = ()
+
+    @model_serializer(mode='wrap')
+    def serialisera(self, handler):
+        data = handler(self)
+        for falt in ('arbetsmoment', 'befogenheter', 'kompletteringsfragor'):
+            if not getattr(self, falt):
+                data.pop(falt, None)
+        return data
 
 
 class Bristmonster(Strikt):

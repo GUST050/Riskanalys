@@ -157,7 +157,7 @@ def test_fraga_har_gemenskapslista_utan_att_tvinga_okanda_tjanster(webb):
     html=anrop(s,'?falt=P-TJ.red01_erbjuds')[1]
     assert 'Välj byråns tjänster på en sida' in html
     assert f'{s.prefix}tjanster' in html
-    assert 'omarkerade tjänster inte erbjuds' in html
+    assert 'Osäker – sparas som okänt' in html
     assert 'besvara tjänsterna en i taget' in html
 
 

@@ -8,7 +8,7 @@ from riskanalys.analys.provning import ALLTID, faktisk_reduktion
 from riskanalys.analys.exponering import forifylld_exponering
 
 
-def forifyll_analys(rb,profil,bedomning,bindning) -> Analyspaket:
+def forifyll_analys(rb,profil,bedomning,bindning,*,schema=1) -> Analyspaket:
     belagg=tuple(Analysbelagg(id='profil:'+f,profilfalt=(f,),datum=u.datum,period=u.period)
                  for f,u in sorted(profil.uppgifter.items())
                  if f in rb.falt and profil.ar_bekraftad(f) and u.datum and u.kalla and u.bekraftad_av
@@ -51,4 +51,10 @@ def forifyll_analys(rb,profil,bedomning,bindning) -> Analyspaket:
             reduktionsprovning='okand' if faktisk_reduktion(t) else 'ej_reduktion',
             pt_motivering=f'Motorns PT-utfall: {t.inneboende.risk if t.inneboende else "okänt"}; kvarstående {t.kvarstaende or "okänd"}. Lokal rimlighetsprövning återstår.',
             tf_motivering=f'Motorns TF-utfall: {t.terrorfinansiering.risk if t.terrorfinansiering else "okänt"}. Separat lokal prövning återstår.'))
-    return Analyspaket(bindning=bindning,belagg=belagg,gemensamma_scenarier=gemensamma,tjanster=tuple(tjanster))
+    paket=Analyspaket(bindning=bindning,belagg=belagg,gemensamma_scenarier=gemensamma,tjanster=tuple(tjanster))
+    if schema==1:
+        return paket
+    if schema!=2:
+        raise ValueError('Välj analysschema 1 eller 2.')
+    from riskanalys.analys.gemensam import forifyll_gemensamt
+    return forifyll_gemensamt(rb,paket)

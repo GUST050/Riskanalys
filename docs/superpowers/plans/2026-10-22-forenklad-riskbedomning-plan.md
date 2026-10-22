@@ -14,7 +14,7 @@
 
 **Godkänd med precisering:** Användaren har därefter godkänt planen och begärt en kontrafaktisk +1-referens bredvid täckningsprövningens jämförelsenivå. Den ingår nedan. Mellanleveransen efter B3 är endast för utveckling/granskning; den får inte lämnas till verklig användning innan B5:s rapportstöd är färdigt och verifierat.
 
-**Verifierad produktbas efter plan A:** `b3cf49080fc20e70665d2917042a3a3a6122bf9e`. Slutprov: 3 063 passerade, ett bortvalt livetest, exit 0 på Python 3.12.15. Använd denna kodbas (med eventuella senare rena dokumentationscommits) för B1, efter användarens granskning med Claude.
+**Verifierad produktbas efter plan A:** `b3cf49080fc20e70665d2917042a3a3a6122bf9e`. Slutprov: 3 063 passerade, ett bortvalt livetest, exit 0 på Python 3.12.15. Använd denna kodbas (med eventuella senare rena dokumentationscommits) för B1. Granskningsunderlag för Claude finns vid varje leveransgräns.
 
 ## Global Constraints
 

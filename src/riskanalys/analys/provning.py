@@ -46,6 +46,19 @@ def registersumma(paket: Analyspaket) -> str:
 
 def blocksumma(paket: Analyspaket, tjanst: str, nummer: int) -> str:
     t=next(t for t in paket.tjanster if t.tjanst==tjanst)
+    gemensamt={}
+    if paket.schemaversion==2:
+        from riskanalys.analys.gemensam import effektiv_tjanst
+        gemensamt={
+            'sarbarhetstillampningar':[x.model_dump(mode='json') for x in t.sarbarhetstillampningar],
+            'verksamhetstillampningar':[x.model_dump(mode='json') for x in t.verksamhetstillampningar],
+            'tackningsprovningar':[x.model_dump(mode='json') for x in t.tackningsprovningar],
+            'sarbarheter':[x.model_dump(mode='json') for x in paket.gemensamma_sarbarhetsprovningar
+                          if x.id in {a.post for a in t.sarbarhetstillampningar}],
+            'verksamhet':[x.model_dump(mode='json') for x in paket.gemensamma_verksamhetsposter
+                         if x.id in {a.post for a in t.verksamhetstillampningar}],
+        }
+        t=effektiv_tjanst(paket,tjanst)
     data=t.model_dump(mode='json')
     block=next((b for b in t.block if b.nummer==nummer),None)
     innehall={f:data[f] for f in BLOCKFALT[nummer]}
@@ -61,7 +74,8 @@ def blocksumma(paket: Analyspaket, tjanst: str, nummer: int) -> str:
             beroenden[f]=data[f]
     if nummer in (4,10,11,12):
         beroenden['betalningsinsyn']=data['betalningsinsyn']
-    return summa(dict(underlag=paket.bindning.model_dump(mode='json'),tjanst=tjanst,
+    tillagg={'gemensamt':gemensamt} if paket.schemaversion==2 else {}
+    return summa(dict(underlag=paket.bindning.model_dump(mode='json'),tjanst=tjanst,**tillagg,
         nummer=nummer,innehall=innehall,beroenden=beroenden,
         aktivering=block.aktivering if block else None,
         motivering=block.motivering if block else None,
@@ -272,6 +286,9 @@ def analysbrister(rb, profil, bedomning, paket: Analyspaket) -> tuple[str,...]:
     krav(paket.bindning.profilrevision==profilrevision(profil),'Profilen har ändrats; förnya analysunderlaget.')
     krav(paket.bindning.regelbas==rb.kontrollsumma==bedomning.regelbas_kontrollsumma,'Regelbasbindningen stämmer inte.')
     krav(paket.bindning.bedomningsdatum==bedomning.datum,'Bedömningsdatum stämmer inte.')
+    if paket.schemaversion==2:
+        from riskanalys.analys.provning_v2 import gemensamma_analysbrister
+        fel.extend(gemensamma_analysbrister(rb,profil,bedomning,paket))
     belagg={b.id:b for b in paket.belagg}
     for b in paket.belagg:
         for f in b.profilfalt:
@@ -296,6 +313,9 @@ def analysbrister(rb, profil, bedomning, paket: Analyspaket) -> tuple[str,...]:
         if a is None:
             fel.append(f'{t.tjanst}: tjänsteanalys saknas.')
             continue
+        if paket.schemaversion==2:
+            from riskanalys.analys.gemensam import effektiv_tjanst
+            a=effektiv_tjanst(paket,a.tjanst)
         _tjanstbrister(rb,profil,t,a,paket,gem,belagg,krav,t.tjanst in sektorer)
         g=gallande_beslut(paket,t.tjanst)
         # Även ett tidigare sparat godkännande prövas, så att dokument och fastställelse stoppas.
@@ -382,7 +402,7 @@ def _tjanstbrister(rb,profil,t,a,paket,gem,belagg,krav,sektorsavvikelse):
         text(getattr(a,namn),namn)
     refs(a.exponeringsbelagg,'Exponering');refs(a.erfarenhetsbelagg,'Erfarenhetsprövning')
     _insyn_uppdrag(a,aktiv,text,refs,k)
-    _sarbarheter(a,rb,katalog,scenarier,relevanta,text,refs,k)
+    _sarbarheter(a,rb,katalog,scenarier,relevanta,text,refs,k,gemensamma=paket.schemaversion==2)
     _kontroller_rutiner(a,rb,profil,katalog,scenarier,relevanta,belagg,text,refs,k)
     if aktiv(15):text(a.sektorsjamforelse,'Sektorsjämförelse');text(a.sanktioner,'Sanktionsprövning')
     k(a.reduktionsprovning not in ('okand','metodkonflikt'),'Reduktionsprövningen har okänd effekt eller metodkonflikt.')
@@ -432,7 +452,7 @@ def _insyn_uppdrag(a,aktiv,text,refs,k):
             refs(l.belagg,l.id)
 
 
-def _sarbarheter(a,rb,katalog,scenarier,relevanta,text,refs,k):
+def _sarbarheter(a,rb,katalog,scenarier,relevanta,text,refs,k,*,gemensamma=False):
     omraden = ('kund','kanal','geo','verk') + (('tjanst',) if any(rb.sarbarheter[id].omrade == 'tj' for id in katalog.sarbarheter) else ())
     for omrade in omraden:
         k(any(s.omrade==omrade for s in a.sarbarhetsprovningar),f'Sårbarhetsområdet {omrade} saknas.')
@@ -440,7 +460,7 @@ def _sarbarheter(a,rb,katalog,scenarier,relevanta,text,refs,k):
         k(s.relevans!='okant',f'{s.id}: sårbarhetens relevans är okänd.')
         text(s.motivering,s.id);refs(s.belagg,s.id)
         for id in s.sarbarheter:
-            k(id in katalog.sarbarheter and id in rb.sarbarheter,f'{s.id}: okänd sårbarhet {id}.')
+            k(id in rb.sarbarheter and (id in katalog.sarbarheter or gemensamma and s.id.startswith('gemensam:')),f'{s.id}: okänd sårbarhet {id}.')
             if id in rb.sarbarheter:k(('tjanst' if rb.sarbarheter[id].omrade=='tj' else rb.sarbarheter[id].omrade)==s.omrade,f'{s.id}: sårbarheten hör till annat område.')
         k(set(s.scenarier)<=set(scenarier),f'{s.id}: okänd scenarioreferens.')
         if s.relevans=='relevant':k(bool(set(s.scenarier)&relevanta),f'{s.id}: relevant sårbarhet saknar relevant scenario.')
