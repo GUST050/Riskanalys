@@ -14,6 +14,8 @@
 
 **Godkänd med precisering:** Användaren har därefter godkänt planen och begärt en kontrafaktisk +1-referens bredvid täckningsprövningens jämförelsenivå. Den ingår nedan. Mellanleveransen efter B3 är endast för utveckling/granskning; den får inte lämnas till verklig användning innan B5:s rapportstöd är färdigt och verifierat.
 
+**Verifierad produktbas efter plan A:** `b3cf49080fc20e70665d2917042a3a3a6122bf9e`. Slutprov: 3 063 passerade, ett bortvalt livetest, exit 0 på Python 3.12.15. Använd denna kodbas (med eventuella senare rena dokumentationscommits) för B1, efter användarens granskning med Claude.
+
 ## Global Constraints
 
 - Planeringen utgår från `837917253c4d0edc99969bd056f19afd9695a85d`, produktkod `91a3ece`. Den separata [planrättningen A1–A3](2026-10-22-planaterkallelse-och-inforandeval-plan.md) ska genomföras och verifieras först. Registrera dess faktiska leverans-SHA innan B1; hitta inte på ett framtida SHA.

@@ -2,7 +2,7 @@
 
 Datum: 2026-10-22. Gren: `codex/kravstod-tjansteexponering` i `/Users/danieltrogen/Documents/ChatGPT/Riskbedömning/Riskanalys`.
 
-**Status:** Plan A är implementerad och tekniskt slutverifierad, klar för användarens granskning med Claude. Detta dokument är implementerarens redovisning, inte Claudes oberoende granskning. Leverans-SHA registreras efter commit.
+**Status:** Plan A är implementerad och tekniskt slutverifierad, klar för användarens granskning med Claude. Detta dokument är implementerarens redovisning, inte Claudes oberoende granskning. **Produktleverans: `b3cf49080fc20e70665d2917042a3a3a6122bf9e`**. Ingen push eller merge är gjord.
 
 **Bas:** `837917253c4d0edc99969bd056f19afd9695a85d`; produktkod före ändringen `91a3ece`. [Godkänd plan A](../plans/2026-10-22-planaterkallelse-och-inforandeval-plan.md), [godkänd design revision 2](../specs/2026-10-22-forenklad-riskbedomning-design.md).
 
@@ -37,7 +37,7 @@ Fullsvit 2 avbröts inför etikettfixen efter 395,49 s: 1 677 passerade, ett bor
 
 ### Slutlig fullsvit
 
-**Slutresultat: 3 063 passerade, ett bortvalt livetest, exit 0, 1 748,27 sekunder.** JUnit innehåller 3 063 testfall, 0 fel, 0 uppsättningsfel och 0 överhoppningar. Alla 416 registrerade Python-/YAML-/testfiler samt pyproject i filförteckningen var byteidentiska före och efter, och inga filer tillkom i det urvalet. Regelbasvalidering och diffkontroll passerar.
+**Slutresultat: 3 063 passerade, ett bortvalt livetest, exit 0, 1 748,27 sekunder.** JUnit innehåller 3 063 testfall, 0 fel, 0 uppsättningsfel och 0 överhoppningar. Samtliga 416 registrerade filer i filförteckningen (Python, YAML och pyproject) var byteidentiska före och efter, och inga filer tillkom i det urvalet. Regelbasvalidering och diffkontroll passerar.
 
 Kommando: `.venv312/bin/python -m pytest -q --junitxml=.superpowers/sdd/2026-10-22-planaterkallelse-och-inforandeval-plan/fullsuite.xml`. Rålogg och fryst filförteckning ligger lokalt i samma ignorerade katalog. Regelbasvalideringen gav giltig regelbas 2.0.0, 107 krav och 11 tjänster; kontrollsumma `sha256:7e0f77726a35b5e9fd47b8d324b43236cbeab5ded78c107ccfe54570cc97285f`.
 
@@ -57,3 +57,5 @@ En syntetisk tvådelad V8-export skapades med programmets befintliga exportör o
 ## Fokus för Claude
 
 Granska särskilt terminal historik vid import, historiskt nej/alias, återkallad plans utvärderingar och årsfristen, endast valt genomförande samt atomiken vid fel i andra införanderaden. Kontrollera även att kandidatvisning aldrig i sig sparar ett erbjudande och att UI:s nya jämförelse efter ändrad revision är uttrycklig. Använd den här klonens kod och testhjälpare; gamla granskningstester på en annan gren ska inte av misstag importera en äldre produktmodell.
+
+Granskningsintervall för produktändringen: `837917253c4d0edc99969bd056f19afd9695a85d..b3cf49080fc20e70665d2917042a3a3a6122bf9e`. Senare dokumentationscommit låser detta SHA som plan B:s bas; den ändrar ingen produktkod.
