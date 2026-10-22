@@ -67,7 +67,12 @@ def las_tillampning(data,rb=None,paket=None):
             kopplingar.append(m.Hotanknytning(hot=hot,dimension=dim))
         raw['hotkopplingar']=tuple(kopplingar)
         val={key.removeprefix('riktningsval.'):v for key,v in data.items() if key.startswith('riktningsval.')}
-        if val:
+        if val and raw['stallningstagande']!='galler_annorlunda':
+            a=next((a for a in paket.tjanster if a.tjanst==data.get('tjanst')),None) if paket else None
+            tidigare=next((x for x in a.sarbarhetstillampningar if x.post==ref.post),None) if a else None
+            if tidigare is None or tidigare.stallningstagande!='galler_annorlunda':
+                raise RiskanalysFel('Manuella riktningsfält får bara lämnas vid gäller annorlunda eller kasseras när det valet lämnas.')
+        elif val:
             val['belagg']=ids(val.get('belagg',''));raw['riktningsval']=m.Riktningsval.model_validate(val)
         elif raw['stallningstagande']=='galler_annorlunda':raw['riktningsval']=m.Riktningsval()
     if set(data)-tillatna:raise RiskanalysFel('Programhärledd riktning får inte skickas in. Kontrollera formulärets fält.')

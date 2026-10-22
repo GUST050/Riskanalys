@@ -38,7 +38,7 @@ def genomgang(rb,profil,bedomning,paket,tjanst,prefix,csrf,revision):
     html+='<p>Motorns PT: '+e(t.inneboende.risk if t.inneboende else 'okänt')+'; kvarstående: '+e(t.kvarstaende or 'okänt')+'; TF: '+e(t.terrorfinansiering.risk if t.terrorfinansiering else 'okänt')+'.</p>'
     html+='<h2>Redan besvarade tjänstefrågor</h2><p>Bekräftade fakta från tjänstebeskrivningen och intaget används direkt. De ska inte skrivas om i analysen.</p><dl>'
     for id,etikett,varde,kalla,datum,period,ansvarig in tjanstefakta(rb,profil,tjanst):
-        html+='<dt>'+e(etikett)+'</dt><dd>'+e(varde)+' · '+e(str(kalla or ''))+' · '+e(str(datum or ''))+' · '+e(str(period or ''))+' · '+e(str(ansvarig or ''))+'</dd>'
+        html+='<dt>'+e(etikett)+'</dt><dd>'+e(varde)+' · '+e(str(kalla or ''))+' · '+e(str(datum or ''))+' · '+e((period.fran.isoformat()+'–'+period.till.isoformat()) if period else '')+' · '+e(str(ansvarig or ''))+'</dd>'
     html+='</dl><h2>Gemensamma källor</h2><ul>'
     for slag,poster,appar in (('sarbarhet',paket.gemensamma_sarbarhetsprovningar,a.sarbarhetstillampningar),('verksamhet',paket.gemensamma_verksamhetsposter,a.verksamhetstillampningar)):
         for p in poster:
@@ -55,11 +55,22 @@ def genomgang(rb,profil,bedomning,paket,tjanst,prefix,csrf,revision):
     rubriker={b.nummer:b.rubrik for b in guideblock(a)}
     for n,namn in BLOCKFALT.items():
         html+='<section><h2>'+str(n)+'. '+e(rubriker[n])+'</h2>'
+        delade=set()
         for key in namn:
             # Gemensamma sakfrågor redigeras en gång. Lokala avvikelser visas i tillämpningen.
-            if key=='scenariokopplingar' or delad_verksamhetspost(paket,a,key):continue
+            if key=='scenariokopplingar':continue
+            delad=delad_verksamhetspost(paket,a,key)
+            if delad:
+                if delad.id not in delade:
+                    html+='<p>Återanvänds från gemensamt underlag: '+e(delad.id)+'. Lokala undantag prövas separat.</p>'
+                    delade.add(delad.id)
+                continue
             value=getattr(effektiv,key)
-            if key=='sarbarhetsprovningar':value=tuple(x for x in value if not x.id.startswith('gemensam:'))
+            if key=='sarbarhetsprovningar':
+                value=tuple(x for x in value if not x.id.startswith('gemensam:'))
+                if not value:
+                    html+='<p>Gemensamma sårbarheter återanvänds från källorna ovan. Inga lokala tillägg är registrerade.</p>'
+                    continue
             html+='<p><strong>'+e(_etikett(key))+'</strong>: '+e(_lasbar(value))+'</p>'
         html+='<a href="'+e(prefix+'analys?'+urlencode({'tjanst':tjanst,'block':n}),quote=True)+'">Komplettera lokala uppgifter</a></section>'
     html+='<h2>Visade gemensamma scenarier</h2>'
@@ -67,7 +78,7 @@ def genomgang(rb,profil,bedomning,paket,tjanst,prefix,csrf,revision):
         s=next((s for s in paket.gemensamma_scenarier if s.id==k.scenario),None)
         if s:html+='<article><h3>'+e(s.rubrik)+'</h3><p>'+e(s.handelseforlopp)+'</p><p>'+e(s.relevans+': '+s.motivering)+' · Belägg: '+e(', '.join(s.belagg))+'</p><p>Tillämpning: '+e(k.tillampning)+' '+e(k.motivering or '')+'</p></article>'
     html+='<h2>Faktorernas betydelse per hot och dimension</h2><ul>'
-    for r in harled_riktningar(rb,profil,paket,t):html+='<li>'+e(r.post+' · '+r.hot+' · '+r.dimension+': '+r.riktning+'. '+r.motivering)+'</li>'
+    for r in harled_riktningar(rb,profil,paket,t):html+='<li>'+e(r.post+' · '+(r.sarbarhet or 'egen sårbarhet')+' · '+r.hot+' · '+r.dimension+': '+r.riktning+'. '+r.motivering)+'</li>'
     html+='</ul><h2>Separata täckningsprövningar</h2><ul>'
     for ursprung,post,hot,dim in egna_ansprak(rb,paket,t):
         for s in paket.gemensamma_scenarier:

@@ -41,23 +41,22 @@ def normalisera(text):
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("fall",nargs="?",default="fyra_tjanster")
-    parser.add_argument("--analys-schema",type=int,choices=(1,2),default=1)
+    parser.add_argument("--analys-schema",type=int,choices=(1,2),default=None)
+    parser.add_argument('--analyslage',choices=('schema1','direkt2','overforing2'))
     args=parser.parse_args(argv)
+    from docs.research.verktyg.analyslagen import valj_lage,bygg
+    lage=valj_lage(parser,args.analyslage,args.analys_schema)
     global TJANSTNAMN
     rb = ladda_regelbas()
     TJANSTNAMN = tuple(t.namn for t in rb.tjanster.values())
     with tempfile.TemporaryDirectory() as rot:
         fall = args.fall
         print('Provfall:', fall)
-        f = bygg_rapportlasprov(rb, Path(rot).resolve(), fall)
-        original=f.analys
-        if args.analys_schema==2:
-            from riskanalys.analys.overforing import foresla_overforing
-            f=replace(f,analys=foresla_overforing(rb,original))
+        f = bygg(rb,Path(rot).resolve(),fall,lage)
         svar=skriv(f)
         def hashv(v):return 'sha256:'+sha256(json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
-        print('Mätkontrakt:',json.dumps({'format':'D-ARB-tjanst-v8','analys_schema':args.analys_schema,
-            'tillstand':'ogranskat uttryckligt överföringsförslag, samtliga lokala originalsvar bevarade',
+        print('Mätkontrakt:',json.dumps({'format':'D-ARB-tjanst-v8','analys_schema':f.analys.schemaversion,'analyslage':lage,'arbetsbord':f.arbetsbord,
+            'tillstand':'syntetiska ogranskade svar; överföringsoriginal bevaras enbart i overforing2',
             'profil':hashv(f.profil.model_dump(mode='json')),'motor':hashv(f.bedomning.model_dump(mode='json')),
             'skrivsvar':hashv(frysta_skrivsvar(svar)),'regelbas':rb.kontrollsumma},ensure_ascii=False,sort_keys=True))
         d = bygg_arb_v8(rb, f.profil, f.bedomning, svar, Historik(), analys=f.analys)

@@ -31,6 +31,9 @@ def test_hela_schema_tva_privata_begaran_ar_bytevis_oforandrad(regelbas_v1,tmp_p
         t=p.tjanster[0].model_copy(update={'sarbarhetstillampningar':(app,),'tackningsprovningar':(prov,)})
         p=p.model_copy(update={'gemensamma_sarbarhetsprovningar':(g,*p.gemensamma_sarbarhetsprovningar[1:]),
             'gemensamma_verksamhetsposter':(v,*p.gemensamma_verksamhetsposter[1:]),'tjanster':(t,*p.tjanster[1:])})
+        from riskanalys.analys.engangssvar import bygg_gemensam_bekraftelse,visade_celler
+        ids=tuple(a.tjanst for a in p.tjanster)
+        p=bygg_gemensam_bekraftelse(p,ids,visade_celler(p,ids),'PRIVAT-SCHEMA2-HELHETSANSVAR-X')
         variant=replace(f,analys=p);placera_privat_analys(variant)
         resultat,andra=skriv_fall(variant,skript=skript)
         assert andra==requests and len(resultat)==len(baseline)

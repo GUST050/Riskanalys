@@ -96,3 +96,17 @@ CLI visar aktuell registersumma vid analysstatus. Typade filer för `--bekrafta-
 ### Omfattning utanför katalogen
 
 För en tjänst som programmet ännu inte kan analysera kan **ofullständigt omfattningsunderlag** exporteras från översikten eller med `riskanalys exportera BYRA --omfattningsunderlag`. Det återger kända verksamhetsuppgifter och den uttryckligt beskrivna luckan, utan risknivåer. Filen har separat ID/manifesttyp och får inte fastställas som allmän riskbedömning. Detta är en känd produktbegränsning. Nästa utvecklingssteg är spårbar, sakgranskad manuell tjänsteanalys, märkt ”Manuell bedömning – ej motorberäknad”; den är inte införd här.
+
+## Engångssvar och samlad tjänstegenomgång 2026-10-22
+
+Besvara gemensamma sårbarhets- och verksamhetsfrågor en gång i **Gemensam byråanalys**. Kontrollera sedan den visade tjänstelistan och välj **Bekräfta gemensamt underlag för valda tjänster**. Det återanvänder oförändrade svar i alla valda erbjudna tjänster. Lokala undantag och otillräckligt underlag bevaras; en bekräftelse gör aldrig ett antagande till ett sakförhållande.
+
+Öppna varje tjänsts **samlade underlag**. Där visas redan bekräftade profiluppgifter, inklusive tjänstebeskrivning och period, som läst underlag. Gemensamma frågor ska inte besvaras igen. Komplettera tjänstens egna resonemang och undantag och välj **Bekräfta visat tjänsteunderlag**. Programmet kontrollerar samma fullständighet och riskspärrar som tidigare och registrerar interna block-/scenariobekräftelser; analysgodkännande och dokumentets sakgranskning är fortfarande separata.
+
+Ordningen är gemensam bekräftelse → eventuella egna täckningsprövningar → tjänstegenomgång. Om en egen täckningsprövning bygger på ett gemensamt scenario väljs det bärande scenariot uttryckligen före prövningen. Alla nödvändiga hot, PT/TF och riskled måste täckas; en för låg jämförelsenivå behöver uttrycklig motivering. Senare ändrad prövning gör tjänstegenomgången inaktuell. En ändrad gemensam post kräver ny gemensam jämförelse/bekräftelse och nya beroende genomgångar; paketets analysbeslut förnyas enligt befintlig bindning.
+
+För ett komplett fyrtjänstfall är det en gemensam och fyra tjänstebekräftelser **efter svarsinmatning**, inte fem totala klick. Öppna kontroll-, underlags- och metodbrister behöver fortfarande lösas. Rapportläsprovens avsiktliga luckor är därför kvar, och rapporten är inte generellt kortare.
+
+CLI har samma handlingar: `analys BYRA --bekrafta-byraunderlag FIL --revision SUMMA --forfattare NAMN` med filens exakta `tjanster` och typade `celler` (tjänst, slag, post, postsumma), samt `--bekrafta-tjansteunderlag TJANST_ID`. De skapar inga analysbeslut. Mätverktygen har `--analyslage schema1|direkt2|overforing2`; de gamla standardlägena och rapportmätningens `--analys-schema` är bevarade. Motstridiga lägesflaggor avvisas.
+
+Prefixet `gemensam:` är en intern referens i läsvyn, inte ett ID som användaren ska skriva som en lokal sårbarhet. För metodval D3/D9 och egna tjänster utanför katalogen gäller fortfarande tidigare begränsningar. [Mätning, verifiering och underlag för Claude](superpowers/reviews/2026-10-22-engangssvar-slutprov.md).

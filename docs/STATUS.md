@@ -1,3 +1,9 @@
+# Engångssvar – slutgranskning återstår 2026-10-22
+
+Plan F är implementerad: gemensamma svar skrivs en gång, en gemensam handling och en tjänstegenomgång per erbjuden tjänst ersätter separata standardtillämpnings-/scenario-/blockklick. Lokala undantag, täckningsprövningar och sakgrindar består. Snabbprofil 102 godkända/34,006 s och analysprofil 217/168,677 s är verifierade mot collection/JUnit och oförändrade källor. Oberoende slutgranskning och gemensam fullsvit för T+F återstår före leverans. [Arbetssätt, faktiska rapportmått och begränsningar](superpowers/reviews/2026-10-22-engangssvar-slutprov.md). Ingen push eller merge.
+
+## Tidigare testcheckpoint
+
 # Testomläggning under slutverifiering 2026-10-22
 
 Testplan T har explicita snabb-/analysprofiler, isolerade kedjekopior och färre upprepade transporter. Första fulla pytest: **3 214 godkända, ett liveprov bortvalt, 1 660,05 s**. Ett separat fel i körverktygets hantering av parametriserade testnamn är rättat med två RED-regressioner; samtliga tio verktygsprov passerar och samma fulla collection/JUnit matchar exakt med rättningen. **Slutlig leveransgrind för den rättade testinfrastrukturen samordnas med plan F; ingen push eller merge före den.** [Mätning](superpowers/reviews/2026-10-22-testtid-slutprov.md) och [täckningsmatris](superpowers/reviews/2026-10-22-testtackningsmatris.md) redovisar begränsningar och råbevis.

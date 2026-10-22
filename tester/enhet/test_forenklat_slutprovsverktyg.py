@@ -43,3 +43,19 @@ def test_frysta_skrivsvar_undantar_bara_anropstid_och_bevarar_text(v8fall):
     assert m.frysta_skrivsvar(med(annat))==data
     assert m.frysta_skrivsvar(med(forsok.model_copy(update={'text':forsok.text+' Ändrat svar.'})))!=data
     assert {k:v.model_dump_json() for k,v in r.items()}==fore
+
+
+def test_analyslage_ar_uttryckligt_och_alias_skyddat(capsys):
+    m=verktyg('rapportmatning.py')
+    with pytest.raises(SystemExit):m.main(['fyra_tjanster','--analys-schema','1','--analyslage','direkt2'])
+    assert 'olika arbetssätt' in capsys.readouterr().err
+
+
+def test_nativt_slutprov_loggar_handlingar_och_noll_tackningsbehov(tmp_path):
+    m=verktyg('forenklad_slutprov.py');ut=tmp_path.resolve()/'direkt2'
+    assert m.main(['--ut',str(ut),'--fall','fyra_tjanster','--analyslage','direkt2'])==0
+    data=json.loads((ut/'slutprov.json').read_text())
+    assert data['analyslage']=='direkt2' and data['analysschema']==2 and len(data['filer'])==2
+    assert data['arbetsbord']['gemensamma_svar']==7
+    assert data['arbetsbord']['tackningsprovningar_kravda']==data['arbetsbord']['tackningsprovningar_utforda']==0
+    assert data['matning']['b1']>0 and len(data['matning']['per_del'])==2

@@ -52,6 +52,25 @@ def gemensamma_provningsstycken(rb,paket):
     return tuple(stycken)
 
 
+def _korta_d9(riktningar,tjanst):
+    """En lokal upplysning per faktor; fulla villkor finns redan samlat i B1."""
+    grupper={}
+    for r in riktningar:
+        if r.riktning in ('under_troskel','villkor_ej_uppfyllt'):
+            grupper.setdefault((r.post,r.sarbarhet,r.riktning),[]).append(r)
+    stycken=[]
+    for (post,faktor,riktning),rows in grupper.items():
+        hot=', '.join(dict.fromkeys(r.hot+'/'+r.dimension for r in rows))
+        refs=tuple(dict.fromkeys((tjanst,'D-ARB.5','D-ARB.B1',faktor,
+            'ANALYS:gemensam_sarbarhet:'+post,
+            *(f for r in rows for f in (*r.profilfalt,*r.regelspar)))))
+        text=(f'{post} / {faktor}: {etikett(riktning)}. Hot/dimension: {hot}. '
+            'Motorn har prövat villkoret som falskt. Aktuella fakta, fullständigt villkor och berörda tjänster '
+            'redovisas samlat i B1, Upplysningar för metoduppföljning D9 C. Ingen tröskel eller risknivå ändras.')
+        stycken.append(lokaltext(text,refs))
+    return tuple(stycken)
+
+
 def tjanstens_tillampningsstycken(rb,profil,paket,t):
     if paket is None or paket.schemaversion!=2:return ()
     a=next((a for a in paket.tjanster if a.tjanst==t.tjanst),None)
@@ -68,14 +87,16 @@ def tjanstens_tillampningsstycken(rb,profil,paket,t):
             if p.status!='bekraftad':text+=' Osäkerheten gäller även denna tjänst; antagandet är inte ett bekräftat faktum.'
             stycken.append(originalstycke(text,(('Lokal motivering: ',app.motivering if app else ''),),(*refs,*('ANALYS:belagg:'+b for b in (app.belagg if app else ())))))
     if samma:stycken.insert(0,lokaltext('Gemensamt faktaunderlag gäller oförändrat för tjänsten, enligt uttrycklig prövning: '+', '.join(samma)+'. Se gemensamma mekanismer och belägg i Gemensamt faktaunderlag.',(t.tjanst,'D-ARB.5','D-ARB.B1')))
-    for r in harled_riktningar(rb,profil,paket,t):
-        if r.riktning=='i_linje':continue
+    riktningar=harled_riktningar(rb,profil,paket,t)
+    for r in riktningar:
+        if r.riktning in ('i_linje','under_troskel','villkor_ej_uppfyllt'):continue
         fakta='; '.join(f'{f}={profil.uppgifter[f].varde}' if profil.ar_bekraftad(f) else f'{f}=okänt' for f in r.profilfalt)
         villkor=rb.sarbarheter.get(r.sarbarhet)
         regel=(' Villkor: '+json.dumps(villkor.villkor,ensure_ascii=False,sort_keys=True)+'.') if villkor and r.riktning in ('under_troskel','villkor_ej_uppfyllt') else ''
         text=f'{r.post} / {r.sarbarhet or "egen sårbarhet"} / {r.hot} / {r.dimension}: {etikett(r.riktning)} ({etikett(r.kalla)}). {r.motivering}'+(' Faktaunderlag: '+fakta+'.' if fakta else '')+regel
         if r.riktning in ('under_troskel','villkor_ej_uppfyllt'):text+=' Upplysning till D9 C, inget beslutat metodfel och ingen ändrad tröskel.'
         stycken.append(lokaltext(text,(t.tjanst,'D-ARB.5','D-ARB.B1',*(r.profilfalt),*(r.regelspar),*((r.sarbarhet,) if r.sarbarhet in rb.sarbarheter else ()))))
+    stycken.extend(_korta_d9(riktningar,t.tjanst))
     for p in a.tackningsprovningar:
         ref=referensniva(rb,profil,t,p.hot,p.dimension,p.riskled)
         aktuell=p.visad_summa==tackningssumma(rb,paket,t,p)
