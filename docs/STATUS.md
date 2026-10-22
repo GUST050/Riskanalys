@@ -1,6 +1,10 @@
-# Engångssvar – slutgranskning återstår 2026-10-22
+# Engångssvar och testomläggning – tekniskt slutverifierade 2026-10-22
 
-Plan F är implementerad: gemensamma svar skrivs en gång, en gemensam handling och en tjänstegenomgång per erbjuden tjänst ersätter separata standardtillämpnings-/scenario-/blockklick. Lokala undantag, täckningsprövningar och sakgrindar består. Snabbprofil 102 godkända/34,006 s och analysprofil 217/168,677 s är verifierade mot collection/JUnit och oförändrade källor. Oberoende slutgranskning och gemensam fullsvit för T+F återstår före leverans. [Arbetssätt, faktiska rapportmått och begränsningar](superpowers/reviews/2026-10-22-engangssvar-slutprov.md). Ingen push eller merge.
+Plan T och F är genomförda på `codex/kravstod-tjansteexponering`. Gemensamma sårbarhets-/verksamhetssvar lämnas en gång; en gemensam handling och en tjänstegenomgång per erbjuden tjänst ersätter separata standardtillämpnings-/scenario-/blockklick. Lokala undantag, täckningsprövningar och ordinarie sakgrindar består. Nyinmatning av kontroll/rutin fungerar utan förberedda scenariokopplingar. Privata belägg kontrolleras före de samlade bekräftelserna. Riskmetod och AI-gräns är oförändrade.
+
+**Färsk fullsvit: 3 308 godkända, ett liveprov bortvalt, exit 0**, Python 3.12.15, 1 794,45 s pytest/1 795,884 s inklusive collection. Samtliga node-ID matchar JUnit, noll failures/errors/skipped och 783 frysta program-/test-/regelresurser är oförändrade. Snabbprofil **115/36,155 s**, analys **230/169,342 s**. Regelbasvalidering/diffkontroll passerar. Fryst källbas `2644122`; efterföljande commit färdigställer endast dokumentation. Oberoende helgranskningens fyra Important är rättade med reproducerande RED/GREEN-prov före fullsviten; inga uppskjutna Minor från denna granskning.
+
+[Slutprov och underlag till Claude](superpowers/reviews/2026-10-22-engangssvar-slutprov.md), [helgranskning](superpowers/reviews/2026-10-22-engangssvar-slutgranskning.md), [testtäckningsmatris](superpowers/reviews/2026-10-22-testtackningsmatris.md) och [användning](kravstod.md). Fem bekräftelser i det kompletta fyrtjänstprovet avser efter svarsinmatning. Rapporterna är fortfarande cirka 4 000 ord längre än schema 1; ingen rapport-/lästidsvinst påstås. Riktad, inte fullsidig, visuell kontroll. Råbevis bevaras i lokalt ignorerat evidensarkiv. Grenen lämnas lokalt för användarens granskning med Claude; ingen push eller merge.
 
 ## Tidigare testcheckpoint
 

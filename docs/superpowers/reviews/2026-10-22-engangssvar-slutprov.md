@@ -1,6 +1,6 @@
 # Engångssvar och snabbare verifiering 2026-10-22
 
-Status: funktionerna och de riktade proven är genomförda. Gemensam slutgranskning och komplett fullsvit återstår innan leverans. Lokala arbetscommits; ingen push eller merge. Produktbas `f66a70f`, T1–T3 `132f8e9`–`1b40ddb`, verktygsrättning `03bd8bd`, F1 `c7a2ccb`, F2 `bb3ee8b`.
+Status: **tekniskt slutverifierad och lokalt committad**. Oberoende helgranskningens fyra Important är rättade med RED/GREEN i en samlad pass; färsk fullsvit är grön på den exakta slutliga kod-/test-/resursbasen. Ingen push eller merge. Användarens granskning med Claude återstår. Produktbas `f66a70f`, T1–T3 `132f8e9`–`1b40ddb`, verktygsrättning `03bd8bd`, F1 `c7a2ccb`, F2 `bb3ee8b`, F3 `70492b6`, samlad granskningsrättning och fryst källbas `264412289ba35cfc84fe236d406fe9ab9d2c5343`.
 
 ## Vad byrån gör
 
@@ -45,7 +45,7 @@ Den första native-mätningen hade 60 475/60 297 ord. Ett reproducerande prov f�
 
 F1: 17 RED → 17 GREEN; berört urval 71 godkända, 48,53 s. F2: 20 RED; efter rättning av visning av valfri scenariomotivering passerar 30 kärn-/CLI-prov, 9,20 s. Två verkliga bundna publika kedjeprov passerar, 31,50 s. F3: saknade native-gränssnitt och formulärövergång reproducerade, därefter 13 godkända, 37,50 s. D9-upprepning RED2 → GREEN12 med rapportproven, 22,32 s. Native UI-fynd RED2 → GREEN2, 16,83 s. Privata AI-begäranden normal/omförsök/reserv: tre godkända, 2,59 s.
 
-Slutliga arbetsprofiler efter F3: **snabb 102 prov/34,006 s och analys 217 prov/168,677 s**, båda med exakt collection/JUnit och oförändrat aktuellt snapshot. Fullsvit redovisas efter den gemensamma slutgranskningen. T:s separata mätning och skyddade testomläggning finns i [testslutprovet](2026-10-22-testtid-slutprov.md) och [påståendematrisen](2026-10-22-testtackningsmatris.md).
+Checkpoint efter F3, före helgranskningen: **snabb 102 prov/34,006 s och analys 217 prov/168,677 s**, båda med exakt collection/JUnit och oförändrat dåvarande snapshot. Slutlig fullsvit och profiler efter granskningsrättningen redovisas nedan. T:s separata mätning och skyddade testomläggning finns i [testslutprovet](2026-10-22-testtid-slutprov.md) och [påståendematrisen](2026-10-22-testtackningsmatris.md).
 
 En riktig syntetisk browser-session har bekräftat gemensamt underlag, läst den samlade tjänstevyn och sparat ett lokalt berör-inte-undantag. Kontrollen visar oförändrade gemensamma original, övriga tjänster och motorutfall samt inga analysbeslut. Perioder visas läsbart, faktorn identifieras och gemensamt arv märks inte som ett saknat nytt svar. Testflik och egen loopbackserver är stängda; inga riktiga byrådata eller API-anrop användes.
 
@@ -55,7 +55,23 @@ Båda faktiska Word-delar har exporterats och renderats för båda direkt2-falle
 
 [Slutgranskningen](2026-10-22-engangssvar-slutgranskning.md) av `f66a70f..70492b6` gav fyra Important och inga Critical/Minor. Samtliga fyra är rättade i en pass: nya kontroll-/rutinutkast kan hänvisa till giltiga visade standardscenarier utan att attestera dem; alla blocks aktivering/motivering visas; privata beläggsbytes kontrolleras atomiskt före båda samlade handlingarna; snapshotet omfattar även samtliga test-/regelresurser och undantar genererad bytekod.
 
-Reproduktionerna visade de tre första oberoende mekanismerna med 12 RED-fall och de privata beläggsfelen med fyra RED-fall efter rättning av testets egen gamla revision. Berört urval: **85 godkända/48,44 s**. Det förstärkta verkligt bundna flödet tar bort alla förberedda scenariokopplingar och sparar kontroller/rutiner via ordinarie formuläroperationer för fyra tjänster före de fem bekräftelserna. Senaste separata publik-/beläggsprov: **sex godkända/46,07 s**. Snabbprofil efter rättning: **115 godkända/36,155 s**, exakt collection/JUnit och oförändrat resursinkluderande snapshot. Analysprofil och fullsvit slutredovisas nedan när de är klara. Ingen ny granskningsomgång beställdes.
+Reproduktionerna visade de tre första oberoende mekanismerna med 12 RED-fall och de privata beläggsfelen med fyra RED-fall efter rättning av testets egen gamla revision. Berört urval: **85 godkända/48,44 s**. Det förstärkta verkligt bundna flödet tar bort alla förberedda scenariokopplingar och sparar kontroller/rutiner via ordinarie formuläroperationer för fyra tjänster före de fem bekräftelserna. Senaste separata publik-/beläggsprov: **sex godkända/46,07 s**. Snabbprofil efter rättning: **115 godkända/36,155 s**, exakt collection/JUnit och oförändrat resursinkluderande snapshot. Analysprofilen gav därefter **230 godkända/169,342 s**; fullsviten redovisas nedan. Ingen ny granskningsomgång beställdes.
+
+## Slutlig leveranskontroll
+
+Python **3.12.15**, fryst kodbas `2644122`. Inga installerade program-, test-, regelbas-, profil- eller verktygsfiler ändrades under eller efter körningen; efterföljande ändringar är slutdokumentation.
+
+| Profil | Godkända | Väggtid inklusive collection |
+| --- | ---: | ---: |
+| Snabb | 115 | 36,155 s |
+| Analys | 230 | 169,342 s |
+| Full, alla ordinarie icke-liveprov | 3 308 | 1 795,884 s (29 min 56 s) |
+
+Full pytest rapporterade **3 308 godkända, ett liveprov bortvalt, exit 0 på 1 794,45 s**. JUnit har noll failures/errors/skipped. Samtliga 3 308 valda node-ID matchar JUnit exakt; alla **783 program-/test-/regelresurser** matchar aktuellt snapshot. JUnit SHA-256: `5c83ce9fc50e7ad240f05b78ddf106f8ef87b8687371d45bf411c396ba14f8f1`. Summerad provtid **1 792,733 s** är ett annat mått än väggtid. Oberoende efterkontroll av alla tre profilerna, regelbasvalidering och diffkontroll passerar. Regelbasens kontrollsumma är oförändrad och tre paket har sakkunnigstatus `ej_granskad`.
+
+Snabb/analys når målen 60/180 s. Första rena testomläggningen tog 27 min 40 s; med de ytterligare förenklings-/regressionsproven tar den sista fullsviten 29 min 56 s. Det är cirka **16,6 procent mindre väggtid** än den historiska 35 min 52,78 s-körningen, med fler prov (3 308 mot 3 198). Jämförelsen är inte en kontrollerad prestandamätning på samma testmängd. Uppskattningen 22–25 minuter nåddes inte. Fullsvit under tio minuter ingår inte.
+
+Rå collection, JUnit, loggar, snapshots, arbetsloggar, diffpaket, rapportdata, Word/PDF och PNG-bevis bevaras lokalt i `.superpowers/evidens/2026-10-22-engangssvar/`, mappar `T` och `F`. `F/slutlig-verifiering.json` sammanfattar efterkontrollen; `F/slutverifiera.py` kan kontrollera de flyttade bevisen från reporoten. Historiska absoluta sökvägar i råloggar har inte skrivits om. De två avslutade planernas scratchmappar har flyttats intakta till arkivet; andra planers mappar har lämnats kvar.
 
 ## Genomförandeval att granska
 
@@ -63,8 +79,21 @@ Reproduktionerna visade de tre första oberoende mekanismerna med 12 RED-fall oc
 2. De två frysta rapportfallen behåller sina avsiktliga sakluckor. Fem lyckade handlingar bevisas separat med ett komplett fall. Kostnad: rapportjämförelsen är inte ett prov av två färdiga riskbedömningar.
 3. Efter felet i körverktygets parameter-normalisering samordnas den rättade T-infrastrukturens fullsvit med F:s slutgrind, i stället för en extra 27-minuterskörning före fortsatt redan beställt F-arbete. Kostnad: integrationsfel kan upptäckas först vid slutgrinden; ingen leverans/push/merge före grönt.
 
+## Genomförandebeslut efter slutgranskningen
+
+Granskaren satte följande frågor åt sidan. Genomföraren har avgjort dem, utan att betrakta specifikationens tystnad som ett godkännande:
+
+1. Slutlig fullsvit körs först med samtliga rättningar och måste verifiera aktuellt komplett snapshot. Kostnad om detta inte upprätthålls: oprövad leverans; ingen leverans före grönt.
+2. Full kombinerad återinförandekedja körs inte separat igen. Terminal plan/ny plan och förnyelsens nollställning täcks av separata prov; granskaren följde en faktisk ny tjänst och native sparvägen har förstärkts. Kostnad om fel: en integrationslucka mellan separat prövade steg kan kvarstå.
+3. Juridisk/metodisk riktighet avgörs inte tekniskt. Oförändrade metodval och ogranskad sakkunnigstatus kräver verklig sakprövning. Kostnad om fel: tekniskt grönt kan misstolkas som materiellt korrekt.
+4. Ingen allmän redaktionell förkortning läggs till. Bara bevisad dubblering rättas, med öppna längdmått. Kostnad: fortsatt lång rapport och läsbörda.
+5. Rapportfallens sakluckor behålls enligt tidigare beslut; separata positiva prov bevisar bekräftelserna. Kostnad: de två jämförelseexporterna visar inte färdiga riskbedömningar.
+6. Riktad åttasidig Word-kontroll och browserprov används, utan fullsidig kontroll eller uppmätt mänsklig lästid. Kostnad om fel: layoutfel på andra sidor eller utebliven faktisk lästidsvinst kan kvarstå.
+
+Inga konkreta Minor är uppskjutna från denna slutgranskning. Den tidigare formulär-Minor som krävde omförsök vid byte bort från gäller annorlunda är rättad inom F3, med bevarat skydd mot förfalskad härledd riktning.
+
 ## Kvarstående gränser och granskningsväg
 
 Rapporten är fortfarande lång. Ingen kalibrering av risknivåerna eller ny manuell tjänsteanalys utanför katalogen ingår. En allmän analys ersätter inte kundriskbedömning. Tekniskt grönt ersätter inte byråns sakgranskning eller verklig metod-/sakkunnigprövning.
 
-Granska diffen från `f66a70f` till leveransens lokala HEAD och de tre genomförandevalen ovan. Planspecifikationerna ligger i `docs/superpowers/specs/2026-10-22-engangssvar-och-testtid-design.md` samt plan T/F. Råbevis finns lokalt under `.superpowers/sdd/2026-10-22-engangssvar-plan/` och T:s motsvarande mapp tills överlämningens evidensarkiv har färdigställts. Inga externa meddelanden, pushar eller merger ingår.
+Granska diffen från `f66a70f` till leveransens lokala HEAD och samtliga genomförandeval ovan. Planspecifikationerna ligger i `docs/superpowers/specs/2026-10-22-engangssvar-och-testtid-design.md` samt plan T/F. Råbevis finns i det lokala evidensarkivet ovan; arkivets README anger flyttningen från tidigare scratchsökvägar. Inga externa meddelanden, pushar eller merger ingår.
