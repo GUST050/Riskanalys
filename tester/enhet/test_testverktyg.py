@@ -69,3 +69,14 @@ def test_okand_profil_avvisas(tmp_path):
     from scripts.testa import main
     with pytest.raises(SystemExit) as e:main(['okand','--ut',str(tmp_path/'ut')])
     assert e.value.code==2
+
+
+@pytest.mark.parametrize('node,forvantat',[
+    ('tester/enhet/test_filer.py::test_vag[a/../../prov.py::inuti]',
+     'tester.enhet.test_filer.test_vag[a/../../prov.py::inuti]'),
+    ('tester/enhet/test_filer.py::Grupp::test_vag[/tmp/prov.py]',
+     'tester.enhet.test_filer.Grupp.test_vag[/tmp/prov.py]'),
+])
+def test_nodeid_bevarar_hela_parametern(node,forvantat):
+    from scripts.testa import kanoniskt_nodeid
+    assert kanoniskt_nodeid(node)==forvantat

@@ -21,7 +21,9 @@ def snapshot():
 
 
 def kanoniskt_nodeid(node):
-    return node.replace('/', '.').replace('.py::','.').replace('::','.')
+    fil, _, test = node.partition('::')
+    namn, klammer, parameter = test.partition('[')
+    return fil.removesuffix('.py').replace('/', '.') + '.' + namn.replace('::', '.') + klammer + parameter
 
 
 def main(argv=None):

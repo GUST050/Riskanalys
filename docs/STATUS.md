@@ -1,3 +1,9 @@
+# Testomläggning under slutverifiering 2026-10-22
+
+Testplan T har explicita snabb-/analysprofiler, isolerade kedjekopior och färre upprepade transporter. Första fulla pytest: **3 214 godkända, ett liveprov bortvalt, 1 660,05 s**. Ett separat fel i körverktygets hantering av parametriserade testnamn är rättat med två RED-regressioner; samtliga tio verktygsprov passerar och samma fulla collection/JUnit matchar exakt med rättningen. **Slutlig leveransgrind för den rättade testinfrastrukturen samordnas med plan F; ingen push eller merge före den.** [Mätning](superpowers/reviews/2026-10-22-testtid-slutprov.md) och [täckningsmatris](superpowers/reviews/2026-10-22-testtackningsmatris.md) redovisar begränsningar och råbevis.
+
+## Föregående produktleverans
+
 # Gemensam analys – tekniskt slutverifierad, 2026-10-22
 
 Plan A och B1–B7 är införda på `codex/kravstod-tjansteexponering`. Färsk fullsvit efter helgranskningens samlade rättningar: **3 198 godkända, ett livetest bortvalt, exit 0**, 2 152,78 s på Python 3.12.15. JUnit har noll fel och de 463 frysta källfilerna är oförändrade. Regelbasvalidering och diffkontroll passerar. [Slutprovet och underlaget till Claude](superpowers/reviews/2026-10-22-forenklad-riskbedomning-slutprov.md) anger arbetsflöde, mellancommits, rapport-/bekräftelsemått, riktade prov och kvarstående begränsningar. Ingen push eller merge. Användarens slutgranskning med Claude återstår.
