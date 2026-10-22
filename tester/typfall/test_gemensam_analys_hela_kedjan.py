@@ -171,3 +171,32 @@ def test_samlad_bekraftelse_kontrollerar_privata_belaggsbytes_atomiskt(engangsba
   if operation=='gemensamt':at.bekrafta_byraunderlag(ids,visade_celler(aktuellt,ids),p.registersumma(aktuellt),'Syntetisk')
   else:at.bekrafta_tjansteunderlag(ids[0],p.registersumma(aktuellt),'Syntetisk')
  assert (f.byramapp/l.ANALYSFIL).read_bytes()==fore
+
+
+def test_andrat_gemensamt_scenario_kraver_ny_separat_avvikelseprovning(engangsbas,tmp_path):
+ from tester.fixturer.kedjecache import klona_kedja
+ from tester.fixturer.fylld_gemensam import ifylld_analys
+ from tester.enhet.test_tjanstegenomgang import scenarioavvikelse
+ from riskanalys.analys.engangssvar import visade_celler
+ k=klona_kedja(engangsbas,tmp_path);f=k.fall;at=Analystjanst(f.byramapp,f.regelbas)
+ original=l.las_analys(f.byramapp);at.overfor(p.registersumma(original),True)
+ sparat=l.las_analys(f.byramapp)
+ nytt=ifylld_analys(f.regelbas,f.profil,f.bedomning,original).model_copy(update={'revision':sparat.revision})
+ nytt,s=scenarioavvikelse(nytt)
+ l.spara_analys(f.byramapp,nytt,forvantad_summa=p.registersumma(sparat))
+ def paket():return l.las_analys(f.byramapp)
+ nytt=paket();ids=tuple(a.tjanst for a in nytt.tjanster);id=ids[0]
+ at.bekrafta_byraunderlag(ids,visade_celler(nytt,ids),p.registersumma(nytt),'Syntetisk')
+ at.bekrafta_tjansteunderlag(id,p.registersumma(paket()),'Syntetisk')
+ at.spara_gemensamt(s.id,{'forfattare':'Syntetisk','visad_summa':p.scenariosumma(s),'handelseforlopp':s.handelseforlopp+' Nytt dokumenterat flöde.'},p.registersumma(paket()))
+ fore=(f.byramapp/l.ANALYSFIL).read_bytes();q=paket();a=q.tjanster[0]
+ with pytest.raises(RiskanalysFel,match='Det gemensamma scenariot har ändrats sedan avvikelsen; pröva avvikelsen på nytt'):
+  at.bekrafta_tjansteunderlag(id,p.registersumma(q),'Syntetisk')
+ assert (f.byramapp/l.ANALYSFIL).read_bytes()==fore and not paket().beslut
+ # Explicit separat val mot den nya scenariotexten, inte en samlad omstämpling.
+ ny=next(x for x in q.gemensamma_scenarier if x.id==s.id)
+ kop=next(x for x in a.scenariokopplingar if x.scenario==s.id)
+ at.spara_scenarioval(id,s.id,{'tillampning':'avviker','lokal_scenario':kop.lokal_scenario,'motivering':kop.motivering+' Ny jämförelse utförd.','visad_summa':p.scenariosumma(ny),'forfattare':'Syntetisk prövare'},p.registersumma(q))
+ at.bekrafta_tjansteunderlag(id,p.registersumma(paket()),'Syntetisk')
+ q=paket();assert not q.beslut
+ assert all(b.bekraftad_summa==p.blocksumma(q,id,b.nummer) for b in q.tjanster[0].block)

@@ -27,7 +27,7 @@ def helhet(paket,bedomning,prefix,csrf,revision):
 
 def genomgang(rb,profil,bedomning,paket,tjanst,prefix,csrf,revision):
     from riskanalys.intag.analysvy import _lasbar,_etikett
-    from riskanalys.analys.engangssvar import bygg_tjanstbekraftelse,visade_scenarioval,tjanstefakta
+    from riskanalys.analys.engangssvar import bygg_tjanstbekraftelse,visade_scenarioval,tjanstefakta,scenarioavvikelsehinder
     from riskanalys.fel import RiskanalysFel
     from riskanalys.analys.provning_v2 import egna_ansprak,kravda_riskled
     from riskanalys.analys.riktning import harled_riktningar
@@ -79,6 +79,10 @@ def genomgang(rb,profil,bedomning,paket,tjanst,prefix,csrf,revision):
     for k in visade_scenarioval(rb,paket,tjanst):
         s=next((s for s in paket.gemensamma_scenarier if s.id==k.scenario),None)
         if s:html+='<article><h3>'+e(s.rubrik)+'</h3><p>'+e(s.handelseforlopp)+'</p><p>'+e(s.relevans+': '+s.motivering)+' · Belägg: '+e(', '.join(s.belagg))+'</p><p>Tillämpning: '+e(k.tillampning)+' '+e(k.motivering or '')+'</p></article>'
+        hinder=scenarioavvikelsehinder(k,s) if s else None
+        if hinder:
+            url=prefix+'analys?'+urlencode({'tjanst':tjanst,'scenario':k.scenario})
+            html+='<p class="fel">'+e(hinder)+'. <a href="'+e(url,quote=True)+'">Pröva avvikelsen på nytt</a></p>'
     html+='<h2>Faktorernas betydelse per hot och dimension</h2><ul>'
     for r in harled_riktningar(rb,profil,paket,t):html+='<li>'+e(r.post+' · '+(r.sarbarhet or 'egen sårbarhet')+' · '+r.hot+' · '+r.dimension+': '+r.riktning+'. '+r.motivering)+'</li>'
     html+='</ul><h2>Separata täckningsprövningar</h2><ul>'

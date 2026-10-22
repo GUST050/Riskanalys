@@ -72,6 +72,18 @@ def visade_scenarioval(rb, paket, tjanst):
     return tuple(kopplingar)
 
 
+def scenarioavvikelsehinder(koppling, scenario):
+    """Avvikelser kräver egen aktuell prövning, även i den samlade vyn."""
+    from riskanalys.analys.provning import scenariosumma
+    if koppling.tillampning != 'avviker':
+        return None
+    if koppling.scenariosumma != scenariosumma(scenario):
+        return 'Det gemensamma scenariot har ändrats sedan avvikelsen; pröva avvikelsen på nytt'
+    if not koppling.bekraftad:
+        return 'Avvikelsen är inte bekräftad; pröva avvikelsen separat före tjänstegenomgång'
+    return None
+
+
 def bygg_tjanstbekraftelse(rb, profil, bedomning, paket, tjanst, forfattare):
     from riskanalys.analys.provning import analysbrister, blocksumma, scenariosumma
     if paket.schemaversion != 2:
@@ -96,7 +108,11 @@ def bygg_tjanstbekraftelse(rb, profil, bedomning, paket, tjanst, forfattare):
         s = gem.get(kop.scenario)
         if s is None or s.relevans == 'okant':
             raise RiskanalysFel('Komplettera scenariots relevans och innehåll före tjänstegenomgång.')
-        kopplingar.append(kop.model_copy(update={'bekraftad': True, 'scenariosumma': scenariosumma(s)}))
+        hinder = scenarioavvikelsehinder(kop, s)
+        if hinder:
+            raise RiskanalysFel(hinder)
+        kopplingar.append(kop if kop.tillampning == 'avviker' else
+            kop.model_copy(update={'bekraftad': True, 'scenariosumma': scenariosumma(s)}))
     a = a.model_copy(update={'scenariokopplingar': tuple(kopplingar), 'forfattare': forfattare.strip()})
     def byt(q, ny):
         return q.model_copy(update={'tjanster': tuple(ny if x.tjanst == tjanst else x for x in q.tjanster)})

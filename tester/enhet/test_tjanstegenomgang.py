@@ -177,3 +177,59 @@ def test_native_kontroll_och_rutin_kan_sparas_fore_samlat_scenarioval(grund):
  q=bekrafta(f,p)
  assert all(k.bekraftad for k in q.tjanster[0].scenariokopplingar)
  assert not p.tjanster[0].scenariokopplingar and not q.beslut
+
+
+def scenarioavvikelse(p):
+ """Syntetisk giltig lokal variant; kontroll- och rutinreferenser följer varianten."""
+ from riskanalys.analys.provning import scenariosumma
+ a=p.tjanster[0];kop=a.scenariokopplingar[0]
+ s=next(s for s in p.gemensamma_scenarier if s.id==kop.scenario)
+ lokalt=s.model_copy(update={'id':'lokal:avvikelse','handelseforlopp':s.handelseforlopp+' Lokalt dokumenterat leveransled.'})
+ def refs(v):return tuple(lokalt.id if x==s.id else x for x in v)
+ a=a.model_copy(update={
+  'scenarier':(*a.scenarier,lokalt),
+  'scenariokopplingar':tuple(k.model_copy(update={'tillampning':'avviker','lokal_scenario':lokalt.id,'motivering':'Lokalt dokumenterat leveransled avviker från den gemensamma beskrivningen.','bekraftad':True,'scenariosumma':scenariosumma(s)}) if k.scenario==s.id else k for k in a.scenariokopplingar),
+  'sarbarhetsprovningar':tuple(x.model_copy(update={'scenarier':refs(x.scenarier)}) for x in a.sarbarhetsprovningar),
+  'kontroller':tuple(x.model_copy(update={'scenario':lokalt.id}) if x.scenario==s.id else x for x in a.kontroller),
+  'rutinatgarder':tuple(x.model_copy(update={'scenarier':refs(x.scenarier)}) for x in a.rutinatgarder)})
+ return p.model_copy(update={'tjanster':(a,*p.tjanster[1:])}),s
+
+
+@pytest.mark.parametrize('fel',['andrat_scenario','obekraftad'])
+def test_samlad_genomgang_fornyar_inte_gammal_scenarioavvikelse(grund,fel):
+ f,p=grund;p,s=scenarioavvikelse(globalt(p));a=p.tjanster[0]
+ # Det giltiga utgångsfallet måste klara den ordinarie samlade grinden.
+ q=bekrafta(f,p)
+ assert next(k for k in q.tjanster[0].scenariokopplingar if k.scenario==s.id)==next(k for k in a.scenariokopplingar if k.scenario==s.id)
+ if fel=='andrat_scenario':
+  p=p.model_copy(update={'gemensamma_scenarier':tuple(x.model_copy(update={'handelseforlopp':x.handelseforlopp+' Ett nytt internationellt flöde.'}) if x.id==s.id else x for x in p.gemensamma_scenarier)})
+ else:
+  a=a.model_copy(update={'scenariokopplingar':tuple(k.model_copy(update={'bekraftad':False}) if k.scenario==s.id else k for k in a.scenariokopplingar)})
+  p=p.model_copy(update={'tjanster':(a,*p.tjanster[1:])})
+ fore=p.model_dump_json()
+ assert any('Scenariokopplingen '+s.id+' är inte aktuellt bekräftad' in x for x in analysbrister(f.regelbas,f.profil,f.bedomning,p))
+ with pytest.raises(RiskanalysFel,match='pröva avvikelsen'):
+  bekrafta(f,p)
+ assert p.model_dump_json()==fore
+
+
+def test_inaktuell_scenarioavvikelse_marks_med_lank_till_ny_provning(grund):
+ from riskanalys.intag.engangsvy import genomgang
+ f,p=grund;p,s=scenarioavvikelse(globalt(p))
+ p=p.model_copy(update={'gemensamma_scenarier':tuple(x.model_copy(update={'motivering':x.motivering+' Ny sakuppgift.'}) if x.id==s.id else x for x in p.gemensamma_scenarier)})
+ html=genomgang(f.regelbas,f.profil,f.bedomning,p,p.tjanster[0].tjanst,'/syntetisk/','csrf','revision')
+ assert 'Det gemensamma scenariot har ändrats sedan avvikelsen; pröva avvikelsen på nytt' in html
+ assert 'scenario='+s.id.replace(':','%3A') in html
+ assert 'Pröva avvikelsen på nytt' in html
+
+
+def test_standard_samma_far_fornyas_efter_visat_gemensamt_scenario(grund):
+ from riskanalys.analys.provning import scenariosumma
+ f,p=grund;p=globalt(p);a=p.tjanster[0];kop=a.scenariokopplingar[0]
+ s=next(s for s in p.gemensamma_scenarier if s.id==kop.scenario)
+ ny=s.model_copy(update={'handelseforlopp':s.handelseforlopp+' Gemensam komplettering att läsa.'})
+ p=p.model_copy(update={'gemensamma_scenarier':tuple(ny if x.id==s.id else x for x in p.gemensamma_scenarier)})
+ q=bekrafta(f,p)
+ k=next(k for k in q.tjanster[0].scenariokopplingar if k.scenario==s.id)
+ assert k.bekraftad and k.scenariosumma==scenariosumma(ny) and k.tillampning=='samma'
+ assert not q.beslut

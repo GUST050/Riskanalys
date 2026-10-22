@@ -73,7 +73,7 @@ def test_d9_villkor_skrivs_inte_om_for_varje_hot_och_tjanst(direkt):
   for r in harled_riktningar(f.rb,f.profil,f.paket,t):
    if r.riktning not in ('under_troskel','villkor_ej_uppfyllt'):continue
    assert r.sarbarhet in lokalt and r.sarbarhet in gem
-   assert r.hot+'/'+r.dimension in lokalt and t.tjanst+'/'+r.hot+'/'+r.dimension in gem
+   assert t.tjanst+'/'+r.hot+'/'+r.dimension in gem
    assert all(falt in gem for falt in r.profilfalt)
 
 
@@ -86,3 +86,20 @@ def test_native_tjanstevyn_visar_gemensamt_arv_period_och_identifierbar_faktor(d
  assert 'Gemensamma sårbarheter återanvänds' in html
  t=next(t for t in f.bedomning.tjanster if t.tjanst==a.tjanst)
  assert all(r.sarbarhet in html for r in harled_riktningar(f.rb,f.profil,f.paket,t) if r.sarbarhet)
+
+
+def test_d9_sammanfattas_en_gang_per_tjanst_med_samtliga_spar(direkt):
+ from riskanalys.dokument.gemensam_provning_v8 import tjanstens_tillampningsstycken
+ from riskanalys.analys.riktning import harled_riktningar
+ f,_,_=direkt
+ for t in f.bedomning.tjanster:
+  if not t.erbjuds:continue
+  d9=[x for x in tjanstens_tillampningsstycken(f.rb,f.profil,f.paket,t) if 'D9 C' in x.text]
+  assert len(d9)==1
+  assert '16 gemensamma faktorer' in d9[0].text and 'B1' in d9[0].text
+  assert len(d9[0].text.split())<100
+  for r in harled_riktningar(f.rb,f.profil,f.paket,t):
+   if r.riktning not in ('under_troskel','villkor_ej_uppfyllt'):continue
+   assert r.sarbarhet in d9[0].text and r.sarbarhet in d9[0].referenser
+   assert 'ANALYS:gemensam_sarbarhet:'+r.post in d9[0].referenser
+   assert all(x in d9[0].referenser for x in (*r.profilfalt,*r.regelspar))

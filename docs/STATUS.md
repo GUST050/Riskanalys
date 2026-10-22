@@ -1,3 +1,9 @@
+# Rättning efter Claude-granskning – fullsvit återstår 2026-10-22
+
+Inaktuella eller obekräftade scenarioavvikelser kan inte längre stämplas om av den samlade tjänstehandlingen; vyn visar omprövningsbehovet. D9 är en samlad rad per tjänst med bevarade referenser och fullständigt B1-underlag. Snabbprofil 119/34,784 s är grön. Läsrapporten minskar 2 320 ord i båda fallen, men är fortsatt 370 ord längre än schema 1. [Rättning, reproduktion och faktisk mätning](superpowers/reviews/2026-10-22-svar-claude-scenario-d9.md). Färsk fullsvit krävs före leverans. Ingen push/merge.
+
+## Föregående leverans och verifiering
+
 # Engångssvar och testomläggning – tekniskt slutverifierade 2026-10-22
 
 Plan T och F är genomförda på `codex/kravstod-tjansteexponering`. Gemensamma sårbarhets-/verksamhetssvar lämnas en gång; en gemensam handling och en tjänstegenomgång per erbjuden tjänst ersätter separata standardtillämpnings-/scenario-/blockklick. Lokala undantag, täckningsprövningar och ordinarie sakgrindar består. Nyinmatning av kontroll/rutin fungerar utan förberedda scenariokopplingar. Privata belägg kontrolleras före de samlade bekräftelserna. Riskmetod och AI-gräns är oförändrade.

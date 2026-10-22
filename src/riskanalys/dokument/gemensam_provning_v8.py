@@ -53,22 +53,16 @@ def gemensamma_provningsstycken(rb,paket):
 
 
 def _korta_d9(riktningar,tjanst):
-    """En lokal upplysning per faktor; fulla villkor finns redan samlat i B1."""
-    grupper={}
-    for r in riktningar:
-        if r.riktning in ('under_troskel','villkor_ej_uppfyllt'):
-            grupper.setdefault((r.post,r.sarbarhet,r.riktning),[]).append(r)
-    stycken=[]
-    for (post,faktor,riktning),rows in grupper.items():
-        hot=', '.join(dict.fromkeys(r.hot+'/'+r.dimension for r in rows))
-        refs=tuple(dict.fromkeys((tjanst,'D-ARB.5','D-ARB.B1',faktor,
-            'ANALYS:gemensam_sarbarhet:'+post,
-            *(f for r in rows for f in (*r.profilfalt,*r.regelspar)))))
-        text=(f'{post} / {faktor}: {etikett(riktning)}. Hot/dimension: {hot}. '
-            'Motorn har prövat villkoret som falskt. Aktuella fakta, fullständigt villkor och berörda tjänster '
-            'redovisas samlat i B1, Upplysningar för metoduppföljning D9 C. Ingen tröskel eller risknivå ändras.')
-        stycken.append(lokaltext(text,refs))
-    return tuple(stycken)
+    """En tjänstesammanfattning; faktorernas fulla prövningar finns i B1."""
+    rows=tuple(r for r in riktningar if r.riktning in ('under_troskel','villkor_ej_uppfyllt'))
+    if not rows:return ()
+    faktorer=tuple(dict.fromkeys(r.sarbarhet for r in rows))
+    refs=tuple(dict.fromkeys((tjanst,'D-ARB.5','D-ARB.B1',
+        *(ref for r in rows for ref in (r.sarbarhet,'ANALYS:gemensam_sarbarhet:'+r.post,*r.profilfalt,*r.regelspar)))))
+    text=(f'{len(faktorer)} gemensamma faktorer har prövats utan uppfyllt villkor: '+', '.join(faktorer)+'. '
+        'Villkor, fakta och berörda hot/dimensioner finns i B1, Upplysningar för metoduppföljning D9 C. '
+        'Trösklar och risknivåer är oförändrade.')
+    return (lokaltext(text,refs),)
 
 
 def tjanstens_tillampningsstycken(rb,profil,paket,t):
