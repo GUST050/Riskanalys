@@ -1,0 +1,66 @@
+Provfall: fyra_tjanster
+Ord per leveransdel: {'lasrapport': 12665, 'underlagsbilaga': 34440} totalt 47105
+
+Avsnitt (del, id, rubrik, ord i stycken, ord i tabeller):
+  underlagsbilaga D-ARB.B1       Bilaga: Underlag och källversioner                       20835  13605
+  lasrapport   D-ARB.6.2      Analys av bokslut och årsredovisning                      1948    708
+  lasrapport   D-ARB.6.3      Analys av deklarationer och deklarationsombud             1969    680
+  lasrapport   D-ARB.6.1      Analys av löpande bokföring                               1864    764
+  lasrapport   D-ARB.6.4      Analys av lönehantering                                   1746    653
+  lasrapport   D-ARB.4        Gemensamma scenarier                                        12    788
+  lasrapport   D-ARB.B2       Kort källbilaga                                            242      0
+  lasrapport   D-ARB.10       Utvärdering och uppdatering                                211      0
+  lasrapport   D-ARB.11       Omvärldsbevakning                                          198      0
+  lasrapport   D-ARB.5        Gemensamt faktaunderlag                                    183      0
+  lasrapport   D-ARB.2        Metod och begränsningar                                    147     13
+  lasrapport   D-ARB.8        Kort bedömning och tjänstevis risk                         112     47
+  lasrapport   D-ARB.7        Källbunden kontrollräckvidd                                118      0
+  lasrapport   D-ARB.3        Byråns tjänster                                             21     79
+  lasrapport   D-ARB.1        Syfte, omfattning och ansvar                                81      0
+  lasrapport   D-ARB.9        Åtgärdsöversikt                                             16     65
+
+Första tjänsteavsnittet D-ARB.6.1: 2628 ord. Text som finns i alla 4 tjänster:
+  ordagrant identisk:             1062 ord
+  likartad struktur (namn, ID och tal utbytta, ej ordagrann):   310 ord
+
+Upprepade texter (minst 12 ord), sorterade efter totala ord:
+  176 gånger,  4224 ord: Belägg 103; Belägg 104; Belägg 105; Belägg 106; Belägg 107; Belägg 108; Belägg 109; Belägg 111; Belägg 112; Be
+      i {'underlagsbilaga:D-ARB.B1': 176}
+    4 gånger,   592 ord: Kontroll av löpande bokföring – Löpande bokföring. Hot: Utnyttjande av löpande bokföring, Oförklarade in- och
+      i {'underlagsbilaga:D-ARB.B1': 4}
+    4 gånger,   460 ord: Kunder enligt byråns underlag (byråövergripande, period 2026-01-01–2026-09-30): Kunder i branscher med förhöjd
+      i {'underlagsbilaga:D-ARB.B1': 4}
+   30 gånger,   360 ord: Löpande bokföring, analysblock 1: aktiv. Alltid obligatorisk lokal prövning. Ingen innehållsbekräftelse regist
+      i {'underlagsbilaga:D-ARB.B1': 30}
+    4 gånger,   360 ord: Geografi enligt byråns underlag (byråövergripande, period 2026-01-01–2026-09-30): Transaktioner med utlandsank
+      i {'underlagsbilaga:D-ARB.B1': 4}
+    2 gånger,   358 ord: Bokslut och årsredovisning: erbjudandet är bekräftat. Erbjuder byrån bokslut och årsredovisning?: ja. Bekräfta
+      i {'underlagsbilaga:D-ARB.B1': 2}
+    4 gånger,   348 ord: Distributionskanaler enligt byråns underlag (byråövergripande, period 2026-01-01–2026-09-30): Kundrelation eta
+      i {'underlagsbilaga:D-ARB.B1': 4}
+    4 gånger,   336 ord: Hotnivå medel; sårbarhetsnivå hög: tjänstens egen nivå låg, höjd av Kunder med betydande kontanthantering (+1)
+      i {'underlagsbilaga:D-ARB.B1': 4}
+    4 gånger,   308 ord: Avgörande före kontroll (TF): Oförklarade in- och utflöden [H-03]. Hotnivå medel; sårbarhetsnivå hög: tjänsten
+      i {'lasrapport:D-ARB.6.1': 1, 'lasrapport:D-ARB.6.2': 1, 'lasrapport:D-ARB.6.3': 1, 'lasrapport:D-ARB.6.4': 1}
+    7 gånger,   280 ord: Hotnivå medel; sårbarhetsnivå medel: tjänstens egen nivå medel. Sannolikhet medel, konsekvens betydande, risk
+      i {'underlagsbilaga:D-ARB.B1': 7}
+   11 gånger,   275 ord: Belägg 100. Registrerat 2026-10-19. Profilunderlag: Erbjuder byrån bolagsbildning, lagerbolag och bolagsförmed
+      i {'underlagsbilaga:D-ARB.B1': 11}
+    4 gånger,   260 ord: Leverantörens arbete och byråns ansvar: Digital identitetskontroll och sammanställning av ägaruppgifter inför
+      i {'lasrapport:D-ARB.6.1': 1, 'lasrapport:D-ARB.6.2': 1, 'lasrapport:D-ARB.6.3': 1, 'lasrapport:D-ARB.6.4': 1}
+    4 gånger,   256 ord: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns risk (P-TJ.red0
+      i {'underlagsbilaga:D-ARB.B1': 4}
+    4 gånger,   244 ord: En kund kan använda fabricerade handlingar för att ge brottsvinster ett legitimt utseende i uppdraget. Ett ann
+      i {'lasrapport:D-ARB.6.1': 1, 'lasrapport:D-ARB.6.2': 1, 'lasrapport:D-ARB.6.3': 1, 'lasrapport:D-ARB.6.4': 1}
+    4 gånger,   244 ord: Egen verksamhet enligt byråns underlag (byråövergripande, period 2026-01-01–2026-09-30): Utkontrakterade delar
+      i {'underlagsbilaga:D-ARB.B1': 4}
+    4 gånger,   244 ord: Hotnivå medel; sårbarhetsnivå hög: tjänstens egen nivå medel, höjd av Kunder i branscher med förhöjd risk (+1)
+      i {'underlagsbilaga:D-ARB.B1': 4}
+    4 gånger,   240 ord: Uppdraget avser löpande bokföring och behöver förstås utifrån kundens verksamhet och de handlingar som ingår i
+      i {'lasrapport:D-ARB.6.1': 1, 'lasrapport:D-ARB.6.2': 1, 'lasrapport:D-ARB.6.3': 1, 'lasrapport:D-ARB.6.4': 1}
+    4 gånger,   232 ord: Geografi i tjänsten: villkor, utfall och byråns geografibeskrivning redovisas i avsnittet Gemensamt faktaunder
+      i {'lasrapport:D-ARB.6.1': 1, 'lasrapport:D-ARB.6.2': 1, 'lasrapport:D-ARB.6.3': 1, 'lasrapport:D-ARB.6.4': 1}
+    4 gånger,   232 ord: Byråns bedömning av TF-risken: Motorns TF-nivå är mycket hög. Legala medel kan användas för terrorism och små
+      i {'lasrapport:D-ARB.6.1': 1, 'lasrapport:D-ARB.6.2': 1, 'lasrapport:D-ARB.6.3': 1, 'lasrapport:D-ARB.6.4': 1}
+    2 gånger,   222 ord: Uppdrag och exponering: Bokslut och årsredovisning: erbjudandet är bekräftat. Erbjuds: ja; Bokslut och årsredo
+      i {'lasrapport:D-ARB.6.2': 1, 'lasrapport:D-ARB.6.3': 1}

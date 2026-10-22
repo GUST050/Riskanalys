@@ -1,6 +1,14 @@
 # Status och framsteg
 
-Senast uppdaterad 2026-10-19.
+Senast uppdaterad 2026-10-22.
+
+## Kravstöd och tjänsteexponering, 2026-10-22
+
+Planrevision 3 är genomförd för uppgift 0–5 och slutprov 7 i den avgränsade underlagsleveransen. Registrerade planer har bunden mänsklig förändringsutvärdering före införande, uttrycklig rättelseväg och bevarad årsfrist. Deklarerade kombinationsgrupper ligger lokalt och redovisas vid rätt tjänst; inget individuellt kundregister införs. V8:s gemensamma faktormekanismer och lokala tillämpning kompletterar befintlig analys; fulla beräkningstabeller ligger kvar i B1. Äldre serialisering och AI-gränser är bevarade.
+
+**Verifiering:** Python 3.12.15, 3 010 godkända tester och 1 avmarkerat livetest, exit 0 på 1 909,08 s. Regelbasvalidering och diffkontroll exit 0. Separat granskning gav fem Important och två Minor; samtliga rättade med reproducerande prov före slutlig fullsvit. Riktad visuell kontroll av berörda exporterade sidor genomförd. Läsrapporten ökar 687 ord i båda jämförelsefallen, B1 är oförändrad; ingen total minskning påstås.
+
+**Kvar:** 3b är frivillig och uppskjuten. Uppgift 6 avvaktar verkliga metodbeslut; riskmotor, vikter och regelbas är oförändrade. Profilmodellernas ändring ger ny befintlig källbunden modellidentitet; historiska attester märks inte om. Teknisk verifiering är inte sakkunnigattest, verklig utbildning eller produktionsrelease. Se [slutprovet](superpowers/reviews/2026-10-21-kravstod-slutprov.md), [kravmatrisen med 36 rader](superpowers/reviews/2026-10-21-kravmatris-36.md) och [användning](kravstod.md).
 
 ## Plan för bättre riskbedömning och rapport, 2026-10-19
 
