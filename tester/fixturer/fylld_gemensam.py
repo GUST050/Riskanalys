@@ -40,7 +40,7 @@ def ifylld_analys(rb,profil,bedomning,original,*,avvikelse=False,egen=False):
         'modellrisk':original.modellrisk.model_copy(update={'godkand':True}) if original.modellrisk else None})
 
 
-def bekrafta_innehall(at,*,egen=False):
+def bekrafta_innehall(at,*,egen=False,samlat=False):
     """Logga verkliga lyckade API-handlingar, inga skattade klick eller tidsvinster."""
     from riskanalys.analys.lagring import las_analys
     from riskanalys.analys.provning import registersumma,scenariosumma,blocksumma
@@ -61,9 +61,14 @@ def bekrafta_innehall(at,*,egen=False):
                     if app.stallningstagande=='galler':refs.append(ref)
                     else:
                         kor('lokal_avvikelse',at.spara_tillampning,a.tjanst,ref,app,registersumma(paket()),'Syntetisk prövare')
-            if refs:kor('samlad_tillampning',at.bekrafta_tillampningar,a.tjanst,tuple(refs),registersumma(paket()),'Syntetisk prövare')
+            if refs and not samlat:kor('samlad_tillampning',at.bekrafta_tillampningar,a.tjanst,tuple(refs),registersumma(paket()),'Syntetisk prövare')
+    if samlat:
+        from riskanalys.analys.engangssvar import visade_celler
+        p=paket();ids=tuple(a.tjanst for a in p.tjanster)
+        kor('gemensam_bekraftelse',at.bekrafta_byraunderlag,ids,visade_celler(p,ids),registersumma(p),'Syntetisk prövare')
     for a in paket().tjanster:
         for kop in a.scenariokopplingar:
+            if samlat and (not egen or a.tjanst!=paket().tjanster[0].tjanst or kop.scenario!='gem:H-03'):continue
             p=paket();s=next(s for s in p.gemensamma_scenarier if s.id==kop.scenario)
             data={'tillampning':kop.tillampning,'lokal_scenario':kop.lokal_scenario or '',
                   'motivering':kop.motivering or 'Syntetiskt uttryckligt tjänsteval','visad_summa':scenariosumma(s),'forfattare':'Syntetisk prövare'}
@@ -86,6 +91,9 @@ def bekrafta_innehall(at,*,egen=False):
             n=n.model_copy(update={'visad_summa':tackningssumma(at.rb,p,t,n)})
             kor('tackningsprovning',at.spara_tackningsprovning,a.tjanst,n,registersumma(p),'Syntetisk täckningsprövare')
     for a in paket().tjanster:
+        if samlat:
+            kor('tjanstegenomgang',at.bekrafta_tjansteunderlag,a.tjanst,registersumma(paket()),'Syntetisk prövare')
+            continue
         for b in a.block:
             if b.aktivering!='aktiv':continue
             p=paket();data={'operation':'bekrafta','forfattare':'Syntetisk prövare','visad_summa':blocksumma(p,a.tjanst,b.nummer)}

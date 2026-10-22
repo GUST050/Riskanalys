@@ -111,3 +111,11 @@ class GemensammaOperationer:
                 raise RiskanalysFel('Välj endast erbjudna tjänster ur aktuell bedömning.')
             nytt=bygg_gemensam_bekraftelse(paket,tjanster,celler,self._forfattare(forfattare))
             return self._spara(nytt,forvantad_summa=revision)
+
+    def bekrafta_tjansteunderlag(self,tjanst,revision,forfattare):
+        from riskanalys.analys.engangssvar import bygg_tjanstbekraftelse
+        from riskanalys.profil.lagring import las_profil
+        with l.analyslas(self.mapp):
+            paket,bm,_,_=self._last(revision);gemensamt(paket)
+            nytt=bygg_tjanstbekraftelse(self.rb,las_profil(self.mapp),las_bedomning(bm),paket,tjanst,self._forfattare(forfattare))
+            return self._spara(nytt,forvantad_summa=revision)

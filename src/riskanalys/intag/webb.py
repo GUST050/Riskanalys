@@ -75,7 +75,7 @@ class Hantera(BaseHTTPRequestHandler):
             query=parse_qs(u.query, max_num_fields=8 if u.path==self.server.prefix+'analys' else 4)
         except ValueError:
             self.svara(400,'Ogiltig förfrågan.');return None
-        tillatna = {'plan','tjanst'} if u.path == self.server.prefix+'planering' else {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag','overfor','byraanalys','post','slag','tillampningar','tackning','ursprung','hot','dimension','riskled'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
+        tillatna = {'plan','tjanst'} if u.path == self.server.prefix+'planering' else {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag','overfor','byraanalys','post','slag','tillampningar','genomgang','tackning','ursprung','hot','dimension','riskled'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
         if any(len(v)!=1 for v in query.values()) or set(query)-tillatna:
             self.svara(400,'Ogiltig förfrågan.');return None
         if ('dimension' in query and query['dimension'][0] not in ('pt','tf')
@@ -145,7 +145,7 @@ class Hantera(BaseHTTPRequestHandler):
         vag=self.vag()
         if vag is None:return
         path,query=vag
-        hanterare={k:getattr(self,'post_'+k) for k in ('omfattningsunderlag','plan','planutvardera','plangenomforande','planaterkalla','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysgemensampost','analystillampning','analysbekraftatillampningar','analysbekraftabyraunderlag','analystackning','analysstart','analysoverfor','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
+        hanterare={k:getattr(self,'post_'+k) for k in ('omfattningsunderlag','plan','planutvardera','plangenomforande','planaterkalla','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysgemensampost','analystillampning','analysbekraftatillampningar','analysbekraftabyraunderlag','analysbekraftatjansteunderlag','analystackning','analysstart','analysoverfor','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
         if path not in hanterare or query:
             self.svara(404,'Sidan finns inte.');return
         from riskanalys.intag.flervalsvy import flervalsgrans
@@ -160,9 +160,10 @@ class Hantera(BaseHTTPRequestHandler):
                 from urllib.parse import urlencode
                 destination='analys'
                 if path=='analysblock':destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'block':data.get('nummer','')})
+                elif path=='analysbekraftatjansteunderlag':destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'genomgang':'ja'})
                 elif path=='analysbekraftabyraunderlag':destination+='?byraanalys=ja'
                 elif path=='analysgemensampost':destination+='?'+urlencode({'byraanalys':'ja','post':data.get('id',''),'slag':data.get('typ','')})
-                elif path in ('analystillampning','analysbekraftatillampningar','analysbekraftabyraunderlag','analystackning'):destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'tillampningar':'ja'})
+                elif path in ('analystillampning','analysbekraftatillampningar','analysbekraftabyraunderlag','analysbekraftatjansteunderlag','analystackning'):destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'tillampningar':'ja'})
                 elif path in ('analysscenario','analysbeslut'):destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'granska':'ja'})
             else:
                 destination='' if path=='registersamlat' and data.get('fortsatt')=='ja' else 'register' if path.startswith('register') else '?oversikt=1' if path in ('omfattningsunderlag','skriv','uppdaterautkast','utvardera') else ''
@@ -191,6 +192,7 @@ class Hantera(BaseHTTPRequestHandler):
             elif path=='analysblock':query={'tjanst':[data.get('tjanst','')],'block':[data.get('nummer','')]}
             elif path=='analysscenario':query={'tjanst':[data.get('tjanst','')],'scenario':[data.get('scenario','')]}
             elif path=='analysgemensamt':query={'gemensamt':[data.get('scenario','')]}
+            elif path=='analysbekraftatjansteunderlag':query={'tjanst':[data.get('tjanst','')],'genomgang':['ja']}
             elif path=='analysbekraftabyraunderlag':query={'byraanalys':['ja']}
             elif path=='analysgemensampost':query={'byraanalys':['ja'],'post':[data.get('id','ny')],'slag':[data.get('typ','sarbarhet')]}
             elif path in ('analystillampning','analysbekraftatillampningar'):query={'tjanst':[data.get('tjanst','')],'tillampningar':['ja']}
@@ -307,6 +309,11 @@ class Hantera(BaseHTTPRequestHandler):
         from riskanalys.intag.gemensamformular import las_helhet
         ids,celler=las_helhet(data)
         self.analystjanst().bekrafta_byraunderlag(ids,celler,data.get('revision',''),data.get('forfattare',''))
+
+    def post_analysbekraftatjansteunderlag(self,data):
+        if set(data)-{'csrf','revision','tjanst','forfattare','bekrafta'} or data.get('bekrafta')!='ja':
+            raise RiskanalysFel('Bekräfta uttryckligen det visade tjänsteunderlaget utan extra fält.')
+        self.analystjanst().bekrafta_tjansteunderlag(data.get('tjanst',''),data.get('revision',''),data.get('forfattare',''))
 
     def post_analystackning(self,data):
         from riskanalys.intag.gemensamformular import las_tackning

@@ -95,3 +95,43 @@ def test_egna_och_oklara_risker_kan_inte_gommas_med_stangd_lucka(kedja,fel,ord):
     with pytest.raises(RiskanalysFel):Analystjanst(f.byramapp,f.regelbas).beslut(t.tjanst,True,'Syntetisk','FfR',DAG,'',cas)
     gm=kor_granskning(f.byramapp,f.regelbas,DAG);assert any(x.allvar=='blockerande' for x in las_granskning(gm)[1])
     with pytest.raises(FaststallelseFel):faststall(f.byramapp,k.regelrot,f.regelbas,Beslut(organ='styrelsen',namn='Syntetisk',roll='FfR',datum=DAG))
+
+
+@pytest.fixture(scope='module')
+def engangsbas(tmp_path_factory):
+    rot=tmp_path_factory.mktemp('engangskedja').resolve()
+    regelrot,rb=syntetisk_expertkopia(rot/'expert')
+    return bygg_bunden_kedja(rb,rot/'kedja',regelrot=regelrot,godkann=True)
+
+
+@pytest.mark.fullkedja
+@pytest.mark.parametrize('egen',[False,True])
+def test_publika_engangshandlingar_bevarar_tackning_och_analysgrind(engangsbas,tmp_path,egen):
+    from tester.fixturer.fylld_gemensam import bekrafta_innehall,ifylld_analys
+    from tester.fixturer.kedjecache import klona_kedja
+    k=klona_kedja(engangsbas,tmp_path);f=k.fall;at=Analystjanst(f.byramapp,f.regelbas)
+    original=l.las_analys(f.byramapp);at.overfor(p.registersumma(original),True)
+    sparat=l.las_analys(f.byramapp)
+    p0=ifylld_analys(f.regelbas,f.profil,f.bedomning,original,avvikelse=egen,egen=egen).model_copy(update={'revision':sparat.revision})
+    p0=p0.model_copy(update={'beslut':(),'tjanster':tuple(a.model_copy(update={
+        'block':tuple(b.model_copy(update={'bekraftad_summa':None}) for b in a.block),
+        'sarbarhetstillampningar':tuple(x.model_copy(update={'bekraftad':False}) for x in a.sarbarhetstillampningar),
+        'verksamhetstillampningar':tuple(x.model_copy(update={'bekraftad':False}) for x in a.verksamhetstillampningar),
+        'scenariokopplingar':tuple(x.model_copy(update={'bekraftad':False}) for x in a.scenariokopplingar),
+        'tackningsprovningar':()}) for a in p0.tjanster)})
+    if not egen:
+        p0=p0.model_copy(update={'gemensamma_sarbarhetsprovningar':tuple(g for g in p0.gemensamma_sarbarhetsprovningar if g.id!='egen:slutprov'),
+            'tjanster':tuple(a.model_copy(update={'sarbarhetstillampningar':tuple(x.model_copy(update={'stallningstagande':'galler'}) for x in a.sarbarhetstillampningar if x.post!='egen:slutprov')}) for a in p0.tjanster)})
+    l.spara_analys(f.byramapp,p0,forvantad_summa=p.registersumma(l.las_analys(f.byramapp)))
+    logg=bekrafta_innehall(at,egen=egen,samlat=True);q=l.las_analys(f.byramapp)
+    assert Counter(logg)==({'lokal_avvikelse':4,'gemensam_bekraftelse':1,'scenarioval':1,'tackningsprovning':2,'tjanstegenomgang':4} if egen else {'gemensam_bekraftelse':1,'tjanstegenomgang':4})
+    assert not p.analysbrister(f.regelbas,f.profil,f.bedomning,q) and not q.beslut
+    assert all(b.bekraftad_summa==p.blocksumma(q,a.tjanst,b.nummer) for a in q.tjanster for b in a.block)
+    # Senare ändrad täckning gör genomgången inaktuell enligt den befintliga summan.
+    if not egen:return
+    a=q.tjanster[0];prov=a.tackningsprovningar[0].model_copy(update={'motivering':'Ny syntetisk täckningsmotivering'})
+    t=next(t for t in f.bedomning.tjanster if t.tjanst==a.tjanst)
+    prov=prov.model_copy(update={'visad_summa':tackningssumma(f.regelbas,q,t,prov)})
+    at.spara_tackningsprovning(a.tjanst,prov,p.registersumma(q),prov.forfattare)
+    n=l.las_analys(f.byramapp)
+    assert p.blocksumma(n,a.tjanst,1)!=p.blocksumma(q,a.tjanst,1)

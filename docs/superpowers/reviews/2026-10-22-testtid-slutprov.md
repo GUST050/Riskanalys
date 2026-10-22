@@ -17,6 +17,8 @@ Noll fel och skippade prov; ett liveprov bortvalt. Körverktygets första result
 
 Målen snabb ≤60 s och analys ≤180 s nåddes i båda körningarna. Fullsviten minskade cirka 22.8 procent mot den historiska väggtiden; jämförelsen är inte en kontrollerad prestandamätning på identiska testmängder. Första uppskattningen var 22–25 minuter; faktiskt utfall är 27.69 minuter. Tio minuter har inte utlovats.
 
+De tidigare två största testgrupperna minskade tillsammans från 856,376 s till 371.865 s när ersättningsproven räknas med: M2:s två filer 220,413 s och webbens fullresa 148,854 s plus korta paketval 2.598 s. Det är cirka 56 procent kortare summerad provtid för dessa ansvar; inga borttagna påståenden räknas som tidsvinst.
+
 ## Bevarad kontroll
 
 [Påståendematrisen](2026-10-22-testtackningsmatris.md) visar gamla påståenden och ersättande prov. De sju negativa grindarna blev verkligen röda när respektive avsiktligt fel togs bort: sju fallerade, två bortvalda, 57,85 s. Negativa prov kontrollerar både specifik domänorsak, faktisk CLI-spärr och avsaknad av slutpaket. När CLI stoppar tidigare på ändrad bindning redovisas det uttryckligen.

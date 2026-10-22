@@ -154,6 +154,11 @@ def blockformular(paket, tjanst, nummer, *, prefix, csrf, revision, data=None, f
         if namn == 'scenariokopplingar':
             html += '<p>Gemensamma scenarier kräver ett separat uttryckligt samma/avviker-val per tjänst. Inget val bekräftas genom att spara detta block.</p>'
             continue
+        from riskanalys.intag.engangsvy import delad_verksamhetspost
+        delad=delad_verksamhetspost(paket,a,namn)
+        if delad:
+            html+='<p>'+e(_etikett(namn))+': återanvänds från <a href="'+e(prefix+'analys?'+urlencode(dict(byraanalys='ja',post=delad.id,slag='verksamhet')),quote=True)+'">gemensamt underlag</a>. Lokala avvikelser prövas i tjänstens tillämpning.</p>'
+            continue
         html += f'<fieldset><legend>{e(_etikett(namn))}</legend>'
         if namn in RADER:
             poster = getattr(a, namn)
@@ -196,6 +201,8 @@ def blockformular(paket, tjanst, nummer, *, prefix, csrf, revision, data=None, f
 def analysoversikt(paket, *, prefix):
     b = arbetsborda(paket)
     html = f'<h1>Lokal verksamhetsanalys</h1><p>{b.alltid} alltid obligatoriska block · {b.villkorade} aktiverade fördjupningar · {b.unika_scenarier} unika scenarier · {b.bekraftade_block} aktuellt bekräftade block.</p><p>{b.ateranvanda_belaggsreferenser} återanvända beläggsreferenser. Faktiskt nyskrivna kompletteringar är inte uppmätta.</p>'
+    if paket.schemaversion==2:
+        html='<h1>Lokal verksamhetsanalys</h1><p>Besvara gemensamma frågor en gång och bekräfta sedan varje tjänsts samlade underlag. Lokala kompletteringar och undantag görs bara där de behövs. Analysgodkännande och sakgranskning är separata.</p><details><summary>Intern kontrollstatus</summary>'+html.partition('</h1>')[2]+'</details>'
     html += '<p>Modellriskunderlag och rapporter registreras en gång för hela analyspaketet.</p>'
     for t in paket.tjanster:
         html += f'<h2>{e(t.tjanst)}</h2>'
@@ -205,12 +212,16 @@ def analysoversikt(paket, *, prefix):
             html += '<p>Senaste gällande lokala beslut: ' + ('Godkänd' if beslut.godkand else 'Underkänd') + '. Granskare: ' + e(beslut.namn) + ', ' + e(beslut.roll) + ', ' + e(str(beslut.datum)) + '. Granskad författare: ' + e(beslut.forfattare) + '.</p>'
         if beslut and beslut.godkand and beslut.egen_granskning:
             html += '<p class="tag">Samma person har skrivit och godkänt den lokala analysen</p>'
+        if paket.schemaversion==2:
+            href=prefix+'analys?'+urlencode({'tjanst':t.tjanst,'genomgang':'ja'})
+            html+='<p><a href="'+e(href,quote=True)+'">Gå igenom tjänstens samlade underlag</a></p><details><summary>Lokala kompletteringar och interna kontrollblock</summary>'
         html += '<ol>'
         for block in guideblock(t):
             href = prefix + 'analys?' + urlencode({'tjanst': t.tjanst, 'block': block.nummer})
             status = 'Aktuellt bekräftat' if block.bekraftad_summa == blocksumma(paket, t.tjanst, block.nummer) else 'Ogranskat eller inaktuellt'
             html += f'<li><a href="{e(href, quote=True)}">{e(block.rubrik)}</a>: {e(block.aktivering)} · {e(block.motivering)} · {status}</li>'
         html += '</ol>'
+        if paket.schemaversion==2:html+='</details>'
     return html
 
 
@@ -263,11 +274,17 @@ def analyssida(s, query=None, data=None, fel=''):
         html+='<nav><a href="'+e(s.prefix,quote=True)+'analys?byraanalys=ja">1. Gemensam byråanalys</a><span>2. Tjänsternas tillämpning</span><span>3. Slutsats och granskning</span></nav>'
         if 'byraanalys' in q:
             return sida(s,html+byraanalys(paket,s.prefix,s.csrf,status.revision,q,d,rb=s.tjanst.rb,bedomning=status.bedomning),fel)
-        if 'tjanst' in q and ('tillampningar' in q or not any(x in q for x in ('block','scenario','granska','tackning'))):
+        if 'tjanst' in q and not any(x in q for x in ('block','scenario','granska','tackning','tillampningar','genomgang')):
+            from riskanalys.intag.engangsvy import genomgang
+            return sida(s,html+genomgang(s.tjanst.rb,status.profil,status.bedomning,paket,q['tjanst'][0],s.prefix,s.csrf,status.revision),fel)
+        if 'tjanst' in q and 'tillampningar' in q:
             tid=q['tjanst'][0]
             html+=tillampningar(s.tjanst.rb,status.profil,status.bedomning,paket,tid,s.prefix,s.csrf,status.revision,d)
             html+='<p><a href="'+e(s.prefix+'analys?'+urlencode({'tjanst':tid,'block':1}),quote=True)+'">Arbetsmoment, scenarier och kontroller</a> · <a href="'+e(s.prefix+'analys?'+urlencode({'tjanst':tid,'granska':'ja'}),quote=True)+'">3. Slutsats och granskning</a></p>'
             return sida(s,html,fel)
+        if 'genomgang' in q and 'tjanst' in q:
+            from riskanalys.intag.engangsvy import genomgang
+            return sida(s,html+genomgang(s.tjanst.rb,status.profil,status.bedomning,paket,q['tjanst'][0],s.prefix,s.csrf,status.revision),fel)
         if 'tackning' in q and 'tjanst' in q:
             b=next((b for b in status.bedomning.tjanster if b.tjanst==q['tjanst'][0]),None)
             if b is None:raise RiskanalysFel('Välj en tjänst ur analysöversikten.')

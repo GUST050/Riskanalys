@@ -35,3 +35,9 @@ def test_nya_typade_handlingar_kraver_revision(flagga,capsys):
 def test_bekraftelse_och_import_ar_olika_handlingar(capsys):
     with pytest.raises(SystemExit) as exc:main(['analys','syntetisk','--import','svar.yaml','--bekrafta-tillampningar','refs.yaml'])
     assert exc.value.code==2
+
+
+@pytest.mark.parametrize('flagga',['--bekrafta-byraunderlag','--bekrafta-tjansteunderlag'])
+def test_engangshandlingar_kraver_revision(flagga,capsys):
+    assert main(['analys','finns-inte',flagga,'syntetisk'])==1
+    assert '--revision' in capsys.readouterr().err
