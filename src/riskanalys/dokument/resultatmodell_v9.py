@@ -110,3 +110,27 @@ class ResultatunderlagV9(Fryst):
     brister: tuple[Presentationsbrist,...]
     matris: tuple[ScenarioradV9,...] = ()
     kallsummor: tuple[tuple[str,str],...] = ()
+
+
+class TransformationV9(Fryst):
+    pointer: str
+    fore: str
+    efter: str
+    orsak: Literal['format','leveransdel','visningsnummer','tredelsforklaring']
+
+
+class KonstruktionV9(Fryst):
+    placering: str
+    mall: str
+    kallor: tuple[Kallreferens,...]
+
+
+from riskanalys.dokument.modeller import Dokument
+
+
+class ResultatbyggeV9(Fryst):
+    dokument: Dokument
+    analysdokument: Dokument
+    underlag: ResultatunderlagV9
+    transformationer: tuple[TransformationV9,...]
+    konstruktioner: tuple[KonstruktionV9,...] = ()

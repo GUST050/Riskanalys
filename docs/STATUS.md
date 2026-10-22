@@ -6,6 +6,10 @@ Claude-granskningens två fynd är rättade. En inaktuell eller obekräftad scen
 
 De 64 D9-styckena blir fyra. Läsrapporten minskar **2 320 ord i båda fallen**, men är fortfarande **370 ord längre än schema 1**. B1:s samtliga saktexter och ordantal är oförändrade (endast revisionsradens tre kontrollsummor skiljer). Riskmetod och AI-gräns är oförändrade. [Rättning, reproduktion och fullständiga mätvärden](superpowers/reviews/2026-10-22-svar-claude-scenario-d9.md). Ren lokal gren lämnas för användarens granskning; ingen push eller merge. Andra klonen/grenen `feat/steg-1-3` är orörd.
 
+## Resultatrapport R0–R2 för PDF-granskning 2026-10-23
+
+R0–R2 är implementerade som offlineförhandsvisning: gemensam scenariomatris, tjänsternas egna skillnader och hela PT-/TF-motiveringar, bevarad analys i A/B1 och en enda dokumentversionskonstant. Två PDF-filer om sex sidor vardera är kontrollerade visuellt. Riktat sluturval: 238 godkända/83,88 s; snabbprofil: 137/49,167 s med 796 oförändrade resurser. Ingen färsk fullsvit eller produktleverans; V8 är fortsatt standard. **R3–R7 inväntar användarens uttryckliga klartecken efter läsning av båda PDF-filerna.** [Filer, mätkontrakt och kvarstående steg](superpowers/reviews/2026-10-23-resultatrapport-r2.md).
+
 ## Föregående leverans och verifiering
 
 # Engångssvar och testomläggning – tekniskt slutverifierade 2026-10-22

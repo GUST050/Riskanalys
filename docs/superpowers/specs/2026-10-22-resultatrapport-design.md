@@ -1,9 +1,9 @@
 # Kort resultatrapport med fastställda bilagor – designunderlag
 
-**Status:** granskningsförslag, revision 2 efter Claudes granskning. Inte godkänd för implementation. Användaren har beställt uppdatering av båda dokumenten före implementation.
+**Status:** revision 2 efter Claudes granskning. R0–R2:s offlineimplementation är utförd med användarens tillägg. Obligatorisk PDF-granskning återstår före R3–R7.
 **Datum:** upprättat 2026-10-22, reviderat 2026-10-23.
-**Verifierad kodbas:** `4a878b9bb35a2489e902fd341a6391cc4ce4f7fa`, gren `codex/kravstod-tjansteexponering`.
-**Föregående dokumentrevision:** `6e34cfd`; produktkoden är oförändrad sedan angiven kodbas.
+**Verifierad planeringsbas:** `4a878b9bb35a2489e902fd341a6391cc4ce4f7fa`, gren `codex/kravstod-tjansteexponering`.
+**Dokumenthistorik:** revision 1 i `6e34cfd`, revision 2 i `f1351b8`. Aktuellt genomförande och verifiering redovisas i [R2-granskningen](../reviews/2026-10-23-resultatrapport-r2.md).
 **Genomförandebeslut 2026-10-23:** användaren har godkänt start av R0–R2 med två ytterligare standardbytesprov. Kontrollpunkten efter R2 kvarstår före R3–R7.
 **Genomförandeplan:** [resultatrapport-plan](../plans/2026-10-22-resultatrapport-plan.md).
 **Utgångspunkt:** Claudes förslag `2026-10-22-forslag-resultatrapport.md`, läst i den andra, oförändrade klonen `/Users/danieltrogen/riskanalys-steg1-3/docs/superpowers/reviews/`. Detta underlag ersätter förslaget för den här ändringen; den andra klonen ändras inte.

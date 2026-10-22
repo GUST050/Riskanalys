@@ -15,7 +15,8 @@
     "tester/enhet/test_tjanstegenomgang.py",
     "tester/enhet/test_tillampningsbyte.py",
     "tester/enhet/test_rapportversion.py",
-    "tester/enhet/test_resultatunderlag_v9.py"
+    "tester/enhet/test_resultatunderlag_v9.py",
+    "tester/enhet/test_resultatrapport_v9.py::test_fler_an_fyra_tjanster_delar_matrisen_utan_att_tappa_celler"
   ],
   "analys": [
     "tester/enhet/test_testverktyg.py",
@@ -42,6 +43,7 @@
     "tester/intag/test_tjanstegenomgang.py",
     "tester/enhet/test_tillampningsbyte.py",
     "tester/enhet/test_rapportversion.py",
-    "tester/enhet/test_resultatunderlag_v9.py"
+    "tester/enhet/test_resultatunderlag_v9.py",
+    "tester/enhet/test_resultatrapport_v9.py::test_fler_an_fyra_tjanster_delar_matrisen_utan_att_tappa_celler"
   ]
 }
