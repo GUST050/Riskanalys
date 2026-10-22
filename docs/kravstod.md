@@ -63,3 +63,36 @@ V8 behålls. Gemensamma mekanismer för aktiverade faktorer står i D-ARB.5, lok
 Profilmodellernas ändring ger ny källbunden modellidentitet. Befintliga analysgodkännanden och modellriskunderlag kan därför inte återanvändas utan förnyelse efter uppgraderingen, även om risknivåerna blir lika. Följ ordinarie flöde med aktuell bedömning, jämförelse av underlag, uttrycklig analysförnyelse, sakprövning och nytt godkännande. Historiska fastställda paket bevaras.
 
 Planposter från den första implementationen saknar genomföranderegistrering. Programmet antar inte att de är genomförda utifrån ja eller avsett datum. Genomförandet behöver registreras uttryckligen efter kontroll av underlag; den nuvarande utvärderingsbindningen måste då vara giltig. Genomförda planposter från det nya flödet förblir sedan historik.
+
+## Gemensam byråanalys och tjänstevis riskprövning
+
+Nya analyser i webb och kommandorad använder schema 2. Välj först tjänster ur standardkatalogen; välj bort dem som inte erbjuds och lämna osäkra svar som okända. Urvalet är ett förslag tills det bekräftas med källa, ansvarig och datum. Ett tidigare bekräftat nej som blir ja följer planflödet ovan. En tjänst utanför katalogen ska anges under övriga förhållanden; den får inte utelämnas för att programmet saknar motorstöd.
+
+Arbeta sedan i tre vyer:
+
+1. **Gemensam byråanalys.** Beskriv och belägg kundförhållanden, leveranskanaler, geografi, egen verksamhet, leverantörer, egna erfarenheter och sanktionsanknytning. Förklara hur faktorerna kan göra ett hot möjligt. Markera bekräftat sakförhållande, antagande eller kunskapslucka korrekt.
+2. **Tjänstens tillämpning.** Pröva betydelsen för tjänstens kunder, arbetsmoment/befogenheter, underlag/insyn, leverans och geografi. Markera vilka oförändrade poster som gäller och bekräfta dem samlat. Avvikelser behöver egen motivering och belägg; samlad bekräftelse skriver inte över dem. Antaganden följer med som osäkra även när tillämpningen bekräftas. Arbetsmoment, lokala scenarier, kontrollräckvidd och riskens sammanvägning prövas fortfarande i tjänstens analys.
+3. **Slutsats och granskning.** Pröva PT och TF var för sig, inneboende och kvarstående risk, konsekvenser enligt programmets befintliga metodval samt rutiner och kvarstående begränsningar. Ett sparat eller bekräftat svar är inte ett analysgodkännande. Analysgodkännandet är i sin tur separat från dokumentets sakgranskning och fastställelse.
+
+Riskmotorn behåller de beslutade reglerna. En belagd lägre bedömning än motorns visas som avvikelse; motorns högre nivå och åtgärdsgrund gäller. Kända falska villkor, under tröskeln och ersatta faktorer skiljs från en uttryckligen påstådd saknad hot-/dimensionskoppling. En allmän PT/TF-angivelse skapar ingen sådan koppling. Okända uppgifter får aldrig visas som ”under tröskeln”. ”Gäller annorlunda” börjar med oklar riktning och måste klargöras och sakgranskas; möjlig underskattning spärrar.
+
+En egen sårbarhet utan katalogfaktor behöver uttrycklig täckningsprövning för varje påstått hot och dimension. Pröva inneboende risk för varje egen risk och dessutom kvarstående risk när motorn sänker det berörda scenariot genom kontroll. Välj befintligt lokalt scenario, samma hot/dimension/riskled och en motiverad jämförelsenivå. Varje nödvändigt riskled har en separat länk och prövning. Beskriv hur mekanismen faktiskt täcks och ange belägg. En hög allmän tjänstenivå eller en PT-nivå täcker inte i sig ett annat hot eller TF. Bredvid jämförelsenivån visas en kontrafaktisk referens: befintligt motorscenario med ytterligare +1-faktor och samma kontrollantaganden. Referensen är inget facit och ändrar inte utfallet. En nivå under referensen behöver uttrycklig referensmotivering och sakgranskning. Ändrat underlag gör den tidigare prövningen inaktuell.
+
+Gemensamma mekanismer och byråposter står i D-ARB.5. Varje tjänst visar sin tillämpning, avvikelser och osäkerhet. Originalfält, fulla beräkningar och D9-underlag bevaras i B1. Läsrapport och B1 utgör tillsammans bedömningen. Inga privata analysuppgifter, tillämpningar eller täckningsprövningar skickas till AI. Metodbesluten D3/D9 och införandet av nya riskvikter ingår inte.
+
+### Uttrycklig överföring av en äldre analys
+
+Schema 1 går fortsatt att läsa historiskt. Ingen läsning, vanlig import eller förnyelse byter schema. Förnya vid behov först en inaktuell bindning enligt uppgraderingsanvisningen. Välj sedan **Jämför uttrycklig överföring till gemensam analys**. Jämför original, belägg, perioder och gemensamma förslag och bekräfta jämförelsen separat.
+
+Överföringen bevarar ursprungliga lokalsvar och deras attributioner. Bara innehåll med samma evidenssemantik kan föreslås gemensamt; skilda perioder, belägg, relevans, scenarier eller motsägande svar slås inte ihop. Förslagen är obekräftade antaganden utan överfört gemensamt författarskap. Alla block/scenarioval måste förnyas, nya tillämpningar prövas och modellens lokala användning ombedömas. Inga gamla ja-beslut förs över. Exakta originalbytes arkiveras innan den nya revisionen publiceras atomiskt. En annan fliks ändring avvisar överföringen.
+
+```sh
+riskanalys analys BYRA --forslag --schema 2
+riskanalys analys BYRA --overfor-schema 2 --jamfort --revision AKTUELL_REGISTERSUMMA
+```
+
+CLI visar aktuell registersumma vid analysstatus. Typade filer för `--bekrafta-tillampningar`, `--tillampningsfil`, `--visa-tackningsprovning` och `--tackningsprovning` använder samma validering som webbformuläret. De sparande handlingarna kräver revision, och bekräftelser kräver uttrycklig författare. Börja med att visa prövningen; ange dess aktuella innehållssumma när den bekräftas.
+
+### Omfattning utanför katalogen
+
+För en tjänst som programmet ännu inte kan analysera kan **ofullständigt omfattningsunderlag** exporteras från översikten eller med `riskanalys exportera BYRA --omfattningsunderlag`. Det återger kända verksamhetsuppgifter och den uttryckligt beskrivna luckan, utan risknivåer. Filen har separat ID/manifesttyp och får inte fastställas som allmän riskbedömning. Detta är en känd produktbegränsning. Nästa utvecklingssteg är spårbar, sakgranskad manuell tjänsteanalys, märkt ”Manuell bedömning – ej motorberäknad”; den är inte införd här.

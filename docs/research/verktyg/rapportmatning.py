@@ -3,6 +3,10 @@
 Syntetiska uppgifter och Testleverantor; inga AI-anrop. Körs från repots rot:
 .venv/bin/python docs/research/verktyg/rapportmatning.py [H7.1-fall, standard fyra_tjanster]
 """
+import argparse
+import json
+from dataclasses import replace
+from hashlib import sha256
 import re
 import sys
 import tempfile
@@ -10,6 +14,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+from docs.research.verktyg.matkontrakt import frysta_skrivsvar
 from riskanalys.dokument.arb_v8 import bygg_arb_v8
 from riskanalys.dokument.rendering import renderat_avsnitt
 from riskanalys.drift.historik import Historik
@@ -33,15 +38,29 @@ def normalisera(text):
     return re.sub(r'\d+', '0', text)
 
 
-def main():
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("fall",nargs="?",default="fyra_tjanster")
+    parser.add_argument("--analys-schema",type=int,choices=(1,2),default=1)
+    args=parser.parse_args(argv)
     global TJANSTNAMN
     rb = ladda_regelbas()
     TJANSTNAMN = tuple(t.namn for t in rb.tjanster.values())
     with tempfile.TemporaryDirectory() as rot:
-        fall = sys.argv[1] if len(sys.argv) > 1 else 'fyra_tjanster'
+        fall = args.fall
         print('Provfall:', fall)
         f = bygg_rapportlasprov(rb, Path(rot).resolve(), fall)
-        d = bygg_arb_v8(rb, f.profil, f.bedomning, skriv(f), Historik(), analys=f.analys)
+        original=f.analys
+        if args.analys_schema==2:
+            from riskanalys.analys.overforing import foresla_overforing
+            f=replace(f,analys=foresla_overforing(rb,original))
+        svar=skriv(f)
+        def hashv(v):return 'sha256:'+sha256(json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        print('Mätkontrakt:',json.dumps({'format':'D-ARB-tjanst-v8','analys_schema':args.analys_schema,
+            'tillstand':'ogranskat uttryckligt överföringsförslag, samtliga lokala originalsvar bevarade',
+            'profil':hashv(f.profil.model_dump(mode='json')),'motor':hashv(f.bedomning.model_dump(mode='json')),
+            'skrivsvar':hashv(frysta_skrivsvar(svar)),'regelbas':rb.kontrollsumma},ensure_ascii=False,sort_keys=True))
+        d = bygg_arb_v8(rb, f.profil, f.bedomning, svar, Historik(), analys=f.analys)
     delar = defaultdict(int)
     rader = []
     texter = []

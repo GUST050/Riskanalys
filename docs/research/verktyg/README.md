@@ -61,3 +61,16 @@ env -u ANTHROPIC_API_KEY .venv/bin/pytest tester/enhet/test_lydelsetexter.py -q
 Felkod 0 betyder att alla begärda paragrafer hittades, 1 betyder saknad paragraf eller oläsbar/otolkbar källa, 2 betyder felaktiga argument. Nio kommandoradstester använder syntetiska källtexter; åtta fallerade före rättningen 2026-10-10. Verkliga lokala källfiler krävs inte för testsuiten.
 
 Uttaget är en kandidattext. Allmänna råd, rubriker och övergångsbestämmelser ingår inte i paragraftexten. Tabeller, avstavningar och textens fullständighet måste kontrolleras mot originalet innan en juridisk lydelse godkänns. En matchande checksumma visar oförändrad text, inte att texten är juridiskt korrekt.
+
+## forenklad_slutprov.py och schemajämförelse
+
+Kör från repots rot med projektets Python 3.12. Verktyget använder bara syntetiska frysta fakta och Testleverantor och skriver två verkliga V8-DOCX samt `slutprov.json`. Välj en ny utdatamapp utanför Git. Filerna är ogranskade överföringsutkast, inga verkliga fastställda bedömningar eller sakkunnigattester.
+
+```sh
+.venv312/bin/python docs/research/verktyg/forenklad_slutprov.py --ut /private/tmp/forenklad-fyra --fall fyra_tjanster
+.venv312/bin/python docs/research/verktyg/forenklad_slutprov.py --ut /private/tmp/forenklad-mandat --fall med_betalningsmandat
+.venv312/bin/python docs/research/verktyg/rapportmatning.py fyra_tjanster --analys-schema 1
+.venv312/bin/python docs/research/verktyg/rapportmatning.py fyra_tjanster --analys-schema 2
+```
+
+Mätkontraktet visar profil-, motor-, skrivsvars- och regelbashash. Jämför bara körningar med samma fakta och frysta skrivsvar. Båda scheman bevarar samtliga ursprungliga lokalsvar; schema 2 har dessutom obekräftade gemensamma överföringsförslag. Mätningen är därför inte ett påstående om en färdigbehandlad kortare rapport. Ordantal redovisas för läsrapport, B1 och total; flytt till B1 räknas inte som en minskning. B7:s slutprov redovisar verkligt genomförda bekräftelseoperationer separat, inte uppskattade klick eller tidsvinster.

@@ -38,6 +38,8 @@ def effektiv_tjanst(paket: Analyspaket, tjanst: str) -> Tjansteanalys:
         p=poster.get(app.post)
         if not tillampning_aktuell(p,app):
             continue
+        if app.stallningstagande=='galler_annorlunda':
+            continue  # Egna strukturerade svar prövas lokalt; avvikelsen redovisas separat.
         text=' '.join(x for x in ((p.status.capitalize()+':') if p.status!='bekraftad' else '',p.text,app.motivering) if x)
         if app.stallningstagande=='beror_inte':
             text='Berör inte tjänsten: '+app.motivering
@@ -49,6 +51,15 @@ def effektiv_tjanst(paket: Analyspaket, tjanst: str) -> Tjansteanalys:
         else:
             andringar['sanktioner']=text
     return a.model_copy(update=andringar)
+
+
+def tillampningar_for_poster(paket: Analyspaket, tjanst: Tjansteanalys) -> Tjansteanalys:
+    """Nya tjänsters obekräftade förslag följer det faktiska postregistret."""
+    return tjanst.model_copy(update={
+        'sarbarhetstillampningar':tuple(Sarbarhetstillampning(post=p.id,stallningstagande='galler',postsumma=postsumma(p))
+            for p in paket.gemensamma_sarbarhetsprovningar),
+        'verksamhetstillampningar':tuple(GemensamTillampning(post=p.id,stallningstagande='galler',postsumma=postsumma(p))
+            for p in paket.gemensamma_verksamhetsposter)})
 
 
 def forifyll_gemensamt(rb, paket: Analyspaket) -> Analyspaket:

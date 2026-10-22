@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 from riskanalys.analys import modeller as m
 from riskanalys.analys.gemensam import postsumma,tillampning_aktuell,tackningssumma
 from riskanalys.analys.riktning import harled_riktningar
-from riskanalys.analys.provning_v2 import egna_ansprak
+from riskanalys.analys.provning_v2 import egna_ansprak,kravda_riskled
 from riskanalys.analys.referens import referensniva
 from riskanalys.intag.vyer import dold,falt,val
 from riskanalys.intag.analysvy import _kontroll
@@ -95,8 +95,9 @@ def tillampningar(rb,profil,bedomning,paket,tjanst,prefix,csrf,revision,data=Non
     for r in harled_riktningar(rb,profil,paket,t):html+='<li>'+e(f'{r.post} · {r.sarbarhet or "egen sårbarhet"} · {r.hot} · {r.dimension}: {r.riktning}. {r.motivering}')+'</li>'
     html+='</ul><h2>Täckning av egna sårbarheter</h2><ul>'
     for ursprung,post,hot,dim in egna_ansprak(rb,paket,t):
-        href=prefix+'analys?'+urlencode({'tjanst':tjanst,'tackning':'ja','ursprung':ursprung,'post':post,'hot':hot,'dimension':dim})
-        html+='<li><a href="'+e(href,quote=True)+'">Pröva täckning: '+e(post+' · '+hot+' · '+dim)+'</a></li>'
+        for riskled in kravda_riskled(t,hot,dim):
+            href=prefix+'analys?'+urlencode({'tjanst':tjanst,'tackning':'ja','ursprung':ursprung,'post':post,'hot':hot,'dimension':dim,'riskled':riskled})
+            html+='<li><a href="'+e(href,quote=True)+'">Pröva täckning: '+e(post+' · '+hot+' · '+dim+' · '+riskled.replace('kvarstaende','kvarstående'))+'</a></li>'
     return html+'</ul>'
 
 
@@ -105,8 +106,8 @@ def tackningsformular(rb,paket,t,prefix,csrf,revision,query=None,data=None,provn
     q=query or {};d=data or {};a=hamta_tjanst(paket,t.tjanst)
     p=provning
     if p is None:
-        nyckel=(q.get('ursprung',['gemensam'])[0],q.get('post',[''])[0],q.get('hot',[''])[0],q.get('dimension',['pt'])[0])
-        p=next((p for p in a.tackningsprovningar if (p.ursprung,p.post,p.hot,p.dimension)==nyckel),None) or m.Tackningsprovning(ursprung=nyckel[0],post=nyckel[1],hot=nyckel[2],dimension=nyckel[3])
+        nyckel=(q.get('ursprung',['gemensam'])[0],q.get('post',[''])[0],q.get('hot',[''])[0],q.get('dimension',['pt'])[0],q.get('riskled',['inneboende'])[0])
+        p=next((p for p in a.tackningsprovningar if (p.ursprung,p.post,p.hot,p.dimension,p.riskled)==nyckel),None) or m.Tackningsprovning(ursprung=nyckel[0],post=nyckel[1],hot=nyckel[2],dimension=nyckel[3],riskled=nyckel[4])
     scenarier,_=effektiva_scenarier(paket,a)
     html='<h1>Täckningsprövning av egen sårbarhet</h1><p>Hot och dimension: '+e(p.hot+' · '+p.dimension)+'</p>'
     referens=referensniva(rb,None,t,p.hot,p.dimension,p.riskled)

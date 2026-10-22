@@ -20,6 +20,7 @@ def lagg_till(underparsers):
     operation.add_argument('--tillampningsfil',type=Path,help='Spara ett typat tjänsteställningstagande för en visad gemensam post.')
     operation.add_argument('--visa-tackningsprovning',type=Path,help='Visa en täckningsprövning med aktuell innehållssumma utan att spara.')
     operation.add_argument('--tackningsprovning',type=Path,help='Spara och bekräfta den visade typade täckningsprövningen.')
+    operation.add_argument('--overfor-schema',type=int,choices=(2,),help='Överför uttryckligen äldre analys till schema 2 efter jämförelse.')
     operation.add_argument('--forifyll', action='store_true', help='Starta ett ogranskat förifyllt analysutkast.')
     operation.add_argument('--fornya', action='store_true', help='Bind bevarade svar till aktuellt underlag efter egen jämförelse.')
     operation.add_argument('--forslag', action='store_true', help='Visa ny förifyllnad som YAML utan att skriva över sparade svar.')
@@ -31,6 +32,7 @@ def lagg_till(underparsers):
     operation.add_argument('--underkann', action='store_true')
     operation.add_argument('--bekrafta-block', type=int, choices=range(1,17), metavar='1–16', help='Bekräfta ett tidigare visat blocks aktuella svar.')
     operation.add_argument('--scenarioval', help='Bekräfta ett tidigare visat gemensamt scenario för en tjänst.')
+    parser.add_argument('--jamfort',action='store_true',help='Bekräfta egen jämförelse av överföringsförslaget med originalet.')
     parser.add_argument('--schema',type=int,choices=(1,2),default=2,help='Uttryckligt analysschema för förifyllnad/förslag.')
     parser.add_argument('--revision', default=None, help='Registersumma från aktuell status; tom sträng för första utkastet.')
     parser.add_argument('--tjanst')
@@ -49,9 +51,11 @@ def lagg_till(underparsers):
 
 
 def kor(args):
-    muterar = any((args.bekrafta_tillampningar,args.tillampningsfil,args.tackningsprovning,args.forifyll, args.fornya, args.importfil, args.belagg, args.modellrapport, args.modellrisk, args.godkann, args.underkann, args.bekrafta_block, args.scenarioval))
+    muterar = any((args.overfor_schema,args.bekrafta_tillampningar,args.tillampningsfil,args.tackningsprovning,args.forifyll, args.fornya, args.importfil, args.belagg, args.modellrapport, args.modellrisk, args.godkann, args.underkann, args.bekrafta_block, args.scenarioval))
     if muterar and args.revision is None:
         raise RiskanalysFel('Ange --revision med registersumman från aktuell analysstatus.')
+    if args.overfor_schema and not args.jamfort:
+        raise RiskanalysFel('Jämför förslaget med --forslag --schema 2 och ange --jamfort före överföring.')
     if (args.godkann or args.underkann) and (not args.tjanst or not args.namn.strip() or not args.roll.strip() or args.datum is None):
         raise RiskanalysFel('Beslut kräver --tjanst, --namn, --roll och --datum efter genomgång av svaren.')
     if (args.bekrafta_block or args.scenarioval) and (not args.tjanst or not args.forfattare.strip() or not args.visad_summa):
@@ -70,8 +74,15 @@ def kor(args):
             t.spara_tillampning(args.tjanst,ref,app,args.revision,args.forfattare)
         elif args.tackningsprovning:
             t.spara_tackningsprovning(args.tjanst,gem.tackning(args.tackningsprovning),args.revision,args.forfattare)
+        elif args.overfor_schema:
+            t.overfor(args.revision,args.jamfort)
         elif args.forslag:
-            print(yaml.safe_dump(t.forslag(schema=args.schema).model_dump(mode='json'), allow_unicode=True, sort_keys=False))
+            p=t.status().paket
+            if p and p.schemaversion==1 and args.schema==2:
+                from riskanalys.analys.overforing import foresla_overforing
+                nytt=foresla_overforing(t.rb,p)
+            else:nytt=t.forslag(schema=args.schema)
+            print(yaml.safe_dump(nytt.model_dump(mode='json'), allow_unicode=True, sort_keys=False))
             return 0
         elif args.forifyll:
             t.starta(args.revision,schema=args.schema)

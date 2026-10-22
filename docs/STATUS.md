@@ -1,6 +1,14 @@
-# Gemensam analys – lokal utvecklingscheckpoint B5, 2026-10-22
+# Gemensam analys – tekniskt slutverifierad, 2026-10-22
 
-B1–B5 är införda på utvecklingsgrenen, med schema 2 som nytt webb-/CLI-standardval och fungerande V8-rapport. Färsk fullsvit: **3 149 godkända, ett livetest bortvalt, exit 0**, Python 3.12.15, oförändrat källsnapshot. [B5-granskningen](superpowers/reviews/2026-10-22-forenklad-riskbedomning-b5.md) beskriver ändringarna och två ytterligare reproducerade avvikelsefall som rättas i B7. B6–B7 återstår; checkpointen är inte avsedd för skarp användning. Ingen push/merge. Användarens slutgranskning med Claude återstår. Äldre status nedan är historik.
+Plan A och B1–B7 är införda på `codex/kravstod-tjansteexponering`. Färsk fullsvit efter helgranskningens samlade rättningar: **3 198 godkända, ett livetest bortvalt, exit 0**, 2 152,78 s på Python 3.12.15. JUnit har noll fel och de 463 frysta källfilerna är oförändrade. Regelbasvalidering och diffkontroll passerar. [Slutprovet och underlaget till Claude](superpowers/reviews/2026-10-22-forenklad-riskbedomning-slutprov.md) anger arbetsflöde, mellancommits, rapport-/bekräftelsemått, riktade prov och kvarstående begränsningar. Ingen push eller merge. Användarens slutgranskning med Claude återstår.
+
+Infört: uttryckligt planval/återkallelse, standardtjänster, gemensam byråanalys, innehållsbunden tillämpning per tjänst, separat hot-/PT-/TF-/riskledsprövning, kontrafaktisk +1-referens, V8-rapport och uttrycklig överföring med originalarkiv. Motorns riskmetod och AI-gräns är oförändrade; nytt kataloginnehåll är ogranskat.
+
+Samma-fakta-mätningen visar **1 844 fler ord totalt** och **100 i stället för 96 bekräftelseoperationer** i båda provfallen. Ingen längd-/tidsvinst påstås. Egna tjänster utanför katalogen kräver fortsatt det framtida manuella analysstödet. En uppskjuten Minor kan kräva ett nytt formulärförsök när man byter bort från ”gäller annorlunda”; risk-/godkännandespärrar består. Läs [användnings- och uppgraderingsanvisningen](kravstod.md) före överföring; inga gamla analysgodkännanden förs över.
+
+## Tidigare status och verifieringshistorik
+
+Texten nedan är historik och kan beskriva tidigare, ännu inte införda steg. Aktuell leveransstatus står ovan och i slutprovet.
 
 # Status och framsteg
 

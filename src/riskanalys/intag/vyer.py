@@ -119,9 +119,10 @@ def fragesida(s,id=None,data=None,fel=''):
     else:html+=falt('text','Ditt svar'+(' ('+f.enhet+')' if f.enhet else ''),value,'date' if f.typ=='datum' else 'text')
     html+=val('status','Kan uppgiften bekräftas?',[('bekräftad','Jag bekräftar uppgiften'),('okänt','Vet inte – kompletterar senare')],d.get('status','bekräftad'))
     if f.id in erbjudandefalt:
-        from riskanalys.intag.planvalsvy import behov_for_erbjudanden, planvalsfalt
-        for behov in behov_for_erbjudanden(s,p,{f.id:True}):
-            html+=planvalsfalt(s,behov,'plan_id',d.get('plan_id',''))
+        from riskanalys.intag.planvalsvy import behov_for_erbjudanden, planvalsfalt, bekraftat_ja
+        if bekraftat_ja(f,value,d.get('status','bekräftad')):
+            for behov in behov_for_erbjudanden(s,p,{f.id:True}):
+                html+=planvalsfalt(s,behov,'plan_id',d.get('plan_id',''))
     from riskanalys.intag.underlag import periodforslag
     from riskanalys.intag.underlagsvy import underlagsval
     period=u.period if u.period else periodforslag(s.tjanst.rb,p,f)

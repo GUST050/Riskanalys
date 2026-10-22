@@ -16,12 +16,12 @@ def test_explicit_hotkoppling_galler_hela_posten_inte_varje_korsprodukt(fall):
 
 def test_egen_sarbarhets_lokala_tf_ansprak_kraver_egen_tackning(fall):
     from riskanalys.analys.provning_v2 import egna_ansprak,tackningsbrister
-    p,t,prov=provfall(fall);a=p.tjanster[0]
+    p,t,prov=provfall(fall,komplett=True);a=p.tjanster[0]
     app=a.sarbarhetstillampningar[0].model_copy(update={'hotkopplingar':(m.Hotanknytning(hot='H-03',dimension='tf'),)})
     a=a.model_copy(update={'sarbarhetstillampningar':(app,)})
     p=p.model_copy(update={'tjanster':(a,)})
-    prov=prov.model_copy(update={'visad_summa':tackningssumma(fall.rb,p,t,prov)})
-    p=p.model_copy(update={'tjanster':(a.model_copy(update={'tackningsprovningar':(prov,)}),)})
+    prover=tuple(x.model_copy(update={'visad_summa':tackningssumma(fall.rb,p,t,x)}) for x in a.tackningsprovningar)
+    p=p.model_copy(update={'tjanster':(a.model_copy(update={'tackningsprovningar':prover}),)})
     assert ('gemensam','prov','H-03','tf') in egna_ansprak(fall.rb,p,t)
     assert any('tf' in x and 'saknar' in x for x in tackningsbrister(fall.rb,p,t))
 

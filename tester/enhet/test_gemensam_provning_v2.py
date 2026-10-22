@@ -3,7 +3,7 @@ from riskanalys.analys import modeller as m
 from tester.enhet.test_riktning_v2 import fall, med_post
 
 
-def provfall(fall,dimension='pt',riskled='inneboende'):
+def provfall(fall,dimension='pt',riskled='inneboende',*,komplett=False):
     from riskanalys.analys.gemensam import tackningssumma
     p,t=med_post(fall,faktor=None,hot=('H-03',))
     from riskanalys.analys.gemensam import postsumma
@@ -20,11 +20,15 @@ def provfall(fall,dimension='pt',riskled='inneboende'):
     p=p.model_copy(update={'tjanster':(a,)})
     prov=prov.model_copy(update={'visad_summa':tackningssumma(fall.rb,p,t,prov)})
     p=p.model_copy(update={'tjanster':(a.model_copy(update={'tackningsprovningar':(prov,)}),)})
+    if komplett:
+        andra=prov.model_copy(update={'riskled':'kvarstaende' if riskled=='inneboende' else 'inneboende'})
+        andra=andra.model_copy(update={'visad_summa':tackningssumma(fall.rb,p,t,andra)})
+        p=p.model_copy(update={'tjanster':(p.tjanster[0].model_copy(update={'tackningsprovningar':(prov,andra)}),)})
     return p,t,prov
 
 def test_egen_sarbarhet_tacks_av_ratt_scenario(fall):
     from riskanalys.analys.provning_v2 import tackningsbrister
-    p,t,_=provfall(fall)
+    p,t,_=provfall(fall,komplett=True)
     assert not tackningsbrister(fall.rb,p,t)
 
 @pytest.mark.parametrize('andring',[

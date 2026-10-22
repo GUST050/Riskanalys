@@ -253,6 +253,11 @@ def analyssida(s, query=None, data=None, fel=''):
         html += '<h1>Starta lokal verksamhetsanalys</h1><p>Programmet förifyller redigerbara ogranskade svar från bekräftad profil och motorutfall. Inga belägg för faktisk effekt eller mänskliga godkännanden hittas på.</p>'
         html += f'<form method="post" action="{e(s.prefix, quote=True)}analysstart">' + dold('csrf', s.csrf) + dold('revision', '') + dold('schema','2') + '<button>Starta ogranskat analysutkast</button></form>'
         return sida(s, html, fel)
+    if paket.schemaversion==1:
+        html+='<p><a href="'+e(s.prefix,quote=True)+'analys?overfor=ja">Jämför uttrycklig överföring till gemensam analys</a></p>'
+        if 'overfor' in q:
+            from riskanalys.intag.overforingsvy import jamforelse
+            return sida(s,html+jamforelse(s,paket,status.revision,d),fel)
     if paket.schemaversion==2:
         from riskanalys.intag.gemensamvy import byraanalys,tillampningar,tackningsformular
         html+='<nav><a href="'+e(s.prefix,quote=True)+'analys?byraanalys=ja">1. Gemensam byråanalys</a><span>2. Tjänsternas tillämpning</span><span>3. Slutsats och granskning</span></nav>'

@@ -4,6 +4,14 @@ from html import escape as e
 from riskanalys.profil.forandringar import inforandebehov_for_andring
 from riskanalys.profil.lagring import profilrevision
 from riskanalys.profil.modeller import Uppgift
+from riskanalys.profil.hantering import tolka_varde
+from riskanalys.fel import RiskanalysFel
+
+
+def bekraftat_ja(falt,text,status):
+    if status!='bekräftad':return False
+    try:return tolka_varde(falt,str(text)) is True
+    except RiskanalysFel:return False
 
 
 def behov_for_erbjudanden(s, profil, erbjudanden):

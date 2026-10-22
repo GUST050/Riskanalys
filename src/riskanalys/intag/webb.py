@@ -75,11 +75,12 @@ class Hantera(BaseHTTPRequestHandler):
             query=parse_qs(u.query, max_num_fields=8 if u.path==self.server.prefix+'analys' else 4)
         except ValueError:
             self.svara(400,'Ogiltig förfrågan.');return None
-        tillatna = {'plan','tjanst'} if u.path == self.server.prefix+'planering' else {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag','byraanalys','post','slag','tillampningar','tackning','ursprung','hot','dimension','riskled'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
+        tillatna = {'plan','tjanst'} if u.path == self.server.prefix+'planering' else {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag','overfor','byraanalys','post','slag','tillampningar','tackning','ursprung','hot','dimension','riskled'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
         if any(len(v)!=1 for v in query.values()) or set(query)-tillatna:
             self.svara(400,'Ogiltig förfrågan.');return None
         if ('dimension' in query and query['dimension'][0] not in ('pt','tf')
                 or 'ursprung' in query and query['ursprung'][0] not in ('gemensam','lokal')
+                or 'riskled' in query and query['riskled'][0] not in ('inneboende','kvarstaende')
                 or 'slag' in query and query['slag'][0] not in ('sarbarhet','verksamhet')):
             self.svara(400,'Välj giltigt område och dimension ur analysvyn.');return None
         return u.path.removeprefix(self.server.prefix),query
@@ -144,7 +145,7 @@ class Hantera(BaseHTTPRequestHandler):
         vag=self.vag()
         if vag is None:return
         path,query=vag
-        hanterare={k:getattr(self,'post_'+k) for k in ('omfattningsunderlag','plan','planutvardera','plangenomforande','planaterkalla','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysgemensampost','analystillampning','analysbekraftatillampningar','analystackning','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
+        hanterare={k:getattr(self,'post_'+k) for k in ('omfattningsunderlag','plan','planutvardera','plangenomforande','planaterkalla','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysgemensampost','analystillampning','analysbekraftatillampningar','analystackning','analysstart','analysoverfor','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
         if path not in hanterare or query:
             self.svara(404,'Sidan finns inte.');return
         from riskanalys.intag.flervalsvy import flervalsgrans
@@ -185,12 +186,13 @@ class Hantera(BaseHTTPRequestHandler):
         elif path.startswith('analys'):
             from riskanalys.intag.analysvy import analyssida
             query={}
-            if path=='analysblock':query={'tjanst':[data.get('tjanst','')],'block':[data.get('nummer','')]}
+            if path=='analysoverfor':query={'overfor':['ja']}
+            elif path=='analysblock':query={'tjanst':[data.get('tjanst','')],'block':[data.get('nummer','')]}
             elif path=='analysscenario':query={'tjanst':[data.get('tjanst','')],'scenario':[data.get('scenario','')]}
             elif path=='analysgemensamt':query={'gemensamt':[data.get('scenario','')]}
             elif path=='analysgemensampost':query={'byraanalys':['ja'],'post':[data.get('id','ny')],'slag':[data.get('typ','sarbarhet')]}
             elif path in ('analystillampning','analysbekraftatillampningar'):query={'tjanst':[data.get('tjanst','')],'tillampningar':['ja']}
-            elif path=='analystackning':query={'tjanst':[data.get('tjanst','')],'tackning':['ja'],**{k:[data.get(k,'')] for k in ('ursprung','post','hot','dimension')}}
+            elif path=='analystackning':query={'tjanst':[data.get('tjanst','')],'tackning':['ja'],**{k:[data.get(k,'')] for k in ('ursprung','post','hot','dimension')},'riskled':[data.get('riskled') if data.get('riskled') in ('inneboende','kvarstaende') else 'inneboende']}
             elif path=='analysbeslut':query={'tjanst':[data.get('tjanst','')],'granska':['ja']}
             elif path in ('analysmodellrisk','analysmodellfel'):query={'modellrisk':['ja']}
             try:html=analyssida(s,query,data,fel)
@@ -317,6 +319,11 @@ class Hantera(BaseHTTPRequestHandler):
     def post_analysstart(self,data):
         if set(data)-{'csrf','revision','schema'} or data.get('schema','2') not in ('1','2'):raise RiskanalysFel('Startformuläret innehåller okända fält eller ogiltigt schema.')
         self.analystjanst().starta(data.get('revision',''),schema=int(data.get('schema','2')))
+
+    def post_analysoverfor(self,data):
+        if set(data)-{'csrf','revision','jamfort'} or data.get('jamfort')!='ja':
+            raise RiskanalysFel('Jämför schemaförslaget med originalet och bekräfta jämförelsen först.')
+        self.analystjanst().overfor(data.get('revision',''),True)
 
     def post_analysfornya(self,data):
         if set(data)-{'csrf','revision','jamfort'} or data.get('jamfort')!='ja':raise RiskanalysFel('Jämför de sparade svaren med aktuellt underlag först.')
@@ -465,7 +472,9 @@ class Hantera(BaseHTTPRequestHandler):
             t=next((t for t in s.tjanst.rb.tjanster.values() if t.erbjuds_falt==f.id),None)
             if t is None:
                 raise RiskanalysFel('Planval får bara följa med ett tjänsteerbjudande.')
-            val=(Planval(tjanst=t.id,plan_id=data['plan_id']),)
+            from riskanalys.intag.planvalsvy import bekraftat_ja
+            if bekraftat_ja(f,text,svar.status):
+                val=(Planval(tjanst=t.id,plan_id=data['plan_id']),)
         self.server.tjanst.spara(svar,data.get('revision',''),planval=val)
         self.server.utkast=None;self.server.kompletteringar=()
 

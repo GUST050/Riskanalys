@@ -17,6 +17,10 @@ class GemensamtFall:
     paket: Analyspaket
     datum: date
 
-def bygg_gemensamt_fall(rb: Regelbas, rot: Path, fall: str='fyra_tjanster') -> GemensamtFall:
+def bygg_gemensamt_fall(rb: Regelbas, rot: Path, fall: str='fyra_tjanster', *, bevara_original: bool=False) -> GemensamtFall:
     f=bygg_rapportlasprov(rb,rot,fall)
-    return GemensamtFall(rb,f.profil,f.bedomning,forifyll_gemensamt(rb,f.analys),f.profil.byra.datum)
+    if bevara_original:
+        from riskanalys.analys.overforing import foresla_overforing
+        paket=foresla_overforing(rb,f.analys)
+    else:paket=forifyll_gemensamt(rb,f.analys)
+    return GemensamtFall(rb,f.profil,f.bedomning,paket,f.profil.byra.datum)

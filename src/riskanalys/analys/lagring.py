@@ -359,3 +359,15 @@ def las_analyssnapshot_last(byramapp: Path,rb,datum: date,*,bedomningsmapp: Path
 def las_analyssnapshot(byramapp: Path,rb,datum: date,*,bedomningsmapp: Path,utkastmapp: Path) -> Analyssnapshot:
     with analyslas(byramapp):
         return las_analyssnapshot_last(byramapp,rb,datum,bedomningsmapp=bedomningsmapp,utkastmapp=utkastmapp)
+
+
+def spara_overforing_last(byramapp: Path,paket: Analyspaket,*,forvantad_summa: str) -> str:
+    """Enbart uttrycklig 1→2 under analyslas. Originalbytes arkiveras före atomiskt byte."""
+    gammalt=las_analys(byramapp)
+    if gammalt is None or registersumma(gammalt)!=forvantad_summa:
+        raise RiskanalysFel('Analysen har ändrats i en annan flik. Jämför originalet på nytt.')
+    if gammalt.schemaversion!=1 or paket.schemaversion!=2 or paket.beslut:
+        raise RiskanalysFel('Överföring tillåter bara schema 1 till 2 utan nya godkännanden.')
+    paket=Analyspaket.model_validate(paket.model_dump(mode='json')).model_copy(update={'revision':gammalt.revision+1})
+    _skriv_last(byramapp,paket,gammalt)
+    return registersumma(paket)

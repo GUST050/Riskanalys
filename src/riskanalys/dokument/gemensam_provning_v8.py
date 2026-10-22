@@ -91,7 +91,7 @@ def delat_lokalblock(block,a,paket):
     appar={x.post:x for x in a.verksamhetstillampningar}
     for p in paket.gemensamma_verksamhetsposter:
         app=appar.get(p.id)
-        if not app or not tillampning_aktuell(p,app):continue
+        if not app or not tillampning_aktuell(p,app) or app.stallningstagande=='galler_annorlunda':continue
         namn={'leverantorer':('leverantorsmotivering','leverantorer'),'erfarenhet':('erfarenhetsprovning','erfarenhetsbelagg'),'sanktionsanknytning':('sanktioner',)}[p.slag]
         if any(f.split('/')[0] in namn for f in block.falt):return True
     return False

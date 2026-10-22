@@ -3,6 +3,7 @@ from riskanalys.analys.gemensam import tackningssumma, tillampning_aktuell
 from riskanalys.analys.provning import effektiva_scenarier, _saktext
 from riskanalys.bedomning.motor import RISKNIVAER
 from riskanalys.regelverk.modeller import hot_dimensioner
+from riskanalys.analys.modeller import GemensamSarbarhetsprovning
 
 
 def egna_ansprak(rb,paket,tjanst):
@@ -26,6 +27,14 @@ def egna_ansprak(rb,paket,tjanst):
     return tuple(dict.fromkeys(ansprak))
 
 
+def kravda_riskled(tjanst,hot,dimension):
+    scenario=next((s for s in tjanst.scenarier if (s.hot,s.dimension)==(hot,dimension)),None)
+    if (scenario and scenario.kvarstaende is not None
+            and RISKNIVAER.index(scenario.kvarstaende)<RISKNIVAER.index(scenario.risk)):
+        return ('inneboende','kvarstaende')
+    return ('inneboende',)
+
+
 def tackningsbrister(rb,paket,tjanst):
     from riskanalys.analys.referens import referensniva
     a=next((a for a in paket.tjanster if a.tjanst==tjanst.tjanst),None)
@@ -33,8 +42,11 @@ def tackningsbrister(rb,paket,tjanst):
     fel=[];belagg={b.id for b in paket.belagg};scenarier,_=effektiva_scenarier(paket,a)
     ansprak=egna_ansprak(rb,paket,tjanst)
     for nyckel in ansprak:
-        prov=[p for p in a.tackningsprovningar if (p.ursprung,p.post,p.hot,p.dimension)==nyckel]
-        if not prov:fel.append(f'{tjanst.tjanst}: metodkonflikt {nyckel}: egen sårbarhet saknar uttrycklig täckningsprövning.')
+        for riskled in kravda_riskled(tjanst,nyckel[2],nyckel[3]):
+            prov=[p for p in a.tackningsprovningar if (p.ursprung,p.post,p.hot,p.dimension,p.riskled)==(*nyckel,riskled)]
+            if not prov:
+                namn='kvarstående' if riskled=='kvarstaende' else 'inneboende'
+                fel.append(f'{tjanst.tjanst}: täckningsprövning {nyckel[1]}/{nyckel[2]}/{nyckel[3]}/{riskled}: metodkonflikt; egen sårbarhet saknar uttrycklig täckningsprövning för {namn} risk.')
     for p in a.tackningsprovningar:
         prefix=f'{tjanst.tjanst}: täckningsprövning {p.post}/{p.hot}/{p.dimension}/{p.riskled}: '
         def krav(v,text):
@@ -67,10 +79,14 @@ def gemensamma_analysbrister(rb,profil,bedomning,paket):
         krav(p.status=='bekraftad',f'{p.id}: {p.status} kvarstår; osäkerheten följer med varje tjänst.')
         krav(bool(p.forfattare and p.forfattare.strip()),f'{p.id}: författare saknas.')
         krav(bool(p.belagg) and set(p.belagg)<=belagg,f'{p.id}: aktuella belägg saknas.')
-        if p.id in gem:
+        if isinstance(p,GemensamSarbarhetsprovning):
             krav(_saktext(p.motivering) and _saktext(p.beskrivning),f'{p.id}: förklara sårbarhetens mekanism eller motiverad frånvaro.')
             krav(p.relevans!='okant',f'{p.id}: relevansen är okänd.')
             krav(set(p.sarbarheter)<=set(rb.sarbarheter) and set(p.hot)<=set(rb.hot),f'{p.id}: välj kända faktorer och hot.')
+            for hot in p.hot:
+                if hot in rb.hot:
+                    krav(p.dimension=='bada' or p.dimension in hot_dimensioner(rb.hot[hot]),
+                        f'{p.id}: hotet {hot} är oförenligt med angiven dimension {p.dimension}; välj rätt hot/dimension.')
             krav(set(p.profilfalt)<=set(rb.falt),f'{p.id}: okänt profilfält.')
             for f in p.profilfalt:
                 krav(profil.ar_bekraftad(f),f'{p.id}: profilfältet {f} är inte aktuellt bekräftat.')
@@ -87,6 +103,9 @@ def gemensamma_analysbrister(rb,profil,bedomning,paket):
             krav(set(poster)<={x.post for x in appar},f'{a.tjanst}: varje gemensam post kräver ett tjänsteställningstagande.')
             for app in appar:
                 riktningsval=getattr(app,'riktningsval',None)
+                if name=='sarbarhetstillampningar' and app.stallningstagande=='galler_annorlunda':
+                    krav(riktningsval is not None and riktningsval.riktning=='lagre',
+                        f'{a.tjanst}/{app.post}: gäller annorlunda har oklar riktning eller möjlig underskattning; klargör och sakgranska före godkännande.')
                 if riktningsval and riktningsval.riktning!='oklar':
                     krav(_saktext(riktningsval.motivering) and bool(riktningsval.belagg) and set(riktningsval.belagg)<=belagg,
                         f'{a.tjanst}/{app.post}: riktningsval kräver motivering och registrerade belägg.')

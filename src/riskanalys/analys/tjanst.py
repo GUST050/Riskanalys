@@ -14,6 +14,7 @@ from riskanalys.fel import RiskanalysFel
 from riskanalys.lagring.korningar import senaste_korning
 from riskanalys.lagring.manifest import las_manifest
 from riskanalys.profil.lagring import las_profil
+from riskanalys.regelverk.modeller import hot_dimensioner
 
 RAPPORTID = ('modell:projektrapport', 'modell:valideringsrapport', 'modell:modellfiler')
 
@@ -47,6 +48,8 @@ class Analystjanst(GemensammaOperationer):
         for g in paket.gemensamma_sarbarhetsprovningar:
             if set(g.sarbarheter)-set(self.rb.sarbarheter) or set(g.hot)-set(self.rb.hot) or set(g.profilfalt)-set(self.rb.falt):
                 raise RiskanalysFel('Välj gemensamma faktorer, hot och profilfält ur den aktuella katalogen.')
+            if any(g.dimension!='bada' and g.dimension not in hot_dimensioner(self.rb.hot[h]) for h in g.hot):
+                raise RiskanalysFel('Gemensam post har oförenligt hot och dimension. Välj rätt hot/dimension ur katalogen.')
         for s in paket.gemensamma_scenarier:
             if set(s.hot) - set(self.rb.hot):
                 raise RiskanalysFel('Välj gemensamma hot ur den aktuella källkatalogen.')
@@ -126,6 +129,19 @@ class Analystjanst(GemensammaOperationer):
             nytt = forifyll_analys(self.rb, las_profil(self.mapp), las_bedomning(bm), bindning, schema=schema)
             return self._spara(nytt, forvantad_summa=revision)
 
+    def overfor(self,revision,jamfort):
+        from riskanalys.analys.overforing import foresla_overforing
+        if jamfort is not True:raise RiskanalysFel('Jämför överföringsförslaget med originalet före överföring.')
+        with l.analyslas(self.mapp):
+            paket,_,_,bindning=self._last(revision)
+            if paket is None:raise RiskanalysFel('Starta ett analysutkast först.')
+            nytt=foresla_overforing(self.rb,paket).model_copy(update={'bindning':bindning})
+            nytt=m.Analyspaket.model_validate(nytt.model_dump(mode='json'))
+            self._katalogreferenser(nytt)
+            self._modellfelovergang(paket,nytt)
+            for fil,hash in l.analysbelaggsreferenser(paket):l.las_belaggsfil(self.mapp,fil,hash)
+            return l.spara_overforing_last(self.mapp,nytt,forvantad_summa=revision)
+
     def fornya(self, revision):
         """Explicit ny bindning efter jämförelse; inga manuella svar skrivs över."""
         with l.analyslas(self.mapp):
@@ -134,7 +150,11 @@ class Analystjanst(GemensammaOperationer):
                 raise RiskanalysFel('Starta ett analysutkast först.')
             forslag = forifyll_analys(self.rb, las_profil(self.mapp), las_bedomning(bm), bindning, schema=paket.schemaversion)
             tjanster = tuple(t.model_copy(update={'sarbarhetstillampningar':tuple(x.model_copy(update={'bekraftad':False}) for x in t.sarbarhetstillampningar), 'verksamhetstillampningar':tuple(x.model_copy(update={'bekraftad':False}) for x in t.verksamhetstillampningar), 'tackningsprovningar':tuple(x.model_copy(update={'visad_summa':None}) for x in t.tackningsprovningar), 'block': tuple(b.model_copy(update={'bekraftad_summa': None}) for b in t.block), 'scenariokopplingar': tuple(k.model_copy(update={'bekraftad': False}) for k in t.scenariokopplingar)}) for t in paket.tjanster)
-            tjanster += tuple(t for t in forslag.tjanster if t.tjanst not in {a.tjanst for a in paket.tjanster})
+            nya=tuple(t for t in forslag.tjanster if t.tjanst not in {a.tjanst for a in paket.tjanster})
+            if paket.schemaversion==2:
+                from riskanalys.analys.gemensam import tillampningar_for_poster
+                nya=tuple(tillampningar_for_poster(paket,t) for t in nya)
+            tjanster += nya
             gemensamma = paket.gemensamma_scenarier + tuple(s for s in forslag.gemensamma_scenarier if s.id not in {a.id for a in paket.gemensamma_scenarier})
             belagg = tuple(b for b in paket.belagg if not b.profilfalt) + forslag.belagg
             nytt = paket.model_copy(update={'bindning': bindning, 'tjanster': tjanster, 'gemensamma_scenarier': gemensamma, 'belagg': belagg})
