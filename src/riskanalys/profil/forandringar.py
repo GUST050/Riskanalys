@@ -14,6 +14,7 @@ from riskanalys.profil.lagring import las_profil, profilrevision, spara_profil
 from riskanalys.profil.modeller import Profil
 from riskanalys.profil.planering import forandringshinder, planbrister
 from riskanalys.profil.kombinationer import kombinationsbrister
+from riskanalys.profil.planlivslopp import aktiv_plan
 
 
 @contextmanager
@@ -51,7 +52,14 @@ def _tidigare_nej(mapp, rb, fore, efter):
     return fore.model_copy(update={'uppgifter':upp})
 
 
-def spara_andring(mapp, rb, efter, revision, *, rattelse=None, lokalt_underlag=False):
+def inforandebehov_for_andring(mapp, rb, efter, revision):
+    from riskanalys.profil.planval import inforandebehov
+    with forandringslas(mapp):
+        fore = aktuell_profil(mapp, revision)
+        return inforandebehov(rb, _tidigare_nej(mapp, rb, fore, efter), efter)
+
+
+def spara_andring(mapp, rb, efter, revision, *, rattelse=None, lokalt_underlag=False, planval=()):
     from riskanalys.profil.text import kontrollera_profiltext
     with forandringslas(mapp):
         fore = aktuell_profil(mapp, revision)
@@ -64,32 +72,44 @@ def spara_andring(mapp, rb, efter, revision, *, rattelse=None, lokalt_underlag=F
             hinder.append('En registrerad plans tjänst får inte bytas. Skapa en ny plan och bevara den tidigare.')
         for p in efter.tjansteplaner:
             gammal=gamla.get(p.id)
-            if gammal and gammal.genomforande is not None and gammal!=p:
-                hinder.append(f'{p.id}: genomförd plan är historik och får inte skrivas om. Registrera en ny plan.')
-            elif p.genomforande is not None and (gammal is None or gammal.genomforande!=p.genomforande):
-                hinder.append('Genomförande ska registreras genom det särskilda flödet, inte importeras som planuppgift.')
+            if gammal and not aktiv_plan(gammal) and gammal!=p:
+                hinder.append(f'{p.id}: genomförd eller återkallad plan är historik och får inte skrivas om. Registrera en ny plan.')
+            elif not aktiv_plan(p) and (gammal is None or gammal.genomforande!=p.genomforande or gammal.aterkallelse!=p.aterkallelse):
+                hinder.append('Genomförande och återkallelse ska registreras genom det särskilda flödet, inte importeras som planuppgift.')
         if not lokalt_underlag:
+            from riskanalys.profil.planval import erbjudandeovergangar, validera_planval
             historik = las_historik(mapp)
             # Fakta kan kompletteras före omprövning. Själva erbjudandeövergången prövas här,
             # kvarstående aktualitet för erbjudna tjänster dessutom vid fastställelse.
-            overgar = {t.id for t in rb.tjanster.values() if efter.ar_bekraftad(t.erbjuds_falt)
-                and efter.uppgifter[t.erbjuds_falt].varde is True
-                and not (fore.ar_bekraftad(t.erbjuds_falt) and fore.uppgifter[t.erbjuds_falt].varde is True)}
-            relevant = efter.model_copy(update={'tjansteplaner':tuple(p for p in efter.tjansteplaner if p.tjanst in overgar)})
+            overgar = erbjudandeovergangar(rb, fore, efter)
             historisk = fore if rattelse else _tidigare_nej(mapp, rb, fore, efter)
+            valfore = historisk
+            if rattelse:
+                if any(v.tjanst == rattelse.tjanst for v in planval):
+                    raise RiskanalysFel('Rättelse och verkligt införandeval får inte kombineras för samma tjänst.')
+                if rattelse.tjanst in rb.tjanster:
+                    falt = rb.tjanster[rattelse.tjanst].erbjuds_falt
+                    from riskanalys.profil.modeller import Uppgift
+                    valfore = historisk.model_copy(update={'uppgifter': {**historisk.uppgifter, falt: efter.uppgifter.get(falt, Uppgift())}})
+            valda = validera_planval(rb, valfore, efter, planval)
+            valda_id = {p.id for p in valda.values()}
+            relevant = efter.model_copy(update={'tjansteplaner':tuple(p for p in efter.tjansteplaner
+                if p.tjanst in overgar and (p.typ != 'ny_tjanst' or not aktiv_plan(p) or p.id in valda_id))})
             hinder.extend(forandringshinder(rb, historisk, relevant, historik, date.today(), rattelse=rattelse))
+        elif planval:
+            raise RiskanalysFel('Planval hör till erbjudandeövergången, inte till sparning av lokalt underlag.')
         if hinder:
             raise RiskanalysFel('\n'.join(dict.fromkeys(hinder)))
         if rattelse:
             registrera_handelse(mapp, Handelse(datum=rattelse.datum, typ='rättelse', beskrivning='Begärd rättelse: '+rattelse.motivering, rattelse=rattelse))
-        if not lokalt_underlag and not rattelse:
+        if not lokalt_underlag:
             from riskanalys.profil.planlivslopp import med_genomforande
-            for p in efter.tjansteplaner:
-                if p.tjanst in overgar and p.typ=='ny_tjanst' and p.genomforande is None:
-                    u=efter.uppgifter[rb.tjanster[p.tjanst].erbjuds_falt]
-                    if u.datum is None:
-                        raise RiskanalysFel('Bekräfta datum för det nya erbjudandet före införandet.')
-                    efter=med_genomforande(rb,efter,p.id,historik,u.datum,u.bekraftad_av or '',revision)
+            from riskanalys.profil.omfattning import kompatibilitetsvy
+            for p in valda.values():
+                u=kompatibilitetsvy(efter,rb).uppgifter[rb.tjanster[p.tjanst].erbjuds_falt]
+                if u.datum is None:
+                    raise RiskanalysFel('Bekräfta datum för det nya erbjudandet före införandet.')
+                efter=med_genomforande(rb,efter,p.id,historik,u.datum,u.bekraftad_av or '',revision)
         spara_profil(mapp, efter, revision=revision)
     return efter
 
@@ -101,11 +121,23 @@ def registrera_genomforande(mapp,rb,plan_id,datum,ansvarig,revision):
     with forandringslas(mapp):
         p=aktuell_profil(mapp,revision)
         plan=next((t for t in p.tjansteplaner if t.id==plan_id),None)
-        if plan is None or plan.genomforande is not None or planbrister(rb,p):
+        if plan is None or not aktiv_plan(plan) or planbrister(rb,p):
             raise RiskanalysFel('Välj en giltig registrerad plan.')
         vy=kompatibilitetsvy(p,rb);f=rb.tjanster[plan.tjanst].erbjuds_falt
         if not vy.ar_bekraftad(f) or vy.uppgifter[f].varde is not True:
             raise RiskanalysFel('Bekräfta först att tjänsten erbjuds; en planerad tjänst är inte genomförd.')
         nytt=med_genomforande(rb,p,plan_id,las_historik(mapp),datum,ansvarig,revision)
         spara_profil(mapp,nytt,revision=revision)
+        return nytt
+
+
+def aterkalla_plan(mapp, rb, plan_id, datum, ansvarig, motivering, revision):
+    """Registrera återkallelsen i samma atomiska profilskrivning som dess innehåll."""
+    from riskanalys.profil.planlivslopp import med_aterkallelse
+    from riskanalys.profil.text import kontrollera_profiltext
+    with forandringslas(mapp):
+        p = aktuell_profil(mapp, revision)
+        nytt = med_aterkallelse(p, plan_id, datum, ansvarig, motivering, revision)
+        kontrollera_profiltext(nytt)
+        spara_profil(mapp, nytt, revision=revision)
         return nytt

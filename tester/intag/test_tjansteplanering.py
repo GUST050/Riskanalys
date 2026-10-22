@@ -5,7 +5,7 @@ from riskanalys.intag.modeller import IntagSvar
 from riskanalys.intag.tjanst import Intagstjanst
 from riskanalys.intag.utvardering import registrera_utvardering
 from riskanalys.profil.lagring import spara_profil, profilrevision
-from riskanalys.profil.modeller import Tjansteplan
+from riskanalys.profil.modeller import Tjansteplan, Planval
 from riskanalys.drift.historik import las_historik, historikens_kontrollsumma
 from tester.fixturer.m2 import DAG
 
@@ -32,7 +32,7 @@ def test_plan_till_utvardering_till_inforande_utan_motor(tjanst):
     registrera_utvardering(tjanst, DAG, 'Underlag: avtalsutkast. Hot: falska fakturor. Sårbarhet: distans. Rutiner: verifiera original. Beslut: behåll bedömningen med dessa skäl.', profilrevision(p), plan_id='ny')
     assert fore != historikens_kontrollsumma(tjanst.mapp)
     assert las_historik(tjanst.mapp).senaste_utvardering() is None
-    p = tjanst.spara(svar('ja'), profilrevision(p))
+    p = tjanst.spara(svar('ja'), profilrevision(p), planval=(Planval(tjanst='T-RED-01',plan_id='ny'),))
     assert p.uppgifter['P-TJ.red01_erbjuds'].varde is True
     assert not (tjanst.mapp/'bedomningar').exists()
 

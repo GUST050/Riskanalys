@@ -13,7 +13,7 @@ from datetime import date
 import pytest
 
 from riskanalys.drift.historik import Historik
-from riskanalys.profil.modeller import Tjansteplan
+from riskanalys.profil.modeller import Tjansteplan, Planval
 from riskanalys.profil.planering import forandringshinder, plansumma
 from riskanalys.regelverk.laddning import ladda_regelbas
 from tester.enhet.test_tjansteplanering import DAG, ja, plan, profil, upp, utvardering
@@ -40,7 +40,7 @@ def _inford(rb, tmp_path):
     assert forandringshinder(rb, p, ja(p), historik, DAG) == (), 'Förutsättning: införandet godtas.'
     spara_profil(tmp_path,p)
     spara_historik(tmp_path,historik)
-    inford=spara_andring(tmp_path,rb,ja(p),profilrevision(p))
+    inford=spara_andring(tmp_path,rb,ja(p),profilrevision(p),planval=(Planval(tjanst='T-RED-01',plan_id='ny'),))
     return inford, historik
 
 

@@ -31,6 +31,19 @@ def _genomford_plan(plan):
     return html
 
 
+def _aterkallad_plan(plan, historik):
+    a=plan.aterkallelse
+    html=f'<h1>Återkallad plan {e(plan.id)}</h1><p>Återkallad {a.datum}, ansvarig {e(a.ansvarig)}.</p>'
+    html+=f'<p>{e(plan.beskrivning)}</p><h2>Motivering till återkallelsen</h2><p>{e(a.motivering)}</p>'
+    html+='<p>Planen är avslutad historik och kan inte ändras, genomföras eller återkallas igen. Registrera en ny plan vid en ny avsikt. Årsfristen gäller fortsatt.</p>'
+    for id,u in plan.uppgifter.items():
+        html+=f'<p>{e(id)}: {e(str(u.varde))}. Källa {e(u.kalla or "saknas")}; datum {u.datum or "okänt"}.</p>'
+    for h in historik.handelser:
+        if h.plan_id==plan.id:
+            html+=f'<p>Historisk utvärdering {h.datum}: {e(h.beskrivning)}. Kan inte bära ett införande.</p>'
+    return html
+
+
 def planeringssida(s, query=None, data=None, fel=''):
     from riskanalys.drift.historik import las_historik
     from riskanalys.profil.planering import aktuell_planutvardering
@@ -39,6 +52,8 @@ def planeringssida(s, query=None, data=None, fel=''):
     plan=next((t for t in p.tjansteplaner if t.id==plan_id),None)
     if plan and plan.genomforande is not None:
         return sida(s,_genomford_plan(plan),fel)
+    if plan and plan.aterkallelse is not None:
+        return sida(s,_aterkallad_plan(plan,las_historik(s.tjanst.mapp)),fel)
     tjanst=d.get('tjanst',plan.tjanst if plan else q.get('tjanst',[next(iter(rb.tjanster))])[0])
     if tjanst not in rb.tjanster:
         if data is None:
@@ -48,7 +63,7 @@ def planeringssida(s, query=None, data=None, fel=''):
     html+='<h2>Registrerade planer</h2><ul>'
     h=las_historik(s.tjanst.mapp)
     for t in p.tjansteplaner:
-        status=(f'Genomförd {t.genomforande.datum}' if t.genomforande else
+        status=(f'Genomförd {t.genomforande.datum}' if t.genomforande else f'Återkallad {t.aterkallelse.datum}' if t.aterkallelse else
                 'Aktuell bunden utvärdering finns' if aktuell_planutvardering(rb,p,t,h,date.today()) else 'Behöver utvärderas')
         html+=f'<li><a href="{s.prefix}planering?plan={e(t.id)}">{e(t.id)}</a>: {e(t.beskrivning)}. {status}.</li>'
     html+='</ul><h2>Planerad förändring</h2><p>Beskriv kundtyper, arbetsmoment och befogenheter, underlag och insyn, leverans och geografiska anknytningar. Planen ersätter inga aktuella uppgifter.</p>'
@@ -83,6 +98,12 @@ def planeringssida(s, query=None, data=None, fel=''):
         html+=falt('datum','Faktiskt genomförandedatum',d.get('datum',date.today()),'date',True)
         html+=falt('ansvarig','Ansvarig för genomförandet',d.get('ansvarig',''),required=True)
         html+='<label class="check"><input type="checkbox" name="genomford" value="ja" required>Jag bekräftar att förändringen har genomförts enligt den utvärderade planen.</label><button>Registrera genomförandet och avsluta planen</button></form>'
+        html+='<h2>Återkalla en övergiven plan</h2><p>Återkalla bara en avsikt som inte ska genomföras. Innehållet och tidigare utvärderingar bevaras som oföränderlig historik.</p>'
+        html+=_form(s,p,'planaterkalla')+dold('plan_id',plan.id)
+        html+=falt('datum','Återkallelsedatum',d.get('datum',date.today()),'date',True,html_id='aterkallelse-datum')
+        html+=falt('ansvarig','Ansvarig för återkallelsen',d.get('ansvarig',''),required=True,html_id='aterkallelse-ansvarig')
+        html+=_text('motivering','Varför överges planen?',d.get('motivering',''))
+        html+='<button>Återkalla planen och bevara historiken</button></form>'
     html+='<h2>Deklarerade kombinationsgrupper</h2><p>Ange belagd samtidig exponering, inte ett antagande från separata marginaltal. Överlappande grupper får inte summeras till unika kunder eller uppdrag. Samma populationsmått gäller antal och bas.</p>'
     for g in p.kombinationsgrupper:
         html+=f'<p>{e(g.id)} – {e(g.tjanst)}: {e(g.beskrivning)}. {e(g.population)}; {e(g.avgransning)}.</p>'

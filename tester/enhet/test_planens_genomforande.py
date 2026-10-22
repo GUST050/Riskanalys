@@ -4,7 +4,7 @@ from riskanalys.profil.lagring import spara_profil, profilrevision, las_profil
 from riskanalys.profil.forandringar import spara_andring, registrera_genomforande
 from riskanalys.drift.historik import Historik, spara_historik, las_historik
 from riskanalys.profil.planering import forandringshinder
-from riskanalys.profil.modeller import Tjansteplan
+from riskanalys.profil.modeller import Tjansteplan, Planval
 from riskanalys.fel import RiskanalysFel
 from tester.enhet.test_tjansteplanering import profil,plan,ja,utvardering,DAG,rb
 
@@ -16,7 +16,7 @@ def lagra(rb,mapp,p):
 
 def inford(rb,mapp):
     p=plan(profil());lagra(rb,mapp,p)
-    return spara_andring(mapp,rb,ja(p),profilrevision(p))
+    return spara_andring(mapp,rb,ja(p),profilrevision(p),planval=(Planval(tjanst='T-RED-01',plan_id='ny'),))
 
 
 def test_avslut_ar_registrerat_och_fryser_planen(rb,tmp_path):
@@ -65,7 +65,7 @@ def test_avbruten_profilskrivning_ger_inte_falskt_genomforande(rb,tmp_path,monke
     def avbrott(*args,**kwargs):raise RiskanalysFel('Syntetiskt skrivfel')
     monkeypatch.setattr(f,'spara_profil',avbrott)
     with pytest.raises(RiskanalysFel,match='skrivfel'):
-        spara_andring(tmp_path,rb,ja(p),profilrevision(p))
+        spara_andring(tmp_path,rb,ja(p),profilrevision(p),planval=(Planval(tjanst='T-RED-01',plan_id='ny'),))
     assert las_profil(tmp_path)==p
 
 
@@ -91,7 +91,7 @@ def test_gammal_planbevisning_lases_historiskt_och_arsfristen_galler(rb,tmp_path
     p=plan(profil())
     p=p.model_copy(update={'tjansteplaner':(p.tjansteplaner[0].model_copy(update={'uppgifter':{'P-TJ.red01_arbetssatt':p.uppgifter['P-TJ.red01_erbjuds'].model_copy(update={'varde':'Äldre arbetssätt'})}}),)})
     lagra(rb,tmp_path,p)
-    p=spara_andring(tmp_path,rb,ja(p),profilrevision(p))
+    p=spara_andring(tmp_path,rb,ja(p),profilrevision(p),planval=(Planval(tjanst='T-RED-01',plan_id='ny'),))
     ny_rb=rb.model_copy(update={'falt':{k:v for k,v in rb.falt.items() if k!='P-TJ.red01_arbetssatt'}})
     h=las_historik(tmp_path).med(Handelse(datum=DAG,typ='utvärdering',beskrivning='Hela riskbedömningen'))
     hinder=_drift(SimpleNamespace(regelbas=ny_rb,profil=p,historik=h),date(2027,10,20))

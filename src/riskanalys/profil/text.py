@@ -19,6 +19,8 @@ def kontrollera_profiltext(profil):
         kontrollera_text(plan.beskrivning)
         if plan.genomforande:
             kontrollera_text(plan.genomforande.ansvarig,plan.genomforande.utvardering)
+        if plan.aterkallelse:
+            kontrollera_text(plan.aterkallelse.ansvarig, plan.aterkallelse.motivering)
         for id, u in plan.uppgifter.items():
             kontrollera_text(id,u.varde,u.kalla,u.bekraftad_av,u.motivering)
     for g in profil.kombinationsgrupper:

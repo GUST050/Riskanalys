@@ -39,6 +39,7 @@ def lagg_till(underparsers: Any) -> None:
     bekraftelse.add_argument("--ej-tillampligt", action="store_true", help="Markera uppgiften som ej tillämplig.")
     bekraftelse.add_argument("--motivering", help="Krävs med --ej-tillampligt.")
     bekraftelse.add_argument('--rattelse', action='store_true', help='Rätta ett felregistrerat nej med källa och --motivering. Gäller inte ett nytt införande.')
+    bekraftelse.add_argument('--plan', help='Uttryckligt val av den aktiva ny-tjänst-plan som genomförs vid införandet.')
     bekraftelse.add_argument("--datum", type=datumargument, default=None, help="Standard är dagens datum.")
     bekraftelse.add_argument("--period-fran", type=datumargument)
     bekraftelse.add_argument("--period-till", type=datumargument)
@@ -119,7 +120,14 @@ def kor_bekrafta(args: argparse.Namespace) -> int:
         from riskanalys.profil.omfattning import kompatibilitetsvy
         rattelse = Erbjudanderattelse(tjanst=t.id,fore=kompatibilitetsvy(profil,regelbas).uppgifter[args.falt],efter=ny_profil.uppgifter[args.falt],
             motivering=args.motivering,kalla=args.kalla or '',ansvarig=args.roll,datum=datum,profilrevision=revision)
-    spara_andring(mapp,regelbas,ny_profil,revision,rattelse=rattelse)
+    val=()
+    if getattr(args,'plan',None):
+        from riskanalys.profil.modeller import Planval
+        t=next((t for t in regelbas.tjanster.values() if t.erbjuds_falt==args.falt),None)
+        if t is None:
+            raise ProfilFel('--plan får bara användas med ett tjänsteerbjudande.')
+        val=(Planval(tjanst=t.id,plan_id=args.plan),)
+    spara_andring(mapp,regelbas,ny_profil,revision,rattelse=rattelse,planval=val)
     print(f"{args.falt}: {beskriv_uppgift(regelbas.falt[args.falt], ny_profil.uppgifter[args.falt])}")
     return 0
 

@@ -8,11 +8,15 @@ from datetime import date
 import hashlib
 import json
 from riskanalys.fel import RiskanalysFel
-from riskanalys.profil.modeller import Plangenomforande
+from riskanalys.profil.modeller import Plangenomforande, Planaterkallelse
+
+
+def aktiv_plan(plan):
+    return plan.genomforande is None and plan.aterkallelse is None
 
 
 def planinnehallssumma(plan):
-    data=plan.model_dump(mode='json',exclude={'genomforande'})
+    data=plan.model_dump(mode='json',exclude={'genomforande', 'aterkallelse'})
     return 'sha256:'+hashlib.sha256(json.dumps(data,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
 
 
@@ -20,6 +24,11 @@ def genomforandebrist(plan):
     g=plan.genomforande
     if g and g.planinnehallssumma != planinnehallssumma(plan):
         return f'{plan.id}: genomförd plan har ändrats. Återställ historiken och registrera en ny plan för den nya förändringen.'
+    a = plan.aterkallelse
+    if a and a.planinnehallssumma != planinnehallssumma(plan):
+        return f'{plan.id}: återkallad plan har ändrats. Återställ historiken och registrera en ny plan.'
+    if a and g:
+        return f'{plan.id}: planen kan inte vara både genomförd och återkallad.'
     return None
 
 
@@ -27,8 +36,8 @@ def med_genomforande(rb,profil,plan_id,historik,datum,ansvarig,fore_revision):
     from riskanalys.profil.planering import plansumma
     from riskanalys.profil.text import kontrollera_text
     plan=next((p for p in profil.tjansteplaner if p.id==plan_id),None)
-    if plan is None or plan.genomforande is not None:
-        raise RiskanalysFel('Välj en ännu inte genomförd plan. Genomförd historik får inte skrivas om.')
+    if plan is None or not aktiv_plan(plan):
+        raise RiskanalysFel('Välj en aktiv plan. Genomförd eller återkallad historik får inte skrivas om.')
     if datum>date.today() or not ansvarig.strip() or len(ansvarig)>200:
         raise RiskanalysFel('Ange genomförandets datum senast idag och ansvarig funktion (högst 200 tecken).')
     kontrollera_text(ansvarig)
@@ -45,3 +54,18 @@ def med_genomforande(rb,profil,plan_id,historik,datum,ansvarig,fore_revision):
     g=Plangenomforande(datum=datum,ansvarig=ansvarig,utvarderad=h.datum,utvardering=h.beskrivning,
         plansumma=summa,planinnehallssumma=planinnehallssumma(plan),fore_revision=fore_revision)
     return profil.model_copy(update={'tjansteplaner':tuple(p.model_copy(update={'genomforande':g}) if p.id==plan.id else p for p in profil.tjansteplaner)})
+
+
+def med_aterkallelse(profil, plan_id, datum, ansvarig, motivering, fore_revision):
+    from riskanalys.profil.text import kontrollera_text
+    plan = next((p for p in profil.tjansteplaner if p.id == plan_id), None)
+    if plan is None or not aktiv_plan(plan):
+        raise RiskanalysFel('Välj en aktiv plan. Genomförd eller återkallad historik får inte skrivas om.')
+    if datum > date.today():
+        raise RiskanalysFel('Ange återkallelsens datum senast idag.')
+    kontrollera_text(ansvarig, motivering)
+    avslut = Planaterkallelse(datum=datum, ansvarig=ansvarig, motivering=motivering,
+        fore_revision=fore_revision, planinnehallssumma=planinnehallssumma(plan))
+    return profil.model_copy(update={'tjansteplaner': tuple(
+        p.model_copy(update={'aterkallelse': avslut}) if p.id == plan_id else p
+        for p in profil.tjansteplaner)})

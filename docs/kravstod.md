@@ -12,6 +12,12 @@ Därefter kan ett tidigare bekräftat nej ändras till ja. När erbjudandet spar
 
 Ett okänt erbjudande kan bekräftas vid första kartläggningen; kända tidigare nej, även i äldre profilformat, får inte kringgå spärren genom ett mellanliggande okänt svar.
 
+Vid ett verkligt införande väljer byrån uttryckligen vilken aktiv plan av typen Ny tjänst som genomförs. Även en enda kandidat behöver väljas; flera planer markeras aldrig automatiskt som genomförda. Ej valda planer förblir aktiva och omfattas fortsatt av prövningen inför fastställelse. Ett okänt svar med en redan registrerad införandeavsikt är inte en väg runt planvalet.
+
+En övergiven plan kan återkallas med datum, ansvarig funktion och motivering. Innehållet och tidigare utvärderingar bevaras som oföränderlig historik. Återkallad plan spärrar inte ett nytt giltigt införande, men kan inte själv genomföras, återkallas igen, redigeras eller användas som aktuell planutvärdering. En genomförd plan kan inte återkallas. Ny avsikt kräver nytt plan-ID.
+
+Det samlade tjänsteurvalet begär planval vid just införanderaderna och behåller hela urvalet, underlaget och funktionen när något saknas. Alla erbjudanden och valda genomföranden sparas i ett enda steg; ett felaktigt val lämnar hela profilen oförändrad. Ändras profilen under arbetet visas de aktuella erbjudandena och kandidaterna för ny jämförelse och bekräftelse.
+
 En ännu inte genomförd plan kräver omprövning om planen, källan eller en relevant sakuppgift ändras. För att uppdatera beläggen för oförändrade planvärden fyller du i nytt underlag, funktion och datum samt eventuell period. Lämna dessa beläggsfält tomma när endast planbeskrivningen ändras och de tidigare antagandena med sina belägg ska behållas.
 
 För ett felregistrerat nej finns en särskild rättelse med motivering, källa, ansvarig funktion och datum. Den får inte användas för att kringgå en verklig registrerad förändringsplan. Före- och efteruppgifter samt ursprunglig profilrevision journalförs. Journalen registrerar begärd rättelse före profilskrivning; vid skrivfel visar den sparade profilen om eftervärdet genomfördes.
@@ -34,6 +40,8 @@ Webb och CLI använder samma spar- och förändringskontroller. CLI kan läsa ty
 riskanalys plan BYRA --fil plan.yaml
 riskanalys utvardera BYRA --plan PLAN_ID --beskrivning 'Genomförd utvärdering med underlag, hot, sårbarheter, påverkan och beslut med skäl'
 riskanalys genomfor-plan BYRA PLAN_ID --datum ÅÅÅÅ-MM-DD --ansvarig 'Ansvarig för genomförandet'
+riskanalys aterkalla-plan BYRA PLAN_ID --datum ÅÅÅÅ-MM-DD --ansvarig 'Ansvarig funktion' --motivering 'Avsikten ska inte genomföras'
+riskanalys bekrafta BYRA P-TJ.red01_erbjuds ja --kalla 'Prövat uppdragsavtal' --plan PLAN_ID
 riskanalys kombinationsgrupp BYRA --fil grupp.yaml
 riskanalys bekrafta BYRA P-TJ.red01_erbjuds ja --kalla 'Tidigare uppdragsavtal' --rattelse --motivering 'Fel vid den första registreringen'
 ```

@@ -13,6 +13,7 @@ from riskanalys.profil.hantering import belaggsbrister
 from riskanalys.profil.lagring import profilrevision
 from riskanalys.profil.modeller import Profil, Uppgift
 from riskanalys.regelverk.villkor import kontrollera_varde, VillkorsFel
+from riskanalys.profil.planlivslopp import aktiv_plan
 
 
 def tillatna_planfalt(rb, tjanst):
@@ -30,7 +31,7 @@ def planbrister(rb, profil):
         if plan.id in sett:
             fel.append(f'Plan-ID {plan.id} förekommer flera gånger.')
         sett.add(plan.id)
-        if plan.genomforande is not None:
+        if not aktiv_plan(plan):
             from riskanalys.profil.planlivslopp import genomforandebrist
             if brist:=genomforandebrist(plan):
                 fel.append(brist)
@@ -77,13 +78,13 @@ def plansumma(rb, profil, plan_id):
                 data['inaktuell']=True
             sakuppgifter[id]=data
     data = {'version': 1, 'regelbas': rb.kontrollsumma, 'byra': profil.byra.model_dump(mode='json'),
-            'plan': plan.model_dump(mode='json',exclude={'genomforande'}), 'sakuppgifter': sakuppgifter,
+            'plan': plan.model_dump(mode='json',exclude={'genomforande', 'aterkallelse'}), 'sakuppgifter': sakuppgifter,
             'kombinationsgrupper': [g.model_dump(mode='json') for g in profil.kombinationsgrupper if g.tjanst==plan.tjanst]}
     return 'sha256:' + hashlib.sha256(json.dumps(data, sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
 
 
 def aktuell_planutvardering(rb, profil, plan, historik, datum):
-    return any(h.typ == 'utvärdering' and h.plan_id == plan.id and h.plansumma == plansumma(rb, profil, plan.id)
+    return aktiv_plan(plan) and any(h.typ == 'utvärdering' and h.plan_id == plan.id and h.plansumma == plansumma(rb, profil, plan.id)
                and h.datum <= datum and h.beskrivning.strip() for h in historik.handelser)
 
 
@@ -99,7 +100,7 @@ def forandringshinder(rb, fore, efter, historik, datum, *, rattelse=None):
         a, b = forevy.uppgifter.get(f, Uppgift()), eftervy.uppgifter.get(f, Uppgift())
         if b.status != 'bekräftad' or b.varde is not True or b.inaktuell:
             continue
-        planer = [p for p in efter.tjansteplaner if p.tjanst == id and p.genomforande is None]
+        planer = [p for p in efter.tjansteplaner if p.tjanst == id and aktiv_plan(p)]
         nytt = a.varde is False and a.status == 'bekräftad'
         if rattelse and rattelse.tjanst == id:
             giltig = (a.status == 'bekräftad' and a.varde is False and not planer and rattelse.fore == a and rattelse.efter == b

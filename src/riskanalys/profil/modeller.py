@@ -77,6 +77,25 @@ class Plangenomforande(Fryst):
         return self
 
 
+class Planaterkallelse(Fryst):
+    datum: date
+    ansvarig: str = Field(min_length=1, max_length=200)
+    motivering: str = Field(min_length=1, max_length=12000)
+    fore_revision: str
+    planinnehallssumma: str = Field(pattern=r'^sha256:[0-9a-f]{64}$')
+
+    @model_validator(mode='after')
+    def belagg(self):
+        if not self.ansvarig.strip() or not self.motivering.strip():
+            raise ValueError('Återkallelsen kräver ansvarig funktion och motivering.')
+        return self
+
+
+class Planval(Fryst):
+    tjanst: str = Field(min_length=1)
+    plan_id: str = Field(min_length=1, max_length=80, pattern=r'^[a-zA-Z0-9_-]+$')
+
+
 class Tjansteplan(Fryst):
     id: str = Field(min_length=1, max_length=80, pattern=r'^[a-zA-Z0-9_-]+$')
     tjanst: str
@@ -85,12 +104,21 @@ class Tjansteplan(Fryst):
     avsett_inforande: date | None = None
     uppgifter: dict[str, Uppgift] = Field(default_factory=dict)
     genomforande: Plangenomforande | None = None
+    aterkallelse: Planaterkallelse | None = None
+
+    @model_validator(mode='after')
+    def terminalstatus(self):
+        if self.genomforande is not None and self.aterkallelse is not None:
+            raise ValueError('En plan kan inte vara både genomförd och återkallad.')
+        return self
 
     @model_serializer(mode='wrap')
     def serialisera(self, handler):
         data=handler(self)
         if self.genomforande is None:
             data.pop('genomforande',None)
+        if self.aterkallelse is None:
+            data.pop('aterkallelse', None)
         return data
 
 

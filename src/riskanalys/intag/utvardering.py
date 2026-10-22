@@ -16,8 +16,9 @@ def registrera_utvardering(tjanst, datum: date, beskrivning: str, revision: str,
         p=aktuell_profil(tjanst.mapp,revision)
         summa = None
         if plan_id is not None:
-            if any(t.id==plan_id and t.genomforande for t in p.tjansteplaner):
-                raise RiskanalysFel('Planen är genomförd historik. Registrera ordinarie årsutvärdering eller en ny plan för en ny förändring.')
+            from riskanalys.profil.planlivslopp import aktiv_plan
+            if any(t.id==plan_id and not aktiv_plan(t) for t in p.tjansteplaner):
+                raise RiskanalysFel('Planen är genomförd eller återkallad historik. Registrera ordinarie årsutvärdering eller en ny plan för en ny förändring.')
             if planbrister(tjanst.rb,p) or plan_id not in {t.id for t in p.tjansteplaner}:
                 raise RiskanalysFel('Välj en giltig registrerad plan före utvärderingen.')
             summa=plansumma(tjanst.rb,p,plan_id)

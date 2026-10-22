@@ -25,6 +25,25 @@ def lagg_till(underparsers: Any) -> None:
     genomfor.add_argument('--datum',type=datumargument,default=None)
     regelbasargument(genomfor)
     genomfor.set_defaults(kor=kor_genomfor_plan)
+    aterkalla=underparsers.add_parser('aterkalla-plan',help='Återkalla en aktiv plan och bevara dess historik.')
+    aterkalla.add_argument('byra')
+    aterkalla.add_argument('plan')
+    aterkalla.add_argument('--ansvarig',required=True)
+    aterkalla.add_argument('--motivering',required=True)
+    aterkalla.add_argument('--datum',type=datumargument,default=None)
+    regelbasargument(aterkalla)
+    aterkalla.set_defaults(kor=kor_aterkalla_plan)
+
+
+def kor_aterkalla_plan(args):
+    from riskanalys.kommandon import ladda_giltig_regelbas
+    from riskanalys.profil.forandringar import aterkalla_plan
+    from riskanalys.profil.lagring import las_profil,profilrevision
+    mapp=befintlig_byramapp(args.byra)
+    aterkalla_plan(mapp,ladda_giltig_regelbas(args.regelbas),args.plan,args.datum or date.today(),
+                  args.ansvarig,args.motivering,profilrevision(las_profil(mapp)))
+    print('Planen är återkallad. Innehåll och tidigare utvärderingar bevaras som historik; årsfristen är oförändrad.')
+    return 0
 
 
 def kor_genomfor_plan(args):

@@ -32,9 +32,13 @@ def planunderlag(profil, historik):
     poster=[]
     for p in profil.tjansteplaner:
         g=p.genomforande
+        a=p.aterkallelse
         status=(f'Genomförd {g.datum}, ansvarig {g.ansvarig}. Historisk plan; omprövas inte mot aktuella byråfakta. '
                 f'Utvärderad {g.utvarderad}: {g.utvardering}. Historisk plansumma {g.plansumma}.' if g else
                 'Planerad förändring; inget genomförande registrerat. Avsett datum avslutar inte planen.')
+        if a:
+            status=(f'Återkallad {a.datum}, ansvarig {a.ansvarig}. Motivering: {a.motivering}. '
+                    'Historisk plan; kan inte genomföras eller bära ett nytt införande. Tidigare utvärderingar är endast historik.')
         text=(f'Plan {p.id}, tjänst {p.tjanst}, typ {p.typ}. {p.beskrivning} '
               f'Avsett införande: {p.avsett_inforande or "ej angivet"}. {status}')
         poster.append(_original(text,('LOKAL-PLAN:'+p.id,p.tjanst)))
@@ -47,6 +51,8 @@ def planunderlag(profil, historik):
             text=f'{h.typ.capitalize()} {h.datum}: {h.beskrivning}.'
             if h.plan_id:
                 text+=f' Plan-ID {h.plan_id}; bindning {h.plansumma}. Begränsad planutvärdering flyttar inte årsfristen.'
+                if any(p.id==h.plan_id and p.aterkallelse for p in profil.tjansteplaner):
+                    text+=' Historisk utvärdering av återkallad plan; kan inte bära ett införande.'
             if h.rattelse:
                 r=h.rattelse
                 text+=f' Tjänst {r.tjanst}; före {r.fore.varde}, efter {r.efter.varde}; källa {r.kalla}; ansvarig {r.ansvarig}; ursprunglig profilrevision {r.profilrevision}. Begärd rättelse; sparad profil visar om eftervärdet genomförts.'

@@ -58,8 +58,10 @@ def test_privata_grupper_och_planer_andrar_inte_ai_begaran_eller_omforsok(tmp_pa
     from riskanalys.drift.historik import Handelse,Historik
     hist=Historik(handelser=(Handelse(datum=p.byra.datum,typ='utvärdering',beskrivning='PRIVAT UTVÄRDERING',plan_id=plan.id,plansumma=plansumma(rb_intag,andra,plan.id)),))
     genomford=med_genomforande(rb_intag,andra,plan.id,hist,p.byra.datum,'PRIVAT GENOMFÖRANDE','syntetisk-revision')
+    from riskanalys.profil.planlivslopp import med_aterkallelse
+    aterkallad=med_aterkallelse(andra,plan.id,p.byra.datum,'PRIVAT ANSVARIG','PRIVAT ÅTERKALLELSE','syntetisk-revision')
     anrop=[]
-    for profil in (p,andra,genomford):
+    for profil in (p,andra,genomford,aterkallad):
         lev=Testleverantor(['felaktig JSON',bra])
         skriv_tjanst(lev,rb_intag,profil,t,avsnitt,formatversion='D-ARB-tjanst-v8',effort='medium',personnamn=(),spara=lambda *args:None)
         anrop.append([a.model_dump_json() for a in lev.delanrop])

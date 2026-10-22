@@ -40,10 +40,10 @@ class Intagstjanst:
         spara_profil(self.mapp,p,revision='')
         return p
 
-    def spara(self, svar: IntagSvar, revision: str, *, rattelse=None):
-        return self.spara_flera((svar,),revision, rattelse=rattelse)
+    def spara(self, svar: IntagSvar, revision: str, *, rattelse=None, planval=()):
+        return self.spara_flera((svar,),revision, rattelse=rattelse, planval=planval)
 
-    def spara_flera(self, svar: tuple[IntagSvar, ...], revision: str, *, rattelse=None):
+    def spara_flera(self, svar: tuple[IntagSvar, ...], revision: str, *, rattelse=None, planval=()):
         """Validera hela urvalet innan en enda atomisk profilsparning."""
         p=self.profil()
         if profilrevision(p) != revision:
@@ -52,7 +52,16 @@ class Intagstjanst:
         for uppgift in svar:
             nytt=besvara(self.rb,nytt,uppgift)
         from riskanalys.profil.forandringar import spara_andring
-        return spara_andring(self.mapp,self.rb,nytt,revision,rattelse=rattelse)
+        return spara_andring(self.mapp,self.rb,nytt,revision,rattelse=rattelse,planval=planval)
+
+    def planbehov(self, svar: tuple[IntagSvar, ...], revision: str):
+        p = self.profil()
+        if profilrevision(p) != revision:
+            raise RiskanalysFel('Profilen har ändrats. Läs om sidan före planvalet.')
+        for uppgift in svar:
+            p = besvara(self.rb, p, uppgift)
+        from riskanalys.profil.forandringar import inforandebehov_for_andring
+        return inforandebehov_for_andring(self.mapp, self.rb, p, revision)
 
     def spara_plan(self, plan, revision):
         from riskanalys.profil.forandringar import spara_andring
