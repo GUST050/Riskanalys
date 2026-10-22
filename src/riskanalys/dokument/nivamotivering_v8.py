@@ -31,15 +31,13 @@ def lokala_faktorskal(rb, profil, paket, tjanst):
     ids=aktiva_faktorer(tjanst)
     if not ids:
         return ()
-    delar=[]
-    for id in ids:
-        provningar=[p for p in a.sarbarhetsprovningar if id in p.sarbarheter] if a else []
-        lokal=', '.join(dict.fromkeys(p.relevans for p in provningar)) or 'lokal prövning saknas'
-        scenarier=', '.join(dict.fromkeys(s.hot+'/'+s.dimension.upper() for s in tjanst.scenarier if id in s.sarbarheter))
-        delar.append(f'{id}: {lokal}'+(f' ({scenarier})' if scenarier else ''))
-    return (Textstycke(typ='motivering',text='Faktorernas tillämpning i tjänsten: '+'; '.join(delar)+'. '
-        'Mekanismer och källor står i Gemensamt faktaunderlag. Lokala motiveringar och belägg följer i sårbarhetsprövningen. '
-        'Motoraktivering kan vara preliminär vid okända fakta och är ingen bekräftelse av att exponeringen finns.',
+    motiverade={id for p in a.sarbarhetsprovningar if p.motivering.strip() for id in p.sarbarheter} if a else set()
+    saknade=[rb.sarbarheter[id].namn if id in rb.sarbarheter else id for id in ids if id not in motiverade]
+    text=('Faktorernas betydelse för tjänsten motiveras i sårbarhetsprövningen nedan, med lokal relevans och belägg. '
+          'Mekanismer och möjliggjorda hot beskrivs i Gemensamt faktaunderlag; beräkningsspåret finns i B1.')
+    if saknade:
+        text+=' Lokal motivering saknas för '+', '.join(saknade)+'. [VERIFIERA]'
+    return (Textstycke(typ='motivering',text=text,
         referenser=[tjanst.tjanst,*ids,GEMENSAMT_ID,'D-ARB.B1'],proveniens='lokal'),)
 
 
@@ -144,7 +142,7 @@ def faktorregister(rb,t):
 _ORSAKER = {
     'saknas': lambda k: 'byråns prövning anger att den bärande kontrollen inte täcker scenariot',
     'oprovat': lambda k: 'hotet saknar en relevant lokal scenarioprövning',
-    'motstridig': lambda k: f'byråns provningar av {k} är motstridiga',
+    'motstridig': lambda k: f'byråns prövningar av {k} är motstridiga',
     'obelagd': lambda k: f'den tillräckliga täckningen av {k} saknar beskriven räckvidd eller aktuellt genomförandebelägg',
     'delvis': lambda k: f'byråns prövning visar bara delvis täckning av {k}, vilket inte räcker för ett helt kontrollavdrag',
     'stod': lambda k: f'det saknas en positiv lokal prövning av den bärande kontrollen {k} i ett relevant scenario',

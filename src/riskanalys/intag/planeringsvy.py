@@ -21,12 +21,24 @@ def _form(s, p, action):
     return f'<form method="post" action="{s.prefix}{action}">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))
 
 
+def _genomford_plan(plan):
+    g=plan.genomforande
+    html=f'<h1>Genomförd plan {e(plan.id)}</h1><p>Tjänst {e(plan.tjanst)}. Genomförd {g.datum}, ansvarig {e(g.ansvarig)}.</p>'
+    html+=f'<p>{e(plan.beskrivning)}</p><h2>Historisk utvärdering</h2><p>Utvärderad {g.utvarderad}: {e(g.utvardering)}</p>'
+    html+='<p>Planen är avslutad historik. Den prövas inte mot dagens byråfakta eller regelbas. Ordinarie årlig utvärdering gäller fortsatt. Registrera en ny plan för en ny förändring.</p>'
+    for id,u in plan.uppgifter.items():
+        html+=f'<p>{e(id)}: {e(str(u.varde))}. Källa {e(u.kalla or "saknas")}; datum {u.datum or "okänt"}.</p>'
+    return html
+
+
 def planeringssida(s, query=None, data=None, fel=''):
     from riskanalys.drift.historik import las_historik
     from riskanalys.profil.planering import aktuell_planutvardering
     p=s.tjanst.profil(); rb=s.tjanst.rb; q=query or {}; d=data or {}
     plan_id=d.get('plan_id') or q.get('plan',[''])[0]
     plan=next((t for t in p.tjansteplaner if t.id==plan_id),None)
+    if plan and plan.genomforande is not None:
+        return sida(s,_genomford_plan(plan),fel)
     tjanst=d.get('tjanst',plan.tjanst if plan else q.get('tjanst',[next(iter(rb.tjanster))])[0])
     if tjanst not in rb.tjanster:
         if data is None:
@@ -36,7 +48,8 @@ def planeringssida(s, query=None, data=None, fel=''):
     html+='<h2>Registrerade planer</h2><ul>'
     h=las_historik(s.tjanst.mapp)
     for t in p.tjansteplaner:
-        status='Aktuell bunden utvärdering finns' if aktuell_planutvardering(rb,p,t,h,date.today()) else 'Behöver utvärderas'
+        status=(f'Genomförd {t.genomforande.datum}' if t.genomforande else
+                'Aktuell bunden utvärdering finns' if aktuell_planutvardering(rb,p,t,h,date.today()) else 'Behöver utvärderas')
         html+=f'<li><a href="{s.prefix}planering?plan={e(t.id)}">{e(t.id)}</a>: {e(t.beskrivning)}. {status}.</li>'
     html+='</ul><h2>Planerad förändring</h2><p>Beskriv kundtyper, arbetsmoment och befogenheter, underlag och insyn, leverans och geografiska anknytningar. Planen ersätter inga aktuella uppgifter.</p>'
     html+='<p>Välj tjänst för en ny plan: '+ ' · '.join(f'<a href="{s.prefix}planering?tjanst={e(t.id)}">{e(t.namn)}</a>' for t in rb.tjanster.values())+'</p>'
@@ -65,6 +78,11 @@ def planeringssida(s, query=None, data=None, fel=''):
             html+=_text(id,rubrik,d.get(id,''))
         html+=falt('datum','Datum för genomförd utvärdering',d.get('datum',date.today()),'date',True)
         html+='<button>Registrera genomförd utvärdering för planen</button></form>'
+        html+='<h2>Registrera faktiskt genomförd förändring</h2><p>En ny tjänst registreras som genomförd när erbjudandet ändras till ja med giltig utvärdering. För en ändring av en redan erbjuden tjänst bekräftar du genomförandet här. Avsett datum avslutar ingen plan automatiskt.</p>'
+        html+=_form(s,p,'plangenomforande')+dold('plan_id',plan.id)
+        html+=falt('datum','Faktiskt genomförandedatum',d.get('datum',date.today()),'date',True)
+        html+=falt('ansvarig','Ansvarig för genomförandet',d.get('ansvarig',''),required=True)
+        html+='<label class="check"><input type="checkbox" name="genomford" value="ja" required>Jag bekräftar att förändringen har genomförts enligt den utvärderade planen.</label><button>Registrera genomförandet och avsluta planen</button></form>'
     html+='<h2>Deklarerade kombinationsgrupper</h2><p>Ange belagd samtidig exponering, inte ett antagande från separata marginaltal. Överlappande grupper får inte summeras till unika kunder eller uppdrag. Samma populationsmått gäller antal och bas.</p>'
     for g in p.kombinationsgrupper:
         html+=f'<p>{e(g.id)} – {e(g.tjanst)}: {e(g.beskrivning)}. {e(g.population)}; {e(g.avgransning)}.</p>'

@@ -61,6 +61,22 @@ class Byra(Fryst):
     lan: str
 
 
+class Plangenomforande(Fryst):
+    datum: date
+    ansvarig: str = Field(min_length=1, max_length=200)
+    utvarderad: date
+    utvardering: str = Field(min_length=1, max_length=12000)
+    plansumma: str = Field(pattern=r'^sha256:[0-9a-f]{64}$')
+    planinnehallssumma: str = Field(pattern=r'^sha256:[0-9a-f]{64}$')
+    fore_revision: str
+
+    @model_validator(mode='after')
+    def belagg(self):
+        if not self.ansvarig.strip() or not self.utvardering.strip() or self.datum < self.utvarderad:
+            raise ValueError('Genomförandet kräver ansvarig och en föregående utvärdering.')
+        return self
+
+
 class Tjansteplan(Fryst):
     id: str = Field(min_length=1, max_length=80, pattern=r'^[a-zA-Z0-9_-]+$')
     tjanst: str
@@ -68,6 +84,14 @@ class Tjansteplan(Fryst):
     beskrivning: str = Field(min_length=1, max_length=12000)
     avsett_inforande: date | None = None
     uppgifter: dict[str, Uppgift] = Field(default_factory=dict)
+    genomforande: Plangenomforande | None = None
+
+    @model_serializer(mode='wrap')
+    def serialisera(self, handler):
+        data=handler(self)
+        if self.genomforande is None:
+            data.pop('genomforande',None)
+        return data
 
 
 class Kombinationsgrupp(Fryst):

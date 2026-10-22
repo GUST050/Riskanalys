@@ -31,8 +31,12 @@ def gruppstycken(rb, profil, tjanst):
 def planunderlag(profil, historik):
     poster=[]
     for p in profil.tjansteplaner:
+        g=p.genomforande
+        status=(f'Genomförd {g.datum}, ansvarig {g.ansvarig}. Historisk plan; omprövas inte mot aktuella byråfakta. '
+                f'Utvärderad {g.utvarderad}: {g.utvardering}. Historisk plansumma {g.plansumma}.' if g else
+                'Planerad förändring; inget genomförande registrerat. Avsett datum avslutar inte planen.')
         text=(f'Plan {p.id}, tjänst {p.tjanst}, typ {p.typ}. {p.beskrivning} '
-              f'Avsett införande: {p.avsett_inforande or "ej angivet"}. Detta är planering, inte genomförandehistorik.')
+              f'Avsett införande: {p.avsett_inforande or "ej angivet"}. {status}')
         poster.append(_original(text,('LOKAL-PLAN:'+p.id,p.tjanst)))
         for id,u in p.uppgifter.items():
             poster.append(_original(f'Planantagande {p.id}, {id}: {u.varde}. Status {u.status}; källa {u.kalla or "saknas"}; '

@@ -18,6 +18,23 @@ def lagg_till(underparsers: Any) -> None:
     from riskanalys.kommandon import regelbasargument
     regelbasargument(parser)
     parser.set_defaults(kor=kor_utvardera)
+    genomfor=underparsers.add_parser('genomfor-plan',help='Registrera en faktiskt genomförd, tidigare utvärderad förändring.')
+    genomfor.add_argument('byra')
+    genomfor.add_argument('plan')
+    genomfor.add_argument('--ansvarig',required=True)
+    genomfor.add_argument('--datum',type=datumargument,default=None)
+    regelbasargument(genomfor)
+    genomfor.set_defaults(kor=kor_genomfor_plan)
+
+
+def kor_genomfor_plan(args):
+    from riskanalys.kommandon import ladda_giltig_regelbas
+    from riskanalys.profil.forandringar import registrera_genomforande
+    from riskanalys.profil.lagring import las_profil,profilrevision
+    mapp=befintlig_byramapp(args.byra)
+    registrera_genomforande(mapp,ladda_giltig_regelbas(args.regelbas),args.plan,args.datum or date.today(),args.ansvarig,profilrevision(las_profil(mapp)))
+    print('Genomförandet är registrerat och planen avslutad som historik. Ordinarie årlig utvärdering gäller fortsatt.')
+    return 0
 
 
 def kor_utvardera(args: argparse.Namespace) -> int:

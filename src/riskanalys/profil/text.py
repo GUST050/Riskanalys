@@ -17,6 +17,8 @@ def kontrollera_profiltext(profil):
             raise RiskanalysFel(f'{id}: {exc}') from None
     for plan in profil.tjansteplaner:
         kontrollera_text(plan.beskrivning)
+        if plan.genomforande:
+            kontrollera_text(plan.genomforande.ansvarig,plan.genomforande.utvardering)
         for id, u in plan.uppgifter.items():
             kontrollera_text(id,u.varde,u.kalla,u.bekraftad_av,u.motivering)
     for g in profil.kombinationsgrupper:

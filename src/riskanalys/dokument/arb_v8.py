@@ -69,7 +69,7 @@ def med_berakningstabeller(rb,bedomning,bilaga):
 
 
 def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,modellrapport=None) -> Dokument:
-    from riskanalys.dokument.gemensamt_v8 import gemensamma_faktormekanismer
+    from riskanalys.dokument.gemensamt_v8 import gemensamma_faktormekanismer,FAKTORINLEDNING
     from riskanalys.dokument.forandringar_v8 import planunderlag
     from riskanalys.dokument.arb import _syfte,_metod
     from riskanalys.dokument.uppfoljning import bevakningsavsnitt,kort_omfattningsstycke,uppfoljningsstycken
@@ -97,13 +97,15 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
         stycke('Gemensamma händelseförlopp. Tjänstens egen relevans, avvikelser och begränsningar prövas i varje tjänsteavsnitt.'),),
         (tabell('gemensamma-scenarier','Gemensamma händelseförlopp',('Scenario','Händelseförlopp','Betydelse','Hot','Belägg'),
             (scenariorad(s,rb,refindex) for s in analys.gemensamma_scenarier)),) if analys and analys.gemensamma_scenarier else ())
+    mekanismer=gemensamma_faktormekanismer(rb,bedomning)
     lokal=avsnitt(GEMENSAMT_ID,GEMENSAMT_RUBRIK,(
         lokaltext('Byråövergripande underlag redovisas här en gång. Varje tjänsteavsnitt anger tjänstens egen exponering, '
                   'lokala betydelse och avvikelser. Fullständiga ursprungliga lokala svar med fältsökvägar finns i den '
                   'kompletterande underlagsbilagan B1.',('D-ARB.B1',)),
         *gemensamt_erfarenhetsstycke(rb,profil,bedomning,gransindex=index),
         *gemensamma_geografistycken(rb,profil,bedomning,gransindex=index),
-        *gemensamma_faktormekanismer(rb,bedomning)))
+        *((stycke(FAKTORINLEDNING,['D-ARB.B1']),) if mekanismer else ()),
+        *mekanismer))
     kontroller=avsnitt('D-ARB.7','Källbunden kontrollräckvidd',rackviddsoversikt(rb,bedomning,formatversion=V8))
     risk=tuple(bygg_tjanstavsnitt_v8(rb,profil,t,resultat.get(id),id,gransindex=index,analys=analys)
                for id,t in tjanster_med_avsnitt(bedomning))

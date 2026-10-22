@@ -53,13 +53,17 @@ def test_privata_grupper_och_planer_andrar_inte_ai_begaran_eller_omforsok(tmp_pa
     grupp=Kombinationsgrupp(id='privat',tjanst=t.tjanst,population='uppdrag',avgransning='PRIVAT AVGRÄNSNING',beskrivning='PRIVAT KOMBINATION',
         sarbarheter=tuple(rb_intag.tjanster[t.tjanst].sarbarheter[:2]),antal=u.model_copy(update={'varde':8}),bas=u.model_copy(update={'varde':100}))
     andra=p.model_copy(update={'tjansteplaner':(plan,),'kombinationsgrupper':(grupp,)})
+    from riskanalys.profil.planlivslopp import med_genomforande
+    from riskanalys.profil.planering import plansumma
+    from riskanalys.drift.historik import Handelse,Historik
+    hist=Historik(handelser=(Handelse(datum=p.byra.datum,typ='utvärdering',beskrivning='PRIVAT UTVÄRDERING',plan_id=plan.id,plansumma=plansumma(rb_intag,andra,plan.id)),))
+    genomford=med_genomforande(rb_intag,andra,plan.id,hist,p.byra.datum,'PRIVAT GENOMFÖRANDE','syntetisk-revision')
     anrop=[]
-    for profil in (p,andra):
+    for profil in (p,andra,genomford):
         lev=Testleverantor(['felaktig JSON',bra])
         skriv_tjanst(lev,rb_intag,profil,t,avsnitt,formatversion='D-ARB-tjanst-v8',effort='medium',personnamn=(),spara=lambda *args:None)
         anrop.append([a.model_dump_json() for a in lev.delanrop])
-    assert len(anrop[0])==len(anrop[1])==2
-    assert anrop[0]==anrop[1]
+    assert all(len(a)==2 and a==anrop[0] for a in anrop)
 
 
 def _med(rb, profil, varden: dict):

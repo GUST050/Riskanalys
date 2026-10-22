@@ -13,6 +13,8 @@ from riskanalys.profil.omfattning import kompatibilitetsvy
 GEMENSAMT_ID = 'D-ARB.5'
 GEMENSAMT_RUBRIK = 'Gemensamt faktaunderlag'
 BYRAGEOGRAFI = 'P-BESK.geografi'
+FAKTORINLEDNING = ('Aktivering i motorunderlaget är inte i sig bekräftad exponering. '
+    'Tjänstens lokala prövning och osäkerheter redovisas vid tjänsten; fulla villkor och beräkningar i B1.')
 
 
 def aktiva_faktorer(t):
@@ -26,10 +28,14 @@ def gemensamma_faktormekanismer(rb, bedomning):
     poster=[]
     for id in ids:
         s=rb.sarbarheter.get(id)
-        mekanism=(s.beskrivning or s.metodmotivering) if s else ''
+        mekanism=(s.metodmotivering or s.beskrivning) if s else ''
+        hot=tuple(dict.fromkeys(h for t in bedomning.tjanster if t.erbjuds is True and id in aktiva_faktorer(t)
+            for h in (tuple(sc.hot for sc in t.scenarier if id in sc.sarbarheter) if t.scenarier else
+                      tuple(h for h in t.hot if s and h in s.hot))))
+        hottext=', '.join(rb.hot[h].namn if h in rb.hot else h for h in hot)
         text=(f'{id} – {s.namn if s else id}: '+(mekanism or 'Mekanism saknas. Komplettera källunderlaget. [VERIFIERA]')
-              + ' Aktivering i motorunderlaget är inte i sig bekräftad exponering. Tjänstens lokala prövning och osäkerheter redovisas vid tjänsten; fulla villkor och beräkningar i B1.')
-        poster.append(Textstycke(typ='motivering',text=text,referenser=[id,*(s.kallor if s else ()),'D-ARB.B1'],proveniens='regelbas'))
+              + (f' Hot som faktorn möjliggör i underlaget: {hottext}.' if hottext else ' Hotkoppling får prövas i tjänstens lokala analys.'))
+        poster.append(Textstycke(typ='motivering',text=text,referenser=[id,*hot,*(s.kallor if s else ()),'D-ARB.B1'],proveniens='regelbas'))
     return tuple(poster)
 
 

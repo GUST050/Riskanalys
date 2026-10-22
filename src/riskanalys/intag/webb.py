@@ -134,7 +134,7 @@ class Hantera(BaseHTTPRequestHandler):
         vag=self.vag()
         if vag is None:return
         path,query=vag
-        hanterare={k:getattr(self,'post_'+k) for k in ('plan','planutvardera','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
+        hanterare={k:getattr(self,'post_'+k) for k in ('plan','planutvardera','plangenomforande','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
         if path not in hanterare or query:
             self.svara(404,'Sidan finns inte.');return
         from riskanalys.intag.flervalsvy import flervalsgrans
@@ -152,7 +152,7 @@ class Hantera(BaseHTTPRequestHandler):
                 elif path in ('analysscenario','analysbeslut'):destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'granska':'ja'})
             else:
                 destination='' if path=='registersamlat' and data.get('fortsatt')=='ja' else 'register' if path.startswith('register') else '?oversikt=1' if path in ('skriv','uppdaterautkast','utvardera') else ''
-                if path in ('plan','planutvardera','kombinationsgrupp','erbjudanderattelse'):
+                if path in ('plan','planutvardera','plangenomforande','kombinationsgrupp','erbjudanderattelse'):
                     destination='planering'
             self.svara(303,'',extra={'Location':self.server.prefix+destination})
         except RiskanalysFel as exc:
@@ -167,7 +167,7 @@ class Hantera(BaseHTTPRequestHandler):
     def formularfel(self,path,data,fel):
         s=self.server
         status=409 if 'annan flik' in fel or 'Profilen har ändrats' in fel or 'redan använts' in fel or path.startswith('analys') and 'har ändrats' in fel else 400
-        if path in ('plan','planutvardera','kombinationsgrupp','erbjudanderattelse'):
+        if path in ('plan','planutvardera','plangenomforande','kombinationsgrupp','erbjudanderattelse'):
             from riskanalys.intag.planeringsvy import planeringssida
             html=planeringssida(s,data=data,fel=fel)
         elif path.startswith('analys'):
@@ -215,6 +215,14 @@ class Hantera(BaseHTTPRequestHandler):
         if set(data)-{'csrf','revision','plan_id','datum',*delar} or not all(data.get(k,'').strip() for k in delar):
             raise RiskanalysFel('Beskriv underlag, hot och sårbarheter, påverkan på risk och rutiner samt beslut med skäl.')
         registrera_utvardering(self.server.tjanst,formulardatum(data,'datum'),'\n'.join(k+': '+data[k] for k in delar),data.get('revision',''),plan_id=data.get('plan_id',''))
+        self.server.utkast=None
+
+    def post_plangenomforande(self,data):
+        from riskanalys.profil.forandringar import registrera_genomforande
+        if set(data)-{'csrf','revision','plan_id','datum','ansvarig','genomford'} or data.get('genomford')!='ja':
+            raise RiskanalysFel('Bekräfta uttryckligen att förändringen faktiskt är genomförd.')
+        t=self.server.tjanst
+        registrera_genomforande(t.mapp,t.rb,data.get('plan_id',''),formulardatum(data,'datum'),data.get('ansvarig',''),data.get('revision',''))
         self.server.utkast=None
 
     def post_erbjudanderattelse(self,data):

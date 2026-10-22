@@ -11,10 +11,22 @@ def test_gemensamma_definitioner_begransas_till_aktiverade_faktorer_i_erbjudna_t
     for id in ids:
         s=f.regelbas.sarbarheter[id]
         post=next(p for p in poster if id in p.referenser)
-        assert (s.beskrivning or s.metodmotivering) in post.text
+        assert (s.metodmotivering or s.beskrivning) in post.text
         assert set(s.kallor)<=set(post.referenser)
-        assert 'bekräftad exponering' in post.text
+        hot={sc.hot for t in f.bedomning.tjanster if t.erbjuds is True for sc in t.scenarier if id in sc.sarbarheter}
+        assert all(f.regelbas.hot[h].namn in post.text for h in hot)
     assert not gemensamma_faktormekanismer(f.regelbas,f.bedomning.model_copy(update={'tjanster':tuple(t.model_copy(update={'erbjuds':False}) for t in f.bedomning.tjanster)}))
+
+
+def test_faktorinledning_skrivs_en_gang_och_lokala_skal_hanvisar_till_sakprovningen(v8fall):
+    from riskanalys.dokument.nivamotivering_v8 import lokala_faktorskal
+    f,r=v8fall;d=bygg(f,r)
+    text=' '.join(s.text for a in d.avsnitt for s in a.stycken)
+    assert text.count('Aktivering i motorunderlaget är inte i sig bekräftad exponering.')==1
+    t=next(t for t in f.bedomning.tjanster if t.erbjuds is True)
+    s=' '.join(s.text for s in lokala_faktorskal(f.regelbas,f.profil,f.analys,t))
+    assert 'sårbarhetsprövningen' in s and 'belägg' in s
+    assert 'H-03/PT' not in s and 'S-ARB-18: relevant' not in s
 
 
 def test_historiska_resultat_och_samma_namn_bevarar_id(v8fall):

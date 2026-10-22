@@ -2,6 +2,16 @@
 
 Senast uppdaterad 2026-10-22.
 
+## Rättning efter implementationsgranskning, 2026-10-22
+
+Planer har nu ett uttryckligt livslopp. Ny tjänst avslutas vid giltig erbjudandeövergång i samma atomiska profilsparning. Genomförd ändring av redan erbjuden tjänst registreras uttryckligen i webb eller med `genomfor-plan`. Avslutade planer bevaras med sin då gällande utvärdering och kontrolleras inte mot senare byråfakta, bedömningsdatum eller regelbas. De får inte redigeras eller användas för ett nytt återinförande. Ordinarie årsutvärdering och aktuell analys krävs fortfarande.
+
+**Uppgraderingsanteckning:** `profil.modeller` ingår i modellidentiteten. Uppgraderingen ogiltigförklarar därför befintliga analysgodkännanden och modellriskunderlag som underlag för nya beslut. Gör aktuell bedömning och uttrycklig analysförnyelse, jämför uppgifterna och sakpröva/godkänn igen. Historiska fastställda paket bevaras. Planer från första implementationen utan avslut markeras inte automatiskt som genomförda; de behöver uttrycklig registrering med kontrollerat underlag.
+
+Gemensamma faktormekanismer använder metodmotiveringen när den finns och anger möjliggjorda hot med namn. Standardtexten står en gång; den lokala kodlistan är ersatt av hänvisning till redan redovisad sårbarhetsprövning. Motorn och AI-gränsen är oförändrade. Verifieringsutfall för denna rättning dokumenteras separat i [granskningssvaret](superpowers/reviews/2026-10-22-svar-granskning-kravstod-implementation.md); föregående slutprov nedan är historik för `a7f9377`.
+
+**Ny slutverifiering:** Python 3.12.15, **3 027 godkända prov och 1 bortvalt livetest**, exit 0 på 1 727,86 s. Regelbasvalidering och diffkontroll passerar. Oberoende kodgranskning gav inga kvarstående fynd. Berörda exporterade sidor är visuellt kontrollerade. Rapportmätningen mot `a7f9377` visar tio ord kortare läsrapport i båda provfallen och oförändrad B1; ingen större förkortning påstås.
+
 ## Kravstöd och tjänsteexponering, 2026-10-22
 
 Planrevision 3 är genomförd för uppgift 0–5 och slutprov 7 i den avgränsade underlagsleveransen. Registrerade planer har bunden mänsklig förändringsutvärdering före införande, uttrycklig rättelseväg och bevarad årsfrist. Deklarerade kombinationsgrupper ligger lokalt och redovisas vid rätt tjänst; inget individuellt kundregister införs. V8:s gemensamma faktormekanismer och lokala tillämpning kompletterar befintlig analys; fulla beräkningstabeller ligger kvar i B1. Äldre serialisering och AI-gränser är bevarade.

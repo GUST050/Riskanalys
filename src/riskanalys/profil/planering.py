@@ -30,6 +30,11 @@ def planbrister(rb, profil):
         if plan.id in sett:
             fel.append(f'Plan-ID {plan.id} förekommer flera gånger.')
         sett.add(plan.id)
+        if plan.genomforande is not None:
+            from riskanalys.profil.planlivslopp import genomforandebrist
+            if brist:=genomforandebrist(plan):
+                fel.append(brist)
+            continue
         if plan.tjanst not in rb.tjanster:
             fel.append(f'{plan.id}: välj en tjänst ur regelpaketet.')
             continue
@@ -72,7 +77,7 @@ def plansumma(rb, profil, plan_id):
                 data['inaktuell']=True
             sakuppgifter[id]=data
     data = {'version': 1, 'regelbas': rb.kontrollsumma, 'byra': profil.byra.model_dump(mode='json'),
-            'plan': plan.model_dump(mode='json'), 'sakuppgifter': sakuppgifter,
+            'plan': plan.model_dump(mode='json',exclude={'genomforande'}), 'sakuppgifter': sakuppgifter,
             'kombinationsgrupper': [g.model_dump(mode='json') for g in profil.kombinationsgrupper if g.tjanst==plan.tjanst]}
     return 'sha256:' + hashlib.sha256(json.dumps(data, sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode()).hexdigest()
 
@@ -87,12 +92,14 @@ def forandringshinder(rb, fore, efter, historik, datum, *, rattelse=None):
     forevy=kompatibilitetsvy(fore,rb)
     eftervy=kompatibilitetsvy(efter,rb)
     hinder = list(planbrister(rb, efter))
+    hinder.extend(f'{p.id}: beslutsdatum är före planens registrerade genomförande {p.genomforande.datum}.'
+                  for p in efter.tjansteplaner if p.genomforande and p.genomforande.datum>datum)
     for id,t in rb.tjanster.items():
         f = t.erbjuds_falt
         a, b = forevy.uppgifter.get(f, Uppgift()), eftervy.uppgifter.get(f, Uppgift())
         if b.status != 'bekräftad' or b.varde is not True or b.inaktuell:
             continue
-        planer = [p for p in efter.tjansteplaner if p.tjanst == id]
+        planer = [p for p in efter.tjansteplaner if p.tjanst == id and p.genomforande is None]
         nytt = a.varde is False and a.status == 'bekräftad'
         if rattelse and rattelse.tjanst == id:
             giltig = (a.status == 'bekräftad' and a.varde is False and not planer and rattelse.fore == a and rattelse.efter == b

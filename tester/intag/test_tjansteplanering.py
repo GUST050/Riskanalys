@@ -111,3 +111,28 @@ def test_webb_planering_samma_sparr_csrf_och_escape(tjanst):
         assert 'name="plan_id" value="ny"' in html
     finally:
         s.shutdown();s.server_close();trad.join(timeout=2)
+
+
+def test_andringsplan_kan_registreras_genomford_i_webb_och_cli(tjanst):
+    import threading
+    from riskanalys.intag.webb import skapa_server
+    from riskanalys.cli import main
+    from tester.intag.test_webb import anrop
+    p=tjanst.spara(svar('ja'),profilrevision(tjanst.profil()))
+    for id in ('webbandring','cliandring'):
+        plan=Tjansteplan(id=id,tjanst='T-RED-01',typ='ny_marknad',beskrivning='Nytt geografiskt område, dokumenterat i plan.')
+        p=tjanst.spara_plan(plan,profilrevision(p))
+        registrera_utvardering(tjanst,DAG,'Prövat hot, insyn och rutiner med dokumenterade skäl.',profilrevision(p),plan_id=id)
+    s=skapa_server(tjanst);trad=threading.Thread(target=s.serve_forever,daemon=True);trad.start()
+    try:
+        data=dict(csrf=s.csrf,revision=profilrevision(p),plan_id='webbandring',datum=str(DAG),ansvarig='Ansvarig funktion',genomford='ja')
+        assert anrop(s,'plangenomforande',{**data,'csrf':'fel'})[0]==403
+        assert anrop(s,'plangenomforande',data)[0]==200
+        assert anrop(s,'plangenomforande',data)[0]==409
+        status,html,_=anrop(s,'planering?plan=webbandring')
+        assert status==200 and 'Genomförd' in html and 'Ansvarig funktion' in html
+        assert 'name="beskrivning"' not in html
+        assert main(['genomfor-plan',tjanst.mapp.name,'cliandring','--datum',str(DAG),'--ansvarig','Ansvarig funktion'])==0
+        assert all(p.genomforande for p in tjanst.profil().tjansteplaner)
+    finally:
+        s.shutdown();s.server_close();trad.join(timeout=2)
