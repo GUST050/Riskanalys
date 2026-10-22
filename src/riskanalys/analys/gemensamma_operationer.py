@@ -30,6 +30,12 @@ def hamta_tjanst(paket,id):
     return a
 
 
+def kontrollera_belaggsbytes(mapp,paket):
+    """Bekräfta inte innehåll vars privata registrerade underlag har ändrats."""
+    for fil,summa in l.analysbelaggsreferenser(paket):
+        l.las_belaggsfil(mapp,fil,summa)
+
+
 class GemensammaOperationer:
     def _spara_gemensam(self,post,revision,forfattare,modell,falt):
         with l.analyslas(self.mapp):
@@ -105,6 +111,7 @@ class GemensammaOperationer:
         from riskanalys.analys.engangssvar import bygg_gemensam_bekraftelse
         with l.analyslas(self.mapp):
             paket,bm,_,_=self._last(revision);gemensamt(paket)
+            kontrollera_belaggsbytes(self.mapp,paket)
             bedomning=las_bedomning(bm)
             erbjudna={t.tjanst for t in bedomning.tjanster if t.erbjuds is True}
             if set(tjanster)-erbjudna:
@@ -117,5 +124,6 @@ class GemensammaOperationer:
         from riskanalys.profil.lagring import las_profil
         with l.analyslas(self.mapp):
             paket,bm,_,_=self._last(revision);gemensamt(paket)
+            kontrollera_belaggsbytes(self.mapp,paket)
             nytt=bygg_tjanstbekraftelse(self.rb,las_profil(self.mapp),las_bedomning(bm),paket,tjanst,self._forfattare(forfattare))
             return self._spara(nytt,forvantad_summa=revision)

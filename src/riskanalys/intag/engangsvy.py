@@ -52,9 +52,11 @@ def genomgang(rb,profil,bedomning,paket,tjanst,prefix,csrf,revision):
     html+='</ul><p><a href="'+e(prefix+'analys?'+urlencode({'tjanst':tjanst,'tillampningar':'ja'}),quote=True)+'">Pröva lokala undantag</a></p>'
     effektiv=effektiv_tjanst(paket,tjanst)
     from riskanalys.analys.guide import guideblock
-    rubriker={b.nummer:b.rubrik for b in guideblock(a)}
+    block={b.nummer:b for b in guideblock(a)}
     for n,namn in BLOCKFALT.items():
-        html+='<section><h2>'+str(n)+'. '+e(rubriker[n])+'</h2>'
+        b=block[n]
+        html+='<section><h2>'+str(n)+'. '+e(b.rubrik)+'</h2>'
+        html+='<p>Aktivering: '+e({'aktiv':'Aktivt','ej_tillamplig':'Ej tillämpligt','okand':'Okänt'}[b.aktivering])+'. Motivering: '+e(b.motivering or 'Ingen motivering angiven')+'</p>'
         delade=set()
         for key in namn:
             # Gemensamma sakfrågor redigeras en gång. Lokala avvikelser visas i tillämpningen.

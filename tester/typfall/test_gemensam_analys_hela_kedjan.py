@@ -121,8 +121,18 @@ def test_publika_engangshandlingar_bevarar_tackning_och_analysgrind(engangsbas,t
         'tackningsprovningar':()}) for a in p0.tjanster)})
     if not egen:
         p0=p0.model_copy(update={'gemensamma_sarbarhetsprovningar':tuple(g for g in p0.gemensamma_sarbarhetsprovningar if g.id!='egen:slutprov'),
-            'tjanster':tuple(a.model_copy(update={'sarbarhetstillampningar':tuple(x.model_copy(update={'stallningstagande':'galler'}) for x in a.sarbarhetstillampningar if x.post!='egen:slutprov')}) for a in p0.tjanster)})
+            'tjanster':tuple(a.model_copy(update={'scenariokopplingar':(),'sarbarhetstillampningar':tuple(x.model_copy(update={'stallningstagande':'galler'}) for x in a.sarbarhetstillampningar if x.post!='egen:slutprov')}) for a in p0.tjanster)})
     l.spara_analys(f.byramapp,p0,forvantad_summa=p.registersumma(l.las_analys(f.byramapp)))
+    if not egen:
+        # Vanliga bundna sparningar måste fungera före F2, utan importerade kopplingar.
+        for a in l.las_analys(f.byramapp).tjanster:
+            assert not a.scenariokopplingar
+            for nummer,data in ((10,{'kontroller.0.scenario':a.kontroller[0].scenario}),
+                                (16,{'rutinatgarder.0.scenarier':','.join(a.rutinatgarder[0].scenarier)})):
+                at.spara_block(a.tjanst,nummer,{'operation':'spara','forfattare':'Syntetisk',**data},p.registersumma(l.las_analys(f.byramapp)))
+            sparat=l.las_analys(f.byramapp)
+            assert not next(x for x in sparat.tjanster if x.tjanst==a.tjanst).scenariokopplingar
+            assert not sparat.beslut
     logg=bekrafta_innehall(at,egen=egen,samlat=True);q=l.las_analys(f.byramapp)
     assert Counter(logg)==({'lokal_avvikelse':4,'gemensam_bekraftelse':1,'scenarioval':1,'tackningsprovning':2,'tjanstegenomgang':4} if egen else {'gemensam_bekraftelse':1,'tjanstegenomgang':4})
     assert not p.analysbrister(f.regelbas,f.profil,f.bedomning,q) and not q.beslut
@@ -135,3 +145,29 @@ def test_publika_engangshandlingar_bevarar_tackning_och_analysgrind(engangsbas,t
     at.spara_tackningsprovning(a.tjanst,prov,p.registersumma(q),prov.forfattare)
     n=l.las_analys(f.byramapp)
     assert p.blocksumma(n,a.tjanst,1)!=p.blocksumma(q,a.tjanst,1)
+
+
+@pytest.mark.parametrize('operation',['gemensamt','tjanst'])
+@pytest.mark.parametrize('fel',['andrat','saknas'])
+def test_samlad_bekraftelse_kontrollerar_privata_belaggsbytes_atomiskt(engangsbas,tmp_path,operation,fel):
+ from riskanalys.analys.engangssvar import visade_celler
+ from tester.fixturer.fylld_gemensam import ifylld_analys
+ from tester.fixturer.kedjecache import klona_kedja
+ k=klona_kedja(engangsbas,tmp_path);f=k.fall;at=Analystjanst(f.byramapp,f.regelbas)
+ original=l.las_analys(f.byramapp);at.overfor(p.registersumma(original),True)
+ sparat=l.las_analys(f.byramapp)
+ nytt=ifylld_analys(f.regelbas,f.profil,f.bedomning,original).model_copy(update={'revision':sparat.revision})
+ l.spara_analys(f.byramapp,nytt,forvantad_summa=p.registersumma(sparat))
+ nytt=l.las_analys(f.byramapp)
+ ids=tuple(a.tjanst for a in nytt.tjanster)
+ at.bekrafta_byraunderlag(ids,visade_celler(nytt,ids),p.registersumma(nytt),'Syntetisk')
+ aktuellt=l.las_analys(f.byramapp)
+ b=next(b for b in aktuellt.belagg if b.id=='ab6:kontroll')
+ fil=f.byramapp/'analys/belagg'/b.dokument
+ if fel=='saknas':fil.unlink()
+ else:fil.write_bytes(b'Andrat syntetiskt kontrollunderlag')
+ fore=(f.byramapp/l.ANALYSFIL).read_bytes()
+ with pytest.raises(RiskanalysFel,match='Belägget har ändrats|Beläggskopian saknas'):
+  if operation=='gemensamt':at.bekrafta_byraunderlag(ids,visade_celler(aktuellt,ids),p.registersumma(aktuellt),'Syntetisk')
+  else:at.bekrafta_tjansteunderlag(ids[0],p.registersumma(aktuellt),'Syntetisk')
+ assert (f.byramapp/l.ANALYSFIL).read_bytes()==fore

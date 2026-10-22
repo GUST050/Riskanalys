@@ -80,3 +80,38 @@ def test_okand_profil_avvisas(tmp_path):
 def test_nodeid_bevarar_hela_parametern(node,forvantat):
     from scripts.testa import kanoniskt_nodeid
     assert kanoniskt_nodeid(node)==forvantat
+
+
+@pytest.mark.parametrize('resurs', [
+    'tester/fixturer/prov.json',
+    'tester/fixturer/regelbas_v0/kataloger/tjanster.yaml',
+    'regelbas/lydelsetexter/prov.txt',
+])
+@pytest.mark.parametrize('andring', ['tillagg', 'andring', 'borttagning'])
+def test_andrade_test_och_regelresurser_kan_inte_verifieras(monkeypatch,tmp_path,resurs,andring):
+    testa,_=fake_korning(monkeypatch,tmp_path)
+    fil=tmp_path/resurs;fil.parent.mkdir(parents=True,exist_ok=True)
+    if andring!='tillagg':fil.write_text('ursprungligt syntetiskt underlag')
+    tidigare=testa.subprocess.run
+    def run(cmd,**kwargs):
+        resultat=tidigare(cmd,**kwargs)
+        if any(x.startswith('--junitxml=') for x in cmd):
+            if andring=='borttagning':fil.unlink()
+            else:fil.write_text('nytt syntetiskt underlag')
+        return resultat
+    monkeypatch.setattr(testa.subprocess,'run',run)
+    assert testa.main(['snabb','--ut',str(tmp_path/'ut')])==1
+    r=json.loads((tmp_path/'ut/resultat.json').read_text())
+    assert not r['oforandrat'] and not r['verifierad']
+
+
+def test_snapshot_ignorerar_genererad_bytekod(monkeypatch,tmp_path):
+    from scripts import testa
+    monkeypatch.setattr(testa,'ROT',tmp_path)
+    monkeypatch.setattr(testa,'PROFILERFIL',tmp_path/'profiler.json')
+    for namn in ('src/a.py','tester/f.json','regelbas/f.txt','scripts/v.py','docs/research/verktyg/v.py'):
+        p=tmp_path/namn;p.parent.mkdir(parents=True,exist_ok=True);p.write_text('syntetiskt')
+    fore=testa.snapshot()
+    for namn in ('src/__pycache__/a.cpython-312.pyc','tester/__pycache__/b.pyc','scripts/a.pyc'):
+        p=tmp_path/namn;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b'genererat')
+    assert fore==testa.snapshot()

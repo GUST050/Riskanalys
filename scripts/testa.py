@@ -14,8 +14,10 @@ PROFILERFIL=ROT/'tester/testprofiler.json'
 
 
 def snapshot():
-    monster=('src/**/*.py','tester/**/*.py','regelbas/**/*.yaml','scripts/**/*.py','docs/research/verktyg/**/*.py')
-    filer={p for m in monster for p in ROT.glob(m)}
+    # Även fixture-/källresurser är indata. Endast genererad bytekod undantas.
+    rotmappar=('src','tester','regelbas','scripts','docs/research/verktyg')
+    filer={p for rot in rotmappar for p in (ROT/rot).rglob('*')
+        if p.is_file() and '__pycache__' not in p.parts and p.suffix not in ('.pyc','.pyo')}
     filer.update(p for p in (ROT/'AGENTS.md',ROT/'pyproject.toml',PROFILERFIL) if p.is_file())
     return {str(p.relative_to(ROT)):sha256(p.read_bytes()).hexdigest() for p in sorted(filer)}
 

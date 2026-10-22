@@ -142,3 +142,38 @@ def test_genomgangen_visar_lokal_verksamhetsavvikelse_och_belagg(grund):
  assert 'Unik lokal &lt;verksamhetsanalys&gt;' in html
  assert 'Lokalt undantag med belägg' in html and 'ab6:bevakning' in html
  assert '<verksamhetsanalys>' not in html and 'name="erfarenhetsprovning"' not in html
+
+
+@pytest.mark.parametrize('aktivering,etikett',[('aktiv','Aktivt'),('ej_tillamplig','Ej tillämpligt')])
+def test_samlad_vy_visar_aktivering_och_motivering_fore_stampling(grund,aktivering,etikett):
+ from riskanalys.intag.engangsvy import genomgang
+ f,p=grund;a=p.tjanster[0]
+ motiv='Unikt <avgränsningsskäl> att läsa före bekräftelse'
+ a=a.model_copy(update={'block':tuple(b.model_copy(update={'aktivering':aktivering,'motivering':motiv}) if b.nummer==3 else b for b in a.block)})
+ p=p.model_copy(update={'tjanster':(a,*p.tjanster[1:])})
+ html=genomgang(f.regelbas,f.profil,f.bedomning,p,a.tjanst,'/syntetisk/','csrf','revision')
+ assert 'Aktivering: '+etikett in html
+ assert 'Unikt &lt;avgränsningsskäl&gt; att läsa före bekräftelse' in html
+ assert motiv not in html
+
+
+def test_native_kontroll_och_rutin_kan_sparas_fore_samlat_scenarioval(grund):
+ from riskanalys.analys.utkast import forifyll_analys
+ from riskanalys.intag.analysformular import las_blockformular
+ f,p=grund
+ nytt=forifyll_analys(f.regelbas,f.profil,f.bedomning,p.bindning,schema=2)
+ a=nytt.tjanster[0];assert not a.scenariokopplingar
+ scenario=next(s for s in nytt.gemensamma_scenarier if set(s.hot)<=set(f.regelbas.tjanster[a.tjanst].hot))
+ for block,data in ((10,{'kontroller.0.anvand':'ja','kontroller.0.scenario':scenario.id,'kontroller.0.kontroll':f.regelbas.tjanster[a.tjanst].kontroller[0]}),
+                    (16,{'rutinatgarder.0.anvand':'ja','rutinatgarder.0.id':'ny-rutin','rutinatgarder.0.scenarier':scenario.id})):
+  andring=las_blockformular(nytt,a.tjanst,block,{'operation':'spara','forfattare':'Syntetisk',**data},rb=f.regelbas)
+  assert not andring.tjanst.scenariokopplingar
+  assert not any(b.bekraftad_summa for b in andring.tjanst.block)
+ # Fullt sakunderlag utan preparerade gemensamma kopplingar ska även klara slutgenomgången.
+ p=globalt(p);a=p.tjanster[0].model_copy(update={'scenariokopplingar':()})
+ p=p.model_copy(update={'tjanster':(a,*p.tjanster[1:])})
+ andring=las_blockformular(p,a.tjanst,10,{'operation':'spara','forfattare':'Syntetisk','kontroller.0.scenario':a.kontroller[0].scenario},rb=f.regelbas)
+ p=p.model_copy(update={'tjanster':(andring.tjanst,*p.tjanster[1:])})
+ q=bekrafta(f,p)
+ assert all(k.bekraftad for k in q.tjanster[0].scenariokopplingar)
+ assert not p.tjanster[0].scenariokopplingar and not q.beslut

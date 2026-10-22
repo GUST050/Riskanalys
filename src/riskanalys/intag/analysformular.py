@@ -152,6 +152,11 @@ def _referenser(paket, a, nummer, rb):
     katalog = rb.tjanster.get(a.tjanst) if rb is not None else None
     if rb is not None and katalog is None:
         raise RiskanalysFel('Välj en tjänst ur den aktuella källkatalogen.')
+    if rb is not None and paket.schemaversion == 2:
+        from riskanalys.analys.engangssvar import visade_scenarioval
+        # Ett visat standardförslag kan hänvisas till i utkast före genomgången.
+        # Ingen koppling eller bekräftelse skapas av formulärsparningen.
+        scenarier.update(k.scenario for k in visade_scenarioval(rb, paket, a.tjanst))
 
     def kontrollera(data):
         if isinstance(data, dict):

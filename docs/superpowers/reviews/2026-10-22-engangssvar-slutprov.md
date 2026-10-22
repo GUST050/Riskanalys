@@ -51,6 +51,12 @@ En riktig syntetisk browser-session har bekräftat gemensamt underlag, läst den
 
 Båda faktiska Word-delar har exporterats och renderats för båda direkt2-fallen (43+103 respektive 42+106 sidor). En separat syntetisk undantagsrapport renderades också (43 sidor). **Riktad PNG-kontroll av åtta sidor**, inte fullsidig kontroll: fyrtjänst-läsrapport 6/13, fyrtjänst-B1 67/70, mandat-läsrapport 33/37, mandat-B1 70 och undantagsrapport 13. Gemensam prövning, lokal tillämpning, oförändrad högre motor, PT/TF, tabeller och raw-underlag är läsbara utan observerad klippning/överlapp på de kontrollerade sidorna. Före-/efter-metadata och exporter har separata mappar.
 
+## Oberoende slutgranskning och samlad rättning
+
+[Slutgranskningen](2026-10-22-engangssvar-slutgranskning.md) av `f66a70f..70492b6` gav fyra Important och inga Critical/Minor. Samtliga fyra är rättade i en pass: nya kontroll-/rutinutkast kan hänvisa till giltiga visade standardscenarier utan att attestera dem; alla blocks aktivering/motivering visas; privata beläggsbytes kontrolleras atomiskt före båda samlade handlingarna; snapshotet omfattar även samtliga test-/regelresurser och undantar genererad bytekod.
+
+Reproduktionerna visade de tre första oberoende mekanismerna med 12 RED-fall och de privata beläggsfelen med fyra RED-fall efter rättning av testets egen gamla revision. Berört urval: **85 godkända/48,44 s**. Det förstärkta verkligt bundna flödet tar bort alla förberedda scenariokopplingar och sparar kontroller/rutiner via ordinarie formuläroperationer för fyra tjänster före de fem bekräftelserna. Senaste separata publik-/beläggsprov: **sex godkända/46,07 s**. Snabbprofil efter rättning: **115 godkända/36,155 s**, exakt collection/JUnit och oförändrat resursinkluderande snapshot. Analysprofil och fullsvit slutredovisas nedan när de är klara. Ingen ny granskningsomgång beställdes.
+
 ## Genomförandeval att granska
 
 1. Egen täckning som använder ett gemensamt scenario kräver först ett uttryckligt bärande scenarioval, eftersom den befintliga täckningssumman binder det effektiva scenariot. Normalfallet behåller fem bekräftelser. Kostnad om beslutet är för strängt: ett överflödigt val för egna risker.
