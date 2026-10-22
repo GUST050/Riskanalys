@@ -1,0 +1,116 @@
+{
+  "status": "historisk uppmätt bas för planering, ingen ny testkörning",
+  "kodbas": "f66a70f62d3baf26d2e47d5d5e97ba0bdce1c3a4",
+  "python": "3.12.15",
+  "kommando": ".venv312/bin/python -m pytest -q --tb=short --junitxml=final-full.xml",
+  "godkanda": 3198,
+  "bortvalt_live": 1,
+  "fel": 0,
+  "vaggtid_pytest_s": 2152.78,
+  "summerad_provtid_s": 2150.758,
+  "junit_sha256": "647b187b923bd005931ec2d8c9aea4f03b1d90ee54677c940356af5bc5f637cd",
+  "lokal_kalla": ".superpowers/sdd/2026-10-22-forenklad-riskbedomning-plan/final-full.xml",
+  "tva_storsta_filers_andel_procent": 39.82,
+  "storsta_filer": [
+    {
+      "fil": "tester/m2/test_m2_kedja.py",
+      "prov": 11,
+      "sekunder": 452.74
+    },
+    {
+      "fil": "tester/intag/test_webb.py",
+      "prov": 16,
+      "sekunder": 403.636
+    },
+    {
+      "fil": "tester/intag/test_rapportflode_v8.py",
+      "prov": 19,
+      "sekunder": 137.275
+    },
+    {
+      "fil": "tester/intag/test_analys.py",
+      "prov": 33,
+      "sekunder": 129.941
+    },
+    {
+      "fil": "tester/enhet/test_analysgrind.py",
+      "prov": 67,
+      "sekunder": 129.565
+    },
+    {
+      "fil": "tester/typfall/test_gemensam_analys_hela_kedjan.py",
+      "prov": 8,
+      "sekunder": 124.937
+    },
+    {
+      "fil": "tester/enhet/test_rapportpaket_v8.py",
+      "prov": 45,
+      "sekunder": 57.873
+    },
+    {
+      "fil": "tester/typfall/test_analys_hela_kedjan.py",
+      "prov": 18,
+      "sekunder": 51.956
+    },
+    {
+      "fil": "tester/m2/test_sakkunnigpaket.py",
+      "prov": 32,
+      "sekunder": 49.968
+    },
+    {
+      "fil": "tester/intag/test_samlade_fragor.py",
+      "prov": 31,
+      "sekunder": 44.348
+    },
+    {
+      "fil": "tester/intag/test_samlat_register.py",
+      "prov": 24,
+      "sekunder": 30.921
+    },
+    {
+      "fil": "tester/enhet/test_arb_v8.py",
+      "prov": 57,
+      "sekunder": 28.921
+    },
+    {
+      "fil": "tester/intag/test_harledbara_antal.py",
+      "prov": 2,
+      "sekunder": 21.984
+    },
+    {
+      "fil": "tester/intag/test_tjansteurval_planval.py",
+      "prov": 7,
+      "sekunder": 21.291
+    },
+    {
+      "fil": "tester/intag/test_analys_overforing_v2.py",
+      "prov": 7,
+      "sekunder": 20.561
+    },
+    {
+      "fil": "tester/regelkontrakt/test_scenariokatalog_v2.py",
+      "prov": 14,
+      "sekunder": 20.078
+    },
+    {
+      "fil": "tester/intag/test_gemensam_analys_v2.py",
+      "prov": 7,
+      "sekunder": 19.458
+    },
+    {
+      "fil": "tester/intag/test_gemensam_granskningsfynd_v2.py",
+      "prov": 6,
+      "sekunder": 18.915
+    },
+    {
+      "fil": "tester/typfall/test_kravstod_hela_kedjan.py",
+      "prov": 2,
+      "sekunder": 17.709
+    },
+    {
+      "fil": "tester/intag/test_underlagsval.py",
+      "prov": 11,
+      "sekunder": 17.138
+    }
+  ]
+}

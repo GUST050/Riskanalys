@@ -28,4 +28,5 @@ testpaths = ["tester"]
 addopts = "--import-mode=importlib -m 'not live'"
 markers = [
   "live: anropar riktiga Claude-API:t, kostar pengar och körs bara med RISKANALYS_LIVE=1",
+  "fullkedja: komplett CLI/HTTP/export/fastställelse; ingår i fullprofil och vanlig pytest",
 ]
