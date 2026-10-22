@@ -1,6 +1,6 @@
 # Rättning av scenarioavvikelse och D9-upprepning
 
-Bas `fc1a329`, befintlig gren `codex/kravstod-tjansteexponering`. Båda granskningsfynden är reproducerade och rättade lokalt. Färsk fullsvit återstår före leverans. Ingen push eller merge; den andra klonen/grenen `feat/steg-1-3` har inte ändrats.
+Bas `fc1a329`, befintlig gren `codex/kravstod-tjansteexponering`. Båda granskningsfynden är reproducerade och rättade lokalt. **Färsk fullsvit är grön på fryst källcommit `5c404126a0b8527e7594169503ffbcd8bd96a452`**; efterföljande ändringar färdigställer endast dokumentation. Ingen push eller merge; den andra klonen/grenen `feat/steg-1-3` har inte ändrats.
 
 ## Scenarioavvikelsen
 
@@ -29,6 +29,8 @@ B1:s ordantal och samtliga saktexter är oförändrade. Den enda skiljande synli
 
 ## Verifiering och befogenhet
 
-Python 3.12.15. Snabbprofil **119 godkända/34,784 s**, exakt collection/JUnit och oförändrat aktuellt snapshot. Analysprofil och fullsvit slutredovisas efter körning på frysta källor. Regel 6 i AGENTS.md är oförändrad i denna rättning; dess policyändring ingick i det tidigare godkända genomförandeuppdraget. Ingen ny bekräftelse av samma godkännande behövs. Nya rättningar kräver färsk fullsvit innan leverans, push eller merge.
+Python 3.12.15. Snabbprofil **119 godkända/34,784 s**, exakt collection/JUnit och oförändrat aktuellt snapshot. Analysprofil **234 godkända/168,856 s**. Fullsvit: **3 315 godkända, ett liveprov bortvalt, exit 0**, 1 784,82 s pytest/1 786,302 s inklusive collection (29 min 46 s). Noll failures/errors/skipped. Alla 3 315 valda node-ID matchar JUnit exakt; samtliga **783 frysta program-/test-/regelresurser** matchar det aktuella snapshotet även efter slutdokumentationen. Regelbasvalidering och diffkontroll passerar. Full JUnit SHA-256: `1a6da03e5a6f39f928c4542e30deac0a30af09ec7169516be82431e9e650768e`. Riskmetodens kontrollsumma och tre pakets sakkunnigstatus `ej_granskad` är oförändrade. Regel 6 i AGENTS.md är oförändrad i denna rättning; dess policyändring ingick i det tidigare godkända genomförandeuppdraget. Ingen ny bekräftelse av samma godkännande behövs. Nya rättningar kräver färsk fullsvit innan leverans, push eller merge.
 
 Råbevis, mätdata och exporter ligger lokalt i `.superpowers/evidens/2026-10-22-claude-scenario-d9/`. Tidigare bevis under `.superpowers/evidens/2026-10-22-engangssvar/` är bevarade separat. Rapportens avsiktliga sakluckor och oförändrade metodbegränsningar gäller fortsatt.
+
+En enda fullsvit kördes på rättningens kodbas, efter riktade RED/GREEN-prov och profiler. Ingen omkörning av oförändrad grön svit görs enbart för Markdown eller commit-ID. Den oberoende efterkontrollen finns i `slutlig-verifiering.json` i evidensarkivet och kan köras med `.venv312/bin/python .superpowers/evidens/2026-10-22-claude-scenario-d9/slutverifiera.py` från reporoten. Inga återstående fynd från de två begärda rättningarna; övergripande metod-/produktbegränsningar från föregående leverans gäller fortsatt.

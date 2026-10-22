@@ -1,6 +1,10 @@
-# Rättning efter Claude-granskning – fullsvit återstår 2026-10-22
+# Scenarioavvikelse och D9-rad – tekniskt slutverifierade 2026-10-22
 
-Inaktuella eller obekräftade scenarioavvikelser kan inte längre stämplas om av den samlade tjänstehandlingen; vyn visar omprövningsbehovet. D9 är en samlad rad per tjänst med bevarade referenser och fullständigt B1-underlag. Snabbprofil 119/34,784 s är grön. Läsrapporten minskar 2 320 ord i båda fallen, men är fortsatt 370 ord längre än schema 1. [Rättning, reproduktion och faktisk mätning](superpowers/reviews/2026-10-22-svar-claude-scenario-d9.md). Färsk fullsvit krävs före leverans. Ingen push/merge.
+Claude-granskningens två fynd är rättade. En inaktuell eller obekräftad scenarioavvikelse kan inte stämplas om av den samlade tjänstegenomgången. Vyn visar behovet av separat omprövning; en aktuell avvikelse bevaras och standardvalet samma kan fortsatt bekräftas samlat. D9 redovisas i en rad per tjänst med alla faktor-/källreferenser kvar.
+
+**Färsk fullsvit: 3 315 godkända, ett liveprov bortvalt, exit 0**, Python 3.12.15, 1 784,82 s pytest/1 786,302 s inklusive collection. Alla node-ID matchar JUnit, noll failures/errors/skipped och 783 frysta resurser oförändrade. Snabb **119/34,784 s**, analys **234/168,856 s**. Regelbas-/diffkontroll passerar. Fryst källcommit `5c40412`; efterföljande commit innehåller bara slutdokumentation.
+
+De 64 D9-styckena blir fyra. Läsrapporten minskar **2 320 ord i båda fallen**, men är fortfarande **370 ord längre än schema 1**. B1:s samtliga saktexter och ordantal är oförändrade (endast revisionsradens tre kontrollsummor skiljer). Riskmetod och AI-gräns är oförändrade. [Rättning, reproduktion och fullständiga mätvärden](superpowers/reviews/2026-10-22-svar-claude-scenario-d9.md). Ren lokal gren lämnas för användarens granskning; ingen push eller merge. Andra klonen/grenen `feat/steg-1-3` är orörd.
 
 ## Föregående leverans och verifiering
 

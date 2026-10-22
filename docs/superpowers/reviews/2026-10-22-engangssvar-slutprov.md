@@ -1,3 +1,5 @@
+> Detta slutprov avser leveransen `fc1a329` och källbas `2644122`. Senare rättning av scenarioavvikelse och D9-sammanfattning redovisas separat i [svaret på Claude-granskningen](2026-10-22-svar-claude-scenario-d9.md). Äldre prov-/ordmått nedan är historiska och har inte skrivits över.
+
 # Engångssvar och snabbare verifiering 2026-10-22
 
 Status: **tekniskt slutverifierad och lokalt committad**. Oberoende helgranskningens fyra Important är rättade med RED/GREEN i en samlad pass; färsk fullsvit är grön på den exakta slutliga kod-/test-/resursbasen. Ingen push eller merge. Användarens granskning med Claude återstår. Produktbas `f66a70f`, T1–T3 `132f8e9`–`1b40ddb`, verktygsrättning `03bd8bd`, F1 `c7a2ccb`, F2 `bb3ee8b`, F3 `70492b6`, samlad granskningsrättning och fryst källbas `264412289ba35cfc84fe236d406fe9ab9d2c5343`.
