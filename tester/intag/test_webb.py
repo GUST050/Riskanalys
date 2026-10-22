@@ -67,7 +67,8 @@ def test_okanda_vagar_och_stor_kropp(webb):
     assert anrop(s,'svar',{'csrf':s.csrf}, {'Transfer-Encoding':'chunked'})[0]==400
 
 
-@pytest.mark.parametrize('lan,filial,paket',[('Västra Götaland',False,'RP-RED-VG'),('Skåne',False,'RP-RED-SKANE'),('Skåne',True,'RP-RED-STHLM')])
+@pytest.mark.fullkedja
+@pytest.mark.parametrize('lan,filial,paket',[('Västra Götaland',False,'RP-RED-VG')])
 def test_tom_profil_genom_hela_formularet_till_word(webb,lan,filial,paket,rb_intag):
     import re
     from riskanalys.intag.fragor import fragor

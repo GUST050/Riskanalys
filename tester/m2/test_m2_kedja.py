@@ -79,7 +79,10 @@ def kedja(tmp_path,paket,lan,negativ=None):
         assert len(wordfiler)==2, wordfiler
         assert verifiera_manifest(exp)==[]
     if not negativ:assert not f,f
-    for a in d.avsnitt:kor(env,'sakgranska','testbyra','--avsnitt',a.id,'--godkann','--namn','Syntetisk testperson','--datum',str(DAG),*arg)
+    # Varje avsnitt passerar CLI-parser/utdata; en riktig process per kommandotyp räcker.
+    from tester.fixturer.cli_process import kor_direkt
+    for i,a in enumerate(d.avsnitt):
+        (kor if i==0 else kor_direkt)(env,'sakgranska','testbyra','--avsnitt',a.id,'--godkann','--namn','Syntetisk testperson','--datum',str(DAG),*arg)
     if negativ=='belagg':
         p=las_profil(byra);u=p.uppgifter['P-ORG.namn'].model_copy(update={'kalla':None});spara_profil(byra,p.model_copy(update={'uppgifter':{**p.uppgifter,'P-ORG.namn':u}}))
     result=kor(env,'faststall','testbyra','--organ','styrelsen','--namn','Syntetisk testperson','--datum','2026-11-20' if negativ=='datum' else str(DAG),*arg,expected=1 if negativ else 0)
@@ -94,12 +97,9 @@ def kedja(tmp_path,paket,lan,negativ=None):
     env['RISKANALYS_DATA']=str(tmp_path/'aterstalld åäö');kor(env,'verifiera','testbyra','1')
     assert not (ut/'regelbas/utkast').exists()
 
+@pytest.mark.fullkedja
 @pytest.mark.parametrize('paket,lan',[('RP-RED-VG','Västra Götaland'),('RP-RED-SKANE','Skåne'),('RP-RED-STHLM','Stockholm')])
 def test_m2_hela_cli_kedjan_och_aterstallning(tmp_path,paket,lan):kedja(tmp_path,paket,lan)
-
-@pytest.mark.parametrize('fel',['fraga','belagg','expert','metod','felpaket','datum','aldre'])
-def test_m2_negativ_cli_skapar_inget_paket(tmp_path,fel):kedja(tmp_path,'RP-RED-VG','Västra Götaland',fel)
-
 
 def test_handredigerad_bekraftelse_utan_kalla_stoppas_vid_bedom(tmp_path):
     env={k:os.environ[k] for k in ('PATH','HOME','LANG') if k in os.environ}

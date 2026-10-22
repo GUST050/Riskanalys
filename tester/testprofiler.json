@@ -8,7 +8,9 @@
     "tester/enhet/test_hotkopplingar_v2.py",
     "tester/enhet/test_gemensam_provning_v2.py",
     "tester/enhet/test_gemensam_evidens_v2.py",
-    "tester/enhet/test_kedjecache.py"
+    "tester/enhet/test_kedjecache.py",
+    "tester/enhet/test_cli_process.py",
+    "tester/m2/test_m2_grindar.py::test_negativ_cli_stoppar_just_andrat_underlag"
   ],
   "analys": [
     "tester/enhet/test_testverktyg.py",
@@ -25,6 +27,9 @@
     "tester/intag/test_gemensam_granskningsfynd_v2.py",
     "tester/intag/test_analys_overforing_v2.py",
     "tester/intag/test_skyddad_begaran.py",
-    "tester/enhet/test_kedjecache.py"
+    "tester/enhet/test_kedjecache.py",
+    "tester/enhet/test_cli_process.py",
+    "tester/m2/test_m2_grindar.py::test_negativ_cli_stoppar_just_andrat_underlag",
+    "tester/intag/test_paketval_webb.py"
   ]
 }
