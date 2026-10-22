@@ -2,6 +2,12 @@
 
 Senast uppdaterad 2026-10-22.
 
+## Design för gemensam analys och tjänstevis tillämpning
+
+Ett [skriftligt designunderlag](superpowers/specs/2026-10-22-forenklad-riskbedomning-design.md) samlar det reviderade chattförslaget, [granskningen korrigerad i `9fedb6f`](superpowers/reviews/2026-10-22-granskning-forenklad-struktur.md) och efterföljande kompletteringar. Det beskriver standardkatalog med samlat tjänsteurval, gemensam sårbarhetsanalys, uttryckliga tjänstetillämpningar, befintliga metodkonflikter och rapportering av omfattningsluckor. Designen ska granskas före genomförandeplanen; produktändringarna är inte implementerade. Riskmotor och metodbeslut är oförändrade.
+
+**Känd produktlucka på `91a3ece`:** en övergiven plan kan spärra ett nytt införande, och om flera nya-tjänst-planer utvärderas genomförs alla vid erbjudandeövergången. Båda beteendena är reproducerade med syntetiska uppgifter. Designen anger återkallande med bevarad historik och uttryckligt val av den plan som genomförs. Luckan är ännu inte rättad. Testutfallet nedan avser produktbasen och innebär inte att detta senare identifierade fel är åtgärdat.
+
 ## Rättning efter implementationsgranskning, 2026-10-22
 
 Planer har nu ett uttryckligt livslopp. Ny tjänst avslutas vid giltig erbjudandeövergång i samma atomiska profilsparning. Genomförd ändring av redan erbjuden tjänst registreras uttryckligen i webb eller med `genomfor-plan`. Avslutade planer bevaras med sin då gällande utvärdering och kontrolleras inte mot senare byråfakta, bedömningsdatum eller regelbas. De får inte redigeras eller användas för ett nytt återinförande. Ordinarie årsutvärdering och aktuell analys krävs fortfarande.
