@@ -1,0 +1,1430 @@
+{
+  "status": "teknisk_baslinje_inte_sakkunnigfacit",
+  "kodbas": "288fa6650ea400fda04cdcef965f8ac17adc3575",
+  "regelbas": "sha256:7e0f77726a35b5e9fd47b8d324b43236cbeab5ded78c107ccfe54570cc97285f",
+  "fall": "befintligt_H7.1_fyra_tjanster",
+  "tjanster": [
+    {
+      "egen_erfarenhet": {
+        "rapporter": "inga",
+        "avbojanden": "finns",
+        "belagd": true,
+        "okanda_uppgifter": []
+      },
+      "sanktionsrisk": {
+        "kontroll": {
+          "effekt": "ej_bedömd",
+          "effekt_belagd": false,
+          "id": "C-SANK",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": false
+        },
+        "status": "preliminär",
+        "inneboende": {
+          "sannolikhet": "låg",
+          "konsekvens": "allvarlig",
+          "risk": "måttlig"
+        },
+        "kvarstaende": "måttlig",
+        "regelspar": [
+          "BT-SANK-01",
+          "BT-MATRIS-03",
+          "C-SANK"
+        ],
+        "okanda_uppgifter": [
+          "P-KONTROLL.C-SANK.effekt"
+        ]
+      },
+      "tjanst": "T-RED-01",
+      "erbjuds": true,
+      "status": "preliminär",
+      "hot": [
+        "H-TJ-01",
+        "H-03",
+        "H-01",
+        "H-02",
+        "H-MOD-01",
+        "H-MOD-02",
+        "H-MOD-04",
+        "H-TF-01",
+        "H-TF-02"
+      ],
+      "tillampade_sarbarheter": [
+        "S-KUND-01",
+        "S-KUND-02",
+        "S-GEO-01",
+        "S-ARB-01",
+        "S-ARB-04",
+        "S-ARB-08",
+        "S-ARB-10",
+        "S-ARB-18"
+      ],
+      "inneboende": {
+        "sannolikhet": "hög",
+        "konsekvens": "betydande",
+        "risk": "hög"
+      },
+      "terrorfinansiering": {
+        "sannolikhet": "hög",
+        "konsekvens": "allvarlig",
+        "risk": "mycket hög"
+      },
+      "kontroller": [
+        {
+          "effekt": "begränsad",
+          "effekt_belagd": false,
+          "id": "C-TJ-01",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": false
+        },
+        {
+          "effekt": "verksam",
+          "effekt_belagd": true,
+          "id": "C-07",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": true
+        }
+      ],
+      "kvarstaende": "hög",
+      "regelspar": [
+        "BT-HOT-01",
+        "BT-SARB-01",
+        "BT-SANN-02-06",
+        "BT-KONS-01",
+        "BT-MATRIS-08",
+        "BT-KVAR-01",
+        "BT-KVAR-03",
+        "BT-SANN-02-05",
+        "BT-MATRIS-05",
+        "BT-TF-01",
+        "BT-MATRIS-09",
+        "BT-TJ-01"
+      ],
+      "okanda_uppgifter": [
+        "P-KONTROLL.C-SANK.effekt"
+      ],
+      "scenarier": [
+        {
+          "hot": "H-TJ-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-03",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-KUND-02",
+            "S-GEO-01",
+            "S-ARB-01",
+            "S-ARB-04",
+            "S-ARB-08",
+            "S-ARB-10",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [
+            "C-07"
+          ],
+          "kvarstaende": "måttlig",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-ARB-01",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-KUND-02",
+            "S-ARB-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [],
+          "sarbarhetsniva": "medel",
+          "sannolikhet": "medel",
+          "konsekvens": "betydande",
+          "risk": "måttlig",
+          "tackande_kontroller": [
+            "C-07"
+          ],
+          "kvarstaende": "låg",
+          "avgorande": false,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-05",
+            "BT-KONS-01",
+            "BT-MATRIS-05",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-MOD-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-04",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [],
+          "sarbarhetsniva": "medel",
+          "sannolikhet": "medel",
+          "konsekvens": "betydande",
+          "risk": "måttlig",
+          "tackande_kontroller": [],
+          "kvarstaende": "måttlig",
+          "avgorande": false,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-05",
+            "BT-KONS-01",
+            "BT-MATRIS-05",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-03",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-02",
+            "S-GEO-01",
+            "S-ARB-01",
+            "S-ARB-04",
+            "S-ARB-08",
+            "S-ARB-10",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        },
+        {
+          "hot": "H-TF-01",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-02",
+            "S-GEO-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        },
+        {
+          "hot": "H-TF-02",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-GEO-01",
+            "S-ARB-04"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        }
+      ]
+    },
+    {
+      "egen_erfarenhet": {
+        "rapporter": "inga",
+        "avbojanden": "finns",
+        "belagd": true,
+        "okanda_uppgifter": []
+      },
+      "sanktionsrisk": {
+        "kontroll": {
+          "effekt": "ej_bedömd",
+          "effekt_belagd": false,
+          "id": "C-SANK",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": false
+        },
+        "status": "preliminär",
+        "inneboende": {
+          "sannolikhet": "låg",
+          "konsekvens": "allvarlig",
+          "risk": "måttlig"
+        },
+        "kvarstaende": "måttlig",
+        "regelspar": [
+          "BT-SANK-01",
+          "BT-MATRIS-03",
+          "C-SANK"
+        ],
+        "okanda_uppgifter": [
+          "P-KONTROLL.C-SANK.effekt"
+        ]
+      },
+      "tjanst": "T-RED-02",
+      "erbjuds": true,
+      "status": "preliminär",
+      "hot": [
+        "H-TJ-02",
+        "H-03",
+        "H-01",
+        "H-02",
+        "H-MOD-01",
+        "H-MOD-02",
+        "H-MOD-04",
+        "H-TF-01",
+        "H-TF-02"
+      ],
+      "tillampade_sarbarheter": [
+        "S-KUND-01",
+        "S-KUND-02",
+        "S-GEO-01",
+        "S-ARB-01",
+        "S-ARB-04",
+        "S-ARB-08",
+        "S-ARB-10",
+        "S-ARB-18"
+      ],
+      "inneboende": {
+        "sannolikhet": "hög",
+        "konsekvens": "betydande",
+        "risk": "hög"
+      },
+      "terrorfinansiering": {
+        "sannolikhet": "hög",
+        "konsekvens": "allvarlig",
+        "risk": "mycket hög"
+      },
+      "kontroller": [
+        {
+          "effekt": "verksam",
+          "effekt_belagd": true,
+          "id": "C-TJ-02",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": true
+        }
+      ],
+      "kvarstaende": "hög",
+      "regelspar": [
+        "BT-HOT-01",
+        "BT-SARB-01",
+        "BT-SANN-02-06",
+        "BT-KONS-01",
+        "BT-MATRIS-08",
+        "BT-KVAR-03",
+        "BT-KVAR-01",
+        "BT-SANN-02-05",
+        "BT-MATRIS-05",
+        "BT-TF-01",
+        "BT-MATRIS-09",
+        "BT-TJ-01"
+      ],
+      "okanda_uppgifter": [
+        "P-KONTROLL.C-SANK.effekt"
+      ],
+      "scenarier": [
+        {
+          "hot": "H-TJ-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [
+            "C-TJ-02"
+          ],
+          "kvarstaende": "måttlig",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-03",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-KUND-02",
+            "S-GEO-01",
+            "S-ARB-01",
+            "S-ARB-04",
+            "S-ARB-08",
+            "S-ARB-10",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [
+            "C-TJ-02"
+          ],
+          "kvarstaende": "måttlig",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-ARB-01",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [
+            "C-TJ-02"
+          ],
+          "kvarstaende": "måttlig",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-KUND-02",
+            "S-ARB-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [],
+          "sarbarhetsniva": "medel",
+          "sannolikhet": "medel",
+          "konsekvens": "betydande",
+          "risk": "måttlig",
+          "tackande_kontroller": [],
+          "kvarstaende": "måttlig",
+          "avgorande": false,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-05",
+            "BT-KONS-01",
+            "BT-MATRIS-05",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-04",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [],
+          "sarbarhetsniva": "medel",
+          "sannolikhet": "medel",
+          "konsekvens": "betydande",
+          "risk": "måttlig",
+          "tackande_kontroller": [],
+          "kvarstaende": "måttlig",
+          "avgorande": false,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-05",
+            "BT-KONS-01",
+            "BT-MATRIS-05",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-03",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-02",
+            "S-GEO-01",
+            "S-ARB-01",
+            "S-ARB-04",
+            "S-ARB-08",
+            "S-ARB-10",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        },
+        {
+          "hot": "H-TF-01",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-02",
+            "S-GEO-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        },
+        {
+          "hot": "H-TF-02",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-GEO-01",
+            "S-ARB-04"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        }
+      ]
+    },
+    {
+      "egen_erfarenhet": {
+        "rapporter": "inga",
+        "avbojanden": "finns",
+        "belagd": true,
+        "okanda_uppgifter": []
+      },
+      "sanktionsrisk": {
+        "kontroll": {
+          "effekt": "ej_bedömd",
+          "effekt_belagd": false,
+          "id": "C-SANK",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": false
+        },
+        "status": "preliminär",
+        "inneboende": {
+          "sannolikhet": "låg",
+          "konsekvens": "allvarlig",
+          "risk": "måttlig"
+        },
+        "kvarstaende": "måttlig",
+        "regelspar": [
+          "BT-SANK-01",
+          "BT-MATRIS-03",
+          "C-SANK"
+        ],
+        "okanda_uppgifter": [
+          "P-KONTROLL.C-SANK.effekt"
+        ]
+      },
+      "tjanst": "T-RED-03",
+      "erbjuds": true,
+      "status": "preliminär",
+      "hot": [
+        "H-TJ-03",
+        "H-03",
+        "H-01",
+        "H-02",
+        "H-MOD-01",
+        "H-MOD-02",
+        "H-MOD-04",
+        "H-TF-01",
+        "H-TF-02"
+      ],
+      "tillampade_sarbarheter": [
+        "S-KUND-01",
+        "S-KUND-02",
+        "S-GEO-01",
+        "S-ARB-01",
+        "S-ARB-04",
+        "S-ARB-08",
+        "S-ARB-10",
+        "S-ARB-18"
+      ],
+      "inneboende": {
+        "sannolikhet": "hög",
+        "konsekvens": "betydande",
+        "risk": "hög"
+      },
+      "terrorfinansiering": {
+        "sannolikhet": "hög",
+        "konsekvens": "allvarlig",
+        "risk": "mycket hög"
+      },
+      "kontroller": [
+        {
+          "effekt": "verksam",
+          "effekt_belagd": true,
+          "id": "C-TJ-03",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": true
+        }
+      ],
+      "kvarstaende": "hög",
+      "regelspar": [
+        "BT-HOT-01",
+        "BT-SARB-01",
+        "BT-SANN-02-06",
+        "BT-KONS-01",
+        "BT-MATRIS-08",
+        "BT-KVAR-03",
+        "BT-KVAR-01",
+        "BT-SANN-02-05",
+        "BT-MATRIS-05",
+        "BT-TF-01",
+        "BT-MATRIS-09",
+        "BT-TJ-01"
+      ],
+      "okanda_uppgifter": [
+        "P-KONTROLL.C-SANK.effekt"
+      ],
+      "scenarier": [
+        {
+          "hot": "H-TJ-03",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [
+            "C-TJ-03"
+          ],
+          "kvarstaende": "måttlig",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-03",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-KUND-02",
+            "S-GEO-01",
+            "S-ARB-01",
+            "S-ARB-04",
+            "S-ARB-08",
+            "S-ARB-10",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [
+            "C-TJ-03"
+          ],
+          "kvarstaende": "måttlig",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-ARB-01",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [
+            "C-TJ-03"
+          ],
+          "kvarstaende": "måttlig",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-KUND-02",
+            "S-ARB-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [],
+          "sarbarhetsniva": "medel",
+          "sannolikhet": "medel",
+          "konsekvens": "betydande",
+          "risk": "måttlig",
+          "tackande_kontroller": [],
+          "kvarstaende": "måttlig",
+          "avgorande": false,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-05",
+            "BT-KONS-01",
+            "BT-MATRIS-05",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [
+            "C-TJ-03"
+          ],
+          "kvarstaende": "måttlig",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-03"
+          ]
+        },
+        {
+          "hot": "H-MOD-04",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [],
+          "sarbarhetsniva": "medel",
+          "sannolikhet": "medel",
+          "konsekvens": "betydande",
+          "risk": "måttlig",
+          "tackande_kontroller": [],
+          "kvarstaende": "måttlig",
+          "avgorande": false,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-05",
+            "BT-KONS-01",
+            "BT-MATRIS-05",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-03",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-02",
+            "S-GEO-01",
+            "S-ARB-01",
+            "S-ARB-04",
+            "S-ARB-08",
+            "S-ARB-10",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        },
+        {
+          "hot": "H-TF-01",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-02",
+            "S-GEO-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        },
+        {
+          "hot": "H-TF-02",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-GEO-01",
+            "S-ARB-04"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        }
+      ]
+    },
+    {
+      "egen_erfarenhet": {
+        "rapporter": "inga",
+        "avbojanden": "finns",
+        "belagd": true,
+        "okanda_uppgifter": []
+      },
+      "sanktionsrisk": {
+        "kontroll": {
+          "effekt": "ej_bedömd",
+          "effekt_belagd": false,
+          "id": "C-SANK",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": false
+        },
+        "status": "preliminär",
+        "inneboende": {
+          "sannolikhet": "låg",
+          "konsekvens": "allvarlig",
+          "risk": "måttlig"
+        },
+        "kvarstaende": "måttlig",
+        "regelspar": [
+          "BT-SANK-01",
+          "BT-MATRIS-03",
+          "C-SANK"
+        ],
+        "okanda_uppgifter": [
+          "P-KONTROLL.C-SANK.effekt"
+        ]
+      },
+      "tjanst": "T-RED-04",
+      "erbjuds": true,
+      "status": "preliminär",
+      "hot": [
+        "H-TJ-04",
+        "H-03",
+        "H-01",
+        "H-02",
+        "H-MOD-01",
+        "H-MOD-02",
+        "H-MOD-04",
+        "H-TF-01",
+        "H-TF-02"
+      ],
+      "tillampade_sarbarheter": [
+        "S-KUND-01",
+        "S-KUND-02",
+        "S-GEO-01",
+        "S-ARB-01",
+        "S-ARB-04",
+        "S-ARB-08",
+        "S-ARB-10",
+        "S-ARB-18"
+      ],
+      "inneboende": {
+        "sannolikhet": "hög",
+        "konsekvens": "betydande",
+        "risk": "hög"
+      },
+      "terrorfinansiering": {
+        "sannolikhet": "hög",
+        "konsekvens": "allvarlig",
+        "risk": "mycket hög"
+      },
+      "kontroller": [
+        {
+          "effekt": "begränsad",
+          "effekt_belagd": false,
+          "id": "C-TJ-04",
+          "utformning": "finns",
+          "genomforande": "belagt",
+          "fungerar_och_ar_belagd": false
+        }
+      ],
+      "kvarstaende": "hög",
+      "regelspar": [
+        "BT-HOT-01",
+        "BT-SARB-01",
+        "BT-SANN-02-06",
+        "BT-KONS-01",
+        "BT-MATRIS-08",
+        "BT-KVAR-01",
+        "BT-SANN-02-05",
+        "BT-MATRIS-05",
+        "BT-TF-01",
+        "BT-MATRIS-09",
+        "BT-TJ-01"
+      ],
+      "okanda_uppgifter": [
+        "P-KONTROLL.C-SANK.effekt"
+      ],
+      "scenarier": [
+        {
+          "hot": "H-TJ-04",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-03",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-KUND-02",
+            "S-GEO-01",
+            "S-ARB-01",
+            "S-ARB-04",
+            "S-ARB-08",
+            "S-ARB-10",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-ARB-01",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01",
+            "S-KUND-02",
+            "S-ARB-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-01",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [],
+          "sarbarhetsniva": "medel",
+          "sannolikhet": "medel",
+          "konsekvens": "betydande",
+          "risk": "måttlig",
+          "tackande_kontroller": [],
+          "kvarstaende": "måttlig",
+          "avgorande": false,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-05",
+            "BT-KONS-01",
+            "BT-MATRIS-05",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-02",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "betydande",
+          "risk": "hög",
+          "tackande_kontroller": [],
+          "kvarstaende": "hög",
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-KONS-01",
+            "BT-MATRIS-08",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-MOD-04",
+          "dimension": "pt",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [],
+          "sarbarhetsniva": "medel",
+          "sannolikhet": "medel",
+          "konsekvens": "betydande",
+          "risk": "måttlig",
+          "tackande_kontroller": [],
+          "kvarstaende": "måttlig",
+          "avgorande": false,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-05",
+            "BT-KONS-01",
+            "BT-MATRIS-05",
+            "BT-KVAR-01"
+          ]
+        },
+        {
+          "hot": "H-03",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-02",
+            "S-GEO-01",
+            "S-ARB-01",
+            "S-ARB-04",
+            "S-ARB-08",
+            "S-ARB-10",
+            "S-ARB-18"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        },
+        {
+          "hot": "H-TF-01",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-KUND-02",
+            "S-GEO-01"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        },
+        {
+          "hot": "H-TF-02",
+          "dimension": "tf",
+          "hotniva": "medel",
+          "iakttaget": false,
+          "sarbarheter": [
+            "S-GEO-01",
+            "S-ARB-04"
+          ],
+          "sarbarhetsniva": "hög",
+          "sannolikhet": "hög",
+          "konsekvens": "allvarlig",
+          "risk": "mycket hög",
+          "tackande_kontroller": [],
+          "kvarstaende": null,
+          "avgorande": true,
+          "regelspar": [
+            "BT-HOT-01",
+            "BT-SARB-01",
+            "BT-SANN-02-06",
+            "BT-TF-01",
+            "BT-MATRIS-09"
+          ]
+        }
+      ]
+    }
+  ],
+  "gruppkontrast": "samtidig/atskild/okand bevarar dessa exakta motorresultat tills faktiskt metodbeslut finns; se test_kravstod_hela_kedjan.py"
+}

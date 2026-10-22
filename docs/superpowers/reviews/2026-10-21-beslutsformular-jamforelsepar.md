@@ -135,6 +135,28 @@ Tilläggsfrågor:
 - Ska tjänstens nivå vara det högsta relevanta scenariot (max), eller ska exponeringens omfattning kunna påverka den sammanfattade nivån?
 - Om max behålls: ska rapporten intill nivån visa andel exponerade kunder, antal scenarier på maxnivån och vilka scenarier som är otäckta?
 
+## Par 9: planerad förändring och befintlig tjänst (D3, D8)
+
+| | A | B |
+|---|---|---|
+| Fast | Samma katalogtjänst och aktuella byråfaktorer. | |
+| Skillnad | Tjänsten är erbjuden, faktiska uppdrag beskrivna. | Tjänsten erbjuds inte ännu; en plan beskriver kundtyper, arbetsmoment/befogenheter, insyn, leverans och geografi. Inga befintliga kunder krävs. |
+| Dagens modell | Endast aktuellt erbjudande beräknas. | Ingen motorbedömning i leverans 3a. Planen har en mänsklig, bunden förändringsutvärdering. Planantaganden ändrar inte aktuell profil eller risknivå. |
+
+Ange efter beslut exakt vilka planfält som får påverka vilka hot/scenarier och hur okänt ska hanteras. Planens kontrollverkan är inte belagd faktisk effekt. Använd svarsmallen ovan för PT före kontroll, kvarstående PT och TF, inklusive källversion, ansvarig, granskare och datum. Inget svar är registrerat här.
+
+## Par 10: belagd samförekomst, åtskilda grupper och okänt (D3, D4, D5, D9)
+
+| | A | B | C |
+|---|---|---|---|
+| Fast | Samma tjänst, 100 uppdrag, samma period. Samma marginaltal: 8 uppdrag har egenskap X, 8 har Y. Kontrollerna lika. | | |
+| Skillnad | Samma 8 uppdrag har båda egenskaperna, styrkt i gemensamt underlag. | Två belagt åtskilda grupper om 8 uppdrag har vardera en egenskap. | Separata antal är kända; överlappet är okänt. |
+| Dagens modell | Grupperna visas som lokalt underlag; ingen ny numerisk regel ansluten. | Samma motorutfall; andra belägg och annat lokalt analysunderlag. | Samma motorutfall; ingen påstådd belagd kombination. |
+
+Pröva även ett respektive två scenarier på högsta nivån, och en kontroll som bara täcker ett av dem. Ange vilka scenariofaktorer som aktiveras, vilket utfall kontrollen får bära och hur maxregeln fungerar vid en liten men väsentlig grupp. Grupper som kan överlappa får inte summeras. Saknas period, källa eller gemensam population får implementeraren inte härleda en andel.
+
+D3 anger tjänsteavgränsning/population/okänt. D4 anger tillåtet överlappsbevis. D5 anger max och betydande liten grupp. D6 anger TF-kedja/konsekvens. D8 anger effekt/täckning. D9 anger korrelation/summering/tak. D1/D2/D7 öppnas om relevanskopplingarna berörs. Beslut måste preciseras med exakta förväntade PT före kontroll, kvarstående PT och TF, inte enbart riktning. Beslutsfält och attestfält lämnas till verklig metodansvarig/sakkunnig.
+
 ## Efter ifyllandet
 
 Godkända svar blir förväntade utfall per scenario och per tjänst. Varje godkänt par blir ett test innan någon metodändring kodas (steg 4). Svar med status *hypotes* eller *otillräckligt underlag* kodas inte.
