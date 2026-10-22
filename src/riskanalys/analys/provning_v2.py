@@ -15,6 +15,7 @@ def egna_ansprak(rb,paket,tjanst):
         for hot in p.hot:
             for dim in hot_dimensioner(rb.hot[hot]) if hot in rb.hot else ():
                 if p.dimension in ('bada',dim):ansprak.append(('gemensam',p.id,hot,dim))
+        ansprak.extend(('gemensam',p.id,x.hot,x.dimension) for x in app.hotkopplingar)
     scenarier,_=effektiva_scenarier(paket,a)
     for p in a.sarbarhetsprovningar:
         if p.sarbarheter or p.relevans!='relevant':continue
@@ -71,16 +72,24 @@ def gemensamma_analysbrister(rb,profil,bedomning,paket):
             krav(p.relevans!='okant',f'{p.id}: relevansen är okänd.')
             krav(set(p.sarbarheter)<=set(rb.sarbarheter) and set(p.hot)<=set(rb.hot),f'{p.id}: välj kända faktorer och hot.')
             krav(set(p.profilfalt)<=set(rb.falt),f'{p.id}: okänt profilfält.')
+            for f in p.profilfalt:
+                krav(profil.ar_bekraftad(f),f'{p.id}: profilfältet {f} är inte aktuellt bekräftat.')
             for id in p.sarbarheter:
                 if id in rb.sarbarheter:krav(rb.sarbarheter[id].omrade==p.omrade,f'{p.id}: faktorn hör till annat område.')
             if p.relevans=='relevant':krav(bool(p.hot),f'{p.id}: ange hot för den relevanta sårbarheten.')
         else:krav(_saktext(p.text),f'{p.id}: gemensamt verksamhetssvar saknas.')
     for a in paket.tjanster:
         t=next((t for t in bedomning.tjanster if t.tjanst==a.tjanst),None)
+        if t is None or t.erbjuds is False:
+            continue
         for name,poster in (('sarbarhetstillampningar',gem),('verksamhetstillampningar',verk)):
             appar=getattr(a,name)
             krav(set(poster)<={x.post for x in appar},f'{a.tjanst}: varje gemensam post kräver ett tjänsteställningstagande.')
             for app in appar:
+                riktningsval=getattr(app,'riktningsval',None)
+                if riktningsval and riktningsval.riktning!='oklar':
+                    krav(_saktext(riktningsval.motivering) and bool(riktningsval.belagg) and set(riktningsval.belagg)<=belagg,
+                        f'{a.tjanst}/{app.post}: riktningsval kräver motivering och registrerade belägg.')
                 p=poster.get(app.post)
                 krav(tillampning_aktuell(p,app),f'{a.tjanst}/{app.post}: gemensam tillämpning saknas eller är inaktuell.')
                 krav(app.stallningstagande!='otillrackligt',f'{a.tjanst}/{app.post}: otillräckligt underlag hindrar sakgodkännande.')

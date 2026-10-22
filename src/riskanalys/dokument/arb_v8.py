@@ -76,8 +76,6 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
     if any(not isinstance(r,Tjanstresultat) or r.formatversion != V8 for r in resultat.values()):
         raise RiskanalysFel('V8 kräver nya versionsbundna V8-skrivresultat. Skriv och granska på nytt; äldre utkast får inte märkas om.')
     index = gransindex if gransindex is not None else metodgransindex(rb)
-    if analys and analys.schemaversion==2:
-        raise RiskanalysFel('Analys i schema 2 saknar ännu rapportstöd i denna mellanleverans. Använd inte grenen i verklig verksamhet före B5.')
     refindex=bygg_analysreferenser(analys)
     brister=analysbrister(rb,profil,bedomning,analys) if analys else ()
     metodposter=(*rb.metod.regler(),*rb.metod.riskmatris)
@@ -100,6 +98,12 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
         (tabell('gemensamma-scenarier','Gemensamma händelseförlopp',('Scenario','Händelseförlopp','Betydelse','Hot','Belägg'),
             (scenariorad(s,rb,refindex) for s in analys.gemensamma_scenarier)),) if analys and analys.gemensamma_scenarier else ())
     mekanismer=gemensamma_faktormekanismer(rb,bedomning)
+    gemensamma_svar=()
+    if analys and analys.schemaversion==2:
+        from riskanalys.dokument.gemensam_provning_v8 import gemensamma_provningsstycken
+        gemensamma_svar=gemensamma_provningsstycken(rb,analys)
+        definierade={ref for s in gemensamma_svar if s.proveniens=='regelbas' for ref in s.referenser if ref in rb.sarbarheter}
+        mekanismer=tuple(s for s in mekanismer if not (set(s.referenser)&definierade))
     lokal=avsnitt(GEMENSAMT_ID,GEMENSAMT_RUBRIK,(
         lokaltext('Byråövergripande underlag redovisas här en gång. Varje tjänsteavsnitt anger tjänstens egen exponering, '
                   'lokala betydelse och avvikelser. Fullständiga ursprungliga lokala svar med fältsökvägar finns i den '
@@ -107,7 +111,7 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
         *gemensamt_erfarenhetsstycke(rb,profil,bedomning,gransindex=index),
         *gemensamma_geografistycken(rb,profil,bedomning,gransindex=index),
         *((stycke(FAKTORINLEDNING,['D-ARB.B1']),) if mekanismer else ()),
-        *mekanismer))
+        *gemensamma_svar,*mekanismer))
     kontroller=avsnitt('D-ARB.7','Källbunden kontrollräckvidd',rackviddsoversikt(rb,bedomning,formatversion=V8))
     risk=tuple(bygg_tjanstavsnitt_v8(rb,profil,t,resultat.get(id),id,gransindex=index,analys=analys)
                for id,t in tjanster_med_avsnitt(bedomning))
@@ -116,6 +120,12 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
         bevara_original=True)
     bilaga=bilaga.model_copy(update={'formatversion':V8,'leveransdel':'underlagsbilaga','visningsnummer':'B1'})
     bilaga=med_berakningstabeller(rb,bedomning,bilaga)
+    if analys and analys.schemaversion==2:
+        from riskanalys.dokument.gemensam_provning_v8 import d9_upplysningar
+        d9=d9_upplysningar(rb,profil,analys,bedomning)
+        if d9:
+            from riskanalys.dokument.modeller import Underrubrik
+            bilaga=bilaga.model_copy(update={'stycken':(*bilaga.stycken,*d9),'underrubriker':(*bilaga.underrubriker,Underrubrik(fore_stycke=len(bilaga.stycken),rubrik='Upplysningar för metoduppföljning D9 C'))})
     planstycken=planunderlag(profil,historik)
     if planstycken:
         from riskanalys.dokument.modeller import Underrubrik

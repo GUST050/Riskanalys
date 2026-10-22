@@ -78,3 +78,19 @@ def test_manipulerade_oklarheter_exporteras_inte(skriven_byra, regelbas, capsys)
     _andra(utkastfil, '"oklarheter": []', '"oklarheter": [{"fraga": "Påhittad?", "saknad_uppgift": "P-X"}]')
     assert main(["exportera", "testbyra", "--utkast"]) == 1
     assert "AI-utkasten är ändrade efter skrivningen. Fil ändrad: D-ARB.6.1.json" in capsys.readouterr().err
+
+
+def test_omfattning_och_komplett_utkast_ar_olika_exportval(capsys):
+    import pytest
+    with pytest.raises(SystemExit) as exc:main(['exportera','syntetisk','--utkast','--omfattningsunderlag'])
+    assert exc.value.code==2
+    assert 'not allowed with argument' in capsys.readouterr().err
+
+
+def test_cli_skapar_verkligt_separat_omfattningsunderlag(byra_med_profil,capsys):
+    from tester.conftest import REPO_REGELBAS
+    assert main(['exportera','testbyra','--omfattningsunderlag','--regelbas',str(REPO_REGELBAS)])==0
+    assert 'OFULLSTÄNDIGT' in capsys.readouterr().out
+    filer=list((byra_med_profil/'omfattningsunderlag').glob('*/omfattningsunderlag-OFULLSTANDIGT.docx'))
+    assert len(filer)==1 and not (byra_med_profil/EXPORT).exists()
+    assert 'OFULLSTÄNDIGT' in '\n'.join(p.text for p in docx.Document(filer[0]).paragraphs)

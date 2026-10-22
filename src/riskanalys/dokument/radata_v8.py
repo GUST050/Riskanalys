@@ -12,7 +12,7 @@ FRIA_FALT = frozenset(('rubrik', 'arbetsmoment_och_befogenheter', 'synliga_flode
     'avsandare_och_mottagare', 'underlagens_tillforlitlighet', 'motivering', 'kompetens_och_insyn', 'ansvar',
     'omfattning', 'leverantorens_kontroller', 'egen_verifiering', 'brister_och_motstridigheter',
     'handelseforlopp', 'tillampning', 'utfall', 'kvarstar', 'atgard', 'utlosare_eller_frekvens', 'beskrivning',
-    'forfattare', 'exponering', 'delningsmotivering', 'leverantorsmotivering', 'samverkan',
+    'text','referensmotivering','forfattare', 'exponering', 'delningsmotivering', 'leverantorsmotivering', 'samverkan',
     'erfarenhetsprovning', 'pt_motivering', 'tf_motivering', 'reduktionsmotivering', 'sektorsjamforelse',
     'sanktioner', 'slutsats', 'kommentar', 'namn', 'roll', 'rutin_id', 'rutin_version'))
 
@@ -34,7 +34,7 @@ def fria_analysfalt(paket):
             # Rotens belagg är objektregistret, inte detta textfälts referens-ID:n.
             refs = tuple(v.get('belagg', v.get('exponeringsbelagg', belagg))) if stig else ()
             for k, x in v.items():
-                if not stig and k not in ('gemensamma_scenarier', 'tjanster', 'beslut'):
+                if not stig and k not in ('gemensamma_scenarier', 'gemensamma_sarbarhetsprovningar','gemensamma_verksamhetsposter','tjanster', 'beslut'):
                     continue  # Modellfelakter och privata dokumentvägar publiceras inte.
                 p = stig+'/'+k
                 if k in FRIA_FALT and isinstance(x, str) and x:

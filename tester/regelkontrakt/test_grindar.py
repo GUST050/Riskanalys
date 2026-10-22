@@ -272,3 +272,10 @@ def test_uppgift_utan_belagg_ar_hinder(signerad_regelbas, profil_fabrik, real_va
     profil = profil.model_copy(update={"uppgifter": {**profil.uppgifter, "P-KUND.andel_kontant": uppgift}})
     hinder = hinder_for_faststallelse(_underlag(signerad_regelbas, profil, {"D-ARB.6.1": giltigt_utkast}), BESLUTSDAG)
     assert any(rad.startswith(vantat) for rad in hinder)
+
+
+def test_ofullstandigt_omfattningsunderlag_kan_aldrig_faststallas(komplett):
+    from riskanalys.dokument.omfattningsutkast import bygg_omfattningsutkast
+    d=bygg_omfattningsutkast(komplett.regelbas,komplett.profil).dokument
+    fel=hinder_for_faststallelse(replace(komplett,dokument=d),BESLUTSDAG)
+    assert 'Ofullständigt omfattningsunderlag kan inte fastställas som en allmän riskbedömning.' in fel

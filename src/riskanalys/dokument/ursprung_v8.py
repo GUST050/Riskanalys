@@ -46,6 +46,13 @@ def bygg_ursprungskarta(dokument,rb,profil,bedomning,resultat,historik,analys):
         for n,t in enumerate(analys.tjanster):
             analysindex.update(('ANALYS:scenario:'+s.id,f'/tjanster/{n}/scenarier/{m}') for m,s in enumerate(t.scenarier))
             analysindex.update(('ANALYS:delanalys:'+t.tjanst+':'+s.id,f'/tjanster/{n}/delanalyser/{m}') for m,s in enumerate(t.delanalyser))
+    if analys and analys.schemaversion==2:
+        for slag,falt in (('gemensam_sarbarhet','gemensamma_sarbarhetsprovningar'),('gemensam_verksamhet','gemensamma_verksamhetsposter')):
+            analysindex.update(('ANALYS:'+slag+':'+p.id,'/'+falt+'/'+str(i)) for i,p in enumerate(getattr(analys,falt)))
+    if analys and analys.schemaversion==2:
+        for ti,t in enumerate(analys.tjanster):
+            for slag,falt in (('sarbarhet','sarbarhetstillampningar'),('verksamhet','verksamhetstillampningar')):
+                analysindex.update(('ANALYS:tillampning:'+slag+':'+t.tjanst+':'+a.post,f'/tjanster/{ti}/{falt}/{i}') for i,a in enumerate(getattr(t,falt)))
     operationer=operationskarta(rb,profil,bedomning,resultat,analys)
     from riskanalys.dokument.radata_v8 import fria_analysfalt
     lokala_original={falt.text for falt in fria_analysfalt(analys)}

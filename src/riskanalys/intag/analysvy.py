@@ -11,6 +11,14 @@ from riskanalys.intag.analysformular import RADER, faltlista, grundtyp, hamta_tj
 from riskanalys.intag.vyer import dold, falt, val
 
 NAMN = {
+    'beskrivning':'Sårbarhetens mekanism eller motiverad frånvaro',
+    'profilfalt':'Profilfält som underlag (valfritt, ID:n)',
+    'sarbarheter':'Katalogfaktorer som prövas i posten',
+    'text':'Gemensam analys och slutsats',
+    'referensmotivering':'Motivering om byråns jämförelsenivå är lägre än referensen',
+    'jamforelseniva':'Byråns jämförelsenivå',
+    'riskled':'Vilken risk ska täckas?',
+
     'id': 'Lokalt ID för spårbara hänvisningar',
     'betalningsinsyn': 'Faktisk betalningsinsyn',
     'uppdragsprovning': 'Prövning av uppdragets hanterbarhet', 'leverantorer': 'Leverantörsprövningar',
@@ -59,6 +67,11 @@ NAMN = {
 
 
 VALTEXT = {
+    'bekraftad':'Bekräftat faktaunderlag','antagande':'Antagande – inte bekräftat',
+    'bada':'Både PT och TF','pt':'Penningtvätt (PT)','tf':'Finansiering av terrorism (TF)',
+    'inneboende':'Inneboende risk','kvarstaende':'Kvarstående risk',
+    'tacks_av_scenario':'Täcks av befintligt scenario','tacks_inte':'Täcks inte','oklar':'Oklar – behöver klarläggas',
+
     'bedomd': 'Bedömd insyn', 'ej_tillamplig': 'Ej tillämpligt', 'okand': 'Okänt – behöver prövas',
     'hanterbart': 'Hanterbart', 'kraver_atgard': 'Kräver åtgärd', 'kan_inte_hanteras': 'Kan inte hanteras',
     'okant': 'Okänt – behöver prövas', 'fortsatt': 'Fortsätt uppdrag', 'forstark': 'Förstärk förmågan',
@@ -238,10 +251,26 @@ def analyssida(s, query=None, data=None, fel=''):
     html = '<nav><a href="' + e(s.prefix, quote=True) + 'analys">Analysöversikt</a><a href="' + e(s.prefix, quote=True) + 'analys?forslag=ja">Jämför ny förifyllnad</a><a href="' + e(s.prefix, quote=True) + 'analys?modellrisk=ja">Gemensamt modellriskunderlag</a></nav>'
     if paket is None:
         html += '<h1>Starta lokal verksamhetsanalys</h1><p>Programmet förifyller redigerbara ogranskade svar från bekräftad profil och motorutfall. Inga belägg för faktisk effekt eller mänskliga godkännanden hittas på.</p>'
-        html += f'<form method="post" action="{e(s.prefix, quote=True)}analysstart">' + dold('csrf', s.csrf) + dold('revision', '') + '<button>Starta ogranskat analysutkast</button></form>'
+        html += f'<form method="post" action="{e(s.prefix, quote=True)}analysstart">' + dold('csrf', s.csrf) + dold('revision', '') + dold('schema','2') + '<button>Starta ogranskat analysutkast</button></form>'
         return sida(s, html, fel)
+    if paket.schemaversion==2:
+        from riskanalys.intag.gemensamvy import byraanalys,tillampningar,tackningsformular
+        html+='<nav><a href="'+e(s.prefix,quote=True)+'analys?byraanalys=ja">1. Gemensam byråanalys</a><span>2. Tjänsternas tillämpning</span><span>3. Slutsats och granskning</span></nav>'
+        if 'byraanalys' in q:
+            return sida(s,html+byraanalys(paket,s.prefix,s.csrf,status.revision,q,d,rb=s.tjanst.rb),fel)
+        if 'tjanst' in q and ('tillampningar' in q or not any(x in q for x in ('block','scenario','granska','tackning'))):
+            tid=q['tjanst'][0]
+            html+=tillampningar(s.tjanst.rb,status.profil,status.bedomning,paket,tid,s.prefix,s.csrf,status.revision,d)
+            html+='<p><a href="'+e(s.prefix+'analys?'+urlencode({'tjanst':tid,'block':1}),quote=True)+'">Arbetsmoment, scenarier och kontroller</a> · <a href="'+e(s.prefix+'analys?'+urlencode({'tjanst':tid,'granska':'ja'}),quote=True)+'">3. Slutsats och granskning</a></p>'
+            return sida(s,html,fel)
+        if 'tackning' in q and 'tjanst' in q:
+            b=next((b for b in status.bedomning.tjanster if b.tjanst==q['tjanst'][0]),None)
+            if b is None:raise RiskanalysFel('Välj en tjänst ur analysöversikten.')
+            return sida(s,html+tackningsformular(s.tjanst.rb,paket,b,s.prefix,s.csrf,status.revision,q,d),fel)
+        if not q:
+            html+=byraanalys(paket,s.prefix,s.csrf,status.revision,rb=s.tjanst.rb)
     if 'forslag' in q:
-        nytt = t.forslag()
+        nytt = t.forslag(schema=paket.schemaversion)
         html += '<h1>Jämför ny förifyllnad</h1><p>Manuella svar bevaras; aktuella profilbelägg uppdateras med källa, datum och period och nya tjänster får ogranskade utkast. En förnyad bindning upphäver tidigare block- och scenariobekräftelser; läs och pröva dem mot aktuella fakta igen.</p>'
         for a in nytt.tjanster:
             gammal = next((x for x in paket.tjanster if x.tjanst == a.tjanst), None)

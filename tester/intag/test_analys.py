@@ -112,7 +112,7 @@ def analysmiljo(tmp_path, monkeypatch, rb_intag, klar):
 
 
 def start(s):
-    return anrop(s, 'analysstart', {'csrf': s.csrf, 'revision': ''})
+    return anrop(s, 'analysstart', {'csrf': s.csrf, 'revision': '', 'schema':'1'})
 
 
 def test_guidad_analys_ar_naabar_utan_ai_och_utan_implicit_attest(analysmiljo):

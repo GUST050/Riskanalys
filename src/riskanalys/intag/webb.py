@@ -29,6 +29,7 @@ class Intagsserver(HTTPServer):
         self.foretagsleverantor=foretagsleverantor
         self.bolagsverksleverantor=None
         self.utkast=None
+        self.omfattningsfil=None
         self.utkastrevision=None
         self.kompletteringar=()
         self._skrivformular=None
@@ -71,12 +72,16 @@ class Hantera(BaseHTTPRequestHandler):
         if u.scheme or u.netloc or not u.path.startswith(self.server.prefix):
             self.svara(404,'Sidan finns inte.');return None
         try:
-            query=parse_qs(u.query, max_num_fields=4)
+            query=parse_qs(u.query, max_num_fields=8 if u.path==self.server.prefix+'analys' else 4)
         except ValueError:
             self.svara(400,'Ogiltig förfrågan.');return None
-        tillatna = {'plan','tjanst'} if u.path == self.server.prefix+'planering' else {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
+        tillatna = {'plan','tjanst'} if u.path == self.server.prefix+'planering' else {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag','byraanalys','post','slag','tillampningar','tackning','ursprung','hot','dimension','riskled'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
         if any(len(v)!=1 for v in query.values()) or set(query)-tillatna:
             self.svara(400,'Ogiltig förfrågan.');return None
+        if ('dimension' in query and query['dimension'][0] not in ('pt','tf')
+                or 'ursprung' in query and query['ursprung'][0] not in ('gemensam','lokal')
+                or 'slag' in query and query['slag'][0] not in ('sarbarhet','verksamhet')):
+            self.svara(400,'Välj giltigt område och dimension ur analysvyn.');return None
         return u.path.removeprefix(self.server.prefix),query
 
     def do_GET(self):
@@ -99,6 +104,11 @@ class Hantera(BaseHTTPRequestHandler):
             if path=='tjanster' and not query and s.tjanst.finns():
                 from riskanalys.intag.tjanstvy import tjanstesida
                 self.svara(200,tjanstesida(s));return
+            if path=='omfattningsword' and not query:
+                if not s.omfattningsfil:self.svara(404,'Skapa ett ofullständigt omfattningsunderlag först.');return
+                from riskanalys.dokument.omfattningsutkast import las_omfattningsunderlag
+                body=las_omfattningsunderlag(s.tjanst.mapp,s.tjanst.rb,s.omfattningsfil)
+                self.svara(200,body,'application/vnd.openxmlformats-officedocument.wordprocessingml.document',extra={'Content-Disposition':'attachment; filename="'+s.omfattningsfil.name+'"'});return
             if path in ('word','underlag'):
                 self.word(underlag=path=='underlag');return
             if path:
@@ -134,7 +144,7 @@ class Hantera(BaseHTTPRequestHandler):
         vag=self.vag()
         if vag is None:return
         path,query=vag
-        hanterare={k:getattr(self,'post_'+k) for k in ('plan','planutvardera','plangenomforande','planaterkalla','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
+        hanterare={k:getattr(self,'post_'+k) for k in ('omfattningsunderlag','plan','planutvardera','plangenomforande','planaterkalla','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysgemensampost','analystillampning','analysbekraftatillampningar','analystackning','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
         if path not in hanterare or query:
             self.svara(404,'Sidan finns inte.');return
         from riskanalys.intag.flervalsvy import flervalsgrans
@@ -142,16 +152,18 @@ class Hantera(BaseHTTPRequestHandler):
         data=self.formulardata(maxfalt,maxbytes=1024*1024 if path=='samlat' else 65536)
         if data is None:return
         try:
-            hanterare[path](data)
+            if hanterare[path](data) is False:return
             if path in ('skapa','svar','samlat','registerbekrafta','registersamlat','tjanster') and data.get('status','bekräftad')=='bekräftad' and data.get('roll','').strip():
                 self.server.rollforslag=data['roll'].strip()
             if path.startswith('analys'):
                 from urllib.parse import urlencode
                 destination='analys'
                 if path=='analysblock':destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'block':data.get('nummer','')})
+                elif path=='analysgemensampost':destination+='?'+urlencode({'byraanalys':'ja','post':data.get('id',''),'slag':data.get('typ','')})
+                elif path in ('analystillampning','analysbekraftatillampningar','analystackning'):destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'tillampningar':'ja'})
                 elif path in ('analysscenario','analysbeslut'):destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'granska':'ja'})
             else:
-                destination='' if path=='registersamlat' and data.get('fortsatt')=='ja' else 'register' if path.startswith('register') else '?oversikt=1' if path in ('skriv','uppdaterautkast','utvardera') else ''
+                destination='' if path=='registersamlat' and data.get('fortsatt')=='ja' else 'register' if path.startswith('register') else '?oversikt=1' if path in ('omfattningsunderlag','skriv','uppdaterautkast','utvardera') else ''
                 if path in ('plan','planutvardera','plangenomforande','planaterkalla','kombinationsgrupp','erbjudanderattelse'):
                     destination='planering'
             self.svara(303,'',extra={'Location':self.server.prefix+destination})
@@ -176,6 +188,9 @@ class Hantera(BaseHTTPRequestHandler):
             if path=='analysblock':query={'tjanst':[data.get('tjanst','')],'block':[data.get('nummer','')]}
             elif path=='analysscenario':query={'tjanst':[data.get('tjanst','')],'scenario':[data.get('scenario','')]}
             elif path=='analysgemensamt':query={'gemensamt':[data.get('scenario','')]}
+            elif path=='analysgemensampost':query={'byraanalys':['ja'],'post':[data.get('id','ny')],'slag':[data.get('typ','sarbarhet')]}
+            elif path in ('analystillampning','analysbekraftatillampningar'):query={'tjanst':[data.get('tjanst','')],'tillampningar':['ja']}
+            elif path=='analystackning':query={'tjanst':[data.get('tjanst','')],'tackning':['ja'],**{k:[data.get(k,'')] for k in ('ursprung','post','hot','dimension')}}
             elif path=='analysbeslut':query={'tjanst':[data.get('tjanst','')],'granska':['ja']}
             elif path in ('analysmodellrisk','analysmodellfel'):query={'modellrisk':['ja']}
             try:html=analyssida(s,query,data,fel)
@@ -250,9 +265,58 @@ class Hantera(BaseHTTPRequestHandler):
         s.tjanst.spara(svar,data.get('revision',''),rattelse=r)
         s.utkast=None
 
+    def post_omfattningsunderlag(self,data):
+        if set(data)-{'csrf','revision'}:raise RiskanalysFel('Omfattningsformuläret innehåller okända fält.')
+        from riskanalys.dokument.omfattningsutkast import exportera_omfattningsutkast
+        self.server.omfattningsfil=exportera_omfattningsutkast(self.server.tjanst.mapp,self.server.tjanst.rb,forvantad_revision=data.get('revision',''))
+
+    def post_analysgemensampost(self,data):
+        from riskanalys.intag.gemensamformular import las_post
+        t=self.analystjanst();p=t.status().paket
+        from riskanalys.analys.gemensamma_operationer import gemensamt
+        gemensamt(p)
+        post=las_post(data,p,self.server.tjanst.rb)
+        if data['typ']=='sarbarhet':t.spara_gemensam_sarbarhet(post,data.get('revision',''),data.get('forfattare',''))
+        else:t.spara_gemensam_verksamhet(post,data.get('revision',''),data.get('forfattare',''))
+
+    def post_analystillampning(self,data):
+        from riskanalys.intag.gemensamformular import las_tillampning
+        t=self.analystjanst();status=t.status();p=status.paket
+        operation=data.get('operation','spara')
+        if operation not in ('visa','spara'):raise RiskanalysFel('Visa eller spara tillämpningen uttryckligen.')
+        ref,app=las_tillampning(data,self.server.tjanst.rb,p)
+        if operation=='visa':
+            if data.get('revision')!=status.revision:raise RiskanalysFel('Analysen har ändrats i annan flik. Läs om underlaget.')
+            from riskanalys.intag.gemensamvy import tillampningar
+            from riskanalys.intag.vyer import sida
+            html=tillampningar(self.server.tjanst.rb,status.profil,status.bedomning,p,data.get('tjanst',''),self.server.prefix,self.server.csrf,status.revision,data)
+            self.svara(200,sida(self.server,html));return False
+        t.spara_tillampning(data.get('tjanst',''),ref,app,data.get('revision',''),data.get('forfattare',''))
+
+    def post_analysbekraftatillampningar(self,data):
+        from riskanalys.intag.gemensamformular import las_samlad
+        from riskanalys.analys.gemensamma_operationer import gemensamt
+        t=self.analystjanst();p=gemensamt(t.status().paket)
+        t.bekrafta_tillampningar(data.get('tjanst',''),las_samlad(data,p),data.get('revision',''),data.get('forfattare',''))
+
+    def post_analystackning(self,data):
+        from riskanalys.intag.gemensamformular import las_tackning
+        from riskanalys.analys.gemensamma_operationer import gemensamt
+        t=self.analystjanst();status=t.status();p=gemensamt(status.paket)
+        prov=las_tackning(data,self.server.tjanst.rb,p).model_copy(update={'forfattare':t._forfattare(data.get('forfattare',''))})
+        if data['operation']=='visa':
+            if data.get('revision')!=status.revision:raise RiskanalysFel('Analysen har ändrats i annan flik. Läs om underlaget.')
+            from riskanalys.intag.gemensamvy import tackningsformular
+            from riskanalys.intag.vyer import sida
+            b=next((b for b in status.bedomning.tjanster if b.tjanst==data.get('tjanst')),None)
+            if b is None:raise RiskanalysFel('Välj en tjänst ur analysöversikten.')
+            html=tackningsformular(self.server.tjanst.rb,p,b,self.server.prefix,self.server.csrf,status.revision,provning=prov)
+            self.svara(200,sida(self.server,html));return False
+        t.spara_tackningsprovning(data.get('tjanst',''),prov,data.get('revision',''),data.get('forfattare',''))
+
     def post_analysstart(self,data):
-        if set(data)-{'csrf','revision'}:raise RiskanalysFel('Startformuläret innehåller okända fält.')
-        self.analystjanst().starta(data.get('revision',''))
+        if set(data)-{'csrf','revision','schema'} or data.get('schema','2') not in ('1','2'):raise RiskanalysFel('Startformuläret innehåller okända fält eller ogiltigt schema.')
+        self.analystjanst().starta(data.get('revision',''),schema=int(data.get('schema','2')))
 
     def post_analysfornya(self,data):
         if set(data)-{'csrf','revision','jamfort'} or data.get('jamfort')!='ja':raise RiskanalysFel('Jämför de sparade svaren med aktuellt underlag först.')

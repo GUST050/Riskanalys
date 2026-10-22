@@ -188,4 +188,6 @@ def oversikt(s,fel='',profil=None,qs=None):
             link='; '.join(f'<a href="{s.prefix}?{urlencode({"falt":id})}">{e(s.tjanst.rb.falt[id].fraga)}</a>' for id in ids) if ids else 'Frågan behöver hanteras i sakgranskningen.'
             html+=f'<li>{e(o.fraga)} ({e(avsnitt)}). {link} Kör skrivkedjan igen efter rättning.</li>'
         html+='</ul>'
+    from riskanalys.intag.dokument import omfattningsknapp
+    html+=omfattningsknapp(s,p)
     return sida(s,html,fel)

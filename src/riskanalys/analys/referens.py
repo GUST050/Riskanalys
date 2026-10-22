@@ -3,8 +3,6 @@
 Ändrar aldrig motorutfall eller kontrollantaganden. +1 är ingen beslutad vikt
 för den egna sårbarheten; giltig täckning kräver en separat sakprövning.
 """
-from riskanalys.bedomning.motor import steg, SANNOLIKHETER, _riskdel
-from riskanalys.bedomning.scenarier import _sannolikhetsrad, _kvarstaende
 
 
 def referensniva(rb, profil, tjanst, hot, dimension, riskled):
@@ -21,6 +19,14 @@ def referensniva(rb, profil, tjanst, hot, dimension, riskled):
         return None
     if riskled=='kvarstaende' and (dimension!='pt' or s.kvarstaende is None):
         return None
-    rad=_sannolikhetsrad(rb,s.hotniva,steg(s.sarbarhetsniva,1,SANNOLIKHETER))
-    risk,_=_riskdel(rb,rad.sannolikhet,s.konsekvens,0)
-    return risk.risk if riskled=='inneboende' else _kvarstaende(rb,risk.risk,s.tackande_kontroller)[0]
+    from riskanalys.bedomning.scenarier import _scenario
+    from riskanalys.regelverk.modeller import Sarbarhet,Effekt
+    kat=rb.tjanster[tjanst.tjanst]
+    if any(id not in rb.sarbarheter for id in s.sarbarheter):return None
+    extra=Sarbarhet(id='REFERENS:+1',namn='Kontrafaktisk +1, ingen beslutad vikt',omrade='verk',grund='metodval',
+        villkor={'falt':kat.erbjuds_falt,'op':'==','varde':True},effekt=Effekt(sannolikhet=1),galler='bada',
+        kallor=rb.hot[hot].kallor,hot=(hot,))
+    # Lägg +1 före golv och tak, även om en framtida metod innehåller negativa faktorer.
+    referens=_scenario(rb,kat,rb.hot[hot],dimension,tuple(rb.sarbarheter[id] for id in s.sarbarheter)+(extra,),
+        tjanst.kontroller,frozenset((hot,)) if s.iakttaget else frozenset())
+    return referens.risk if riskled=='inneboende' else referens.kvarstaende

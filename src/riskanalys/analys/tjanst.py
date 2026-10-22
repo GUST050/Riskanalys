@@ -27,7 +27,10 @@ class Analysstatus:
     bedomning: object
 
 
-class Analystjanst:
+from riskanalys.analys.gemensamma_operationer import GemensammaOperationer
+
+
+class Analystjanst(GemensammaOperationer):
     def __init__(self, mapp: Path, rb):
         self.mapp = mapp
         self.rb = rb

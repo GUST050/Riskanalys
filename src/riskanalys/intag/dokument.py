@@ -104,3 +104,13 @@ def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path) -> Path:
         raise RiskanalysFel('Utvärderingshistoriken ändrades under exporten. Försök igen.')
     kontrollera_utkast(byramapp, rb, fil)
     return fil
+
+
+def omfattningsknapp(s,profil):
+    from html import escape
+    from riskanalys.intag.vyer import dold
+    from riskanalys.profil.lagring import profilrevision
+    html='<details><summary>Tjänst utanför katalogen eller annat som saknar modellstöd</summary><p>Beskriv det i frågan om ytterligare riskförhållanden. Du kan ta fram ett separat ofullständigt omfattningsunderlag med bekräftade fakta och beskrivningen. Det innehåller inga risknivåer och kan inte fastställas som en komplett bedömning.</p>'
+    html+='<form method="post" action="'+escape(s.prefix,quote=True)+'omfattningsunderlag">'+dold('csrf',s.csrf)+dold('revision',profilrevision(profil))+'<button>Skapa ofullständigt omfattningsunderlag utan AI</button></form>'
+    if getattr(s,'omfattningsfil',None):html+='<p><a href="'+escape(s.prefix,quote=True)+'omfattningsword">Hämta OFULLSTÄNDIGT omfattningsunderlag</a></p>'
+    return html+'</details>'

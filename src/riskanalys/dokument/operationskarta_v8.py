@@ -15,6 +15,7 @@ def operationskarta(rb, profil, bedomning, resultat, analys):
         a=analys.tjanster[ti] if ti is not None else None
         bas=f'/tjanster/{ti}'
         op={}
+        bi=next(i for i,x in enumerate(bedomning.tjanster) if x.tjanst==t.tjanst)
         section=bygg_tjanstavsnitt_v8(rb,profil,t,resultat.get(avsnitt),avsnitt,
             gransindex=metodgransindex(rb),analys=analys,_operationer=op)
         for position,fields in op.items():
@@ -25,6 +26,10 @@ def operationskarta(rb, profil, bedomning, resultat, analys):
                 karta[avsnitt+'/'+position]=(('resultat',f'/{avsnitt}/delar/0/forsok/{f}/svar/stycken/{fields[0][1]}'),)
             else:
                 lagg(avsnitt+'/'+position,*(bas+'/'+p for _,p in fields))
+                if analys.schemaversion==2 and any(p in ('sarbarhetstillampningar','verksamhetstillampningar','tackningsprovningar') for _,p in fields):
+                    pos=avsnitt+'/'+position
+                    karta[pos]+=tuple(('analys','/'+p) for p in ('gemensamma_sarbarhetsprovningar','gemensamma_verksamhetsposter','belagg','bindning'))
+                    karta[pos]+=(('bedomning',f'/tjanster/{bi}/scenarier'),('regelbas','/metod'),('regelbas','/sarbarheter'),('regelbas','/kontroller'),('regelbas','/hot'))
         bi=next(i for i,x in enumerate(bedomning.tjanster) if x.tjanst==t.tjanst)
         for n,post in enumerate(faktorregisterposter(rb,t)):
             felt='sarbarheter' if post.typ=='sarbarhet' else 'tackande_kontroller'

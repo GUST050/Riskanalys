@@ -1,3 +1,7 @@
+# Gemensam analys – lokal utvecklingscheckpoint B5, 2026-10-22
+
+B1–B5 är införda på utvecklingsgrenen, med schema 2 som nytt webb-/CLI-standardval och fungerande V8-rapport. Färsk fullsvit: **3 149 godkända, ett livetest bortvalt, exit 0**, Python 3.12.15, oförändrat källsnapshot. [B5-granskningen](superpowers/reviews/2026-10-22-forenklad-riskbedomning-b5.md) beskriver ändringarna och två ytterligare reproducerade avvikelsefall som rättas i B7. B6–B7 återstår; checkpointen är inte avsedd för skarp användning. Ingen push/merge. Användarens slutgranskning med Claude återstår. Äldre status nedan är historik.
+
 # Status och framsteg
 
 Senast uppdaterad 2026-10-22.

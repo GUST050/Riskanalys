@@ -84,7 +84,12 @@ def bygg_tjanstavsnitt_v8(rb, profil, t, resultat, avsnitt_id, *, gransindex, an
                      *tjanstens_geografistycke(rb,profil,t.tjanst,gransindex=gransindex)))
     from riskanalys.dokument.nivamotivering_v8 import lokala_faktorskal
     from riskanalys.dokument.forandringar_v8 import gruppstycken
-    faktorstycken=lokala_faktorskal(rb,profil,paket,t)
+    schema2=paket is not None and paket.schemaversion==2
+    if schema2:
+        from riskanalys.dokument.gemensam_provning_v8 import tjanstens_tillampningsstycken
+        delar[2].extend(bind(s,('sarbarhetstillampningar','verksamhetstillampningar','tackningsprovningar'))
+            for s in tjanstens_tillampningsstycken(rb,profil,paket,t))
+    faktorstycken=() if schema2 else lokala_faktorskal(rb,profil,paket,t)
     delar[2].extend(bind(s,('sarbarhetsprovningar',)) if a is not None else s for s in faktorstycken)
     delar[2].extend(gruppstycken(rb,profil,t.tjanst))
     if a is not None:
@@ -97,6 +102,9 @@ def bygg_tjanstavsnitt_v8(rb, profil, t, resultat, avsnitt_id, *, gransindex, an
         # Befintliga fullständiga fältmallar: inga nya fria svar tolkas eller kapas.
         lokala = lokala_block(a,paket or Analyspaket.model_construct(tjanster=(a,),gemensamma_scenarier=(),belagg=()),rb,index,profil=profil)
         for block in lokala:
+            if schema2:
+                from riskanalys.dokument.gemensam_provning_v8 import delat_lokalblock
+                if delat_lokalblock(block,a,paket):continue
             delar[block.fraga].append(bind(block.stycke,block.falt))
         if paket:
             tabeller[1].append(bygg_scenariotabell(a,paket,rb,index))

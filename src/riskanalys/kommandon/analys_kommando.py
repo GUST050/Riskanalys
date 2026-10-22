@@ -16,6 +16,10 @@ def lagg_till(underparsers):
     parser = underparsers.add_parser('analys', help='Guidad lokal analys, status och separat mänskligt beslut.')
     parser.add_argument('byra')
     operation = parser.add_mutually_exclusive_group()
+    operation.add_argument('--bekrafta-tillampningar',type=Path,help='Bekräfta uttryckligen markerade gäller-poster från en lista av GemensamReferens.')
+    operation.add_argument('--tillampningsfil',type=Path,help='Spara ett typat tjänsteställningstagande för en visad gemensam post.')
+    operation.add_argument('--visa-tackningsprovning',type=Path,help='Visa en täckningsprövning med aktuell innehållssumma utan att spara.')
+    operation.add_argument('--tackningsprovning',type=Path,help='Spara och bekräfta den visade typade täckningsprövningen.')
     operation.add_argument('--forifyll', action='store_true', help='Starta ett ogranskat förifyllt analysutkast.')
     operation.add_argument('--fornya', action='store_true', help='Bind bevarade svar till aktuellt underlag efter egen jämförelse.')
     operation.add_argument('--forslag', action='store_true', help='Visa ny förifyllnad som YAML utan att skriva över sparade svar.')
@@ -27,7 +31,7 @@ def lagg_till(underparsers):
     operation.add_argument('--underkann', action='store_true')
     operation.add_argument('--bekrafta-block', type=int, choices=range(1,17), metavar='1–16', help='Bekräfta ett tidigare visat blocks aktuella svar.')
     operation.add_argument('--scenarioval', help='Bekräfta ett tidigare visat gemensamt scenario för en tjänst.')
-    parser.add_argument('--schema',type=int,choices=(1,2),default=1,help='Uttryckligt analysschema för förifyllnad/förslag.')
+    parser.add_argument('--schema',type=int,choices=(1,2),default=2,help='Uttryckligt analysschema för förifyllnad/förslag.')
     parser.add_argument('--revision', default=None, help='Registersumma från aktuell status; tom sträng för första utkastet.')
     parser.add_argument('--tjanst')
     parser.add_argument('--namn', default='')
@@ -45,7 +49,7 @@ def lagg_till(underparsers):
 
 
 def kor(args):
-    muterar = any((args.forifyll, args.fornya, args.importfil, args.belagg, args.modellrapport, args.modellrisk, args.godkann, args.underkann, args.bekrafta_block, args.scenarioval))
+    muterar = any((args.bekrafta_tillampningar,args.tillampningsfil,args.tackningsprovning,args.forifyll, args.fornya, args.importfil, args.belagg, args.modellrapport, args.modellrisk, args.godkann, args.underkann, args.bekrafta_block, args.scenarioval))
     if muterar and args.revision is None:
         raise RiskanalysFel('Ange --revision med registersumman från aktuell analysstatus.')
     if (args.godkann or args.underkann) and (not args.tjanst or not args.namn.strip() or not args.roll.strip() or args.datum is None):
@@ -55,10 +59,21 @@ def kor(args):
     t = Analystjanst(befintlig_byramapp(args.byra), ladda_giltig_regelbas(args.regelbas))
     dag = args.datum or date.today()
     try:
-        if args.forslag:
+        from riskanalys.kommandon import gemensam_analys as gem
+        if args.visa_tackningsprovning:
+            gem.visa_tackning(t,args.visa_tackningsprovning,args.tjanst,args.forfattare)
+            return 0
+        if args.bekrafta_tillampningar:
+            t.bekrafta_tillampningar(args.tjanst,gem.referenser(args.bekrafta_tillampningar),args.revision,args.forfattare)
+        elif args.tillampningsfil:
+            ref,app=gem.tillampning(args.tillampningsfil)
+            t.spara_tillampning(args.tjanst,ref,app,args.revision,args.forfattare)
+        elif args.tackningsprovning:
+            t.spara_tackningsprovning(args.tjanst,gem.tackning(args.tackningsprovning),args.revision,args.forfattare)
+        elif args.forslag:
             print(yaml.safe_dump(t.forslag(schema=args.schema).model_dump(mode='json'), allow_unicode=True, sort_keys=False))
             return 0
-        if args.forifyll:
+        elif args.forifyll:
             t.starta(args.revision,schema=args.schema)
         elif args.fornya:
             t.fornya(args.revision)
@@ -96,8 +111,14 @@ def kor(args):
                 print(f'  {block.nummer}. {block.rubrik} – {block.aktivering}; {block.motivering}')
                 print('  Visad summa: ' + blocksumma(status.paket, tj.tjanst, block.nummer))
                 if args.tjanst:
-                    raw = tj.model_dump(mode='json')
+                    from riskanalys.analys.gemensam import effektiv_tjanst
+                    raw = effektiv_tjanst(status.paket,tj.tjanst).model_dump(mode='json')
                     print(yaml.safe_dump({k:raw[k] for k in BLOCKFALT[block.nummer]}, allow_unicode=True, sort_keys=False))
+        if status.paket.schemaversion==2:
+            from riskanalys.analys.gemensam import postsumma
+            for post in (*status.paket.gemensamma_sarbarhetsprovningar,*status.paket.gemensamma_verksamhetsposter):
+                print('Gemensamt underlag: '+post.id+' · '+post.status+' · visad summa: '+postsumma(post))
+                print(yaml.safe_dump(post.model_dump(mode='json'),allow_unicode=True,sort_keys=False))
         for scenario in status.paket.gemensamma_scenarier:
             print('Gemensamt scenario: ' + scenario.id + ' · ' + scenario.rubrik)
             print(scenario.handelseforlopp + '\n' + scenario.relevans + ': ' + scenario.motivering)

@@ -951,8 +951,9 @@ def test_v8_hela_rapporten_byggs_med_tomt_faktorregister(regelbas_v1):
         assert not any(tab.id == t.tjanst + '-faktorregister' for tab in b1.tabeller)
 
 
-def test_schema_tva_avvisas_tydligt_fore_rapportstod(v8fall):
+def test_schema_tva_kan_bygga_rapport_efter_infort_stod(v8fall):
+    from riskanalys.analys.gemensam import forifyll_gemensamt
     f,r=v8fall
-    p=f.analys.model_copy(update={'schemaversion':2})
-    with pytest.raises(RiskanalysFel,match='schema 2.*rapport'):
-        bygg(replace(f,analys=p),r)
+    p=forifyll_gemensamt(f.regelbas,f.analys);fore=p.model_dump_json()
+    d=bygg(replace(f,analys=p),r)
+    assert d.formatversion==V8 and p.model_dump_json()==fore

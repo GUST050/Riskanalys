@@ -31,9 +31,14 @@ def bygg_analysreferenser(paket: Analyspaket | None) -> Analysreferenser:
     etiketter = {}
     korta = {}
     if paket is not None:
+        for slag,poster in (('gemensam_sarbarhet',paket.gemensamma_sarbarhetsprovningar),('gemensam_verksamhet',paket.gemensamma_verksamhetsposter)):
+            etiketter.update((analysref(slag,p.id),'Gemensam prövning '+p.id) for p in poster)
         etiketter.update((analysref('belagg', b.id), f'Belägg {n}') for n, b in enumerate(paket.belagg, 1))
         scenarier = (*paket.gemensamma_scenarier, *(s for t in paket.tjanster for s in t.scenarier))
         etiketter.update((analysref('scenario', s.id), f'Scenario {n}: '+(s.rubrik or 'utan rubrik')) for n, s in enumerate(scenarier, 1))
         korta.update((analysref('scenario', s.id), f'Scenario {n}') for n, s in enumerate(scenarier, 1))
+        for t in paket.tjanster:
+            for slag,appar in (('sarbarhet',t.sarbarhetstillampningar),('verksamhet',t.verksamhetstillampningar)):
+                etiketter.update((analysref('tillampning',slag+':'+t.tjanst+':'+a.post),'Tillämpning '+t.tjanst+'/'+a.post) for a in appar)
         etiketter.update((analysref('delanalys', t.tjanst+':'+d.id), d.rubrik or 'Namnlös delanalys') for t in paket.tjanster for d in t.delanalyser)
     return Analysreferenser(etiketter, korta)

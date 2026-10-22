@@ -46,6 +46,7 @@ class Faststallelseunderlag:
 def hinder_for_faststallelse(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]:
     """Alla skäl att inte fastställa. Tom lista betyder att villkoren i spec 10 är uppfyllda."""
     return [
+        *(['Ofullständigt omfattningsunderlag kan inte fastställas som en allmän riskbedömning.'] if underlag.dokument.id=='OMFATTNING-OFULLSTANDIGT' else []),
         *_uppgifter(underlag),
         *_bedomning(underlag),
         *_omfattning(underlag),

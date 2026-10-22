@@ -42,7 +42,8 @@ def harled_riktningar(rb,profil,paket,tjanst):
     poster={p.id:p for p in paket.gemensamma_sarbarhetsprovningar}
     for app in a.sarbarhetstillampningar:
         p=poster.get(app.post)
-        if not tillampning_aktuell(p,app) or p.relevans!='relevant':continue
+        if not tillampning_aktuell(p,app) or p.relevans=='okant':continue
+        stallning='beror_inte' if p.relevans=='ej_relevant' and app.stallningstagande=='galler' else app.stallningstagande
         for id in p.sarbarheter:
             s=rb.sarbarheter.get(id)
             if s is None:continue  # referensbrist prövas separat
@@ -52,18 +53,15 @@ def harled_riktningar(rb,profil,paket,tjanst):
                 h,dim=scenario.hot,scenario.dimension
                 if h not in p.hot or (p.dimension!='bada' and p.dimension!=dim):continue
                 kopplad=id in kat.sarbarheter and h in s.hot and s.galler in ({'penningtvatt','bada'} if dim=='pt' else {'terrorfinansiering','bada'})
-                explicit=any((x.hot,x.dimension)==(h,dim) for x in app.hotkopplingar)
-                if not kopplad and not explicit:continue
+                if not kopplad:continue
                 riktning='i_linje';text='Faktorn och tillämpningen följer scenariot.';kalla='harledd';ersatt=None
-                if p.status!='bekraftad' or app.stallningstagande=='otillrackligt' or utfall.sanning is Sanning.OKANT:
+                if p.status!='bekraftad' or stallning=='otillrackligt' or utfall.sanning is Sanning.OKANT:
                     riktning='oklar';text='Underlaget är okänt eller ett obekräftat antagande; det är inte under tröskeln.'
-                elif explicit and not kopplad:
-                    riktning='mojlig_underskattning';text='Uttryckligt påstådd hot-/dimensionskoppling saknas i katalogen.'
-                elif app.stallningstagande=='galler_annorlunda':
+                elif stallning=='galler_annorlunda':
                     val=app.riktningsval
                     riktning=val.riktning if val and val.motivering.strip() and val.belagg else 'oklar'
                     text=val.motivering if val else 'Klargör riktningen och sakgranska avvikelsen.';kalla='manuell'
-                elif app.stallningstagande=='beror_inte':
+                elif stallning=='beror_inte':
                     if id in scenario.sarbarheter:
                         riktning='lagre' if s.effekt.sannolikhet>0 else 'oklar'
                         text='Motorns högre nivå och åtgärdsgrund gäller tills metodbeslut.'
@@ -77,8 +75,17 @@ def harled_riktningar(rb,profil,paket,tjanst):
                     text='Faktorn ersätts inom samma scenario.' if ersatt else 'Frånvaro i faktorlistan styrker inte ett falskt villkor.'
                 resultat.append(Avvikelserad(p.id,id,h,dim,riktning,kalla,text,scenario.regelspar,tuple(sorted(falt_i(villkor))),ersatt))
         for x in app.hotkopplingar:
-            if not any(s.hot==x.hot and s.dimension==x.dimension for s in tjanst.scenarier):
-                resultat.append(Avvikelserad(p.id,None,x.hot,x.dimension,'mojlig_underskattning','harledd','Uttrycklig hotkoppling saknar motorscenario.'))
+            if app.stallningstagande=='beror_inte':
+                resultat.append(Avvikelserad(p.id,None,x.hot,x.dimension,'oklar','harledd',
+                    'Berör inte motsäger ett uttryckligt riskanspråk. Klargör tjänstens ställningstagande.'))
+                continue
+            galler={'penningtvatt','bada'} if x.dimension=='pt' else {'terrorfinansiering','bada'}
+            kopplad=(x.hot in kat.hot and x.hot in rb.hot and x.dimension in hot_dimensioner(rb.hot[x.hot])
+                and any(id in kat.sarbarheter and id in rb.sarbarheter and x.hot in rb.sarbarheter[id].hot
+                        and rb.sarbarheter[id].galler in galler for id in p.sarbarheter))
+            if p.sarbarheter and (not kopplad or not any(s.hot==x.hot and s.dimension==x.dimension for s in tjanst.scenarier)):
+                resultat.append(Avvikelserad(p.id,None,x.hot,x.dimension,'mojlig_underskattning','harledd',
+                    'Uttryckligt riskanspråk för posten saknar tjänst-/hot-/dimensionskoppling i katalogen.'))
     from riskanalys.analys.provning_v2 import egna_ansprak, tackningsbrister
     brister=tackningsbrister(rb,paket,tjanst)
     for ursprung,id,hot,dim in egna_ansprak(rb,paket,tjanst):

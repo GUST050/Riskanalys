@@ -86,3 +86,12 @@ def test_manuell_riktning_far_inte_skickas_in_i_mekaniskt_fall():
     from pydantic import ValidationError
     with pytest.raises(ValidationError):
         m.Sarbarhetstillampning(post='p',postsumma='sha256:'+'0'*64,stallningstagande='beror_inte',riktningsval=m.Riktningsval(riktning='lagre'))
+
+
+def test_gemensam_motiverad_franvaro_visas_som_lagre_mot_aktiv_faktor(fall):
+    from riskanalys.analys.riktning import harled_riktningar
+    p,t=med_post(fall,'S-KUND-01')
+    g=p.gemensamma_sarbarhetsprovningar[0].model_copy(update={'relevans':'ej_relevant'})
+    a=p.tjanster[0];app=a.sarbarhetstillampningar[0].model_copy(update={'postsumma':postsumma(g)})
+    p=p.model_copy(update={'gemensamma_sarbarhetsprovningar':(g,),'tjanster':(a.model_copy(update={'sarbarhetstillampningar':(app,)}),)})
+    assert any(r.riktning=='lagre' for r in harled_riktningar(fall.rb,fall.profil,p,t))
