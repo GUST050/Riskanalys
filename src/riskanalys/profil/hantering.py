@@ -217,6 +217,9 @@ def kontrollera_profil(profil: Profil, regelbas: Regelbas) -> None:
     definitioner = regelbas.faltdefinitioner()
     from riskanalys.profil.omfattning import omfattningsbrister
     fel = [*belaggsbrister(profil), *omfattningsbrister(profil, regelbas)]
+    from riskanalys.profil.planering import planbrister
+    from riskanalys.profil.kombinationer import kombinationsbrister
+    fel.extend((*planbrister(regelbas, profil), *kombinationsbrister(regelbas, profil)))
     for falt_id, uppgift in profil.uppgifter.items():
         if uppgift.status != "bekräftad" or falt_id not in definitioner:
             continue

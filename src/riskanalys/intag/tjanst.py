@@ -40,10 +40,10 @@ class Intagstjanst:
         spara_profil(self.mapp,p,revision='')
         return p
 
-    def spara(self, svar: IntagSvar, revision: str):
-        return self.spara_flera((svar,),revision)
+    def spara(self, svar: IntagSvar, revision: str, *, rattelse=None):
+        return self.spara_flera((svar,),revision, rattelse=rattelse)
 
-    def spara_flera(self, svar: tuple[IntagSvar, ...], revision: str):
+    def spara_flera(self, svar: tuple[IntagSvar, ...], revision: str, *, rattelse=None):
         """Validera hela urvalet innan en enda atomisk profilsparning."""
         p=self.profil()
         if profilrevision(p) != revision:
@@ -51,8 +51,24 @@ class Intagstjanst:
         nytt=p
         for uppgift in svar:
             nytt=besvara(self.rb,nytt,uppgift)
-        spara_profil(self.mapp,nytt,revision=revision)
-        return nytt
+        from riskanalys.profil.forandringar import spara_andring
+        return spara_andring(self.mapp,self.rb,nytt,revision,rattelse=rattelse)
+
+    def spara_plan(self, plan, revision):
+        from riskanalys.profil.forandringar import spara_andring
+        p = self.profil()
+        planer = tuple(plan if t.id == plan.id else t for t in p.tjansteplaner)
+        if not any(t.id == plan.id for t in planer):
+            planer = (*planer, plan)
+        return spara_andring(self.mapp,self.rb,p.model_copy(update={'tjansteplaner':planer}),revision,lokalt_underlag=True)
+
+    def spara_kombinationsgrupp(self, grupp, revision):
+        from riskanalys.profil.forandringar import spara_andring
+        p = self.profil()
+        grupper = tuple(grupp if g.id == grupp.id else g for g in p.kombinationsgrupper)
+        if not any(g.id == grupp.id for g in grupper):
+            grupper = (*grupper, grupp)
+        return spara_andring(self.mapp,self.rb,p.model_copy(update={'kombinationsgrupper':grupper}),revision,lokalt_underlag=True)
 
     def oversikt(self, profil=None):
         return tackning(self.rb,self.profil() if profil is None else profil)

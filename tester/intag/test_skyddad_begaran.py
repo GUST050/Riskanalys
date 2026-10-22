@@ -42,6 +42,26 @@ def test_ai_far_inga_nivaer_eller_regelspar(rb_intag, klar):
         assert ord_ not in text
 
 
+def test_privata_grupper_och_planer_andrar_inte_ai_begaran_eller_omforsok(tmp_path,rb_intag,klar):
+    from riskanalys.profil.modeller import Tjansteplan, Kombinationsgrupp
+    from tester.fixturer.skrivsvar_v7 import godkant_svar_v7, med_verksamhetsval
+    p=med_verksamhetsval(rb_intag,klar)
+    avsnitt,t=tjanst_for_prov(tmp_path,rb_intag,p)
+    bra=godkant_svar_v7(rb_intag,p,t,avsnitt)
+    u=p.uppgifter['P-KUND.antal_aktiva']
+    plan=Tjansteplan(id='privat',tjanst=t.tjanst,typ='ny_marknad',beskrivning='PRIVAT PLANANTAGANDE')
+    grupp=Kombinationsgrupp(id='privat',tjanst=t.tjanst,population='uppdrag',avgransning='PRIVAT AVGRÄNSNING',beskrivning='PRIVAT KOMBINATION',
+        sarbarheter=tuple(rb_intag.tjanster[t.tjanst].sarbarheter[:2]),antal=u.model_copy(update={'varde':8}),bas=u.model_copy(update={'varde':100}))
+    andra=p.model_copy(update={'tjansteplaner':(plan,),'kombinationsgrupper':(grupp,)})
+    anrop=[]
+    for profil in (p,andra):
+        lev=Testleverantor(['felaktig JSON',bra])
+        skriv_tjanst(lev,rb_intag,profil,t,avsnitt,formatversion='D-ARB-tjanst-v8',effort='medium',personnamn=(),spara=lambda *args:None)
+        anrop.append([a.model_dump_json() for a in lev.delanrop])
+    assert len(anrop[0])==len(anrop[1])==2
+    assert anrop[0]==anrop[1]
+
+
 def _med(rb, profil, varden: dict):
     """Ny profil med ändrade värden (verkliga fält-ID som nycklar); andelar härleds på nytt ur ändrade antal."""
     upp = dict(profil.uppgifter)

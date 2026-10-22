@@ -69,6 +69,8 @@ def med_berakningstabeller(rb,bedomning,bilaga):
 
 
 def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,modellrapport=None) -> Dokument:
+    from riskanalys.dokument.gemensamt_v8 import gemensamma_faktormekanismer
+    from riskanalys.dokument.forandringar_v8 import planunderlag
     from riskanalys.dokument.arb import _syfte,_metod
     from riskanalys.dokument.uppfoljning import bevakningsavsnitt,kort_omfattningsstycke,uppfoljningsstycken
     if any(not isinstance(r,Tjanstresultat) or r.formatversion != V8 for r in resultat.values()):
@@ -100,7 +102,8 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
                   'lokala betydelse och avvikelser. Fullständiga ursprungliga lokala svar med fältsökvägar finns i den '
                   'kompletterande underlagsbilagan B1.',('D-ARB.B1',)),
         *gemensamt_erfarenhetsstycke(rb,profil,bedomning,gransindex=index),
-        *gemensamma_geografistycken(rb,profil,bedomning,gransindex=index)))
+        *gemensamma_geografistycken(rb,profil,bedomning,gransindex=index),
+        *gemensamma_faktormekanismer(rb,bedomning)))
     kontroller=avsnitt('D-ARB.7','Källbunden kontrollräckvidd',rackviddsoversikt(rb,bedomning,formatversion=V8))
     risk=tuple(bygg_tjanstavsnitt_v8(rb,profil,t,resultat.get(id),id,gransindex=index,analys=analys)
                for id,t in tjanster_med_avsnitt(bedomning))
@@ -109,8 +112,17 @@ def bygg_arb_v8(rb,profil,bedomning,resultat,historik,*,analys,gransindex=None,m
         bevara_original=True)
     bilaga=bilaga.model_copy(update={'formatversion':V8,'leveransdel':'underlagsbilaga','visningsnummer':'B1'})
     bilaga=med_berakningstabeller(rb,bedomning,bilaga)
+    planstycken=planunderlag(profil,historik)
+    if planstycken:
+        from riskanalys.dokument.modeller import Underrubrik
+        bilaga=bilaga.model_copy(update={'stycken':(*bilaga.stycken,*planstycken),
+            'underrubriker':(*bilaga.underrubriker,Underrubrik(fore_stycke=len(bilaga.stycken),rubrik='Förändringsplaner och utvärderingar'))})
     uppfoljning=utvarderingsavsnitt_v6(historik)
     uppfoljning=uppfoljning.model_copy(update={'stycken':(*uppfoljning.stycken,*uppfoljningsstycken(rb,profil,gransindex=index,formatversion=V8))})
+    if profil.tjansteplaner:
+        uppfoljning=uppfoljning.model_copy(update={'stycken':(*uppfoljning.stycken,stycke(
+            f'{len(profil.tjansteplaner)} registrerade förändringsplaner. Planantaganden och genomförda planutvärderingar redovisas i B1. '
+            'Avgränsade planutvärderingar flyttar inte fristen för hela riskbedömningens årsgenomgång. De kräver förnyad analys och sakprövning.', ['D-ARB.B1']))})
     poster=(oversikt,syfte,metod,tjanster,gemensamt,lokal,kontroller,*risk,atgardsoversikt(rb,bedomning,analys),uppfoljning,
         bevakningsavsnitt(rb,profil,gransindex=index,kort=True,formatversion=V8),bilaga)
     poster=tuple(a.model_copy(update={'formatversion':V8,'leveransdel':a.leveransdel or 'lasrapport',

@@ -15,3 +15,11 @@ def kontrollera_profiltext(profil):
             kontrollera_text(id, u.varde, u.kalla, u.bekraftad_av, u.motivering)
         except RiskanalysFel as exc:
             raise RiskanalysFel(f'{id}: {exc}') from None
+    for plan in profil.tjansteplaner:
+        kontrollera_text(plan.beskrivning)
+        for id, u in plan.uppgifter.items():
+            kontrollera_text(id,u.varde,u.kalla,u.bekraftad_av,u.motivering)
+    for g in profil.kombinationsgrupper:
+        kontrollera_text(g.avgransning,g.beskrivning)
+        for u in (g.antal,g.bas):
+            kontrollera_text(u.kalla,u.bekraftad_av,u.motivering)

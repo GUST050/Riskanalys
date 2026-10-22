@@ -82,6 +82,11 @@ def bygg_tjanstavsnitt_v8(rb, profil, t, resultat, avsnitt_id, *, gransindex, an
     # Byråns gemensamma underlag står i avsnittet Gemensamt faktaunderlag; tjänstens egen prövning står här.
     delar[2].extend((*tjanstens_erfarenhetsstycke(rb,profil,t,gransindex=gransindex),
                      *tjanstens_geografistycke(rb,profil,t.tjanst,gransindex=gransindex)))
+    from riskanalys.dokument.nivamotivering_v8 import lokala_faktorskal
+    from riskanalys.dokument.forandringar_v8 import gruppstycken
+    faktorstycken=lokala_faktorskal(rb,profil,paket,t)
+    delar[2].extend(bind(s,('sarbarhetsprovningar',)) if a is not None else s for s in faktorstycken)
+    delar[2].extend(gruppstycken(rb,profil,t.tjanst))
     if a is not None:
         beslut = gallande_beslut(paket,t.tjanst) if paket else None
         status_text = ('Registrerat analysgodkännande saknas. [VERIFIERA]' if beslut is None else

@@ -120,14 +120,15 @@ def test_3_cli_andring_gor_belaggen_inaktuella(webb,klar,monkeypatch):
 
 def test_3_cli_skriver_inte_over_samtidigt_webbsvar(webb,klar,monkeypatch):
     from riskanalys.kommandon import profil_kommando as k
+    from riskanalys.profil import forandringar as f
     s,t=webb;spara_profil(t.mapp,klar)
     monkeypatch.setattr(k,'ladda_giltig_regelbas',lambda _:t.rb)
-    spar=k.spara_profil
+    spar=f.spara_profil
     def konkurrens(mapp,p,**kw):
         ny=besvara(t.rb,t.profil(),svar('P-ORG.namn').model_copy(update={'text':'Nyare webbsvar'}))
         spar(mapp,ny)
         return spar(mapp,p,**kw)
-    monkeypatch.setattr(k,'spara_profil',konkurrens)
+    monkeypatch.setattr(f,'spara_profil',konkurrens)
     with pytest.raises(RiskanalysFel,match='ändrats'):
         k.kor_bekrafta(cli_args())
     assert t.profil().uppgifter['P-ORG.namn'].varde=='Nyare webbsvar'

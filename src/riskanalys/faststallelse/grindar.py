@@ -154,12 +154,14 @@ def _sakgranskning(underlag: Faststallelseunderlag) -> list[str]:
 
 
 def _drift(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]:
+    from riskanalys.profil.planering import forandringshinder
+    planer = list(forandringshinder(underlag.regelbas, underlag.profil, underlag.profil, underlag.historik, beslutsdatum))
     nasta = underlag.historik.nasta_genomgang()
     if nasta is None:
-        return ["Datum för utvärdering saknas. Registrera utvärderingen med 'riskanalys utvardera'."]
+        return [*planer, "Datum för utvärdering saknas. Registrera utvärderingen med 'riskanalys utvardera'."]
     if nasta < beslutsdatum:
-        return [f"Nästa genomgång skulle ha gjorts senast {nasta.isoformat()}. Utvärdera riskbedömningen igen."]
-    return []
+        return [*planer, f"Nästa genomgång skulle ha gjorts senast {nasta.isoformat()}. Utvärdera riskbedömningen igen."]
+    return planer
 
 
 def _kronologi(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]:

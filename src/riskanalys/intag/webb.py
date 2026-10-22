@@ -74,7 +74,7 @@ class Hantera(BaseHTTPRequestHandler):
             query=parse_qs(u.query, max_num_fields=4)
         except ValueError:
             self.svara(400,'Ogiltig förfrågan.');return None
-        tillatna = {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
+        tillatna = {'plan','tjanst'} if u.path == self.server.prefix+'planering' else {'grupp'} if u.path == self.server.prefix+'samlat' else {'tjanst','block','scenario','granska','gemensamt','modellrisk','forslag'} if u.path == self.server.prefix+'analys' else {'oversikt','falt'}
         if any(len(v)!=1 for v in query.values()) or set(query)-tillatna:
             self.svara(400,'Ogiltig förfrågan.');return None
         return u.path.removeprefix(self.server.prefix),query
@@ -84,6 +84,9 @@ class Hantera(BaseHTTPRequestHandler):
         if vag is None:return
         path,query=vag;s=self.server
         try:
+            if path=='planering' and s.tjanst.finns():
+                from riskanalys.intag.planeringsvy import planeringssida
+                self.svara(200,planeringssida(s,query));return
             if path=='samlat' and s.tjanst.finns():
                 from riskanalys.intag.samladvy import samladsida
                 self.svara(200,samladsida(s,query.get('grupp',[None])[0]));return
@@ -131,11 +134,11 @@ class Hantera(BaseHTTPRequestHandler):
         vag=self.vag()
         if vag is None:return
         path,query=vag
-        hanterare={k:getattr(self,'post_'+k) for k in ('skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
+        hanterare={k:getattr(self,'post_'+k) for k in ('plan','planutvardera','kombinationsgrupp','erbjudanderattelse','skapa','svar','samlat','skriv','uppdaterautkast','utvardera','registerhamta','registerimport','registerbekrafta','registersamlat','tjanster','analysstart','analysfornya','analysblock','analysscenario','analysgemensamt','analysbeslut','analysmodellrisk','analysmodellfel')}
         if path not in hanterare or query:
             self.svara(404,'Sidan finns inte.');return
         from riskanalys.intag.flervalsvy import flervalsgrans
-        maxfalt=512 if path.startswith('analys') else 128 if path=='samlat' else 32 if path in ('tjanster','skapa','registersamlat') else 16+flervalsgrans(self.server.tjanst.rb) if path=='svar' else 16
+        maxfalt=512 if path.startswith('analys') or path=='plan' else 128 if path=='samlat' else 32 if path in ('tjanster','skapa','registersamlat') else 16+flervalsgrans(self.server.tjanst.rb) if path=='svar' else 16
         data=self.formulardata(maxfalt,maxbytes=1024*1024 if path=='samlat' else 65536)
         if data is None:return
         try:
@@ -149,6 +152,8 @@ class Hantera(BaseHTTPRequestHandler):
                 elif path in ('analysscenario','analysbeslut'):destination+='?'+urlencode({'tjanst':data.get('tjanst',''),'granska':'ja'})
             else:
                 destination='' if path=='registersamlat' and data.get('fortsatt')=='ja' else 'register' if path.startswith('register') else '?oversikt=1' if path in ('skriv','uppdaterautkast','utvardera') else ''
+                if path in ('plan','planutvardera','kombinationsgrupp','erbjudanderattelse'):
+                    destination='planering'
             self.svara(303,'',extra={'Location':self.server.prefix+destination})
         except RiskanalysFel as exc:
             self.formularfel(path,data,str(exc))
@@ -162,7 +167,10 @@ class Hantera(BaseHTTPRequestHandler):
     def formularfel(self,path,data,fel):
         s=self.server
         status=409 if 'annan flik' in fel or 'Profilen har ändrats' in fel or 'redan använts' in fel or path.startswith('analys') and 'har ändrats' in fel else 400
-        if path.startswith('analys'):
+        if path in ('plan','planutvardera','kombinationsgrupp','erbjudanderattelse'):
+            from riskanalys.intag.planeringsvy import planeringssida
+            html=planeringssida(s,data=data,fel=fel)
+        elif path.startswith('analys'):
             from riskanalys.intag.analysvy import analyssida
             query={}
             if path=='analysblock':query={'tjanst':[data.get('tjanst','')],'block':[data.get('nummer','')]}
@@ -190,6 +198,40 @@ class Hantera(BaseHTTPRequestHandler):
     def analystjanst(self):
         from riskanalys.analys.tjanst import Analystjanst
         return Analystjanst(self.server.tjanst.mapp, self.server.tjanst.rb)
+
+    def post_plan(self,data):
+        from riskanalys.intag.planeringsvy import spara_plan
+        spara_plan(self.server.tjanst,data)
+        self.server.utkast=None
+
+    def post_kombinationsgrupp(self,data):
+        from riskanalys.intag.planeringsvy import spara_kombinationsgrupp
+        spara_kombinationsgrupp(self.server.tjanst,data)
+        self.server.utkast=None
+
+    def post_planutvardera(self,data):
+        from riskanalys.intag.utvardering import registrera_utvardering
+        delar=('underlag','hot_sarbarheter','risk_rutiner','beslut')
+        if set(data)-{'csrf','revision','plan_id','datum',*delar} or not all(data.get(k,'').strip() for k in delar):
+            raise RiskanalysFel('Beskriv underlag, hot och sårbarheter, påverkan på risk och rutiner samt beslut med skäl.')
+        registrera_utvardering(self.server.tjanst,formulardatum(data,'datum'),'\n'.join(k+': '+data[k] for k in delar),data.get('revision',''),plan_id=data.get('plan_id',''))
+        self.server.utkast=None
+
+    def post_erbjudanderattelse(self,data):
+        from riskanalys.drift.historik import Erbjudanderattelse
+        from riskanalys.intag.svar import besvara
+        if set(data)-{'csrf','revision','tjanst','motivering','kalla','roll','datum'}:
+            raise RiskanalysFel('Rättelseformuläret innehåller okända fält.')
+        s=self.server; p=s.tjanst.profil(); t=s.tjanst.rb.tjanster.get(data.get('tjanst',''))
+        if t is None:
+            raise RiskanalysFel('Välj en tjänst att rätta.')
+        svar=IntagSvar(falt=t.erbjuds_falt,text='ja',kalla=data.get('kalla',''),roll=data.get('roll',''),datum=formulardatum(data,'datum'))
+        efter=besvara(s.tjanst.rb,p,svar)
+        from riskanalys.profil.omfattning import kompatibilitetsvy
+        r=Erbjudanderattelse(tjanst=t.id,fore=kompatibilitetsvy(p,s.tjanst.rb).uppgifter[t.erbjuds_falt],efter=efter.uppgifter[t.erbjuds_falt],motivering=data.get('motivering',''),
+            kalla=data.get('kalla',''),ansvarig=data.get('roll',''),datum=svar.datum,profilrevision=data.get('revision',''))
+        s.tjanst.spara(svar,data.get('revision',''),rattelse=r)
+        s.utkast=None
 
     def post_analysstart(self,data):
         if set(data)-{'csrf','revision'}:raise RiskanalysFel('Startformuläret innehåller okända fält.')

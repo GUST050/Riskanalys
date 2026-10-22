@@ -9,7 +9,8 @@ from datetime import date
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
+from riskanalys.profil.modeller import Uppgift
 
 from riskanalys.lagring.kontrollsumma import for_fil
 from riskanalys.lagring.yamlfil import las_modell
@@ -20,13 +21,53 @@ GENOMGANG_MANADER = 12
 UTVARDERING = "utvärdering"
 
 
+class Erbjudanderattelse(BaseModel):
+    model_config = ConfigDict(extra='forbid', frozen=True)
+    tjanst: str
+    fore: Uppgift
+    efter: Uppgift
+    motivering: str = Field(min_length=1, max_length=12000)
+    kalla: str = Field(min_length=1, max_length=2000)
+    ansvarig: str = Field(min_length=1, max_length=200)
+    datum: date
+    profilrevision: str
+
+    @model_validator(mode='after')
+    def belagg(self):
+        from riskanalys.profil.text import kontrollera_text
+        for text in (self.motivering, self.kalla, self.ansvarig):
+            if not text.strip():
+                raise ValueError('Rättelsen kräver motivering, källa och ansvarig.')
+            kontrollera_text(text)
+        return self
+
+
 class Handelse(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     datum: date
-    typ: Literal["utvärdering", "uppdatering", "fastställelse"]
+    typ: Literal["utvärdering", "uppdatering", "fastställelse", "rättelse"]
     beskrivning: str
     version: int | None = None
+    plan_id: str | None = None
+    plansumma: str | None = Field(default=None, pattern=r'^sha256:[0-9a-f]{64}$')
+    rattelse: Erbjudanderattelse | None = None
+
+    @model_validator(mode='after')
+    def avgransning(self):
+        if (self.plan_id is None) != (self.plansumma is None) or self.plan_id is not None and self.typ != 'utvärdering':
+            raise ValueError('Planutvärderingen kräver både plan-ID och plansumma.')
+        if (self.typ == 'rättelse') != (self.rattelse is not None) or self.rattelse and self.rattelse.datum != self.datum:
+            raise ValueError('Rättelsehändelsen kräver en rättelse med samma datum.')
+        return self
+
+    @model_serializer(mode='wrap')
+    def serialisera(self, handler):
+        data = handler(self)
+        for falt in ('plan_id', 'plansumma', 'rattelse'):
+            if getattr(self, falt) is None:
+                data.pop(falt, None)
+        return data
 
 
 class Historik(BaseModel):
@@ -39,7 +80,7 @@ class Historik(BaseModel):
 
     def senaste_utvardering(self) -> date | None:
         """Datum för den senaste utvärderingen. Fastställelser och uppdateringar räknas inte."""
-        return max((handelse.datum for handelse in self.handelser if handelse.typ == UTVARDERING), default=None)
+        return max((h.datum for h in self.handelser if h.typ == UTVARDERING and h.plan_id is None), default=None)
 
     def senaste_uppdatering(self) -> date | None:
         """Senaste separata uppdatering, utan att flytta utvärderingsfristen."""

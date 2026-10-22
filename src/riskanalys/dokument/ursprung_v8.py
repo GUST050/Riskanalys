@@ -83,6 +83,9 @@ def bygg_ursprungskarta(dokument,rb,profil,bedomning,resultat,historik,analys):
         kallor=[*ingangar,*operationer.get(placering,())]
         if not statisk:
             for ref in refs:
+                for prefix,falt in (('LOKAL-GRUPP:','kombinationsgrupper'),('LOKAL-PLAN:','tjansteplaner')):
+                    if ref.startswith(prefix):
+                        kallor.extend(('profil',f'/{falt}/{n}') for n,p in enumerate(getattr(profil,falt)) if p.id==ref.removeprefix(prefix))
                 if ref in profil.uppgifter:
                     kallor.append(('profil','/uppgifter/'+_esc(ref)))
                 if ref in rbindex:
@@ -106,6 +109,8 @@ def bygg_ursprungskarta(dokument,rb,profil,bedomning,resultat,historik,analys):
                     kallor.extend((('analys','/beslut'),('analys','/bindning')))
             if avsnitt.id=='D-ARB.B1' and post and text.startswith('Lokal analysrevision') and analys:
                 kallor.append(('analys',''))
+            if avsnitt.id=='D-ARB.B1' and 'KRV-LSF-006' in refs:
+                kallor.append(('historik',''))
         karta.append({'placering':placering,'leveransdel':avsnitt.leveransdel if avsnitt else 'gemensam',
             'produktionsslag':slag,'mallversion':V8,'textsumma':sha256(text.encode()).hexdigest(),
             'ingangar':[{'kalla':k,'pointer':p} for k,p in dict.fromkeys(kallor)],

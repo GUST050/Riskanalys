@@ -62,7 +62,7 @@ def test_samlat_kraver_aktivt_ersattningsval_och_en_skrivning(webb,monkeypatch):
     status,html,_=anrop(s,'registersamlat',d)
     assert status==400 and 'ersätt' in html.lower()
     assert (t.mapp/PROFILFIL).read_bytes()==before
-    import riskanalys.intag.tjanst as service
+    import riskanalys.profil.forandringar as service
     real=service.spara_profil;calls=[]
     def save(*a,**kw):calls.append(1);return real(*a,**kw)
     monkeypatch.setattr(service,'spara_profil',save)

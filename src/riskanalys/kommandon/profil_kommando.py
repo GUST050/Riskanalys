@@ -38,6 +38,7 @@ def lagg_till(underparsers: Any) -> None:
     bekraftelse.add_argument("--roll", default="FfR", help="Rollen som bekräftar. Standard är FfR.")
     bekraftelse.add_argument("--ej-tillampligt", action="store_true", help="Markera uppgiften som ej tillämplig.")
     bekraftelse.add_argument("--motivering", help="Krävs med --ej-tillampligt.")
+    bekraftelse.add_argument('--rattelse', action='store_true', help='Rätta ett felregistrerat nej med källa och --motivering. Gäller inte ett nytt införande.')
     bekraftelse.add_argument("--datum", type=datumargument, default=None, help="Standard är dagens datum.")
     bekraftelse.add_argument("--period-fran", type=datumargument)
     bekraftelse.add_argument("--period-till", type=datumargument)
@@ -48,6 +49,12 @@ def lagg_till(underparsers: Any) -> None:
     visning.add_argument("byra")
     regelbasargument(visning)
     visning.set_defaults(kor=kor_profil)
+    for namn, modell in (('plan', 'Tjansteplan'), ('kombinationsgrupp', 'Kombinationsgrupp')):
+        parser = underparsers.add_parser(namn, help='Registrera eller ersätt lokalt underlag från en YAML-fil.')
+        parser.add_argument('byra')
+        parser.add_argument('--fil', required=True)
+        regelbasargument(parser)
+        parser.set_defaults(kor=kor_lokalt_underlag, underlagsmodell=modell)
 
 
 def kor_ny(args: argparse.Namespace) -> int:
@@ -102,8 +109,38 @@ def kor_bekrafta(args: argparse.Namespace) -> int:
         raise ProfilFel("Ange ett värde, eller --ej-tillampligt med --motivering.")
     else:
         ny_profil = bekrafta(profil, regelbas, args.falt, args.varde, args.kalla, args.roll, datum, period=period)
-    spara_profil(mapp, ny_profil, revision=revision)
+    from riskanalys.profil.forandringar import spara_andring
+    rattelse = None
+    if getattr(args,'rattelse',False):
+        from riskanalys.drift.historik import Erbjudanderattelse
+        t = next((t for t in regelbas.tjanster.values() if t.erbjuds_falt == args.falt), None)
+        if t is None or not args.motivering or ny_profil.uppgifter[args.falt].varde is not True:
+            raise ProfilFel('Rättelse kräver ett tjänsteerbjudande till ja, --kalla och --motivering.')
+        from riskanalys.profil.omfattning import kompatibilitetsvy
+        rattelse = Erbjudanderattelse(tjanst=t.id,fore=kompatibilitetsvy(profil,regelbas).uppgifter[args.falt],efter=ny_profil.uppgifter[args.falt],
+            motivering=args.motivering,kalla=args.kalla or '',ansvarig=args.roll,datum=datum,profilrevision=revision)
+    spara_andring(mapp,regelbas,ny_profil,revision,rattelse=rattelse)
     print(f"{args.falt}: {beskriv_uppgift(regelbas.falt[args.falt], ny_profil.uppgifter[args.falt])}")
+    return 0
+
+
+def kor_lokalt_underlag(args):
+    from pathlib import Path
+    import yaml
+    from riskanalys.intag.tjanst import Intagstjanst
+    from riskanalys.profil.modeller import Tjansteplan, Kombinationsgrupp
+    t = Intagstjanst(args.byra,ladda_giltig_regelbas(args.regelbas))
+    revision = profilrevision(t.profil())
+    modell = Tjansteplan if args.underlagsmodell == 'Tjansteplan' else Kombinationsgrupp
+    try:
+        post = modell.model_validate(yaml.safe_load(Path(args.fil).read_text(encoding='utf-8')))
+    except (OSError, ValueError, yaml.YAMLError):
+        raise ProfilFel('Underlaget kan inte läsas. Kontrollera YAML-filens fält, typer och belägg.') from None
+    if modell is Tjansteplan:
+        t.spara_plan(post,revision)
+    else:
+        t.spara_kombinationsgrupp(post,revision)
+    print('Lokalt underlag sparat. Beräkna aktuell bedömning och förnya och sakpröva analysen före fastställelse.')
     return 0
 
 

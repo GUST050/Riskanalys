@@ -15,6 +15,24 @@ GEMENSAMT_RUBRIK = 'Gemensamt faktaunderlag'
 BYRAGEOGRAFI = 'P-BESK.geografi'
 
 
+def aktiva_faktorer(t):
+    return tuple(dict.fromkeys(id for s in t.scenarier for id in s.sarbarheter)) if t.scenarier else t.tillampade_sarbarheter
+
+
+def gemensamma_faktormekanismer(rb, bedomning):
+    """Befintlig katalogmekanism en gång per ID; motoraktivering är inte en sakattest."""
+    from riskanalys.dokument.modeller import Textstycke
+    ids=tuple(dict.fromkeys(id for t in bedomning.tjanster if t.erbjuds is True for id in aktiva_faktorer(t)))
+    poster=[]
+    for id in ids:
+        s=rb.sarbarheter.get(id)
+        mekanism=(s.beskrivning or s.metodmotivering) if s else ''
+        text=(f'{id} – {s.namn if s else id}: '+(mekanism or 'Mekanism saknas. Komplettera källunderlaget. [VERIFIERA]')
+              + ' Aktivering i motorunderlaget är inte i sig bekräftad exponering. Tjänstens lokala prövning och osäkerheter redovisas vid tjänsten; fulla villkor och beräkningar i B1.')
+        poster.append(Textstycke(typ='motivering',text=text,referenser=[id,*(s.kallor if s else ()),'D-ARB.B1'],proveniens='regelbas'))
+    return tuple(poster)
+
+
 def _geo_ids(rb, tjanst):
     return tuple(id for id in rb.tjanster[tjanst].sarbarheter if rb.sarbarheter[id].omrade == 'geo')
 

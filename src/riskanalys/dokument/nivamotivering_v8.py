@@ -24,6 +24,25 @@ def faktorgrupper(t):
     return berakningsgrupper(t)
 
 
+def lokala_faktorskal(rb, profil, paket, tjanst):
+    """Kort urval med lokal relevans; fulla motiveringar finns redan i lokala block."""
+    from riskanalys.dokument.gemensamt_v8 import aktiva_faktorer, GEMENSAMT_ID
+    a=next((a for a in paket.tjanster if a.tjanst==tjanst.tjanst),None) if paket else None
+    ids=aktiva_faktorer(tjanst)
+    if not ids:
+        return ()
+    delar=[]
+    for id in ids:
+        provningar=[p for p in a.sarbarhetsprovningar if id in p.sarbarheter] if a else []
+        lokal=', '.join(dict.fromkeys(p.relevans for p in provningar)) or 'lokal prövning saknas'
+        scenarier=', '.join(dict.fromkeys(s.hot+'/'+s.dimension.upper() for s in tjanst.scenarier if id in s.sarbarheter))
+        delar.append(f'{id}: {lokal}'+(f' ({scenarier})' if scenarier else ''))
+    return (Textstycke(typ='motivering',text='Faktorernas tillämpning i tjänsten: '+'; '.join(delar)+'. '
+        'Mekanismer och källor står i Gemensamt faktaunderlag. Lokala motiveringar och belägg följer i sårbarhetsprövningen. '
+        'Motoraktivering kan vara preliminär vid okända fakta och är ingen bekräftelse av att exponeringen finns.',
+        referenser=[tjanst.tjanst,*ids,GEMENSAMT_ID,'D-ARB.B1'],proveniens='lokal'),)
+
+
 def gruppreferenser(t, grupp):
     return tuple(dict.fromkeys(ref for s in grupp for ref in scenarioreferenser(t, s)))
 
@@ -125,7 +144,7 @@ def faktorregister(rb,t):
 _ORSAKER = {
     'saknas': lambda k: 'byråns prövning anger att den bärande kontrollen inte täcker scenariot',
     'oprovat': lambda k: 'hotet saknar en relevant lokal scenarioprövning',
-    'motstridig': lambda k: f'byråns prövningar av {k} är motstridiga',
+    'motstridig': lambda k: f'byråns provningar av {k} är motstridiga',
     'obelagd': lambda k: f'den tillräckliga täckningen av {k} saknar beskriven räckvidd eller aktuellt genomförandebelägg',
     'delvis': lambda k: f'byråns prövning visar bara delvis täckning av {k}, vilket inte räcker för ett helt kontrollavdrag',
     'stod': lambda k: f'det saknas en positiv lokal prövning av den bärande kontrollen {k} i ett relevant scenario',

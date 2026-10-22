@@ -61,9 +61,39 @@ class Byra(Fryst):
     lan: str
 
 
+class Tjansteplan(Fryst):
+    id: str = Field(min_length=1, max_length=80, pattern=r'^[a-zA-Z0-9_-]+$')
+    tjanst: str
+    typ: Literal['ny_tjanst', 'vasentligt_andrad_tjanst', 'ny_marknad', 'annan_forandring']
+    beskrivning: str = Field(min_length=1, max_length=12000)
+    avsett_inforande: date | None = None
+    uppgifter: dict[str, Uppgift] = Field(default_factory=dict)
+
+
+class Kombinationsgrupp(Fryst):
+    id: str = Field(min_length=1, max_length=80, pattern=r'^[a-zA-Z0-9_-]+$')
+    tjanst: str
+    population: Literal['kunder', 'uppdrag']
+    avgransning: str = Field(min_length=1, max_length=2000)
+    beskrivning: str = Field(min_length=1, max_length=12000)
+    sarbarheter: tuple[str, ...] = Field(min_length=1)
+    antal: Uppgift
+    bas: Uppgift
+
+
 class Profil(Fryst):
     byra: Byra
     uppgifter: dict[str, Uppgift]
+    tjansteplaner: tuple[Tjansteplan, ...] = ()
+    kombinationsgrupper: tuple[Kombinationsgrupp, ...] = ()
+
+    @model_serializer(mode='wrap')
+    def serialisera(self, handler):
+        data = handler(self)
+        for falt in ('tjansteplaner', 'kombinationsgrupper'):
+            if not getattr(self, falt):
+                data.pop(falt, None)
+        return data
 
     def faltvarden(self) -> dict[str, Faltvarde]:
         """Uppgifterna som fältvärden för villkorsutvärderaren. Bara bekräftade värden är kända."""
