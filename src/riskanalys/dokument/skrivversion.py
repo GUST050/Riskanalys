@@ -6,7 +6,6 @@ V6 = 'D-ARB-tjanst-v6'
 V7 = 'D-ARB-tjanst-v7'
 V8 = 'D-ARB-tjanst-v8'
 AKTUELL_SKRIVVERSION = V8
-AKTUELL_DOKUMENTVERSION = V8
 DELAR_V5 = ('hot', 'sarbarheter', 'kontroller', 'risknivaer', 'slutsatser')
 DELAR_V6 = ('hot', 'sarbarheter')
 DELAR_V7 = ('analys',)

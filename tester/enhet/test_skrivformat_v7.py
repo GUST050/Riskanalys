@@ -18,7 +18,8 @@ def test_v7_en_del_med_bevarade_aldre_delar_och_v8_som_ny_default():
     assert delar_for_version(V7) == ('analys',)
     assert delar_for_version(V6) == ('hot','sarbarheter')
     assert len(delar_for_version(V5)) == 5
-    from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, AKTUELL_DOKUMENTVERSION, V8
+    from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, V8
+    from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION
     assert AKTUELL_SKRIVVERSION == AKTUELL_DOKUMENTVERSION == V8
 
 

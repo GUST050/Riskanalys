@@ -12,7 +12,7 @@ from datetime import date
 from pathlib import Path
 
 from riskanalys.bedomning.korning import BEDOMNINGAR, aktualitetshinder, las_bedomning, las_bedomningsprofil
-from riskanalys.dokument.skrivversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION
+from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION
 from riskanalys.dokument.modeller import Avsnitt, Dokument
 from riskanalys.dokument.rendering import faststalld_status, rendera_docx
 from riskanalys.dokument.skrivning import UTKAST

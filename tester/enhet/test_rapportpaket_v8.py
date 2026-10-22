@@ -346,7 +346,7 @@ def test_v8_default_utan_skrivresultat_ger_ofullstandigt_utkast(v8fall,monkeypat
     from riskanalys.drift.historik import Historik
     from riskanalys.dokument.skrivversion import V8
     f,_=v8fall
-    monkeypatch.setattr('riskanalys.dokument.skrivversion.AKTUELL_DOKUMENTVERSION',V8)
+    monkeypatch.setattr('riskanalys.dokument.rapportversion.AKTUELL_DOKUMENTVERSION',V8)
     d=bygg_arb(f.regelbas,f.profil,f.bedomning,{},Historik(),analys=None)
     assert d.formatversion==V8
     assert any('[VERIFIERA]' in s.text for a in d.avsnitt for s in a.stycken)

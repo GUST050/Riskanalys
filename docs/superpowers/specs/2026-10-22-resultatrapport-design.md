@@ -4,6 +4,7 @@
 **Datum:** upprättat 2026-10-22, reviderat 2026-10-23.
 **Verifierad kodbas:** `4a878b9bb35a2489e902fd341a6391cc4ce4f7fa`, gren `codex/kravstod-tjansteexponering`.
 **Föregående dokumentrevision:** `6e34cfd`; produktkoden är oförändrad sedan angiven kodbas.
+**Genomförandebeslut 2026-10-23:** användaren har godkänt start av R0–R2 med två ytterligare standardbytesprov. Kontrollpunkten efter R2 kvarstår före R3–R7.
 **Genomförandeplan:** [resultatrapport-plan](../plans/2026-10-22-resultatrapport-plan.md).
 **Utgångspunkt:** Claudes förslag `2026-10-22-forslag-resultatrapport.md`, läst i den andra, oförändrade klonen `/Users/danieltrogen/riskanalys-steg1-3/docs/superpowers/reviews/`. Detta underlag ersätter förslaget för den här ändringen; den andra klonen ändras inte.
 
@@ -96,6 +97,8 @@ Värden och metodbegränsningar återges från sparat underlag. Faktum, antagand
 ### 5.1.1 Gemensamma kedjor en gång i R4
 
 Matrisens rader identifierar hot och dimension samt den gemensamma mekanismen. Kolumnerna identifierar varje erbjuden tjänst, även om flera får samma värden. Varje beräknad cell visar risk före och kvarstående risk där den finns, samt vilka led som är avgörande. TF utan beräknad kvarstående risk märks **ej beräknad**, aldrig med ett kopierat PT-värde. Saknat scenario, ej relevant och okänt underlag skiljs åt; ett tomt streck får inte dölja skillnaden.
+
+På stående A4 visas högst fyra tjänstekolumner i samma matris. Fler tjänster delas i flera tabeller med upprepade radrubriker och samma stabila scenario-ID; varje tjänstecell visas exakt en gång. Förklaringar och källmedlemskap delas fortsatt utan informationsförlust. Textstorleken minskas inte för att få plats och sidmålet är fortsatt rådgivande för stora fall.
 
 Gemensam kedjetext beskriver hot, möjliggörande sårbarhet och sannolikhet/konsekvens en gång. Identiska nivåvägar, kontrollpåverkan och statusar får dela förklaring mellan tjänster. Medlemskap, faktorer, värden, belägg och källpointers bevaras per tjänst, hot, dimension och riskled. Samma hotnamn eller slutnivå räcker inte som grund för att slå ihop olika mekanismer eller kontrollbegränsningar.
 

@@ -42,7 +42,8 @@ def bygg_arb(
 ) -> Dokument:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
-    from riskanalys.dokument.skrivversion import V8, AKTUELL_DOKUMENTVERSION
+    from riskanalys.dokument.skrivversion import V8
+    from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION
     if formatversion == V8 or (formatversion is None and
             (any(getattr(r, 'formatversion', None) == V8 for r in utkast.values())
              or (not utkast and regelbas.metod.omfattning and AKTUELL_DOKUMENTVERSION == V8))):

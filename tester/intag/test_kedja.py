@@ -3,7 +3,7 @@ from docx import Document
 import pytest
 from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
 from riskanalys.dokument.delskrivning import FORMATVERSION
-from riskanalys.dokument.skrivversion import AKTUELL_DOKUMENTVERSION as DOKUMENTFORMAT
+from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION as DOKUMENTFORMAT
 from riskanalys.dokument.leverantor import Testleverantor
 from riskanalys.dokument.skrivversion import delar_for_version
 from riskanalys.dokument.underlag import tjanster_med_avsnitt

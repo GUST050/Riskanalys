@@ -27,7 +27,8 @@ def skriv(rb, p, t, svaren, namn=()):
 
 
 def test_v8_egen_identitet_och_explicit_provvag(bas):
-    from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, AKTUELL_DOKUMENTVERSION
+    from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION
+    from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION
     rb, p = bas
     t = tjanst(rb, p)
     res, anrop = skriv(rb, p, t, [provsvar(rb, p, t)])

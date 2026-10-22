@@ -13,7 +13,9 @@
     "tester/m2/test_m2_grindar.py::test_negativ_cli_stoppar_just_andrat_underlag",
     "tester/enhet/test_engangssvar.py",
     "tester/enhet/test_tjanstegenomgang.py",
-    "tester/enhet/test_tillampningsbyte.py"
+    "tester/enhet/test_tillampningsbyte.py",
+    "tester/enhet/test_rapportversion.py",
+    "tester/enhet/test_resultatunderlag_v9.py"
   ],
   "analys": [
     "tester/enhet/test_testverktyg.py",
@@ -38,6 +40,8 @@
     "tester/intag/test_gemensam_helhetsbekraftelse.py",
     "tester/enhet/test_tjanstegenomgang.py",
     "tester/intag/test_tjanstegenomgang.py",
-    "tester/enhet/test_tillampningsbyte.py"
+    "tester/enhet/test_tillampningsbyte.py",
+    "tester/enhet/test_rapportversion.py",
+    "tester/enhet/test_resultatunderlag_v9.py"
   ]
 }

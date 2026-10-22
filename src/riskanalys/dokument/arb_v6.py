@@ -21,7 +21,7 @@ from riskanalys.dokument.kallhanvisningar import med_kallhanvisningar, utan_kall
 from riskanalys.dokument.m1_forslag import m1_forslag
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Underrubrik
 from riskanalys.dokument.nivatext import utfallsforklaring, sektorsmening
-from riskanalys.dokument.skrivversion import V6, V7, AKTUELL_DOKUMENTVERSION
+from riskanalys.dokument.skrivversion import V6, V7, V8
 from riskanalys.dokument.tabeller import bygg_metodmatris, bygg_riskoversikt, bygg_tjansteoversikt
 from riskanalys.dokument.tjanstavsnitt_v6 import bygg_tjanstavsnitt_v6, lokaltext
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
@@ -52,7 +52,7 @@ ALDRE_UTKAST = ("AI-utkastet för {avsnitt} kan inte användas i dokumentformate
 def kontrollera_v6_utkast(resultat: Mapping[str, object], formatversion=None) -> str:
     """Välj en enda faktisk skrivversion; äldre eller ommärkta utkast kan inte migreras genom märkning."""
     versioner = {post.formatversion for post in resultat.values() if isinstance(post, Tjanstresultat)}
-    version = formatversion or (next(iter(versioner)) if len(versioner) == 1 else AKTUELL_DOKUMENTVERSION)
+    version = formatversion or (next(iter(versioner)) if len(versioner) == 1 else V8)
     if version not in (V6, V7) or len(versioner) > 1:
         raise RiskanalysFel(ALDRE_UTKAST.format(avsnitt=', '.join(resultat) or 'D-ARB', format=version)
             + ' Skrivresultaten har blandade eller äldre format.')

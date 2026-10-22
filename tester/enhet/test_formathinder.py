@@ -3,7 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from riskanalys.dokument.skrivversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION, V5, V6, V7, V8
+from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION
+from riskanalys.dokument.skrivversion import V5, V6, V7, V8
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Textstycke
 from riskanalys.faststallelse import faststall as faststallmodul
 from riskanalys.faststallelse.modeller import Beslut
