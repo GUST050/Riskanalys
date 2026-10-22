@@ -34,9 +34,9 @@ def bas(tmp_path_factory):
 
 @pytest.fixture
 def kedja(bas,tmp_path):
-    k,logg=bas;ny=tmp_path.resolve()/'byra';shutil.copytree(k.fall.byramapp,ny)
-    return replace(k,fall=replace(k.fall,byramapp=ny),bedomningsmapp=ny/'bedomningar'/k.bedomningsmapp.name,
-        utkastmapp=ny/'utkast'/k.utkastmapp.name,granskningsmapp=ny/'granskning'/k.granskningsmapp.name),logg
+    from tester.fixturer.kedjecache import klona_kedja
+    k,logg=bas
+    return klona_kedja(k,tmp_path),logg
 
 
 def test_sakgranskad_gemensam_analys_kan_faststallas(kedja):

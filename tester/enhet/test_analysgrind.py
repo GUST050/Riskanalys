@@ -205,11 +205,9 @@ def _positiv_v8_kedja(tmp_path_factory,regelbas_v1):
 
 @pytest.fixture
 def aktuell_kedja(_positiv_v8_kedja,tmp_path):
-    import shutil
-    k=_positiv_v8_kedja
-    ny=tmp_path/'byra'
-    shutil.copytree(k.fall.byramapp,ny)
-    return ny,k.regelrot,k.fall.regelbas,ny/'granskning'/k.granskningsmapp.name
+    from tester.fixturer.kedjecache import klona_kedja
+    k=klona_kedja(_positiv_v8_kedja,tmp_path)
+    return k.fall.byramapp,k.regelrot,k.fall.regelbas,k.granskningsmapp
 
 
 def test_aktiv_obesvarad_frivillig_fordelning_hindrar_inte_v8_faststallelse(tmp_path,monkeypatch):
