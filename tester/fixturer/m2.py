@@ -22,6 +22,7 @@ def komplett_profil(rb,p):
         if k in {'P-VERK.bokforing','P-VERK.skatteradgivning','P-VERK.bolagstjanster','P-TJ.red01_erbjuds','P-TJ.skatt01_erbjuds','P-TJ.bolag01_erbjuds'}:v=True
         if k in {'P-ORG.antal_anstallda','P-ORG.verksamhetsstallen'}:v=1
         if k=='P-KUND.antal_aktiva':v=100
+        if k=='P-GEO.antal_hemvist_sverige':v=100  # Syntetisk partition; övriga grupper är noll.
         if k=='P-VERK.omsattning':v=10000.
         if k.endswith('_sektorsmotivering'):v='Syntetisk belagd lokal motivering för denna tjänsts omfattning och kontroller.'
         if k.startswith('P-TJ.') and k.endswith('_antal_kunder'):v=3 if 'bolag01_' in k else 10

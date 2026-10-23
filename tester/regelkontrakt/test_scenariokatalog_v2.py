@@ -80,13 +80,14 @@ def test_kallor_pa_regel_utelamnas_tomma_for_historiska_summor():
     assert Regel(**data, kallor=('SRC-1',)).model_dump(mode='json')['kallor'] == ['SRC-1']
 
 
+# Steg B: nya PT-modus H-MOD-06/07 saknar prövad kontrollsänkning. Grundnivåer och kontrollmål är oförändrade.
 # Varje rad motsvarar en rad i jämförelsetabellen i docs/research/13-scenariomotor-katalog.md (profil A–E).
 @pytest.mark.parametrize('fall,vantat', [
-    ('m2_bas', [('T-RED-01','måttlig','måttlig','måttlig'), ('T-SKATT-01','hög','måttlig','måttlig'), ('T-BOLAG-01','hög','måttlig','måttlig')]),
-    ('m2_utland', [('T-RED-01','hög','hög','måttlig'), ('T-SKATT-01','hög','hög','måttlig'), ('T-BOLAG-01','hög','hög','måttlig')]),
+    ('m2_bas', [('T-RED-01','måttlig','måttlig','måttlig'), ('T-SKATT-01','hög','måttlig','hög'), ('T-BOLAG-01','hög','måttlig','hög')]),
+    ('m2_utland', [('T-RED-01','hög','hög','måttlig'), ('T-SKATT-01','hög','hög','hög'), ('T-BOLAG-01','hög','hög','hög')]),
     ('ab6_fyra', [('T-RED-01','hög','mycket hög','måttlig'), ('T-RED-02','hög','mycket hög','måttlig'), ('T-RED-03','hög','mycket hög','måttlig'), ('T-RED-04','hög','mycket hög','måttlig')]),
-    ('m2_ideell', [('T-RED-01','hög','hög','måttlig'), ('T-SKATT-01','hög','hög','måttlig'), ('T-BOLAG-01','hög','hög','måttlig')]),
-    ('m2_ideell_pep', [('T-RED-01','hög','mycket hög','måttlig'), ('T-SKATT-01','hög','mycket hög','måttlig'), ('T-BOLAG-01','hög','mycket hög','måttlig')]),
+    ('m2_ideell', [('T-RED-01','hög','hög','måttlig'), ('T-SKATT-01','hög','hög','hög'), ('T-BOLAG-01','hög','hög','hög')]),
+    ('m2_ideell_pep', [('T-RED-01','hög','mycket hög','måttlig'), ('T-SKATT-01','hög','mycket hög','hög'), ('T-BOLAG-01','hög','mycket hög','hög')]),
 ])
 def test_kallbundna_kontrollmal_styr_typfallens_kvarstaende_risk(regelbas_v1, fall, vantat):
     from riskanalys.bedomning.motor import bedom

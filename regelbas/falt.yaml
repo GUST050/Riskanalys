@@ -2593,8 +2593,9 @@
   periodkrav: true
 - id: P-TJ.bolag03_erbjuds
   typ: bool
-  fraga: Erbjuder byrån styrelseuppdrag eller bolagsrättsligt ansvar?
-  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  fraga: Erbjuder byrån yrkesmässig företrädarfunktion på tredje mans vägnar i relevanta utlandsuppdrag?
+  varfor: Vanligt eget styrelseuppdrag avses inte. Äldre breda svar styrker inte den snävare avgränsningen.
+    NRA 7.27, s. 149.
   kritisk: true
   intag:
     grupp: P-TJ
@@ -5000,11 +5001,10 @@
     grund: metodval
 - id: P-RISK.korruption
   typ: bool
-  fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till land eller område
-    med korruption?'
+  fraga: Förekommer relevant hemvist eller anknytning till stat med betydande korruption och annan relevant
+    brottslighet?
   etikett: Anknytning till land eller område med korruption
-  varfor: Korruption kan försämra tillförlitligheten i identitets-, ägar- och transaktionsunderlag. Bekräfta
-    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  varfor: PTL 2 kap. 5 § p. 6; geografisk relevans måste dokumenteras.
   kritisk: true
   periodkrav: true
   intag:
@@ -5023,8 +5023,8 @@
   fraga: 'Förekommer följande förhållande i byråns verksamhet: Relevant anknytning till land med svagt
     AML-regelverk?'
   etikett: Anknytning till land med svagt regelverk mot penningtvätt
-  varfor: Ett ineffektivt regelverk kan begränsa kontroller och spårbarhet i betalningskedjan. Bekräfta
-    även ett nej från undersökt underlag. Förhållandet prövas per tjänst.
+  varfor: 'PTL 2 kap. 5 § p. 5: beakta även ineffektiv tillämpning av befintliga AML/TF-regler, inte bara
+    avsaknad av lagtext.'
   kritisk: true
   periodkrav: true
   intag:
@@ -8112,6 +8112,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-MOD-05
+  - H-TF-03
   intag:
     grupp: P-TJ
     ordning: 601
@@ -8148,6 +8152,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-MOD-05
+  - H-TF-03
   intag:
     grupp: P-TJ
     ordning: 602
@@ -8184,6 +8192,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-MOD-05
+  - H-TF-03
   intag:
     grupp: P-TJ
     ordning: 603
@@ -8220,6 +8232,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-MOD-05
+  - H-TF-03
   intag:
     grupp: P-TJ
     ordning: 604
@@ -8256,6 +8272,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-03
+  - H-MOD-05
   intag:
     grupp: P-TJ
     ordning: 605
@@ -8292,6 +8312,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-03
+  - H-MOD-05
   intag:
     grupp: P-TJ
     ordning: 606
@@ -8328,6 +8352,9 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-03
   intag:
     grupp: P-TJ
     ordning: 607
@@ -8360,6 +8387,8 @@
   - H-MOD-03
   - H-TF-03
   - H-TF-01
+  - H-MOD-06
+  - H-MOD-07
   intag:
     grupp: P-TJ
     ordning: 608
@@ -8392,6 +8421,8 @@
   - H-MOD-03
   - H-TF-03
   - H-TF-01
+  - H-MOD-06
+  - H-MOD-07
   intag:
     grupp: P-TJ
     ordning: 609
@@ -8471,3 +8502,1561 @@
     beroenden:
     - P-TJ.bolag03_erbjuds
     grund: metodval
+- id: P-KUND.antal_nominella_agare
+  typ: heltal
+  fraga: Hur många aktiva kunder har nominella aktieägare eller andelar utställda på innehavaren?
+  varfor: PTL 2 kap. 5 § p. 3. Ange antal för samma period som aktiva kunder. Okänt är tillåtet; uppgiften
+    är ingen slutsats om brott.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 500
+    krav:
+    - KRV-PTL-2-5
+    - KRV-LSF-2-02
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Kunder med nominella ägare eller innehavarandelar
+- id: P-KUND.antal_personlig_formogenhet
+  typ: heltal
+  fraga: Hur många aktiva kunder är juridiska personer, truster eller liknande konstruktioner med syfte
+    att förvalta en viss fysisk persons tillgångar?
+  varfor: PTL 2 kap. 5 § p. 4. Ange antal för samma period som aktiva kunder. Okänt är tillåtet; uppgiften
+    är ingen slutsats om brott.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 501
+    krav:
+    - KRV-PTL-2-5
+    - KRV-LSF-2-02
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Kunder som förvaltar en fysisk persons tillgångar
+- id: P-KUND.antal_sanktionshemvist
+  typ: heltal
+  fraga: Hur många aktiva kunder har hemvist i en stat under sanktioner, embargo eller liknande åtgärder?
+  varfor: PTL 2 kap. 5 § p. 7. Ange antal för samma period som aktiva kunder. Okänt är tillåtet; uppgiften
+    är ingen slutsats om brott.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 502
+    krav:
+    - KRV-PTL-2-5
+    - KRV-LSF-2-02
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Kunder med hemvist under sanktioner eller embargo
+- id: P-KUND.antal_terrorhemvist
+  typ: heltal
+  fraga: Hur många aktiva kunder har hemvist i en stat som finansierar eller stöder terrorism eller där
+    terroristorganisationer verkar?
+  varfor: PTL 2 kap. 5 § p. 8. Ange antal för samma period som aktiva kunder. Okänt är tillåtet; uppgiften
+    är ingen slutsats om brott.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 503
+    krav:
+    - KRV-PTL-2-5
+    - KRV-LSF-2-02
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Kunder med hemvist med terrorstöd eller terrorverksamhet
+- id: P-KUND.antal_okand_betalare
+  typ: heltal
+  fraga: Hur många aktiva kunder har relevanta betalningar för varor eller tjänster från någon okänd eller
+    utan koppling till kunden?
+  varfor: PTL 2 kap. 5 § p. 10. Ange antal för samma period som aktiva kunder. Okänt är tillåtet; uppgiften
+    är ingen slutsats om brott.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 504
+    krav:
+    - KRV-PTL-2-5
+    - KRV-LSF-2-02
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Kunder med okänd eller okopplad betalare
+- id: P-KUND.antal_osaker_distansidentitet
+  typ: heltal
+  fraga: Hur många aktiva kunder har distansrelationer eller distanstransaktioner utan metoder som tillförlitligt
+    säkerställer kundens identitet?
+  varfor: PTL 2 kap. 5 § p. 9. Ange antal för samma period som aktiva kunder. Okänt är tillåtet; uppgiften
+    är ingen slutsats om brott.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 505
+    krav:
+    - KRV-PTL-2-5
+    - KRV-LSF-2-02
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Kunder med osäker identitetssäkring på distans
+- id: P-KUND.antal_offentlig
+  typ: heltal
+  fraga: Hur många aktiva kunder är stat, region, kommun eller motsvarande, eller står under direkt eller
+    indirekt rättsligt bestämmande offentligt inflytande, var för sig eller gemensamt?
+  varfor: Potentiellt lägre risk enligt PTL 2 kap. 4 §. Bara data utan nivåeffekt; kunder kan överlappa
+    andra kategorier. Okänt tillåts.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 510
+    krav:
+    - KRV-PTL-2-4
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Offentliga eller rättsligt offentligt styrda kunder
+- id: P-KUND.antal_reglerad_marknad
+  typ: heltal
+  fraga: Hur många aktiva kunder är företag vars överlåtbara värdepapper handlas på reglerad marknad inom
+    EES eller motsvarande utanför EES?
+  varfor: Potentiellt lägre risk enligt PTL 2 kap. 4 §. Bara data utan nivåeffekt; kunder kan överlappa
+    andra kategorier. Okänt tillåts.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-KUND
+    ordning: 511
+    krav:
+    - KRV-PTL-2-4
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Kunder med värdepapper på reglerad eller motsvarande marknad
+- id: P-GEO.antal_hemvist_sverige
+  typ: heltal
+  fraga: 'Kundernas hemvistfördelning: hur många har hemvist i Sverige?'
+  varfor: En samlad fördelning, ingen landsbedömning per kund. Grupperna ska tillsammans motsvara aktiva
+    kunder med samma period. Ofullständigt underlag är okänt.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-GEO
+    ordning: 520
+    krav:
+    - KRV-PTL-2-4
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Hemvist Sverige
+- id: P-GEO.antal_hemvist_ovriga_ees
+  typ: heltal
+  fraga: 'Kundernas hemvistfördelning: hur många har hemvist i övriga EES?'
+  varfor: En samlad fördelning, ingen landsbedömning per kund. Grupperna ska tillsammans motsvara aktiva
+    kunder med samma period. Ofullständigt underlag är okänt.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-GEO
+    ordning: 521
+    krav:
+    - KRV-PTL-2-4
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Hemvist övriga EES
+- id: P-GEO.antal_hemvist_utanfor_ees
+  typ: heltal
+  fraga: 'Kundernas hemvistfördelning: hur många har hemvist i utanför EES?'
+  varfor: En samlad fördelning, ingen landsbedömning per kund. Grupperna ska tillsammans motsvara aktiva
+    kunder med samma period. Ofullständigt underlag är okänt.
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  intag:
+    grupp: P-GEO
+    ordning: 522
+    krav:
+    - KRV-PTL-2-4
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    beroenden:
+    - P-KUND.antal_aktiva
+    grund: metodval
+  etikett: Hemvist utanför EES
+- id: P-TJ.red08_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån ansökningar om rot, rut och offentliga utbetalningar?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 1010
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.red08_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder ansökningar om rot, rut och offentliga utbetalningar?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1063
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-TJ.red08_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder ansökningar om rot, rut och offentliga utbetalningar? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.red08_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red08_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red08_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från ansökningar om rot, rut och offentliga utbetalningar?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  smagruppsantal: P-TJ.red08_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 1065
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red08_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red08_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från ansökningar om rot, rut och offentliga utbetalningar? (beräknad
+    andel)
+  varfor: Härleds ur P-TJ.red08_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red08_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  smagruppsantal: P-TJ.red08_antal_kunder
+- id: P-TJ.red08_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1067
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red08_arbetssatt
+    - P-TJ.red08_erbjuds
+    - P-TJ.red08_geografi
+    - P-TJ.red08_kanaler
+    - P-TJ.red08_kundtyper
+    - P-TJ.red08_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-12.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av ansökningar om rot, rut och offentliga utbetalningar?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1068
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red08_arbetssatt
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-12.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av ansökningar om rot, rut och offentliga utbetalningar?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1069
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-12.utformning
+    - P-TJ.red08_arbetssatt
+    - P-TJ.red08_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.red08_arbetssatt
+  typ: text
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Hur utför ni tjänsten, vilka moment och
+    befogenheter ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1171
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-TJ.red08_kundtyper
+  typ: text
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Vilka kundtyper och branscher använder
+    tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1172
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-TJ.red08_kanaler
+  typ: text
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Vilka kontaktvägar, identifieringssätt
+    och underlagskanaler används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1173
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-TJ.red08_geografi
+  typ: text
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Vilka länder, ägarförbindelser och betalningsflöden
+    berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1174
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-TJ.red08_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1175
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-12.belagg
+  typ: text
+  fraga: 'Kontroll av ansökningar om rot, rut och offentliga utbetalningar: vilka daterade dokument, loggar
+    eller stickprov visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - falt: P-TJ.red08_erbjuds
+      op: ==
+      varde: true
+    - falt: P-KONTROLL.C-TJ-12.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1227
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-12.genomforande
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-12.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av ansökningar om rot, rut och offentliga
+    utbetalningar haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1552
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+- id: P-KONTROLL.C-TJ-12.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av ansökningar
+    om rot, rut och offentliga utbetalningar'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1553
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red08_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Hur många av byråns kunder med utlandstransaktioner
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1800
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red08_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red08_antal_kunder
+    grund: metodval
+- id: P-TJ.red08_antal_utland_agare
+  typ: heltal
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Hur många av byråns kunder med utländska
+    ägare använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1801
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red08_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red08_antal_kunder
+    grund: metodval
+- id: P-TJ.red08_antal_riskbransch
+  typ: heltal
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Hur många av byråns kunder med verksamhet
+    i riskbransch använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1802
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red08_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red08_antal_kunder
+    grund: metodval
+- id: P-TJ.red08_antal_kontant
+  typ: heltal
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Hur många av byråns kunder med kontanthantering
+    använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1803
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red08_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red08_antal_kunder
+    grund: metodval
+- id: P-TJ.red08_attest
+  typ: val
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Vem attesterar underlagen?'
+  etikett: 'Ansökningar: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val:
+  - kund
+  - byra
+  - bada
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1300
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red08_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red08_betalningsmandat
+  typ: val
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Vilket betalningsmandat har byrån?'
+  etikett: 'Ansökningar: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val:
+  - inget
+  - forbereder
+  - verkstaller
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1301
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red08_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red08_bankinsyn
+  typ: val
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Vilken insyn har byrån i kundens bankkonton?'
+  etikett: 'Ansökningar: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val:
+  - full
+  - delvis
+  - ingen
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1302
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red08_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red08_iakttagna_hot
+  typ: flerval
+  fraga: 'Ansökningar om ROT, RUT och offentliga utbetalningar: Vilka hot har ni iakttagit i den egna
+    verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red08_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-12
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-03
+  - H-MOD-04
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-01
+  - H-TF-02
+  - H-TF-03
+  intag:
+    grupp: P-TJ
+    ordning: 1601
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red08_erbjuds
+    grund: metodval
+- id: P-TJ.red09_erbjuds
+  typ: bool
+  fraga: Erbjuder byrån granskningsuppdrag utanför auktoriserad eller godkänd revision?
+  varfor: Faktiskt arbete prövas separat från yrkestiteln enligt PTL 1:2/4.
+  kritisk: true
+  intag:
+    grupp: P-TJ
+    ordning: 1110
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden: []
+    grund: metodval
+- id: P-TJ.red09_antal_kunder
+  typ: heltal
+  fraga: Hur många aktiva kunder använder granskningsuppdrag utanför auktoriserad eller godkänd revision?
+  varfor: Statistik för samma period som nämnaren P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  enhet: kunder
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1163
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KUND.antal_aktiva
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-TJ.red09_andel_kunder
+  typ: andel
+  fraga: Hur många aktiva kunder använder granskningsuppdrag utanför auktoriserad eller godkänd revision?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.red09_antal_kunder/P-KUND.antal_aktiva; kategorier kan överlappa.
+  antalfalt: P-TJ.red09_antal_kunder
+  basfalt: P-KUND.antal_aktiva
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red09_omsattning
+  typ: tal
+  fraga: Vilken omsättning i SEK kommer från granskningsuppdrag utanför auktoriserad eller godkänd revision?
+  varfor: Statistik för samma period som nämnaren P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  enhet: SEK
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  smagruppsantal: P-TJ.red09_antal_kunder
+  intag:
+    grupp: P-TJ
+    ordning: 1165
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red09_erbjuds
+    - P-VERK.omsattning
+    grund: metodval
+- id: P-TJ.red09_andel_omsattning
+  typ: andel
+  fraga: Vilken omsättning i SEK kommer från granskningsuppdrag utanför auktoriserad eller godkänd revision?
+    (beräknad andel)
+  varfor: Härleds ur P-TJ.red09_omsattning/P-VERK.omsattning; kategorier kan överlappa.
+  antalfalt: P-TJ.red09_omsattning
+  basfalt: P-VERK.omsattning
+  periodkrav: true
+  smagrupp: true
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  smagruppsantal: P-TJ.red09_antal_kunder
+- id: P-TJ.red09_sektorsmotivering
+  typ: text
+  fraga: Finns en redan dokumenterad lokal motivering till hur verksamheten förhåller sig till sektorns
+    risk?
+  varfor: Frivilligt underlag inför utkastet. Programmet skriver riskanalysen; avvikelser från sektorns
+    risk måste fortfarande sakgranskas före fastställelse. Texten skickas inte till AI.
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1167
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-TJ.red09_arbetssatt
+    - P-TJ.red09_erbjuds
+    - P-TJ.red09_geografi
+    - P-TJ.red09_kanaler
+    - P-TJ.red09_kundtyper
+    - P-TJ.red09_ovriga_risker
+    grund: metodval
+    obligatorisk: false
+- id: P-KONTROLL.C-TJ-13.utformning
+  typ: val
+  fraga: Finns en rutin för kontroll av granskningsuppdrag utanför auktoriserad eller godkänd revision?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - finns
+  - saknas
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1168
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-TJ.red09_arbetssatt
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-13.genomforande
+  typ: val
+  fraga: Finns dokumenterat genomförande av kontroll av granskningsuppdrag utanför auktoriserad eller
+    godkänd revision?
+  varfor: Utformning och faktiskt genomförande bedöms separat.
+  val:
+  - belagt
+  - ej_belagt
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1169
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.rutiner
+    - P-KONTROLL.C-TJ-13.utformning
+    - P-TJ.red09_arbetssatt
+    - P-TJ.red09_erbjuds
+    grund: metodval
+  periodkrav: true
+- id: P-TJ.red09_arbetssatt
+  typ: text
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Hur utför ni tjänsten, vilka
+    moment och befogenheter ingår?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1271
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.verksamhet
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-TJ.red09_kundtyper
+  typ: text
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Vilka kundtyper och branscher
+    använder tjänsten?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1272
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kundtyper
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-TJ.red09_kanaler
+  typ: text
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Vilka kontaktvägar, identifieringssätt
+    och underlagskanaler används?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1273
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.kanaler
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-TJ.red09_geografi
+  typ: text
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Vilka länder, ägarförbindelser
+    och betalningsflöden berörs?'
+  varfor: Verksamhetens underlag enligt PTL 2 kap. 1–2 §§ och Länsstyrelsens vägledning. Texten infogas
+    lokalt; riskmotorn tolkar inte fri text.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1274
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.geografi
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-TJ.red09_ovriga_risker
+  typ: text
+  fraga: Vilka faktiska avvikelser, brister eller misstänkta upplägg har ni mött i tjänsten? Ange inga
+    kundnamn.
+  varfor: Byråns egna erfarenheter tas in som lokalt underlag. Beskriv vad som hänt eller ange att inga
+    sådana erfarenheter finns; du behöver inte skriva en riskanalys.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1275
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-003
+    avsnitt:
+    - D-ARB.4
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-BESK.erfarenheter
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-13.belagg
+  typ: text
+  fraga: 'Kontroll av granskningsuppdrag utanför auktoriserad eller godkänd revision: vilka daterade dokument,
+    loggar eller stickprov visar att kontrollen faktiskt genomförs och fungerar?'
+  varfor: Belägg för använd kontrollverkan. Hänvisa till underlag utan kundnamn. Texten stannar lokalt.
+  kritisk: true
+  kritisk_om:
+    alla:
+    - falt: P-TJ.red09_erbjuds
+      op: ==
+      varde: true
+    - falt: P-KONTROLL.C-TJ-13.genomforande
+      op: ==
+      varde: belagt
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1327
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-004
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-PTL
+    - SRC-VAGL-2025-03
+    beroenden:
+    - P-KONTROLL.C-TJ-13.genomforande
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-KONTROLL.C-TJ-13.effekt
+  typ: val
+  fraga: Vilken dokumenterad verkan har kontrollen Kontroll av granskningsuppdrag utanför auktoriserad
+    eller godkänd revision haft under perioden?
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1652
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  val:
+  - verksam
+  - begränsad
+  - verkningslös
+  - ej_bedömd
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+- id: P-KONTROLL.C-TJ-13.utfall
+  typ: text
+  fraga: 'Beskriv kontrollens genomförda prov, utfall, bedömda verkan och begränsningar: Kontroll av granskningsuppdrag
+    utanför auktoriserad eller godkänd revision'
+  varfor: Genomförande är inte effekt. Noll avvikelser bevisar inte verkan. Riskreduktion kräver aktuell
+    bedömning som verksam och belagt utfall; fritext stannar lokalt.
+  kritisk: true
+  periodkrav: true
+  intag:
+    grupp: P-KONTROLL
+    ordning: 1653
+    krav:
+    - KRV-PTL-2-1
+    avsnitt:
+    - D-ARB.7
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-PTL
+    beroenden: []
+    grund: metodval
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+- id: P-TJ.red09_antal_utland_transaktion
+  typ: heltal
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Hur många av byråns kunder med
+    utlandstransaktioner använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1900
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red09_erbjuds
+    - P-GEO.antal_utland_transaktion
+    - P-KUND.antal_aktiva
+    - P-TJ.red09_antal_kunder
+    grund: metodval
+- id: P-TJ.red09_antal_utland_agare
+  typ: heltal
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Hur många av byråns kunder med
+    utländska ägare använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1901
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red09_erbjuds
+    - P-GEO.antal_utland_agare
+    - P-KUND.antal_aktiva
+    - P-TJ.red09_antal_kunder
+    grund: metodval
+- id: P-TJ.red09_antal_riskbransch
+  typ: heltal
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Hur många av byråns kunder med
+    verksamhet i riskbransch använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1902
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red09_erbjuds
+    - P-KUND.antal_riskbransch
+    - P-KUND.antal_aktiva
+    - P-TJ.red09_antal_kunder
+    grund: metodval
+- id: P-TJ.red09_antal_kontant
+  typ: heltal
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Hur många av byråns kunder med
+    kontanthantering använder tjänsten?'
+  varfor: Valfri lokal precisering av byråövergripande underlag. Tjänster kan överlappa och antalen ska
+    inte summeras. Svaret påverkar inte riskmotorns beräkning och skickas inte till AI.
+  kritisk: false
+  periodkrav: true
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1903
+    obligatorisk: false
+    avsnitt:
+    - D-ARB.5
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-TS-2026-14
+    - SRC-LST-SK-3647-2026
+    beroenden:
+    - P-TJ.red09_erbjuds
+    - P-KUND.antal_kontant
+    - P-KUND.antal_aktiva
+    - P-TJ.red09_antal_kunder
+    grund: metodval
+- id: P-TJ.red09_attest
+  typ: val
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Vem attesterar underlagen?'
+  etikett: 'Granskningsuppdrag: Attest av underlag'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val:
+  - kund
+  - byra
+  - bada
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1400
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red09_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red09_betalningsmandat
+  typ: val
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Vilket betalningsmandat har
+    byrån?'
+  etikett: 'Granskningsuppdrag: Byråns betalningsmandat'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val:
+  - inget
+  - forbereder
+  - verkstaller
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1401
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red09_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red09_bankinsyn
+  typ: val
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Vilken insyn har byrån i kundens
+    bankkonton?'
+  etikett: 'Granskningsuppdrag: Byråns bankinsyn'
+  varfor: Frivillig uppgift om uppdragets faktiska ansvar och insyn. Bekräfta vad som gäller i tjänsten;
+    ingen tolkning av fritext eller automatisk riskbedömning görs.
+  val:
+  - full
+  - delvis
+  - ingen
+  - okant
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1402
+    avsnitt:
+    - D-ARB.6
+    kallor:
+    - SRC-TS-2026-14
+    - SRC-14FS-2024-11
+    beroenden:
+    - P-TJ.red09_erbjuds
+    grund: metodval
+    obligatorisk: false
+- id: P-TJ.red09_iakttagna_hot
+  typ: flerval
+  fraga: 'Granskningsuppdrag utanför auktoriserad eller godkänd revision: Vilka hot har ni iakttagit i
+    den egna verksamheten?'
+  varfor: Frivillig lokal uppgift om egna rapporter, misstankebaserade avböjanden och observationer. Välj
+    inga om inget iakttagits; ett saknat eller tomt svar sänker aldrig hotnivån. Fritext och kundärenden
+    efterfrågas inte.
+  kritisk: false
+  kritisk_om:
+    falt: P-TJ.red09_erbjuds
+    op: ==
+    varde: true
+  val:
+  - H-TJ-13
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-03
+  - H-MOD-04
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-01
+  - H-TF-02
+  - H-TF-03
+  intag:
+    grupp: P-TJ
+    ordning: 1701
+    krav:
+    - KRV-LSF-2-02
+    - KRV-LSF-002
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-14FS-2024-11
+    - SRC-LST-GOR-ARB
+    obligatorisk: false
+    beroenden:
+    - P-TJ.red09_erbjuds
+    grund: metodval
+- id: P-TJ.bolag03_tredjemansuppdrag
+  typ: bool
+  fraga: Avser erbjudandet företrädaruppdrag på tredje mans vägnar och på affärsmässig grund, i relevant
+    utlandsuppdrag?
+  varfor: Vanliga egna styrelseuppdrag ingår inte. En äldre bred erbjudandebekräftelse får inte återtolkas.
+    NRA 7.27 s. 149.
+  kritisk: true
+  kritisk_om:
+    falt: P-TJ.bolag03_erbjuds
+    op: ==
+    varde: true
+  intag:
+    grupp: P-TJ
+    ordning: 1550
+    krav:
+    - KRV-PTL-1-4
+    avsnitt:
+    - D-ARB.3
+    kallor:
+    - SRC-PTL
+    - SRC-NRA-2024-25
+    beroenden:
+    - P-TJ.bolag03_erbjuds
+    grund: metodval
+  etikett: Bekräftad företrädarfunktion för tredje mans räkning

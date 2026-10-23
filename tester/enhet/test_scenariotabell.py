@@ -124,13 +124,21 @@ def test_v7_scenarier_ersatter_kategorier_men_bevarar_lokal_tabell(v7fall):
     assert any('Lokala faktorutfall' == u.rubrik for u in b1.underrubriker)
 
 
-def test_ai_begarans_hela_payload_bevaras(v7fall):
+def test_ai_begarans_hela_payload_bevaras(tmp_path):
     """Föreprovet från 1.6.0 omfattar prompt, schema, instruktion och skyddat faktablad."""
     from riskanalys.dokument.leverantor import Testleverantor
     from riskanalys.dokument.delskrivning import skriv_tjanst
     from riskanalys.dokument.underlag import tjanster_med_avsnitt
     from tester.fixturer.m2 import bygg_delsvar
-    f, _ = v7fall
+    from tester.fixturer.analys_hela_kedjan import skapa_fall
+    from riskanalys.regelverk.modeller import Regelbas
+    from pathlib import Path
+    import gzip
+    # Föreprovets katalog är fryst separat; request-hasharna förblir orörda.
+    fil = Path(__file__).parents[1] / 'fixturer/promptar_v5_v6_regelbas_2_0_0.json.gz'
+    rb = Regelbas.model_validate_json(gzip.decompress(fil.read_bytes()))
+    assert rb.kontrollsumma == 'sha256:b4dc7018b05b340e746d31efd0a49ee837fa1312c126a24f5571445a27132a58'
+    f = skapa_fall(rb, tmp_path, variation=False)
     lev = Testleverantor(bygg_delsvar(f.regelbas, f.profil, f.bedomning, formatversion=V7))
     for id, t in tjanster_med_avsnitt(f.bedomning):
         skriv_tjanst(lev, f.regelbas, f.profil, t, id, effort='medium', personnamn=(), spara=lambda *a: None, formatversion=V7)

@@ -25,7 +25,7 @@ def utan_kallhanvisning(text: str, *, genererad_etikett: str = '') -> str:
 def _poster(rb: Regelbas, *, rackvidd: bool = False) -> dict:
     poster = {}
     for namn in ('kallor', 'lydelser', 'krav', 'hot', 'sarbarheter', 'kontroller', 'tjanster',
-                 'bristmonster', 'tillamplighet', 'sektorsreferenser'):
+                 'bristmonster', 'tillamplighet', 'sektorsreferenser', 'lagre_risk'):
         poster.update(getattr(rb, namn))
     poster.update({r.id: r for r in (*rb.metod.regler(), *rb.metod.riskmatris)})
     if rb.sanktionsmetod:
@@ -62,7 +62,7 @@ def _kallor(refs, rb: Regelbas, poster: dict, *, formatversion: str = 'D-ARB-tja
         for lydelse in getattr(post, 'lydelser', ()):
             lagg_till(lydelse)
         for hanvisning in getattr(post, 'kallhanvisningar', ()):
-            if hanvisning.kalla in rb.kallor:
+            if hanvisning.kalla in rb.kallor and hanvisning.sida is not None:
                 resultat.setdefault(hanvisning.kalla, set()).add(hanvisning.sida)
         if getattr(post, 'sida', None) and getattr(post, 'kalla', None) in rb.kallor:
             resultat.setdefault(post.kalla, set()).add(post.sida)

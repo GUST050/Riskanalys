@@ -2,8 +2,8 @@
 from riskanalys.regelverk.modeller import Tjanst
 
 
-def test_elva_tjanster_har_kallbundna_ogranskade_forslag(regelbas_v1):
-    assert len(regelbas_v1.tjanster) == 11
+def test_tretton_tjanster_har_kallbundna_ogranskade_forslag(regelbas_v1):
+    assert len(regelbas_v1.tjanster) == 13
     for t in regelbas_v1.tjanster.values():
         assert t.arbetsmoment and t.befogenheter and len(t.kompletteringsfragor) >= 5
         assert t.kallor and t.grund == 'metodval'

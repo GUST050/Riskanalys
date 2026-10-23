@@ -15,6 +15,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-MOD-05
+  - H-TF-03
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -40,6 +44,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-01
   - C-07
@@ -48,19 +57,50 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån bokför
+    intäkter, kostnader, motparter och kontorörelser. H-MOD-05: Dessa underlag kan ge felaktiga offentliga
+    utbetalningar en skenbar legitim intäktsförklaring; ansökningsfel ensamt är inte penningtvätt. H-MOD-06:
+    Arbetsmomentet kan legitimera en skenaffär eller dold motpart som döljer brottsvinst från sanktionsbrott.
+    En sanktionsanknytning ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet kan ge bank- och kryptoled
+    en falsk affärsförklaring eller dölja sambandet mellan ursprung, företag och plånbok. Kryptoinnehav
+    ensamt innebär inte brott. H-TF-03: Arbetsmomentet kan legitimera eller ge underlag för vidareföring
+    även av legalt intjänade medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål
+    och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets
+    koppling är programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal
+    relevans ska prövas och kontrollmål utvidgas inte automatiskt.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Kontering och löpande bokföring
   - Reskontra, avstämningar och periodrapporter
+  - Upprätta och skicka fakturor för kundens räkning enligt uppdraget
   befogenheter:
   - Åtkomst till kundens bokföring enligt uppdragsavtalet; attest och betalningsmandat prövas separat
   kompletteringsfragor:
@@ -88,6 +128,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-MOD-05
+  - H-TF-03
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -113,6 +157,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-02
   grund_sannolikhet: medel
@@ -120,15 +169,45 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån sammanställer
+    bokslutsposter, fordringar, skulder och företagens tillgångsvärden. H-MOD-05: Dessa underlag kan ge
+    felaktiga offentliga utbetalningar en skenbar legitim intäktsförklaring; ansökningsfel ensamt är inte
+    penningtvätt. H-MOD-06: Arbetsmomentet kan legitimera en skenaffär eller dold motpart som döljer brottsvinst
+    från sanktionsbrott. En sanktionsanknytning ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet
+    kan ge bank- och kryptoled en falsk affärsförklaring eller dölja sambandet mellan ursprung, företag
+    och plånbok. Kryptoinnehav ensamt innebär inte brott. H-TF-03: Arbetsmomentet kan legitimera eller
+    ge underlag för vidareföring även av legalt intjänade medel till terrorändamål. Brottsligt ursprung
+    krävs inte för TF; ändamål och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus
+    och sektor, medan just arbetsmomentets koppling är programmets metodtolkning. Inget betalningsmandat
+    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Bokslutsarbete och avstämningar
@@ -160,6 +239,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-MOD-05
+  - H-TF-03
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -185,6 +268,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-03
   grund_sannolikhet: medel
@@ -192,15 +280,45 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån upprättar
+    deklarationer och prövar redovisade inkomster, kostnader och avdrag. H-MOD-05: Dessa underlag kan
+    ge felaktiga offentliga utbetalningar en skenbar legitim intäktsförklaring; ansökningsfel ensamt är
+    inte penningtvätt. H-MOD-06: Arbetsmomentet kan legitimera en skenaffär eller dold motpart som döljer
+    brottsvinst från sanktionsbrott. En sanktionsanknytning ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet
+    kan ge bank- och kryptoled en falsk affärsförklaring eller dölja sambandet mellan ursprung, företag
+    och plånbok. Kryptoinnehav ensamt innebär inte brott. H-TF-03: Arbetsmomentet kan legitimera eller
+    ge underlag för vidareföring även av legalt intjänade medel till terrorändamål. Brottsligt ursprung
+    krävs inte för TF; ändamål och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus
+    och sektor, medan just arbetsmomentets koppling är programmets metodtolkning. Inget betalningsmandat
+    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Upprättande av deklarationer
@@ -232,6 +350,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-MOD-05
+  - H-TF-03
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -257,6 +379,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-04
   grund_sannolikhet: medel
@@ -264,15 +391,45 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån beräknar
+    löner och sammanställer löneunderlag, arbetsgivardeklarationer och mottagaruppgifter. H-MOD-05: Dessa
+    underlag kan ge felaktiga offentliga utbetalningar en skenbar legitim intäktsförklaring; ansökningsfel
+    ensamt är inte penningtvätt. H-MOD-06: Arbetsmomentet kan legitimera en skenaffär eller dold motpart
+    som döljer brottsvinst från sanktionsbrott. En sanktionsanknytning ensam är inte denna PT-kedja. H-MOD-07:
+    Arbetsmomentet kan ge bank- och kryptoled en falsk affärsförklaring eller dölja sambandet mellan ursprung,
+    företag och plånbok. Kryptoinnehav ensamt innebär inte brott. H-TF-03: Arbetsmomentet kan legitimera
+    eller ge underlag för vidareföring även av legalt intjänade medel till terrorändamål. Brottsligt ursprung
+    krävs inte för TF; ändamål och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus
+    och sektor, medan just arbetsmomentets koppling är programmets metodtolkning. Inget betalningsmandat
+    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Löneberedning och lönerapportering
@@ -303,6 +460,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-03
+  - H-MOD-05
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -329,6 +490,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-05
   grund_sannolikhet: medel
@@ -336,15 +502,48 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån verkställer
+    betalningar eller attesterar i kundens namn inom faktiskt uppdragsmandat. H-MOD-06: Arbetsmomentet
+    kan legitimera en skenaffär eller dold motpart som döljer brottsvinst från sanktionsbrott. En sanktionsanknytning
+    ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet kan ge bank- och kryptoled en falsk affärsförklaring
+    eller dölja sambandet mellan ursprung, företag och plånbok. Kryptoinnehav ensamt innebär inte brott.
+    H-TF-03: Arbetsmomentet kan legitimera eller ge underlag för vidareföring även av legalt intjänade
+    medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
+    den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
+    programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
+    prövas och kontrollmål utvidgas inte automatiskt. H-MOD-05: Vid betalningar i kundens namn respektive
+    på klientmedelskonto kan felaktigt utbetalda offentliga medel föras vidare eller blandas med andra
+    kundmedel så att deras brottsliga ursprung döljs. Faktiskt mandat och medlens ursprung måste prövas;
+    själva utbetalningen bevisar inte penningtvätt. Kopplingen är ogranskad metodtolkning av de registrerade
+    underlagen om välfärdsbrott och falska löneuppgifter.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Utföra eller attestera betalningar i kundens namn
@@ -375,6 +574,10 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-03
+  - H-MOD-05
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -401,6 +604,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-06
   grund_sannolikhet: medel
@@ -408,15 +616,48 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån hanterar
+    in- och utbetalningar på klientmedelskonto och behöver särskilja medlens ägare, ursprung och mottagare.
+    H-MOD-06: Arbetsmomentet kan legitimera en skenaffär eller dold motpart som döljer brottsvinst från
+    sanktionsbrott. En sanktionsanknytning ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet kan
+    ge bank- och kryptoled en falsk affärsförklaring eller dölja sambandet mellan ursprung, företag och
+    plånbok. Kryptoinnehav ensamt innebär inte brott. H-TF-03: Arbetsmomentet kan legitimera eller ge
+    underlag för vidareföring även av legalt intjänade medel till terrorändamål. Brottsligt ursprung krävs
+    inte för TF; ändamål och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus och
+    sektor, medan just arbetsmomentets koppling är programmets metodtolkning. Inget betalningsmandat eller
+    faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt. H-MOD-05:
+    Vid betalningar i kundens namn respektive på klientmedelskonto kan felaktigt utbetalda offentliga
+    medel föras vidare eller blandas med andra kundmedel så att deras brottsliga ursprung döljs. Faktiskt
+    mandat och medlens ursprung måste prövas; själva utbetalningen bevisar inte penningtvätt. Kopplingen
+    är ogranskad metodtolkning av de registrerade underlagen om välfärdsbrott och falska löneuppgifter.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Hantering av klientmedel för kundens räkning
@@ -447,6 +688,9 @@
   - H-MOD-04
   - H-TF-01
   - H-TF-02
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-03
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -472,6 +716,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-07
   grund_sannolikhet: medel
@@ -479,15 +728,36 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån ger ekonomiska
+    råd och ekonomichefsstöd om finansiering, budget, affärshändelser och företagsflöden. H-MOD-06: Arbetsmomentet
+    kan legitimera en skenaffär eller dold motpart som döljer brottsvinst från sanktionsbrott. En sanktionsanknytning
+    ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet kan ge bank- och kryptoled en falsk affärsförklaring
+    eller dölja sambandet mellan ursprung, företag och plånbok. Kryptoinnehav ensamt innebär inte brott.
+    H-TF-03: Arbetsmomentet kan legitimera eller ge underlag för vidareföring även av legalt intjänade
+    medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
+    den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
+    programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
+    prövas och kontrollmål utvidgas inte automatiskt.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Ekonomisk rådgivning och rapportering
@@ -515,6 +785,8 @@
   - H-MOD-03
   - H-TF-03
   - H-TF-01
+  - H-MOD-06
+  - H-MOD-07
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -540,6 +812,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-08
   grund_sannolikhet: hög
@@ -547,19 +824,42 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.20'
     sida: 126
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån ger skatteråd
+    om strukturaffärer, kapitalflöden och företagens transaktioner. H-MOD-06: Arbetsmomentet kan legitimera
+    en skenaffär eller dold motpart som döljer brottsvinst från sanktionsbrott. En sanktionsanknytning
+    ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet kan ge bank- och kryptoled en falsk affärsförklaring
+    eller dölja sambandet mellan ursprung, företag och plånbok. Kryptoinnehav ensamt innebär inte brott.
+    H-TF-03: Arbetsmomentet kan legitimera eller ge underlag för vidareföring även av legalt intjänade
+    medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
+    den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
+    programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
+    prövas och kontrollmål utvidgas inte automatiskt.'
   sektorreferens: SEKTOR-SKATT
   arbetsmoment:
   - Rådgivning om skatter och avgifter
   - Rådgivning om gränsöverskridande skatteupplägg när det ingår
+  - Strukturaffärer såsom förvärv, fusioner och utköp
+  - 'Skatteförfarande och rättslig situation: avgränsa eventuella lagundantag per uppdrag'
   befogenheter:
   - Rådgivarens tillgång till underlag och eventuella ombudsbehörighet behöver bekräftas
   kompletteringsfragor:
@@ -583,6 +883,8 @@
   - H-MOD-03
   - H-TF-03
   - H-TF-01
+  - H-MOD-06
+  - H-MOD-07
   sarbarheter:
   - S-KUND-01
   - S-KUND-02
@@ -609,6 +911,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-09
   grund_sannolikhet: hög
@@ -616,15 +923,36 @@
   grund_tf_sannolikhet: låg
   kallor:
   - SRC-NRA-2024-25
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.25'
     sida: 144
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. Tjänstevis kopplingsprövning (ogranskat metodval): Byrån bildar
+    eller förmedlar bolag som kan användas för konton, överlåtelser och dolda ägarled. H-MOD-06: Arbetsmomentet
+    kan legitimera en skenaffär eller dold motpart som döljer brottsvinst från sanktionsbrott. En sanktionsanknytning
+    ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet kan ge bank- och kryptoled en falsk affärsförklaring
+    eller dölja sambandet mellan ursprung, företag och plånbok. Kryptoinnehav ensamt innebär inte brott.
+    H-TF-03: Arbetsmomentet kan legitimera eller ge underlag för vidareföring även av legalt intjänade
+    medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
+    den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
+    programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
+    prövas och kontrollmål utvidgas inte automatiskt.'
   sektorreferens: SEKTOR-BOLAG
   arbetsmoment:
   - Bildande och förmedling av juridiska personer
@@ -676,6 +1004,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-10
   grund_sannolikhet: medel
@@ -688,10 +1021,10 @@
     avsnitt: '7.26'
     sida: 147
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering.'
   sektorreferens: SEKTOR-ADRESS
   arbetsmoment:
   - Tillhandahållande av registrerad adress eller postadress
@@ -706,9 +1039,11 @@
   sakkunnig:
     status: ej_granskad
 - id: T-BOLAG-03
-  namn: Styrelseuppdrag eller bolagsrättsligt ansvar
+  namn: Företrädaruppdrag för tredje mans räkning
   sektor: bolag
-  beskrivning: Uppdrag som styrelseledamot eller bolagsrättsligt ansvarig åt kund.
+  beskrivning: Yrkesmässig företrädarfunktion på tredje mans vägnar och på affärsmässig grund, avgränsad
+    till relevanta utlandsuppdrag. Vanligt eget styrelseuppdrag omfattas inte av denna tjänst. Äldre breda
+    erbjudandesvar behöver omprövas.
   erbjuds_falt: P-TJ.bolag03_erbjuds
   kompatibilitetsfalt:
   - P-TJ.T-BOLAG-03.erbjuds
@@ -744,6 +1079,11 @@
   - S-ARB-16
   - S-ARB-17
   - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
   kontroller:
   - C-TJ-11
   grund_sannolikhet: hög
@@ -753,18 +1093,247 @@
   - SRC-NRA-2024-25
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
-    avsnitt: '7.25'
-    sida: 144
+    avsnitt: '7.27'
+    sida: 149
   grund: metodval
-  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat.
-    NRA:s sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga
-    tillvägagångssätt, inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers
-    viktning kräver tjänstevis relevansprövning och kalibrering.'
-  sektorreferens: SEKTOR-BOLAG
+  metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
+    sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
+    inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
+    relevansprövning och kalibrering. NRA 7.27, s. 149 har inte hot- eller sårbarhetsbedömt denna sektor.
+    Ingen sektorsrisk från bolagsbildning används som jämförelsegrund. Grundnivåerna är kvarvarande ogranskade
+    metodvärden som måste prövas separat i C/D.'
+  sektorreferens: null
   arbetsmoment:
   - Uppdrag som styrelseledamot eller bolagsrättsligt ansvarig åt kund
   befogenheter:
   - Uppdragets besluts- och företrädarbefogenheter behöver beskrivas och prövas
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
+- id: T-RED-08
+  namn: Ansökningar om ROT, RUT och offentliga utbetalningar
+  sektor: redovisning
+  beskrivning: Underlag, ansökningar och ombud för ROT, RUT, stöd och andra offentliga utbetalningar.
+    Betalningsmandat prövas separat.
+  erbjuds_falt: P-TJ.red08_erbjuds
+  kompatibilitetsfalt: []
+  hot:
+  - H-TJ-12
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-03
+  - H-MOD-04
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-01
+  - H-TF-02
+  - H-TF-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
+  kontroller:
+  - C-TJ-12
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-NRA-2024-25
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
+  kallhanvisningar:
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
+  grund: metodval
+  metodmotivering: 'Ogranskat förslag: befintliga standardnivåer återanvänds i väntan på C/D. Tjänstekopplingar
+    beskriver möjliga missbruk, inte faktiska händelser eller fastställd kontrollverkan. Relevans och
+    befogenheter ska prövas lokalt. Granskningsuppdrag beslutar inte kundens affärer. Tjänstevis kopplingsprövning
+    (ogranskat metodval): Byrån tar fram ansökningar, stödbelopp och uppgifter om berättigade mottagare
+    av offentliga medel. H-MOD-05: Dessa underlag kan ge felaktiga offentliga utbetalningar en skenbar
+    legitim intäktsförklaring; ansökningsfel ensamt är inte penningtvätt. H-MOD-06: Arbetsmomentet kan
+    legitimera en skenaffär eller dold motpart som döljer brottsvinst från sanktionsbrott. En sanktionsanknytning
+    ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet kan ge bank- och kryptoled en falsk affärsförklaring
+    eller dölja sambandet mellan ursprung, företag och plånbok. Kryptoinnehav ensamt innebär inte brott.
+    H-TF-03: Arbetsmomentet kan legitimera eller ge underlag för vidareföring även av legalt intjänade
+    medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
+    den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
+    programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
+    prövas och kontrollmål utvidgas inte automatiskt.'
+  sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Framtagning och granskning av ansökningsunderlag
+  - Ansökan eller ombudsarbete enligt uppdraget
+  befogenheter:
+  - Bara uppdragsavtalets uttryckliga granskning, underlagsframtagning eller ombudsbefogenhet; beslut
+    och betalning prövas separat.
+  kompletteringsfragor:
+  - Vilka kundtyper köper just tjänsten?
+  - Vilka arbetsmoment och befogenheter ingår?
+  - Vilket underlag och vilken insyn har byrån?
+  - Hur levereras tjänsten?
+  - Vilka geografiska anknytningar berör tjänsten?
+  sakkunnig:
+    status: ej_granskad
+- id: T-RED-09
+  namn: Granskningsuppdrag utanför auktoriserad eller godkänd revision
+  sektor: redovisning
+  beskrivning: Due diligence, internrevision och ej lagstadgad granskning av finansiella rapporter inom
+    länsstyrelsens tillsyn. Auktoriserad/godkänd revision och RI-tillsyn ingår inte.
+  erbjuds_falt: P-TJ.red09_erbjuds
+  kompatibilitetsfalt: []
+  hot:
+  - H-TJ-13
+  - H-01
+  - H-02
+  - H-03
+  - H-MOD-01
+  - H-MOD-02
+  - H-MOD-03
+  - H-MOD-04
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
+  - H-TF-01
+  - H-TF-02
+  - H-TF-03
+  sarbarheter:
+  - S-KUND-01
+  - S-KUND-02
+  - S-KANAL-01
+  - S-VERK-01
+  - S-GEO-01
+  - S-KOMB-01
+  - S-ARB-01
+  - S-ARB-02
+  - S-ARB-03
+  - S-ARB-04
+  - S-ARB-05
+  - S-ARB-06
+  - S-ARB-07
+  - S-ARB-08
+  - S-ARB-09
+  - S-ARB-10
+  - S-ARB-11
+  - S-ARB-12
+  - S-ARB-13
+  - S-ARB-14
+  - S-ARB-15
+  - S-ARB-16
+  - S-ARB-17
+  - S-ARB-18
+  - S-ARB-19
+  - S-ARB-20
+  - S-ARB-21
+  - S-ARB-22
+  - S-ARB-23
+  kontroller:
+  - C-TJ-13
+  grund_sannolikhet: medel
+  grund_konsekvens: betydande
+  grund_tf_sannolikhet: låg
+  kallor:
+  - SRC-NRA-2024-25
+  - SRC-VAGL-2025-03
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
+  - SRC-FIPO-TF-2025
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Bokförings- och revisionstjänster
+    sida: 5
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt; fysisk PDF-sida
+    sida: 4
+  grund: metodval
+  metodmotivering: 'Ogranskat förslag: befintliga standardnivåer återanvänds i väntan på C/D. Tjänstekopplingar
+    beskriver möjliga missbruk, inte faktiska händelser eller fastställd kontrollverkan. Relevans och
+    befogenheter ska prövas lokalt. Granskningsuppdrag beslutar inte kundens affärer. Tjänstevis kopplingsprövning
+    (ogranskat metodval): Byrån granskar finansiella rapporter, tillgångsvärden och underlag vid due diligence
+    eller internrevision. H-MOD-05: Dessa underlag kan ge felaktiga offentliga utbetalningar en skenbar
+    legitim intäktsförklaring; ansökningsfel ensamt är inte penningtvätt. H-MOD-06: Arbetsmomentet kan
+    legitimera en skenaffär eller dold motpart som döljer brottsvinst från sanktionsbrott. En sanktionsanknytning
+    ensam är inte denna PT-kedja. H-MOD-07: Arbetsmomentet kan ge bank- och kryptoled en falsk affärsförklaring
+    eller dölja sambandet mellan ursprung, företag och plånbok. Kryptoinnehav ensamt innebär inte brott.
+    H-TF-03: Arbetsmomentet kan legitimera eller ge underlag för vidareföring även av legalt intjänade
+    medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
+    den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
+    programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
+    prövas och kontrollmål utvidgas inte automatiskt.'
+  sektorreferens: SEKTOR-REDOVISNING
+  arbetsmoment:
+  - Due diligence vid företagsöverlåtelse
+  - Internrevision och ej lagstadgad finansiell granskning
+  befogenheter:
+  - Bara uppdragsavtalets uttryckliga granskning, underlagsframtagning eller ombudsbefogenhet; beslut
+    och betalning prövas separat.
   kompletteringsfragor:
   - Vilka kundtyper köper just tjänsten?
   - Vilka arbetsmoment och befogenheter ingår?

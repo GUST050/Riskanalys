@@ -45,6 +45,8 @@ def faktorprofil(rb: Regelbas, sarbarheter: tuple[str, ...], *, alla_tjanster: b
     if alla_tjanster:
         for tjanst in rb.tjanster.values():
             profil = andrat(profil, tjanst.erbjuds_falt, varde=True)
+    if alla_tjanster and 'P-TJ.bolag03_tredjemansuppdrag' in rb.falt:
+        profil = andrat(profil, 'P-TJ.bolag03_tredjemansuppdrag', varde=True)
     andrade = set()
     if med_bankdata:
         falt, varde = _som_antal(rb, profil, BANKDATA, ETT_HELT)

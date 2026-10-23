@@ -35,6 +35,12 @@ def bygg_rapportlasprov(regelbas: Regelbas, rot: Path, fall: str) -> SyntetisktF
     profil = Profil.model_validate(data['profil'])
     paket = Analyspaket.model_validate(data['analys'])
     upp = dict(profil.uppgifter)
+    # Den frysta JSON-filen innehåller gamla katalogens fält. Komplettera endast
+    # det aktuella syntetiska provet: nya tjänster erbjuds inte, nya räknare är 0.
+    # Äldre värden och den sparade JSON-resursen ändras aldrig.
+    upp.update({id:u for id,u in bas.profil.uppgifter.items() if id not in upp})
+    if 'P-GEO.antal_hemvist_sverige' in regelbas.falt:
+        upp['P-GEO.antal_hemvist_sverige']=upp['P-KUND.antal_aktiva'].model_copy()
 
     def satt(id, varde, **extra):
         upp[id] = upp[id].model_copy(update={'varde': varde, **extra})

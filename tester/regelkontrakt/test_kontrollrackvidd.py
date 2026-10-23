@@ -126,7 +126,7 @@ def test_rackvidd_andrar_inte_motorutfall(regelbas_v1, profil_fabrik, real_varde
 
 def test_katalogens_rackvidd_ar_ogranskad_och_avgransad(regelbas_v1):
     rb = regelbas_v1
-    assert rb.version == "2.0.0"
+    assert rb.version == "2.1.0"
     assert not validera(rb)
     for t in rb.tjanster.values():
         for id in t.kontroller:
@@ -209,7 +209,7 @@ def test_sakkunnigattest_kan_bekrafta_okand_utan_statuspromotion(regelbas_v1):
 
 def test_katalogen_skiller_beskriven_observation_fran_okant(regelbas_v1):
     poster = [r for k in regelbas_v1.kontroller.values() for r in k.rackvidd]
-    assert len(poster) == 12
+    assert len(poster) == 14
     assert [(r.id, r.beskrivningsstatus) for r in poster if r.beskrivningsstatus == 'beskriven'] == [('KR-C-07-T-RED-01', 'beskriven')]
-    assert sum(r.beskrivningsstatus == 'okand' for r in poster) == 11
+    assert sum(r.beskrivningsstatus == 'okand' for r in poster) == 13
     assert all(r.sakkunnig.status == 'ej_granskad' for r in poster)

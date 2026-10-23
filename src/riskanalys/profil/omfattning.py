@@ -59,7 +59,8 @@ def harled_andelar(profil: Profil, regelbas: Regelbas, andrade_falt: frozenset[s
 
 def omfattningsbrister(profil: Profil, regelbas: Regelbas) -> list[str]:
     """Upptäck motstridiga alias, handändrade andelar och oförenlig statistik."""
-    fel: list[str] = []
+    from riskanalys.profil.katalogstatistik import statistikbrister
+    fel: list[str] = statistikbrister(profil)
     vy = kompatibilitetsvy(profil, regelbas)
     for falt in regelbas.falt.values():
         uppgift = profil.uppgifter.get(falt.id, Uppgift())

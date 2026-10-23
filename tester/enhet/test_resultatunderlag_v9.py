@@ -17,7 +17,7 @@ def test_alla_avgorande_fore_och_efter_bevaras_per_dimension(resultatfall):
 
 def test_lagre_tf_hot_forsvinner_inte_bakom_pt(resultatfall):
     u = underlag(resultatfall)
-    assert {r.hot for r in u.matris if r.dimension == 'tf'} == {'H-03', 'H-TF-01', 'H-TF-02'}
+    assert {r.hot for r in u.matris if r.dimension == 'tf'} == {'H-03', 'H-TF-01', 'H-TF-02', 'H-TF-03'}
 
 
 def test_gemensam_kedja_har_alla_tjanstemedlemmar(resultatfall):

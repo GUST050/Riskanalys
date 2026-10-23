@@ -107,6 +107,8 @@ def _preliminar(bedomning: Bedomning) -> list[dict[str, Any]]:
         okanda.update(bedomning.proportionalitet.okanda_uppgifter)
     if okanda:
         beskrivning = f"Bedömningen är preliminär. Okända uppgifter: {', '.join(sorted(okanda))}."
+        if bedomning.omfattning and bedomning.omfattning.hinder:
+            beskrivning += ' ' + ' '.join(bedomning.omfattning.hinder)
         atgard = "Bekräfta uppgifterna med 'riskanalys bekrafta' och kör 'riskanalys bedom' igen."
     else:
         hinder = ' '.join(bedomning.omfattning.hinder) if bedomning.omfattning else ''

@@ -1,0 +1,378 @@
+{
+  "bascommit": "48991af394420c887086b599e69e545ea3b6a76f",
+  "fore_version": "2.0.0",
+  "efter_version": "2.1.0",
+  "fore_regelbas": "sha256:b4dc7018b05b340e746d31efd0a49ee837fa1312c126a24f5571445a27132a58",
+  "efter_regelbas": "sha256:ed68c9a3674cd069f1cd6f7810d10b7e5f78ffd8992caedaebae72ff01bdd941",
+  "intagsfalt": {
+    "fore": 324,
+    "efter": 380,
+    "nya": 56
+  },
+  "katalogobjekt": {
+    "falt": {
+      "nya": [
+        "P-GEO.antal_hemvist_ovriga_ees",
+        "P-GEO.antal_hemvist_sverige",
+        "P-GEO.antal_hemvist_utanfor_ees",
+        "P-KONTROLL.C-TJ-12.belagg",
+        "P-KONTROLL.C-TJ-12.effekt",
+        "P-KONTROLL.C-TJ-12.genomforande",
+        "P-KONTROLL.C-TJ-12.utfall",
+        "P-KONTROLL.C-TJ-12.utformning",
+        "P-KONTROLL.C-TJ-13.belagg",
+        "P-KONTROLL.C-TJ-13.effekt",
+        "P-KONTROLL.C-TJ-13.genomforande",
+        "P-KONTROLL.C-TJ-13.utfall",
+        "P-KONTROLL.C-TJ-13.utformning",
+        "P-KUND.antal_nominella_agare",
+        "P-KUND.antal_offentlig",
+        "P-KUND.antal_okand_betalare",
+        "P-KUND.antal_osaker_distansidentitet",
+        "P-KUND.antal_personlig_formogenhet",
+        "P-KUND.antal_reglerad_marknad",
+        "P-KUND.antal_sanktionshemvist",
+        "P-KUND.antal_terrorhemvist",
+        "P-TJ.bolag03_tredjemansuppdrag",
+        "P-TJ.red08_andel_kunder",
+        "P-TJ.red08_andel_omsattning",
+        "P-TJ.red08_antal_kontant",
+        "P-TJ.red08_antal_kunder",
+        "P-TJ.red08_antal_riskbransch",
+        "P-TJ.red08_antal_utland_agare",
+        "P-TJ.red08_antal_utland_transaktion",
+        "P-TJ.red08_arbetssatt",
+        "P-TJ.red08_attest",
+        "P-TJ.red08_bankinsyn",
+        "P-TJ.red08_betalningsmandat",
+        "P-TJ.red08_erbjuds",
+        "P-TJ.red08_geografi",
+        "P-TJ.red08_iakttagna_hot",
+        "P-TJ.red08_kanaler",
+        "P-TJ.red08_kundtyper",
+        "P-TJ.red08_omsattning",
+        "P-TJ.red08_ovriga_risker",
+        "P-TJ.red08_sektorsmotivering",
+        "P-TJ.red09_andel_kunder",
+        "P-TJ.red09_andel_omsattning",
+        "P-TJ.red09_antal_kontant",
+        "P-TJ.red09_antal_kunder",
+        "P-TJ.red09_antal_riskbransch",
+        "P-TJ.red09_antal_utland_agare",
+        "P-TJ.red09_antal_utland_transaktion",
+        "P-TJ.red09_arbetssatt",
+        "P-TJ.red09_attest",
+        "P-TJ.red09_bankinsyn",
+        "P-TJ.red09_betalningsmandat",
+        "P-TJ.red09_erbjuds",
+        "P-TJ.red09_geografi",
+        "P-TJ.red09_iakttagna_hot",
+        "P-TJ.red09_kanaler",
+        "P-TJ.red09_kundtyper",
+        "P-TJ.red09_omsattning",
+        "P-TJ.red09_ovriga_risker",
+        "P-TJ.red09_sektorsmotivering"
+      ],
+      "andrade": [
+        "P-RISK.korruption",
+        "P-RISK.svagt_aml",
+        "P-TJ.bolag01_iakttagna_hot",
+        "P-TJ.bolag03_erbjuds",
+        "P-TJ.red01_iakttagna_hot",
+        "P-TJ.red02_iakttagna_hot",
+        "P-TJ.red03_iakttagna_hot",
+        "P-TJ.red04_iakttagna_hot",
+        "P-TJ.red05_iakttagna_hot",
+        "P-TJ.red06_iakttagna_hot",
+        "P-TJ.red07_iakttagna_hot",
+        "P-TJ.skatt01_iakttagna_hot"
+      ],
+      "borttagna": []
+    },
+    "kallor": {
+      "nya": [
+        "SRC-EUROPOL-TESAT-2025-20261023"
+      ],
+      "andrade": [],
+      "borttagna": []
+    },
+    "tjanster": {
+      "nya": [
+        "T-RED-08",
+        "T-RED-09"
+      ],
+      "andrade": [
+        "T-BOLAG-01",
+        "T-BOLAG-02",
+        "T-BOLAG-03",
+        "T-RED-01",
+        "T-RED-02",
+        "T-RED-03",
+        "T-RED-04",
+        "T-RED-05",
+        "T-RED-06",
+        "T-RED-07",
+        "T-SKATT-01"
+      ],
+      "borttagna": []
+    },
+    "hot": {
+      "nya": [
+        "H-MOD-05",
+        "H-MOD-06",
+        "H-MOD-07",
+        "H-TJ-12",
+        "H-TJ-13"
+      ],
+      "andrade": [
+        "H-02",
+        "H-03",
+        "H-MOD-04",
+        "H-TJ-04",
+        "H-TJ-08",
+        "H-TJ-11"
+      ],
+      "borttagna": []
+    },
+    "sarbarheter": {
+      "nya": [
+        "S-ARB-19",
+        "S-ARB-20",
+        "S-ARB-21",
+        "S-ARB-22",
+        "S-ARB-23"
+      ],
+      "andrade": [
+        "S-ARB-08",
+        "S-ARB-12",
+        "S-ARB-15",
+        "S-ARB-16",
+        "S-ARB-17",
+        "S-ARB-18",
+        "S-TJ-01",
+        "S-TJ-02",
+        "S-TJ-03",
+        "S-TJ-04",
+        "S-VERK-01"
+      ],
+      "borttagna": []
+    },
+    "kontroller": {
+      "nya": [
+        "C-TJ-12",
+        "C-TJ-13"
+      ],
+      "andrade": [],
+      "borttagna": []
+    },
+    "lagre_risk": {
+      "nya": [
+        "L-PTL-04-01",
+        "L-PTL-04-02",
+        "L-PTL-04-03",
+        "L-PTL-04-04",
+        "L-PTL-04-05"
+      ],
+      "andrade": [],
+      "borttagna": []
+    },
+    "regelpaket": {
+      "nya": [],
+      "andrade": [
+        "RP-RED-SKANE",
+        "RP-RED-STHLM",
+        "RP-RED-VG"
+      ],
+      "borttagna": []
+    }
+  },
+  "andrade_eller_nya_modellfiler": [
+    "src/riskanalys/profil/katalogstatistik.py",
+    "src/riskanalys/profil/omfattning.py",
+    "src/riskanalys/regelverk/modeller.py",
+    "src/riskanalys/regelverk/tillsyn.py"
+  ],
+  "beslutsberoenden": [
+    {
+      "beslut": "Kundantal högre risk och distans",
+      "falt": [
+        "P-KUND.antal_nominella_agare",
+        "P-KUND.antal_okand_betalare",
+        "P-KUND.antal_osaker_distansidentitet",
+        "P-KUND.antal_personlig_formogenhet",
+        "P-KUND.antal_sanktionshemvist",
+        "P-KUND.antal_terrorhemvist"
+      ],
+      "objekt": [
+        "S-ARB-08",
+        "S-ARB-19",
+        "S-ARB-20",
+        "S-ARB-21",
+        "S-ARB-22",
+        "S-ARB-23"
+      ],
+      "beroende_tjanster": [
+        "T-RED-01",
+        "T-RED-02",
+        "T-RED-03",
+        "T-RED-04",
+        "T-RED-05",
+        "T-RED-06",
+        "T-RED-07",
+        "T-SKATT-01",
+        "T-BOLAG-01",
+        "T-BOLAG-02",
+        "T-BOLAG-03",
+        "T-RED-08",
+        "T-RED-09"
+      ],
+      "omprovning": "Period-/populationskontroll, motorvillkor och typfall; nya analysunderlag och C/D3/D9. Ingen separat återställning av villkoret utan fält/kopplingar."
+    },
+    {
+      "beslut": "Lägre risk och central hemvist",
+      "falt": [
+        "P-GEO.antal_hemvist_ovriga_ees",
+        "P-GEO.antal_hemvist_sverige",
+        "P-GEO.antal_hemvist_utanfor_ees",
+        "P-KUND.antal_offentlig",
+        "P-KUND.antal_reglerad_marknad"
+      ],
+      "objekt": [
+        "L-PTL-04-01",
+        "L-PTL-04-02",
+        "L-PTL-04-03",
+        "L-PTL-04-04",
+        "L-PTL-04-05"
+      ],
+      "omprovning": "Typat schema, laddning, expertobjekt, innehållssummor, period/population; del 3:s tabeller och D:s beslut om eventuell verkan. Ingen nivåeffekt i B."
+    },
+    {
+      "beslut": "Två nya tjänster",
+      "falt": [
+        "P-KONTROLL.C-TJ-12.belagg",
+        "P-KONTROLL.C-TJ-12.effekt",
+        "P-KONTROLL.C-TJ-12.genomforande",
+        "P-KONTROLL.C-TJ-12.utfall",
+        "P-KONTROLL.C-TJ-12.utformning",
+        "P-KONTROLL.C-TJ-13.belagg",
+        "P-KONTROLL.C-TJ-13.effekt",
+        "P-KONTROLL.C-TJ-13.genomforande",
+        "P-KONTROLL.C-TJ-13.utfall",
+        "P-KONTROLL.C-TJ-13.utformning",
+        "P-TJ.red08_andel_kunder",
+        "P-TJ.red08_andel_omsattning",
+        "P-TJ.red08_antal_kontant",
+        "P-TJ.red08_antal_kunder",
+        "P-TJ.red08_antal_riskbransch",
+        "P-TJ.red08_antal_utland_agare",
+        "P-TJ.red08_antal_utland_transaktion",
+        "P-TJ.red08_arbetssatt",
+        "P-TJ.red08_attest",
+        "P-TJ.red08_bankinsyn",
+        "P-TJ.red08_betalningsmandat",
+        "P-TJ.red08_erbjuds",
+        "P-TJ.red08_geografi",
+        "P-TJ.red08_iakttagna_hot",
+        "P-TJ.red08_kanaler",
+        "P-TJ.red08_kundtyper",
+        "P-TJ.red08_omsattning",
+        "P-TJ.red08_ovriga_risker",
+        "P-TJ.red08_sektorsmotivering",
+        "P-TJ.red09_andel_kunder",
+        "P-TJ.red09_andel_omsattning",
+        "P-TJ.red09_antal_kontant",
+        "P-TJ.red09_antal_kunder",
+        "P-TJ.red09_antal_riskbransch",
+        "P-TJ.red09_antal_utland_agare",
+        "P-TJ.red09_antal_utland_transaktion",
+        "P-TJ.red09_arbetssatt",
+        "P-TJ.red09_attest",
+        "P-TJ.red09_bankinsyn",
+        "P-TJ.red09_betalningsmandat",
+        "P-TJ.red09_erbjuds",
+        "P-TJ.red09_geografi",
+        "P-TJ.red09_iakttagna_hot",
+        "P-TJ.red09_kanaler",
+        "P-TJ.red09_kundtyper",
+        "P-TJ.red09_omsattning",
+        "P-TJ.red09_ovriga_risker",
+        "P-TJ.red09_sektorsmotivering"
+      ],
+      "objekt": [
+        "T-RED-08",
+        "T-RED-09",
+        "H-TJ-12",
+        "H-TJ-13",
+        "C-TJ-12",
+        "C-TJ-13"
+      ],
+      "regelpaket": [
+        "RP-RED-SKANE",
+        "RP-RED-STHLM",
+        "RP-RED-VG"
+      ],
+      "omprovning": "Regionalt urval, intag, organisationssårbarheter, kontrollmål/räckvidd, lokalanalys, AI-avgränsning och dokumentkedja. C och del 3 använder grenarna."
+    },
+    {
+      "beslut": "Nya modus och tjänstekopplingar",
+      "objekt": [
+        "H-MOD-05",
+        "H-MOD-06",
+        "H-MOD-07",
+        "H-TF-03"
+      ],
+      "beroende_tjanster": [
+        "T-RED-01",
+        "T-RED-02",
+        "T-RED-03",
+        "T-RED-04",
+        "T-RED-05",
+        "T-RED-06",
+        "T-RED-07",
+        "T-SKATT-01",
+        "T-BOLAG-01",
+        "T-BOLAG-02",
+        "T-BOLAG-03",
+        "T-RED-08",
+        "T-RED-09"
+      ],
+      "andrade_sarbarheter": [
+        "S-ARB-08",
+        "S-ARB-12",
+        "S-ARB-15",
+        "S-ARB-16",
+        "S-ARB-17",
+        "S-ARB-18",
+        "S-TJ-01",
+        "S-TJ-02",
+        "S-TJ-03",
+        "S-TJ-04",
+        "S-VERK-01"
+      ],
+      "omprovning": "Pröva varje kvarvarande koppling och metodmotivering; uppdatera observationsval, organisationsfaktorer, scenarier och före-/efterutfall. Ingen automatisk expansion av gamla kontrollmål."
+    },
+    {
+      "beslut": "Snävare tjänsteomfattning",
+      "falt": [
+        "P-VERK.trust",
+        "P-VERK.nominell_aktieagare",
+        "P-TJ.bolag03_erbjuds",
+        "P-TJ.bolag03_tredjemansuppdrag"
+      ],
+      "objekt": [
+        "T-BOLAG-03",
+        "H-TJ-11",
+        "S-TJ-04"
+      ],
+      "omprovning": "Gemensam rättslig omfattning, utkastknapp/utkastkedja, synliga fynd och ny kontroll vid fastställelse; sektorsreferens får inte återanvändas från bolagsbildning. Inga trust/nominee-grenar finns."
+    },
+    {
+      "beslut": "Versionsbundna källor och laglocator",
+      "objekt": [
+        "SRC-EUROPOL-TESAT-2025",
+        "SRC-EUROPOL-TESAT-2025-20261023"
+      ],
+      "omprovning": "Behåll gamla källbytes/checksumma och frysta paket; nytt positivt källbeslut kräver omprövning av alla beroende objekt. Kapitellocator utan sida får inte ändra gamla hänvisningssummor."
+    }
+  ]
+}

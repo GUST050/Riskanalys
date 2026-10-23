@@ -6,7 +6,7 @@ from riskanalys.profil.modeller import Profil
 from riskanalys.profil.omfattning import aktivt, kompatibilitetsvy
 from riskanalys.regelverk.intagskontrakt import intagskontraktsfel
 from riskanalys.regelverk.modeller import Regelbas
-from riskanalys.regelverk.tillsyn import rattlig_omfattning
+from riskanalys.regelverk.tillsyn import rattlig_omfattning, analysstodshinder
 from riskanalys.regelverk.urval import valj
 
 
@@ -30,4 +30,5 @@ def tackning(rb: Regelbas, profil: Profil) -> Tackning:
     if p.ar_bekraftad('P-BESK.ovriga_forhallanden') and p.uppgifter['P-BESK.ovriga_forhallanden'].varde is True:
         hinder.append('Ytterligare riskförhållanden finns. Komplettera riskmodellen och granska den innan ett helt utkast skapas.')
     return Tackning(len(aktiva), sum(p.ar_bekraftad(f.id) and f.id not in saknade for f in aktiva),
-                    tuple(sorted(saknade)), tuple(dict.fromkeys(hinder)))
+                    tuple(sorted(saknade)), tuple(dict.fromkeys(hinder)),
+                    analysstodshinder(p) if rb.utokade_krav else ())

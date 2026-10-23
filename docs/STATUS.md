@@ -1,3 +1,15 @@
+# Regelbasen steg B – arbetssteg för granskning
+
+Steg A (`48991af`) är godkänt av användaren. Katalogkompletteringen i B är genomförd lokalt som förslag i regelbas **2.1.0**: två nya tjänster, fem nya hot, fem nya högre-risk-indikatorer, snävare distansvillkor och fem separata lägre-risk-indikatorer utan nivåeffekt. **56 nya intagsfält, 324 → 380.** Trust/nominee ger synligt fastställelsestopp men utkast kan skapas. Alla katalogobjekt har `ej_granskad`.
+
+[Granskningsunderlag med källor, frågeantal, beroenden, före-/efterutfall och redovisade sänkningar](superpowers/reviews/2026-10-23-regelbas-steg-b.md). Fyra betydelsefulla granskningsfynd är rättade och reproducerande prov passerar. Senaste riktade urval: **72 godkända/10,66 s**. Katalog- och diffkontroll passerar. Snabbprofil: **140 godkända/51.480 s**, matchande collection/JUnit och 820 oförändrade snapshotresurser.
+
+**Fullsviten är ännu inte grön.** Senaste körningen stannade efter 1 504 godkända och ett fel i ett historiskt AI-begärandeprov. Dess katalogbindning är nu rättad, med oförändrade gyllene request-hashar och grönt riktat prov. B är en arbetscommit och ett granskningsunderlag; färsk grön fullsvit på exakt slutlig kod krävs före slutleverans/PR/merge. Ingen push eller merge.
+
+**Användaren har därefter gett klartecken att fortsätta samtliga återstående steg.** Ordning: C, del 3, D, förnyad PDF-granskning och sist E. Testerna samlas till slutet i den mån arbetet kan fortsätta utan dem. Del 3:s uttryckliga val av datatäckning och PDF-kontrollpunkter hanteras med konkreta underlag. Ingen ny rapportdisposition eller metodkalibrering har byggts i B.
+
+## Godkänt steg A – tidigare redovisning
+
 # Regelbasen steg A – inventering för granskning
 
 Användaren har godkänt del 1 (`654066f`) och uttryckligen gett klartecken till del 2 steg A, enbart dokumentation. [Luckförteckningen](superpowers/reviews/2026-10-23-katalogluckor.md) jämför katalogerna med PTL 2:1–5, de tre regionala föreskrifternas 2 kapitel, marsvägledningen, Länsstyrelsens webbvägledning samt relevanta delar av nationell riskbedömning och registrerade lägesbilder. Alla 15 lagexempel och vägledningens tjänster/modus har motsvarighet, kompletteringsförslag eller uttrycklig avgränsning.

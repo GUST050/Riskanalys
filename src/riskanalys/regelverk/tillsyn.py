@@ -29,6 +29,12 @@ def tillsynsomrade(lan: str, utlandsk_filial: bool) -> str:
     return "RP-RED-STHLM" if utlandsk_filial else omrade
 
 
+def analysstodshinder(profil: Profil) -> tuple[str, ...]:
+    return tuple(f"{f}: tjänsten ligger utanför programmets analysstöd. Fastställelse är spärrad; utkast kan fortfarande skapas."
+                 for f in ('P-VERK.trust', 'P-VERK.nominell_aktieagare')
+                 if profil.ar_bekraftad(f) and profil.uppgifter[f].varde is True)
+
+
 def rattlig_omfattning(regelbas: Regelbas, profil: Profil) -> Omfattningsbeslut:
     from riskanalys.profil.omfattning import kompatibilitetsvy
     profil = kompatibilitetsvy(profil, regelbas)
@@ -60,15 +66,22 @@ def rattlig_omfattning(regelbas: Regelbas, profil: Profil) -> Omfattningsbeslut:
         hinder.append("P-ORG.utlandsk_filial har fel typ. Bekräfta ja eller nej.")
     for service, roller in (("T-RED-01", ("P-VERK.bokforing", "P-VERK.auktoriserad_revision")),
                             ("T-RED-02", ("P-VERK.bokforing", "P-VERK.auktoriserad_revision")),
+                            ("T-RED-09", ("P-VERK.bokforing",)),
                             ("T-SKATT-01", ("P-VERK.skatteradgivning",)),
                             *[(i,("P-VERK.bolagstjanster",)) for i in ("T-BOLAG-01", "T-BOLAG-02", "T-BOLAG-03")]):
         t = regelbas.tjanster.get(service)
         if t and profil.ar_bekraftad(t.erbjuds_falt) and profil.uppgifter[t.erbjuds_falt].varde is True:
             if not any(profil.ar_bekraftad(r) and profil.uppgifter[r].varde is True for r in roller):
                 hinder.append(f"{service}: faktiskt erbjuden tjänst kräver bekräftad verksamhetsroll {', '.join(roller)}.")
+    styrelse = regelbas.tjanster.get('T-BOLAG-03')
+    if (styrelse and 'P-TJ.bolag03_tredjemansuppdrag' in regelbas.falt
+            and profil.ar_bekraftad(styrelse.erbjuds_falt)
+            and profil.uppgifter[styrelse.erbjuds_falt].varde is True
+            and kant('P-TJ.bolag03_tredjemansuppdrag') is not True):
+        hinder.append('P-TJ.bolag03_tredjemansuppdrag: bekräfta yrkesmässigt företrädaruppdrag på tredje mans vägnar inom tjänstens utlandsavgränsning; äldre breda styrelsesvar räcker inte.')
     for falt_id in ("P-VERK.trust", "P-VERK.nominell_aktieagare"):
-        if kant(falt_id) is True:
-            hinder.append(f"{falt_id}: tjänsten ligger utanför paketets avgränsning och kräver sakkunnig granskning.")
+        kant(falt_id)
+    hinder.extend(analysstodshinder(profil))
     punkter: set[int] = set()
     spar = []
     if not regelbas.tillamplighet:

@@ -18,7 +18,7 @@ def skapa_utkast(byramapp: Path, rb, leverantor) -> Path:
     profil = las_profil(byramapp)
     kontrollera_profiltext(profil)
     t = tackning(rb, profil)
-    if not t.komplett:
+    if not t.utkastklart:
         raise RiskanalysFel('Komplettera intaget före skrivning: ' + ', '.join(t.saknade) + '\n' + '\n'.join(t.hinder))
     historik = historikens_kontrollsumma(byramapp)
     kor_bedomning(byramapp,rb)

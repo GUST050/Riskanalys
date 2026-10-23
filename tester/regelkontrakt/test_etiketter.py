@@ -41,7 +41,7 @@ def test_varje_harledd_andel_har_ett_eget_namn():
 def test_falt_i_omfattningens_hindertexter_har_ett_eget_namn():
     # rattlig_omfattning skriver fält-ID i hindertexterna; id_till_namn byter dem mot kortnamn i D-ARB.2.
     rb = ladda_regelbas()
-    namnda = sorted(set(re.findall(r"P-[A-Z]+\.[a-z_]+", Path(tillsyn.__file__).read_text(encoding="utf-8"))))
+    namnda = sorted(set(re.findall(r"P-[A-Z]+\.[a-z0-9_]+", Path(tillsyn.__file__).read_text(encoding="utf-8"))))
     assert len(namnda) >= 8
     assert [i for i in namnda if i in rb.falt and not har_eget_namn(rb, i)] == []
     assert [i for i in namnda if i not in rb.falt] == []

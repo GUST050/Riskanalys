@@ -528,7 +528,7 @@ def test_repots_regelbas_scenariometod_ar_deterministisk():
     urval = valj(rb, profil.byra.regelpaket, profil.byra.datum, profil.byra.lan)
     forsta, andra = bedom(rb, urval, profil), bedom(rb, urval, profil)
     assert _summa(forsta) == _summa(andra)
-    assert forsta.regelbas_version == '2.0.0'
+    assert forsta.regelbas_version == '2.1.0'
     assert all(t.scenarier for t in forsta.tjanster if t.erbjuds)
 
 

@@ -15,6 +15,7 @@ from riskanalys.regelverk.modeller import (
     Bristmonster,
     Falt,
     Hot,
+    IndikatorLagreRisk,
     InventeradLydelse,
     Kalla,
     Kontroll,
@@ -91,6 +92,8 @@ def ladda_regelbas(rot: Path = STANDARD_REGELBAS) -> Regelbas:
     for namn, (relativ, modell) in LISTFILER.items():
         data[namn] = _poster(rot, [rot / relativ], modell, fel)
     data["krav"] = _poster(rot, sorted((rot / "krav").glob("*.yaml")), Krav, fel)
+    lagre = rot / 'kataloger/lagre_risk.yaml'
+    data['lagre_risk'] = _poster(rot, [lagre], IndikatorLagreRisk, fel) if lagre.exists() else {}
     data["regelpaket"] = _poster(rot, sorted((rot / "regelpaket").glob("*.yaml")), Regelpaket, fel, en_per_fil=True)
     inventarium = []
     for fil in sorted((rot / "inventering").glob("*.yaml")):

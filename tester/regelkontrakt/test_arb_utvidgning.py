@@ -29,7 +29,7 @@ from tester.fixturer.arb_kedja import (
 from tester.fixturer.m2 import DAG
 from tester.regelkontrakt.test_arb_erfarenhet_motivering import profil  # noqa: F401  pytest-fixtur
 
-FAKTORER = ('nara_relation','pep','komplex_agare','utlandsk_agare','ideell','kortlivad','overtagen','utan_mote','ombud','extern_kyc','hogrisktredjeland','korruption','svagt_aml','utsatt_omrade','utan_utbildning','ensam_roller','kundberoende','utkontraktering')
+FAKTORER = ('nara_relation','pep','komplex_agare','utlandsk_agare','ideell','kortlivad','overtagen','ombud','extern_kyc','hogrisktredjeland','korruption','svagt_aml','utsatt_omrade','utan_utbildning','ensam_roller','kundberoende','utkontraktering')
 # Historiska v5-tjänstavsnitt har sex underrubriker; v6 har två AI-delar, en lokal del och en nivådel.
 RUBRIKER_V5 = ('Beskrivning och omfattning','Hot och egna erfarenheter','Sårbarheter och motivering','Kontroller och effekt','Scenarier och osäkerheter','Slutsatser')
 RUBRIKER_V6 = ('Hot','Sårbarheter','Lokal analys och slutsats','Risknivå och motivering')
@@ -232,7 +232,7 @@ def test_ai_kontrollstatus_ar_tydlig_om_utebliven_effekt(regelbas_v1,profil):
     assert 'verkningslös' in u.kontroller[0].status and 'ingen riskreduktion' in u.kontroller[0].status
 
 @pytest.mark.parametrize('antal,faktor', [
-    ('P-KUND.antal_utan_mote','utan_mote'),
+
     ('P-GEO.antal_agare_utanfor_ees','utlandsk_agare'),
     ('P-GEO.antal_hogrisktredjeland','hogrisktredjeland'),
     ('P-GEO.antal_utsatt_omrade','utsatt_omrade'),

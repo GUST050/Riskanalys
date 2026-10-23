@@ -26,7 +26,10 @@ def test_alla_tjansters_fasta_val_ar_frivilliga_och_kallbundna(rb_intag, klar):
             assert not f.kritisk and not f.intag.obligatorisk
             assert f.intag.grund == 'metodval'
             assert f.intag.kallor == ('SRC-TS-2026-14', 'SRC-14FS-2024-11')
-            assert f.id in rb_intag.tillatelselistor['risk_per_tjanst'].falt
+            if tj.id in ('T-RED-08', 'T-RED-09'):
+                assert f.id not in rb_intag.tillatelselistor['risk_per_tjanst'].falt
+            else:
+                assert f.id in rb_intag.tillatelselistor['risk_per_tjanst'].falt
     p = klar.model_copy(update={'uppgifter': {k:u for k,u in klar.uppgifter.items()
         if not any(k.endswith('_' + suffix) for suffix in VAL)}})
     assert tackning(rb_intag, p).komplett

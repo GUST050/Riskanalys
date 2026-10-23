@@ -30,6 +30,7 @@ def validera(regelbas: Regelbas) -> list[str]:
         *_krav(regelbas),
         *_tjanster(regelbas),
         *_sarbarheter(regelbas),
+        *_lagre_risk(regelbas),
         *_kontroller(regelbas),
         *_kontrollrackvidd(regelbas),
         *_tillatelselistor(regelbas),
@@ -51,6 +52,7 @@ def _kallor(regelbas: Regelbas) -> list[str]:
     samlingar = (
         regelbas.hot,
         regelbas.sarbarheter,
+        regelbas.lagre_risk,
         regelbas.kontroller,
         regelbas.tjanster,
         regelbas.bristmonster,
@@ -304,4 +306,17 @@ def _tillamplighet(regelbas: Regelbas) -> list[str]:
             tolka_villkor(rad.villkor, regelbas.faltdefinitioner())
         except VillkorsFel as exc:
             fel.append(f"{rad.id}: {exc}")
+    return fel
+
+
+def _lagre_risk(regelbas: Regelbas) -> list[str]:
+    fel = []
+    for post in regelbas.lagre_risk.values():
+        fel += _saknas(post.id, post.profilfalt, regelbas.falt, 'fältet ')
+        for ref in post.kallhanvisningar:
+            if ref.kalla not in post.kallor:
+                fel.append(f'{post.id}: obunden källhänvisning {ref.kalla}.')
+        grupper = [g.grupp for g in post.landbedomningar]
+        if grupper and (len(set(grupper)) != 3 or len(grupper) != 3):
+            fel.append(f'{post.id}: landsbedömningen ska omfatta tre unika hemvistgrupper.')
     return fel

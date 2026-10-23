@@ -808,3 +808,132 @@
   - SRC-NRA-2024-25
   effekt_falt: P-KONTROLL.C-SANK.effekt
   utfall_falt: P-KONTROLL.C-SANK.utfall
+- id: C-TJ-12
+  namn: Kontroll av ansökningar om rot, rut och offentliga utbetalningar
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  utformning_falt: P-KONTROLL.C-TJ-12.utformning
+  genomforande_falt: P-KONTROLL.C-TJ-12.genomforande
+  grund: metodval
+  kallor: &id002
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-NRA-2024-25
+  kallhanvisningar: &id001
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  effekt_falt: P-KONTROLL.C-TJ-12.effekt
+  utfall_falt: P-KONTROLL.C-TJ-12.utfall
+  rackvidd:
+  - id: KR-C-TJ-12-T-RED-08
+    beskrivningsstatus: okand
+    tjanst: T-RED-08
+    hot:
+    - H-TJ-12
+    - H-01
+    - H-02
+    - H-03
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-03
+    - H-MOD-04
+    - H-MOD-05
+    - H-MOD-06
+    - H-MOD-07
+    - H-TF-01
+    - H-TF-02
+    - H-TF-03
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar: *id001
+    sakkunnig:
+      status: ej_granskad
+  riktar_sig_mot:
+  - tjanst: T-RED-08
+    hot:
+    - H-TJ-12
+    - H-01
+    - H-03
+    kallor: *id002
+    grund: metodval
+    motivering: Underlagsprövning riktas mot H-TJ-12, H-01 och H-03 i den faktiskt utförda tjänsten. Källorna
+      beskriver missbruk av underlag och behov av granskning; katalogkopplingen är metodtolkning. Övriga
+      modus och TF-hot är inte prövade kontrollmål och får ingen automatisk sänkning. Lokal räckvidd,
+      genomförande och effekt måste styrkas.
+  sakkunnig:
+    status: ej_granskad
+- id: C-TJ-13
+  namn: Kontroll av granskningsuppdrag utanför auktoriserad eller godkänd revision
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  utformning_falt: P-KONTROLL.C-TJ-13.utformning
+  genomforande_falt: P-KONTROLL.C-TJ-13.genomforande
+  grund: metodval
+  kallor: &id004
+  - SRC-NRA-2024-25
+  - SRC-VAGL-2025-03
+  kallhanvisningar: &id003
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Bokförings- och revisionstjänster
+    sida: 5
+  effekt_falt: P-KONTROLL.C-TJ-13.effekt
+  utfall_falt: P-KONTROLL.C-TJ-13.utfall
+  rackvidd:
+  - id: KR-C-TJ-13-T-RED-09
+    beskrivningsstatus: okand
+    tjanst: T-RED-09
+    hot:
+    - H-TJ-13
+    - H-01
+    - H-02
+    - H-03
+    - H-MOD-01
+    - H-MOD-02
+    - H-MOD-03
+    - H-MOD-04
+    - H-MOD-05
+    - H-MOD-06
+    - H-MOD-07
+    - H-TF-01
+    - H-TF-02
+    - H-TF-03
+    kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
+      men styrker inte vad en konkret tillämpning kan belägga.
+    begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
+    forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
+    grund: metodval
+    kallhanvisningar: *id003
+    sakkunnig:
+      status: ej_granskad
+  riktar_sig_mot:
+  - tjanst: T-RED-09
+    hot:
+    - H-TJ-13
+    - H-01
+    - H-03
+    kallor: *id004
+    grund: metodval
+    motivering: Underlagsprövning riktas mot H-TJ-13, H-01 och H-03 i den faktiskt utförda tjänsten. Källorna
+      beskriver missbruk av underlag och behov av granskning; katalogkopplingen är metodtolkning. Övriga
+      modus och TF-hot är inte prövade kontrollmål och får ingen automatisk sänkning. Lokal räckvidd,
+      genomförande och effekt måste styrkas.
+  sakkunnig:
+    status: ej_granskad

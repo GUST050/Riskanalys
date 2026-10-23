@@ -185,8 +185,15 @@ class Krav(Strikt):
 
 class Kallhanvisning(Strikt):
     kalla: str
-    avsnitt: str
-    sida: int = Field(ge=1)
+    avsnitt: str = Field(min_length=1)
+    sida: int | None = Field(default=None, ge=1)
+
+    @model_serializer(mode='wrap')
+    def serialisera(self, handler):
+        data = handler(self)
+        if self.sida is None:
+            data.pop('sida', None)
+        return data
 
 
 class Hot(Strikt):
@@ -270,6 +277,26 @@ class Sarbarhet(Strikt):
         if not self.hot:
             data.pop("hot", None)
         return data
+
+
+class Landbedomning(Strikt):
+    """Central bedömning av en hemvistgrupp; ingen kundvis landsprövning."""
+    grupp: Literal['sverige', 'ovriga_ees', 'utanfor_ees']
+    bedomning: Literal['kan_tala_for_lagre', 'underlag_saknas']
+    motivering: str = Field(min_length=1)
+
+
+class IndikatorLagreRisk(Strikt):
+    id: str
+    namn: str
+    beskrivning: str
+    profilfalt: tuple[str, ...] = Field(min_length=1)
+    grund: Literal['metodval']
+    kallor: tuple[str, ...] = Field(min_length=1)
+    kallhanvisningar: tuple[Kallhanvisning, ...] = Field(min_length=1)
+    landbedomningar: tuple[Landbedomning, ...] = ()
+    nivaeffekt: Literal[False] = False
+    sakkunnig: Sakkunnig = Sakkunnig()
 
 
 class Kontrollrackvidd(Strikt):
@@ -655,6 +682,14 @@ class Regelbas(BaseModel):
     sanktionsmetod: Sanktionsmetod | None = None
     kundmall: Kundmall | None = None
     facit: dict[str, Any] | None = None
+    lagre_risk: dict[str, IndikatorLagreRisk] = {}
+
+    @model_serializer(mode='wrap')
+    def serialisera(self, handler):
+        data = handler(self)
+        if not self.lagre_risk:
+            data.pop('lagre_risk', None)
+        return data
 
     @property
     def utokade_krav(self) -> bool:
@@ -682,6 +717,7 @@ class Regelbas(BaseModel):
             self.krav,
             self.hot,
             self.sarbarheter,
+            self.lagre_risk,
             self.kontroller,
             self.tjanster,
             self.bristmonster,

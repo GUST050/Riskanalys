@@ -239,7 +239,7 @@ def test_lokal_analys_tacker_alltid_varje_erbjuden_tjanst(api,komplett):
     assert any('tjänsteanalys saknas' in f for f in p.analysbrister(rb,profil,b,paket.model_copy(update={'tjanster':()})))
 
 
-def test_forifyllnad_fyrtjanstfall_har_12_scenarier_for_36_kopplingar(api,regelbas_v1,profil_fabrik):
+def test_forifyllnad_fyrtjanstfall_har_16_scenarier_for_52_kopplingar(api,regelbas_v1,profil_fabrik):
     m,p,u=api
     from tester.fixturer.m2 import komplett_profil
     from riskanalys.profil.modeller import Byra
@@ -258,9 +258,9 @@ def test_forifyllnad_fyrtjanstfall_har_12_scenarier_for_36_kopplingar(api,regelb
         regelbas=rb.kontrollsumma,kallunderlag='k',historik='',bedomningsdatum=b.datum,modell='m')
     paket=u.forifyll_analys(rb,profil,b,bind)
     assert len(paket.tjanster)==4
-    assert len(paket.gemensamma_scenarier)==8
+    assert len(paket.gemensamma_scenarier)==12
     assert sum(len(t.scenarier) for t in paket.tjanster)==4
-    assert sum(len(rb.tjanster[t.tjanst].hot) for t in paket.tjanster)==36
+    assert sum(len(rb.tjanster[t.tjanst].hot) for t in paket.tjanster)==52
     # The same data can display all six conditional blocks without inventing confirmations.
     aktiva=tuple(t.model_copy(update={'block':tuple(x.model_copy(update={'aktivering':'aktiv'}) for x in t.block)}) for t in paket.tjanster)
     assert sum(x.aktivering=='aktiv' for t in aktiva for x in t.block)==64

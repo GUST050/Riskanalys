@@ -143,7 +143,7 @@ def fragesida(s,id=None,data=None,fel=''):
 def oversikt(s,fel='',profil=None,qs=None):
     p=profil if profil is not None else s.tjanst.profil();t=s.tjanst.oversikt(p);qs=qs if qs is not None else fragor(s.tjanst.rb,p)
     vy=kompatibilitetsvy(p,s.tjanst.rb)
-    title='Underlag klart för utkast' if t.komplett else 'Sparade svar och kompletteringar'
+    title='Underlag klart för utkast' if t.utkastklart else 'Sparade svar och kompletteringar'
     html=f'<h1>{title}</h1>'+leverans()+f'<p>{t.besvarade} av {t.antal} aktuella frågor besvarade. Svaren är sparade och kan ändras nedan.</p>'
     if t.saknade:
         html+='<p>Fortsätt intervjun för att komplettera underlaget. Programmet kontrollerar sedan svaren tillsammans inför skrivningen.</p>'
@@ -160,7 +160,7 @@ def oversikt(s,fel='',profil=None,qs=None):
         if not q.falt.intag.obligatorisk:status += ' (frivilligt inför utkast)'
         html+=f'<tr><td>{e(q.falt.fraga)}</td><td>{e(value)}<br><small>{e(status)}; {e(u.kalla or u.motivering or "")}</small></td><td><a href="{s.prefix}?{urlencode({"falt":q.falt.id})}">Ändra<span class="hint"> svar</span></a></td></tr>'
     html+='</tbody></table>'
-    if t.komplett:
+    if t.utkastklart:
         html+='<h2>Skapa allmän riskbedömning som Word-utkast</h2><p>AI skriver riskavsnitten från tillåtna strukturerade uppgifter. Ett API-anrop till Claude kan kosta pengar. Beskrivningar sätts in lokalt. Resultatet är ett Word-utkast med granskningsbilaga vid öppna fynd.</p>'
         html+=f'<form method="post" action="{s.prefix}skriv">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('skrivtoken',s.skrivtoken(profilrevision(p)))+'<button>Skapa Word-utkast med Claude</button></form>'
     if s.utkast:

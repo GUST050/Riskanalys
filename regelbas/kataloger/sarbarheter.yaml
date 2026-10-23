@@ -101,10 +101,26 @@
   - SRC-TS-2026-14
   - SRC-NRA-2024-25
   - SRC-LST-GOR-ARB
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
   hot:
   - H-01
   - H-03
@@ -119,9 +135,18 @@
   - H-TJ-09
   - H-TJ-10
   - H-TJ-11
+  - H-TJ-12
+  - H-TJ-13
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
   metodmotivering: 'Scenariokoppling (ogranskat metodval): Självständigt arbete utan tillräcklig erfarenhet
     kan missa osanna underlag och avvikande flöden. De generiska tjänstehoten kopplas endast till denna
-    verksamhetsspecifika granskningssvaghet.'
+    verksamhetsspecifika granskningssvaghet. Samma granskningssvaghet prövas mot H-TJ-12 (oriktigt ansökningsunderlag)
+    och H-TJ-13 (vilseledande granskning). För H-MOD-05 kan offentliga ersättningar ges en falsk intäktsförklaring;
+    H-MOD-06 kan dölja sanktionsbrottsvinster; H-MOD-07 kan bryta spårbarheten till kryptoled. Brister
+    i kompetens, oberoende eller insyn kan låta dessa led passera. Kopplingarna är metodtolkning, inte
+    nya vikter eller bedömd kontrollverkan.'
   sakkunnig:
     status: ej_granskad
 - id: S-GEO-01
@@ -188,7 +213,7 @@
   sakkunnig:
     status: ej_granskad
 - id: S-TJ-01
-  namn: 'Transaktionsnära uppdrag: red05'
+  namn: Betalnings- och attestmandat
   omrade: tj
   grund: metodval
   villkor:
@@ -216,7 +241,7 @@
   sakkunnig:
     status: ej_granskad
 - id: S-TJ-02
-  namn: 'Transaktionsnära uppdrag: red06'
+  namn: Klientmedel i byråns namn
   omrade: tj
   grund: metodval
   villkor:
@@ -243,7 +268,7 @@
   sakkunnig:
     status: ej_granskad
 - id: S-TJ-03
-  namn: 'Transaktionsnära uppdrag: bolag01'
+  namn: Bolagsbildning och förmedling
   omrade: tj
   grund: metodval
   villkor:
@@ -272,7 +297,7 @@
   sakkunnig:
     status: ej_granskad
 - id: S-TJ-04
-  namn: 'Transaktionsnära uppdrag: bolag03'
+  namn: Företrädaruppdrag för tredje mans räkning
   omrade: tj
   grund: metodval
   villkor:
@@ -287,17 +312,15 @@
   - SRC-LST-GOR-ARB
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
-    avsnitt: '7.19'
-    sida: 123
-  - kalla: SRC-NRA-2024-25
-    avsnitt: 7.25 (scenariokoppling)
-    sida: 144
+    avsnitt: '7.27'
+    sida: 149
   ersatter: []
   hot:
   - H-TJ-11
   - H-MOD-03
   metodmotivering: 'Scenariokoppling (ogranskat metodval): Företrädarmandat kan legitimera bolag där någon
-    annan utövar den verkliga kontrollen.'
+    annan utövar den verkliga kontrollen. NRA 7.27, s. 149 beskriver avgränsningen men bedömer inte sektorns
+    hot eller sårbarhet; kopplingen och ett steg är ogranskade metodval.'
   sakkunnig:
     status: ej_granskad
 - id: S-ARB-01
@@ -521,33 +544,29 @@
   sakkunnig:
     status: ej_granskad
 - id: S-ARB-08
-  namn: Kundrelation etablerad utan fysiskt möte
-  beskrivning: Distanskontakt kan försvåra identitetsverifiering och förståelse av verksamheten.
-  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
-    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras. Bekräftad positiv kundandel aktiverar också indikatorn; ett
-    nej i indikatorfältet kan inte utesluta den exponeringen. Scenariokoppling (ogranskat metodval): Svag
-    verifiering vid distanskontakt kan skymma faktisk kund, företrädare och ändamålet med flöden eller
-    finansiering.'
+  namn: Distans utan tillförlitlig identitetssäkring
+  beskrivning: har distansrelationer eller distanstransaktioner utan metoder som tillförlitligt säkerställer
+    kundens identitet
+  metodmotivering: Kriteriet avser osäker identifiering, inte enbart uteblivet fysiskt möte. Tidigare
+    kanalsvar bevisar inte det nya kriteriet. Förekomstgräns över noll och ett steg är ogranskade metodval;
+    omprövas i D9.
   omrade: kanal
   grund: metodval
   villkor:
-    nagon:
-    - falt: P-RISK.utan_mote
-      op: ==
-      varde: true
-    - falt: P-KUND.andel_utan_mote
-      op: '>'
-      varde: 0
+    falt: P-KUND.antal_osaker_distansidentitet
+    op: '>'
+    varde: 0
   effekt:
     sannolikhet: 1
   galler: bada
   kallor:
+  - SRC-PTL
   - SRC-VAGL-2025-03
-  - SRC-LST-GOR-ARB
   kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 5 § p. 9
   - kalla: SRC-VAGL-2025-03
-    avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
+    avsnitt: Kundkännedom och distans
     sida: 18
   hot:
   - H-03
@@ -652,7 +671,7 @@
   sakkunnig:
     status: ej_granskad
 - id: S-ARB-12
-  namn: Relevant anknytning till land eller område med korruption
+  namn: Relevant hemvist eller anknytning med betydande korruption och annan relevant brottslighet
   beskrivning: Korruption kan försämra tillförlitligheten i identitets-, ägar- och transaktionsunderlag.
   metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
@@ -670,10 +689,13 @@
   kallor:
   - SRC-TS-2026-14
   - SRC-LST-GOR-ARB
+  - SRC-PTL
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 9
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 5 § p. 6
   hot:
   - H-03
   - H-MOD-03
@@ -749,7 +771,11 @@
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Utbildningsbrister
     kan göra falska fakturor och oförklarade utlandsflöden oupptäckta, enligt Länsstyrelsens exempel.
-    Verksamhetens kompetens behövs även för att känna igen varje tjänsts egna missbruk och TF-modus.'
+    Verksamhetens kompetens behövs även för att känna igen varje tjänsts egna missbruk och TF-modus. Samma
+    granskningssvaghet prövas mot H-TJ-12 (oriktigt ansökningsunderlag) och H-TJ-13 (vilseledande granskning).
+    För H-MOD-05 kan offentliga ersättningar ges en falsk intäktsförklaring; H-MOD-06 kan dölja sanktionsbrottsvinster;
+    H-MOD-07 kan bryta spårbarheten till kryptoled. Brister i kompetens, oberoende eller insyn kan låta
+    dessa led passera. Kopplingarna är metodtolkning, inte nya vikter eller bedömd kontrollverkan.'
   omrade: verk
   grund: metodval
   villkor:
@@ -762,10 +788,26 @@
   kallor:
   - SRC-TS-2026-14
   - SRC-LST-GOR-ARB
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 10
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
   hot:
   - H-01
   - H-03
@@ -783,6 +825,11 @@
   - H-TJ-09
   - H-TJ-10
   - H-TJ-11
+  - H-TJ-12
+  - H-TJ-13
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
   sakkunnig:
     status: ej_granskad
 - id: S-ARB-16
@@ -792,7 +839,12 @@
   metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): När utförare och kontrollant
-    är samma person saknas oberoende ifrågasättande av underlag, flöden, ägarbild och tjänstens eget missbruk.'
+    är samma person saknas oberoende ifrågasättande av underlag, flöden, ägarbild och tjänstens eget missbruk.
+    Samma granskningssvaghet prövas mot H-TJ-12 (oriktigt ansökningsunderlag) och H-TJ-13 (vilseledande
+    granskning). För H-MOD-05 kan offentliga ersättningar ges en falsk intäktsförklaring; H-MOD-06 kan
+    dölja sanktionsbrottsvinster; H-MOD-07 kan bryta spårbarheten till kryptoled. Brister i kompetens,
+    oberoende eller insyn kan låta dessa led passera. Kopplingarna är metodtolkning, inte nya vikter eller
+    bedömd kontrollverkan.'
   omrade: verk
   grund: metodval
   villkor:
@@ -805,10 +857,26 @@
   kallor:
   - SRC-TS-2026-14
   - SRC-LST-GOR-ARB
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 10
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
   hot:
   - H-01
   - H-03
@@ -825,6 +893,11 @@
   - H-TJ-09
   - H-TJ-10
   - H-TJ-11
+  - H-TJ-12
+  - H-TJ-13
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
   sakkunnig:
     status: ej_granskad
 - id: S-ARB-17
@@ -834,7 +907,11 @@
   metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Kundberoende kan försvåra
-    kritiska frågor om underlag, medelsursprung, ägande och tjänstens egna arbetsmoment.'
+    kritiska frågor om underlag, medelsursprung, ägande och tjänstens egna arbetsmoment. Samma granskningssvaghet
+    prövas mot H-TJ-12 (oriktigt ansökningsunderlag) och H-TJ-13 (vilseledande granskning). För H-MOD-05
+    kan offentliga ersättningar ges en falsk intäktsförklaring; H-MOD-06 kan dölja sanktionsbrottsvinster;
+    H-MOD-07 kan bryta spårbarheten till kryptoled. Brister i kompetens, oberoende eller insyn kan låta
+    dessa led passera. Kopplingarna är metodtolkning, inte nya vikter eller bedömd kontrollverkan.'
   omrade: verk
   grund: metodval
   villkor:
@@ -847,10 +924,26 @@
   kallor:
   - SRC-TS-2026-14
   - SRC-LST-GOR-ARB
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 10
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
   hot:
   - H-01
   - H-02
@@ -867,6 +960,11 @@
   - H-TJ-09
   - H-TJ-10
   - H-TJ-11
+  - H-TJ-12
+  - H-TJ-13
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
   sakkunnig:
     status: ej_granskad
 - id: S-ARB-18
@@ -876,7 +974,11 @@
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Utkontraktering kan
     ge insynsgap i underlagsgranskning, flödesuppföljning, kundkännedom och de egna tjänstemomenten; ansvar
-    och vaksamhet kvarstår.'
+    och vaksamhet kvarstår. Samma granskningssvaghet prövas mot H-TJ-12 (oriktigt ansökningsunderlag)
+    och H-TJ-13 (vilseledande granskning). För H-MOD-05 kan offentliga ersättningar ges en falsk intäktsförklaring;
+    H-MOD-06 kan dölja sanktionsbrottsvinster; H-MOD-07 kan bryta spårbarheten till kryptoled. Brister
+    i kompetens, oberoende eller insyn kan låta dessa led passera. Kopplingarna är metodtolkning, inte
+    nya vikter eller bedömd kontrollverkan.'
   omrade: verk
   grund: metodval
   villkor:
@@ -889,10 +991,26 @@
   kallor:
   - SRC-TS-2026-14
   - SRC-LST-GOR-ARB
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-FIPO-AR-2025
+  - SRC-FIPO-FORETAG-2026
   kallhanvisningar:
   - kalla: SRC-TS-2026-14
     avsnitt: Riskfaktor / metodtolkning; fysisk PDF-sida
     sida: 8
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
   hot:
   - H-01
   - H-03
@@ -909,5 +1027,147 @@
   - H-TJ-09
   - H-TJ-10
   - H-TJ-11
+  - H-TJ-12
+  - H-TJ-13
+  - H-MOD-05
+  - H-MOD-06
+  - H-MOD-07
+  sakkunnig:
+    status: ej_granskad
+- id: S-ARB-19
+  namn: Kunder som har nominella aktieägare eller andelar utställda på innehavaren
+  beskrivning: Kundegenskap enligt PTL 2:5 p. 3; ingen slutsats om brott.
+  metodmotivering: 'Ogranskat metodval: bekräftat kundantal över noll aktiverar faktorn; okänt gäller
+    preliminärt. Effekt ett steg och tjänstevis relevans ska prövas i D3/D9. Ingen ny kalibrering görs
+    här.'
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-KUND.antal_nominella_agare
+    op: '>'
+    varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-PTL
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 5 § p. 3
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
+- id: S-ARB-20
+  namn: Kunder som är juridiska personer, truster eller liknande konstruktioner med syfte att förvalta
+    en viss fysisk persons tillgångar
+  beskrivning: Kundegenskap enligt PTL 2:5 p. 4; ingen slutsats om brott.
+  metodmotivering: 'Ogranskat metodval: bekräftat kundantal över noll aktiverar faktorn; okänt gäller
+    preliminärt. Effekt ett steg och tjänstevis relevans ska prövas i D3/D9. Ingen ny kalibrering görs
+    här.'
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-KUND.antal_personlig_formogenhet
+    op: '>'
+    varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-PTL
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 5 § p. 4
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  sakkunnig:
+    status: ej_granskad
+- id: S-ARB-21
+  namn: Kunder som har hemvist i en stat under sanktioner, embargo eller liknande åtgärder
+  beskrivning: Kundegenskap enligt PTL 2:5 p. 7; ingen slutsats om brott.
+  metodmotivering: 'Ogranskat metodval: bekräftat kundantal över noll aktiverar faktorn; okänt gäller
+    preliminärt. Effekt ett steg och tjänstevis relevans ska prövas i D3/D9. Ingen ny kalibrering görs
+    här.'
+  omrade: geo
+  grund: metodval
+  villkor:
+    falt: P-KUND.antal_sanktionshemvist
+    op: '>'
+    varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-PTL
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 5 § p. 7
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-MOD-06
+  sakkunnig:
+    status: ej_granskad
+- id: S-ARB-22
+  namn: Kunder som har hemvist i en stat som finansierar eller stöder terrorism eller där terroristorganisationer
+    verkar
+  beskrivning: Kundegenskap enligt PTL 2:5 p. 8; ingen slutsats om brott.
+  metodmotivering: 'Ogranskat metodval: bekräftat kundantal över noll aktiverar faktorn; okänt gäller
+    preliminärt. Effekt ett steg och tjänstevis relevans ska prövas i D3/D9. Ingen ny kalibrering görs
+    här.'
+  omrade: geo
+  grund: metodval
+  villkor:
+    falt: P-KUND.antal_terrorhemvist
+    op: '>'
+    varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-PTL
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 5 § p. 8
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-TF-01
+  - H-TF-02
+  sakkunnig:
+    status: ej_granskad
+- id: S-ARB-23
+  namn: Kunder som har relevanta betalningar för varor eller tjänster från någon okänd eller utan koppling
+    till kunden
+  beskrivning: Kundegenskap enligt PTL 2:5 p. 10; ingen slutsats om brott.
+  metodmotivering: 'Ogranskat metodval: bekräftat kundantal över noll aktiverar faktorn; okänt gäller
+    preliminärt. Effekt ett steg och tjänstevis relevans ska prövas i D3/D9. Ingen ny kalibrering görs
+    här.'
+  omrade: kund
+  grund: metodval
+  villkor:
+    falt: P-KUND.antal_okand_betalare
+    op: '>'
+    varde: 0
+  effekt:
+    sannolikhet: 1
+  galler: bada
+  kallor:
+  - SRC-PTL
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 5 § p. 10
+  hot:
+  - H-03
+  - H-MOD-03
+  - H-TF-03
+  - H-MOD-01
   sakkunnig:
     status: ej_granskad

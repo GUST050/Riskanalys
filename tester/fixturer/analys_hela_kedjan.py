@@ -53,6 +53,8 @@ def _profil(rb):
                      'P-KUND.antal_juridisk':60,'P-GEO.antal_utland_transaktion':6,
                      'P-VERK.antal_avbojanden':1}.items():
         upp[id]=upp[id].model_copy(update={'varde':varde})
+    if 'P-GEO.antal_hemvist_sverige' in upp:
+        upp['P-GEO.antal_hemvist_sverige']=upp['P-GEO.antal_hemvist_sverige'].model_copy(update={'varde':upp['P-KUND.antal_aktiva'].varde})
     return harled_andelar(profil.model_copy(update={'uppgifter':upp}),rb)
 
 
@@ -314,9 +316,12 @@ def syntetisk_expertkopia(rot):
     from riskanalys.regelverk.laddning import ladda_regelbas
     regelrot,env=expertkopia(rot,'RP-RED-VG')
     fil=regelrot/'kataloger/kontroller.yaml';data=yaml.safe_load(fil.read_text())
+    tjanster={t['id']:t for t in yaml.safe_load((regelrot/'kataloger/tjanster.yaml').read_text())}
     for c in data:
         for r in c.get('rackvidd',[]):
             if r['tjanst'] in TJANSTER:
+                # Endast expertkopian antar räckvidd för hela aktuella tjänstekatalogen.
+                r['hot']=list(tjanster[r['tjanst']]['hot'])
                 r['beskrivningsstatus']='beskriven'
                 r['kan_belagga']='Syntetiskt antaget scenarioomfång enbart för positivt tekniskt kedjeprov; inget verkligt käll- eller M1-facit.'
                 r['begransningar']='Syntetisk testförutsättning. Får aldrig överföras till riktig regelbas eller byrå.'

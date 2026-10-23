@@ -54,7 +54,7 @@ def m2fel(rb: Regelbas) -> list[str]:
         for ref in (post.effekt_falt, post.utfall_falt):
             if ref and ref not in rb.falt:
                 fel.append(f'{post.id}: okänt effektfält {ref}.')
-    for samling in (rb.hot, rb.sarbarheter, rb.kontroller, rb.tjanster):
+    for samling in (rb.hot, rb.sarbarheter, rb.kontroller, rb.tjanster, rb.lagre_risk):
         for post in samling.values():
             if getattr(post, 'effekt', None) or hasattr(post, 'grund_sannolikhet'):
                 if post.grund != 'metodval':
@@ -97,7 +97,7 @@ def attesthinder(rb: Regelbas, paket_id: str) -> list[str]:
     from riskanalys.regelverk.sakkunnig import granskningsobjekt
 
     summor = granskningsobjekt(rb, paket_id)
-    objekt = [post for samling in (rb.hot, rb.sarbarheter, rb.kontroller, rb.tjanster) for post in samling.values()]
+    objekt = [post for samling in (rb.hot, rb.sarbarheter, rb.kontroller, rb.tjanster, rb.lagre_risk) for post in samling.values()]
     objekt += [r for kontroll in rb.kontroller.values() for r in kontroll.rackvidd]
     # Paketets granskning omfattar även krav som inte gäller just denna profil.
     # Ett ändringskrav på gemensamt innehåll får inte döljas av galler_om.

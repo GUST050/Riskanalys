@@ -96,7 +96,7 @@ def test_d9_sammanfattas_en_gang_per_tjanst_med_samtliga_spar(direkt):
   if not t.erbjuds:continue
   d9=[x for x in tjanstens_tillampningsstycken(f.rb,f.profil,f.paket,t) if 'D9 C' in x.text]
   assert len(d9)==1
-  assert '16 gemensamma faktorer' in d9[0].text and 'B1' in d9[0].text
+  assert '22 gemensamma faktorer' in d9[0].text and 'B1' in d9[0].text
   assert len(d9[0].text.split())<100
   for r in harled_riktningar(f.rb,f.profil,f.paket,t):
    if r.riktning not in ('under_troskel','villkor_ej_uppfyllt'):continue

@@ -29,7 +29,12 @@ class Tackning:
     besvarade: int
     saknade: tuple[str, ...]
     hinder: tuple[str, ...]
+    endast_faststallelse: tuple[str, ...] = ()
 
     @property
     def komplett(self) -> bool:
         return not self.saknade and not self.hinder
+
+    @property
+    def utkastklart(self) -> bool:
+        return not self.saknade and not any(h not in self.endast_faststallelse for h in self.hinder)

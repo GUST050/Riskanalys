@@ -1,0 +1,145 @@
+- id: L-PTL-04-01
+  namn: Offentlig kund eller rättsligt bestämmande offentligt inflytande
+  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
+    nivåeffekt prövas i steg D.
+  profilfalt:
+  - P-KUND.antal_offentlig
+  grund: metodval
+  kallor:
+  - SRC-PTL
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 4 § p. 1
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19: verksamhetsspecifik prövning'
+    sida: 124
+  nivaeffekt: false
+  sakkunnig:
+    status: ej_granskad
+- id: L-PTL-04-02
+  namn: Hemvist inom EES
+  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
+    nivåeffekt prövas i steg D.
+  profilfalt:
+  - P-GEO.antal_hemvist_sverige
+  - P-GEO.antal_hemvist_ovriga_ees
+  - P-GEO.antal_hemvist_utanfor_ees
+  grund: metodval
+  kallor:
+  - SRC-PTL
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 4 § p. 2
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19: verksamhetsspecifik prövning'
+    sida: 124
+  nivaeffekt: false
+  sakkunnig:
+    status: ej_granskad
+  landbedomningar:
+  - grupp: sverige
+    bedomning: kan_tala_for_lagre
+    motivering: Hemvistgruppen omfattas av PTL 2:4 p. 2; ingen automatisk sänkning.
+  - grupp: ovriga_ees
+    bedomning: kan_tala_for_lagre
+    motivering: Hemvistgruppen omfattas av PTL 2:4 p. 2; ingen automatisk sänkning.
+  - grupp: utanfor_ees
+    bedomning: underlag_saknas
+    motivering: Gruppantal styrker inte villkoren i denna punkt. Ingen bedömning per kund begärs. Effektiv
+      tillämpning respektive låg korruption och annan relevant brottslighet är inte styrkta för gruppen
+      av det lästa underlaget; central bedömning förblir okänd.
+- id: L-PTL-04-03
+  namn: Motsvarande och effektivt tillämpade AML/TF-bestämmelser
+  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
+    nivåeffekt prövas i steg D.
+  profilfalt:
+  - P-GEO.antal_hemvist_sverige
+  - P-GEO.antal_hemvist_ovriga_ees
+  - P-GEO.antal_hemvist_utanfor_ees
+  grund: metodval
+  kallor:
+  - SRC-PTL
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 4 § p. 3
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19: verksamhetsspecifik prövning'
+    sida: 124
+  nivaeffekt: false
+  sakkunnig:
+    status: ej_granskad
+  landbedomningar:
+  - grupp: sverige
+    bedomning: underlag_saknas
+    motivering: Gruppantal styrker inte villkoren i denna punkt. Ingen bedömning per kund begärs. Effektiv
+      tillämpning respektive låg korruption och annan relevant brottslighet är inte styrkta för gruppen
+      av det lästa underlaget; central bedömning förblir okänd.
+  - grupp: ovriga_ees
+    bedomning: underlag_saknas
+    motivering: Gruppantal styrker inte villkoren i denna punkt. Ingen bedömning per kund begärs. Effektiv
+      tillämpning respektive låg korruption och annan relevant brottslighet är inte styrkta för gruppen
+      av det lästa underlaget; central bedömning förblir okänd.
+  - grupp: utanfor_ees
+    bedomning: underlag_saknas
+    motivering: Gruppantal styrker inte villkoren i denna punkt. Ingen bedömning per kund begärs. Effektiv
+      tillämpning respektive låg korruption och annan relevant brottslighet är inte styrkta för gruppen
+      av det lästa underlaget; central bedömning förblir okänd.
+- id: L-PTL-04-04
+  namn: Låg korruption och annan relevant brottslighet
+  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
+    nivåeffekt prövas i steg D.
+  profilfalt:
+  - P-GEO.antal_hemvist_sverige
+  - P-GEO.antal_hemvist_ovriga_ees
+  - P-GEO.antal_hemvist_utanfor_ees
+  grund: metodval
+  kallor:
+  - SRC-PTL
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 4 § p. 4
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19: verksamhetsspecifik prövning'
+    sida: 124
+  nivaeffekt: false
+  sakkunnig:
+    status: ej_granskad
+  landbedomningar:
+  - grupp: sverige
+    bedomning: underlag_saknas
+    motivering: Gruppantal styrker inte villkoren i denna punkt. Ingen bedömning per kund begärs. Effektiv
+      tillämpning respektive låg korruption och annan relevant brottslighet är inte styrkta för gruppen
+      av det lästa underlaget; central bedömning förblir okänd.
+  - grupp: ovriga_ees
+    bedomning: underlag_saknas
+    motivering: Gruppantal styrker inte villkoren i denna punkt. Ingen bedömning per kund begärs. Effektiv
+      tillämpning respektive låg korruption och annan relevant brottslighet är inte styrkta för gruppen
+      av det lästa underlaget; central bedömning förblir okänd.
+  - grupp: utanfor_ees
+    bedomning: underlag_saknas
+    motivering: Gruppantal styrker inte villkoren i denna punkt. Ingen bedömning per kund begärs. Effektiv
+      tillämpning respektive låg korruption och annan relevant brottslighet är inte styrkta för gruppen
+      av det lästa underlaget; central bedömning förblir okänd.
+- id: L-PTL-04-05
+  namn: Överlåtbara värdepapper på reglerad eller motsvarande marknad
+  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
+    nivåeffekt prövas i steg D.
+  profilfalt:
+  - P-KUND.antal_reglerad_marknad
+  grund: metodval
+  kallor:
+  - SRC-PTL
+  - SRC-NRA-2024-25
+  kallhanvisningar:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 4 § p. 5
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19: verksamhetsspecifik prövning'
+    sida: 124
+  nivaeffekt: false
+  sakkunnig:
+    status: ej_granskad

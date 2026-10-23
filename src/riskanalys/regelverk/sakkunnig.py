@@ -38,7 +38,7 @@ def granskningsobjekt(rb: Regelbas, paket_id: str) -> dict[str, str]:
     rb.paketets_innehallssumma(paket_id)  # Kontrollera ID före åtkomst till paketet.
     objekt = {k: rb.kravets_innehallssumma(k) for k in rb.regelpaket[paket_id].krav}
     objekt['PARAGRAFKARTA'] = rb.kartans_innehallssumma(paket_id)
-    for namn in ('hot', 'sarbarheter', 'kontroller', 'tjanster'):
+    for namn in ('hot', 'sarbarheter', 'kontroller', 'tjanster', 'lagre_risk'):
         for id, post in getattr(rb, namn).items():
             objekt[id] = _summa(utan_granskningsmetadata(post.model_dump(mode='json')))
     for kontroll in rb.kontroller.values():
@@ -107,6 +107,7 @@ def _granskningsinstruktion(mall: Granskningsbeslut) -> str:
         'tabell 1 i tre FS-PDF:er måste kontrolleras manuellt. '
         'EU269 är avgränsat till artikel 2 med ett återgivet engelskt EUT-källutdrag; kontrollera '
         'autentiskt original, ägande/kontroll och individuella undantag/tillstånd. '
+        'Källavvikelse: marsvägledningens fotnot anger 01FS 2024:53; den lästa primärföreskriften och Stockholms myndighetssida anger 01FS 2024:20. Kontrollera mot primärkällan. '
         'Andra sanktionsprogram omfattas inte. C-förslaget är ingen frigiven produktionsformel '
         'och ska kompletteras och prövas i M3.\n\n'
         'Granskningsbesluten innehåller personuppgifter och sparas lokalt utanför offentligt Git. '
@@ -184,7 +185,7 @@ def applicera_attester(rb: Regelbas, b: Granskningsbeslut) -> Regelbas:
         'paragrafkarta': paket.paragrafkarta.model_copy(update={'sakkunnig': attest('PARAGRAFKARTA')}),
     })
     updates = {'krav': krav, 'regelpaket': {**rb.regelpaket, b.paket: paket}}
-    for namn in ('hot', 'sarbarheter', 'kontroller', 'tjanster'):
+    for namn in ('hot', 'sarbarheter', 'kontroller', 'tjanster', 'lagre_risk'):
         updates[namn] = {
             k: v.model_copy(update={'sakkunnig': attest(k, v.sakkunnig)}) for k, v in getattr(rb, namn).items()
         }

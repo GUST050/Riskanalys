@@ -20,7 +20,7 @@
 - id: H-02
   namn: Brottsvinster redovisas som intäkter
   beskrivning: Pengar från brott blandas in i en lagligt bedriven verksamhet och redovisas som försäljning,
-    så att de ser legala ut.
+    så att de ser legala ut. Lön och utdelning kan sedan ge brottsmedlen en legitim förklaring.
   kallor:
   - SRC-VAGL-2025-03
   - SRC-NRA-2024-25
@@ -39,7 +39,8 @@
 - id: H-03
   namn: Oförklarade in- och utflöden
   beskrivning: Insättningar, uttag och överföringar saknar underlag eller affärsmässig förklaring och
-    kan dölja penningtvätt eller finansiering av terrorism.
+    kan dölja penningtvätt eller finansiering av terrorism. Oförklarade lån, aktieägartillskott, apport,
+    värdeavvikelser och långsamma koncernkedjor omfattas också.
   galler_tf: true
   kallor:
   - SRC-VAGL-2025-03
@@ -49,6 +50,9 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Investeringar, tillskott och underlag
+    sida: 20
   niva: medel
   nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
     relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
@@ -111,13 +115,19 @@
 - id: H-TJ-04
   namn: Utnyttjande av lönehantering
   beskrivning: Osanna löner kan legitimera brottsvinster; osanna fakturor kan finansiera svart arbetskraft.
+    Även falska löneuppgifter kan användas som underlag för offentliga ersättningar; mandat och faktisk
+    insyn ska prövas.
   grund: metodval
   kallor:
   - SRC-NRA-2024-25
+  - SRC-BRA-2025-20
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska löneuppgifter och offentliga ersättningar
+    sida: 90
   niva: medel
   nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
     relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
@@ -181,6 +191,7 @@
 - id: H-TJ-08
   namn: Utnyttjande av skatterådgivning utöver deklarationer
   beskrivning: Komplexa företagsstrukturer, brevlådeföretag och slussbolag kan dölja pengars ursprung.
+    Rådgivning kan även möjliggöra underground banking i PT-upplägg; TF-ändamålet prövas separat.
   grund: metodval
   kallor:
   - SRC-NRA-2024-25
@@ -188,6 +199,9 @@
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.20'
     sida: 126
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.20: underground banking'
+    sida: 127
   niva: medel
   nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.20, s. 126) beskriver tillvägagångssättets
     relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
@@ -232,20 +246,21 @@
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-11
-  namn: Utnyttjande av styrelseuppdrag eller bolagsrättsligt ansvar
-  beskrivning: Företrädaruppdrag kan möjliggöra bolag som brottsverktyg och dölja den faktiska kontrollen.
+  namn: Utnyttjande av företrädaruppdrag för tredje mans räkning
+  beskrivning: Företrädaruppdrag på tredje mans vägnar kan dölja faktisk kontroll och ge bolag eller transaktioner
+    legitimitet. Vanligt eget styrelseuppdrag är inte denna tjänst. Sektorn har inte hotbedömts i NRA
+    7.27.
   grund: metodval
   kallor:
   - SRC-NRA-2024-25
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
-    avsnitt: '7.25'
-    sida: 144
+    avsnitt: '7.27'
+    sida: 149
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.25, s. 144) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: Medel är ett ogranskat standardvärde. NRA 7.27, s. 149 har inte hot- eller sårbarhetsbedömt
+    sektorn. Ingen frekvens eller nivå hämtas från bolagsbildning i 7.25. Värdet måste prövas i C/D; en
+    egen iakttagelse kan höja ett steg medan frånvaro inte sänker.
   sakkunnig:
     status: ej_granskad
 - id: H-MOD-01
@@ -310,19 +325,25 @@
   namn: Snabba direktbetalningar och skiktning
   beskrivning: Brottsvinster från bedrägerier eller narkotika delas mellan många konton och flyttas snabbt
     vidare. Bokföring, attest och avstämning behöver förstå sambandet mellan mottagare, affär och vidarebetalning.
+    Även andra direktbetalningar och plattforms-/PSP-led kan fragmentera insynen; snabb betalning ensam
+    är inte brott.
   kallor:
   - SRC-FIPO-SWISH-2025
+  - SRC-FIPO-PLATTFORM-2026
   grund: metodval
   galler_tf: false
   kallhanvisningar:
   - kalla: SRC-FIPO-SWISH-2025
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 1
+  - kalla: SRC-FIPO-PLATTFORM-2026
+    avsnitt: Virtuella värden och PSP-led
+    sida: 3
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-SWISH-2025 (Tillvägagångssätt, fysisk PDF-sida 1) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-SWISH-2025 (Tillvägagångssätt, fysisk
+    PDF-sida 1) beskriver tillvägagångssättets relevans, men ger inte en tillräckligt avgränsad frekvensbedömning
+    för detta hot i de berörda tjänsterna. Sektorns samlade risk likställs inte med hotnivån för ett enskilt
+    modus. En egen iakttagelse kan höja nivån ett steg; frånvaro sänker inte.
   sakkunnig:
     status: ej_granskad
 - id: H-TF-01
@@ -386,5 +407,112 @@
     relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
     Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
     nivån ett steg; frånvaro sänker inte.
+  sakkunnig:
+    status: ej_granskad
+- id: H-MOD-05
+  namn: Oriktiga underlag för offentliga utbetalningar
+  beskrivning: Oriktiga bokförings-, löne- eller ansökningsunderlag kan användas för att tillskansa sig
+    offentliga medel. Brottsvinster kan därefter döljas som legitima intäkter eller föras vidare genom
+    byråns redovisning och betalningsuppdrag. Ett ansökningsfel är inte i sig penningtvätt.
+  kallor:
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  grund: metodval
+  kallhanvisningar:
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  dimensioner:
+  - pt
+  niva: medel
+  nivamotivering: Ogranskat standardvärde medel. Källan beskriver relevans och möjliga mekanismer, inte
+    tillräckligt avgränsad hotfrekvens för varje byråtjänst. Nivån prövas i steg C.
+  sakkunnig:
+    status: ej_granskad
+- id: H-MOD-06
+  namn: Brottsvinster från sanktionsbrott döljs i företagsflöden
+  beskrivning: Brottsvinster från sanktionsbrott kan tvättas genom skenbara affärshändelser, dolda motparter
+    och transaktionskedjor som bokförs, struktureras eller verkställs med byråns tjänster. Den rättsliga
+    grunden för hotposten är penningtvätt av brottsvinster, inte en listträff eller allmän sanktionsanknytning.
+    Tjänstekedjan är en ogranskad metodtolkning; övrig sanktionsprövning ligger separat.
+  kallor:
+  - SRC-FIPO-AR-2025
+  grund: metodval
+  kallhanvisningar:
+  - kalla: SRC-FIPO-AR-2025
+    avsnitt: Penningtvätt med koppling till sanktionsbrott
+    sida: 10
+  dimensioner:
+  - pt
+  niva: medel
+  nivamotivering: Ogranskat standardvärde medel. Källan beskriver relevans och möjliga mekanismer, inte
+    tillräckligt avgränsad hotfrekvens för varje byråtjänst. Nivån prövas i steg C.
+  sakkunnig:
+    status: ej_granskad
+- id: H-MOD-07
+  namn: Brottsursprung döljs via krypto i företagsflöden
+  beskrivning: Företagsmedel kan föras mellan bankkonton, utlandsled och kryptoplånböcker så att brottsursprunget
+    blir svårt att följa. Bokföring, avstämning, betalningsuppdrag eller skatteråd kan ge flödet en skenbar
+    legal förklaring. Detta är PT-dimensionen; TF via samma kanaler behandlas separat i H-TF-02.
+  kallor:
+  - SRC-FIPO-FORETAG-2026
+  grund: metodval
+  kallhanvisningar:
+  - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Kopplingar mellan företag och kryptovaluta
+    sida: 2
+  dimensioner:
+  - pt
+  niva: medel
+  nivamotivering: Ogranskat standardvärde medel. Källan beskriver relevans och möjliga mekanismer, inte
+    tillräckligt avgränsad hotfrekvens för varje byråtjänst. Nivån prövas i steg C.
+  sakkunnig:
+    status: ej_granskad
+- id: H-TJ-12
+  namn: Utnyttjande av ansökningar om rot, rut och offentliga utbetalningar
+  beskrivning: Oriktiga ansökningar och underlag kan ge offentliga utbetalningar och dölja brottsvinster
+    som legitim verksamhet.
+  kallor:
+  - SRC-MYND-OB-2025
+  - SRC-BRA-2025-20
+  - SRC-NRA-2024-25
+  grund: metodval
+  kallhanvisningar:
+  - kalla: SRC-MYND-OB-2025
+    avsnitt: Brott mot välfärdssystemen
+    sida: 20
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och anställningsstöd
+    sida: 90
+  dimensioner:
+  - pt
+  niva: medel
+  nivamotivering: Ogranskat standardvärde medel, inte avläst sektorsrisk. Avgränsat frekvensunderlag saknas;
+    prövas i C.
+  sakkunnig:
+    status: ej_granskad
+- id: H-TJ-13
+  namn: Utnyttjande av granskningsuppdrag utanför auktoriserad eller godkänd revision
+  beskrivning: En felaktig eller vilseledande granskning kan ge osanna uppgifter och tillgångsvärden legitimitet
+    så att brottsvinster döljs.
+  kallor:
+  - SRC-NRA-2024-25
+  - SRC-VAGL-2025-03
+  grund: metodval
+  kallhanvisningar:
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-VAGL-2025-03
+    avsnitt: Bokförings- och revisionstjänster
+    sida: 5
+  dimensioner:
+  - pt
+  niva: medel
+  nivamotivering: Ogranskat standardvärde medel, inte avläst sektorsrisk. Avgränsat frekvensunderlag saknas;
+    prövas i C.
   sakkunnig:
     status: ej_granskad

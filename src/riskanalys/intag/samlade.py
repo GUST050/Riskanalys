@@ -10,6 +10,7 @@ from riskanalys.regelverk.modeller import Falt
 
 
 RUBRIKER = {
+    'hemvist': 'Kundernas fördelning på hemvist – Sverige, övriga EES och utanför EES',
     'verksamhet': 'Byråns verksamhet och organisation',
     'beskrivningar': 'Beskriv byråns arbetssätt',
     'kunder': 'Kundstatistik, kanaler och geografi',
@@ -31,6 +32,8 @@ def grupp_for(rb, f):
     """Avgränsa uttryckligt: inga kontrollfaser, härledda fält eller tjänsteval."""
     if f.typ not in ('text', 'bool', 'heltal', 'tal'):
         return None
+    if f.id.startswith('P-GEO.antal_hemvist_'):
+        return 'hemvist'
     if egen_kannedom_tillaten(f):
         if f.id.startswith(('P-ORG.', 'P-ROLL.', 'P-VERK.')):
             return 'verksamhet'
