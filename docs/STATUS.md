@@ -1,10 +1,10 @@
-# Slutverifiering C–D och V10, E inväntar PDF-kontrollen
+# E färdigt för granskning – ny fullsvit pågår
 
-Regelbas **2.12.1**, tio provisoriska metodbeslut, samtliga `ej_granskad`. Fyra P2 från samlad kodreview är rättade med RED→GREEN; även publik bygg_arb väljer V10. Nybindning omfattar 244 appfiler per beslut. [Samlat granskningsunderlag](superpowers/reviews/2026-10-23-metodbeslut-samlat.md).
+Regelbas **2.12.2**, kodcommit `508f8c6`. Användaren har godkänt båda referens-PDF:erna efter D och gett klartecken till E. [Guiden](sakkunniggranskning.md) och [tre sakkunnigpaket](superpowers/reviews/2026-10-23-regelbas-steg-e.md) är färdiga: 276 obesvarade objekt, 526 manifestbundna filer, 244 appfiler, tolv fasta profiler, 40 kontrastprofiler och sex referens-PDF:er per region. Samlad C–E-review klar, inga kvarstående E-fynd. Alla regelobjekt fortsatt `ej_granskad`.
 
-**Riktat: 26 godkända/26,93 s** för reviewrättningarna och **96 godkända/185,50 s** för CLI, V8/V9/V10-fastställelse, scenario/reduktion och rapportkontrakt. **Snabb: 140 godkända/60,522 s**, collection/JUnit matchar och snapshot oförändrat. Inga fel eller överhoppade i dessa sista körningar. Tidigare fel är redovisade i arbetsloggen; fullsvit återstår och inget grönt slutbesked ges ännu.
+Första fullsviten: **3 522 godkända/34 fel**, collection/JUnit matchar och snapshot oförändrat. Två produktfel och äldre testfixturer/förväntningar rättade; inga produktspärrar lättade. Senaste riktade prov: **68 godkända/42,55 s**, historiska gyllene bytes + V10/export **3 godkända/23,57 s**, komplett webbintag **1 godkänt/215,28 s**. Snabb3: **140 godkända/67,213 s**, collection/JUnit matchar och snapshot oförändrat. **Full2 pågår på exakt 508f8c6; inget grönt slutbesked ännu.** [Slutprovsunderlag](superpowers/reviews/2026-10-23-regelbas-slutprov.md).
 
-Uppdaterade huvud-PDF:er är fortsatt 20/21 sidor i `.superpowers/evidens/2026-10-23-rapport-v10-slutkontroll/`. Samma D-val och riskutfall, hela original kvar. Användarens PDF-kontroll före E är fortfarande obesvarad. E:s tre expertpaket och guide samt E-delen av samma slutreview återstår. Ingen push/merge.
+Nya huvud-PDF:er 20/21 sidor, A38/40 och B1195/200. Saktext exakt som godkänd utom versionsangivelse; ändrade sidor omkontrollerade visuellt. Tolv fasta profilvarianters scenarioled oförändrade mot D-slut. Ingen push eller merge.
 
 ## Föregående arbetsstatus
 

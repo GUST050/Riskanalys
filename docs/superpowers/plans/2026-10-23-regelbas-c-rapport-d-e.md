@@ -68,7 +68,7 @@
 **Files:** `docs/sakkunniggranskning.md`, `docs/superpowers/reviews/2026-10-23-regelbas-slutprov.md`, sakkunnigpaket för tre regioner; avsedda regressioner i `tester/`.
 **Interfaces:** befintligt CLI granskningsunderlag/importera-granskning; metodbeslut och indikatorer måste ingå i verkliga objektattester.
 
-- [ ] Efter PDF-slutkontroll: exportera RP-RED-VG, RP-RED-SKANE, RP-RED-STHLM. Guide med metodbeslut först, sedan hot/katalog och sist oförändrade krav. Förklara beslut, import och återföring vid avslag.
-- [ ] En färsk samlad oberoende slutreview av C–E inklusive rapportens risker och versionsgränser. Rätta betydelsefulla fynd med reproducerande prov.
+- [x] Efter PDF-slutkontroll: exportera RP-RED-VG, RP-RED-SKANE, RP-RED-STHLM. Guide med metodbeslut först, sedan hot/katalog och sist oförändrade krav. Förklara beslut, import och återföring vid avslag.
+- [x] En färsk samlad oberoende slutreview av C–E inklusive rapportens risker och versionsgränser. Rätta betydelsefulla fynd med reproducerande prov. Kodfynd RED→GREEN och E:s två paketeringsfynd verifierade mot faktiska käll-/profilhashar. Ny grön fullsvit återstår i nästa punkt.
 - [ ] Kör samtliga samlade riktade prov, snabbprofil och fullsvit på exakt slutligt snapshot; rätta fel och kör om nödvändigt. Inga gröna påståenden från delurval.
 - [ ] Slutligt granskningsunderlag, käll-/versions-/beslutsberoenden, lokala commits och ren gren. Ingen push/merge.

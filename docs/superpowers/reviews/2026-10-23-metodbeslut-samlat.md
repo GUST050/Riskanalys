@@ -27,3 +27,9 @@ Fyra P2 rättade med RED→GREEN: besluten binder konservativt samtliga 244 Pyth
 Reviewurval: 26 godkända/26,93 s; inte grön fullsvit. Slutliga PDF:er i `.superpowers/evidens/2026-10-23-rapport-v10-slutkontroll/`. D-val och riskutfall är oförändrade mot 2.12.0. Patchen rättar belägg-/text-/attestbindning.
 
 Kumulativa kontraster mot 2.0.0: 48 sänkta led och 80 borttagna scenarier. De 48 leden är två ekvivalenta ideellprofiler × sex jämförbara äldre tjänster × fyra led. D7:s stegvisa jämförelse innehåller också två nya tjänster T-RED-08/09, alltså 64 led. Dessa två saknar 2.0.0-utfall och får inte beskrivas som sänkta mot en obefintlig nivå. Fulla före-/efterutfall bevaras även för nya tjänster.
+
+## PDF-klartecken, rättning 2.12.2 och E
+
+Användaren har nu uttryckligen godkänt båda PDF:erna efter D. Fullsvitens två produktfynd är rättade: preliminära tjänster utan bekräftat utbud kan sorteras i V10, och lönefrågans iakttagna hot följer D1–D2:s katalogavgränsning. Båda reproducerades RED→GREEN; ny regelversion/D-bindning är 2.12.2. Tolv fasta profilvarianter har identiska tjänste- och scenarioled mot D-slut.
+
+Nya huvud-PDF:er i `.superpowers/evidens/2026-10-23-rapport-v10-2.12.2/` är textidentiska med de godkända utom versionsangivelsen på första och sista sidan; samma sidantal och fyndantal. [E:s guide/paket och oberoende granskningsresultat](2026-10-23-regelbas-steg-e.md) är färdiga. [Ny fullsvit och exakta provresultat](2026-10-23-regelbas-slutprov.md) återstår före grönt slutbesked.
