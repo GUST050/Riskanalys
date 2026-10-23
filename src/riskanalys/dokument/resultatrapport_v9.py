@@ -238,9 +238,9 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
         'bilaga B1. Metoduppföljning D9 C redovisas där utan att en under-tröskel-upplysning görs till metodkonflikt.',
         (kallkod('analys'),)))
     r6=avsnitt('D-ARB.R6','Åtgärder och luckor',s6)
-    utv=[h for h in historik.handelser if h.typ=='utvardering' and not h.plan_id]
+    utv=historik.senaste_utvardering()
     r7=avsnitt('D-ARB.R7','Utvärdering och omvärld',(
-        stycke('Senaste samlade utvärdering: '+(str(max(h.datum for h in utv)) if utv else 'saknas [VERIFIERA]')+'. '
+        stycke('Senaste samlade utvärdering: '+(str(utv) if utv else 'saknas [VERIFIERA]')+'. '
                'Riskbedömningen ska utvärderas minst årligen och före relevanta förändringar. '
                f'Registrerade förändringsplaner: {len(profil.tjansteplaner)}. Avgränsade planutvärderingar flyttar inte årsfristen. '
                'Datum, ansvar, nästa genomgång och dokumenterad omvärldsbevakning: bilaga A, D-ARB.10–11; planunderlag i B1.',

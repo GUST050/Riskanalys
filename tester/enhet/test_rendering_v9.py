@@ -169,13 +169,31 @@ def test_aldre_renderare_avvisar_v9_i_stallet_for_att_tappa_tabeller(renderat,tm
     assert not list(tmp_path.iterdir())
 
 
-def test_beslutsmetadata_andrar_bara_tillaten_dekor(renderat,tmp_path):
+def test_vanlig_rendering_kan_inte_pasta_faststallelse(renderat,tmp_path):
     from riskanalys.dokument.rendering_v9 import rendera_rapportvyer_v9
+    from riskanalys.fel import RiskanalysFel
     f,_,p,v,l,_=renderat
     l=l.model_copy(update={'version':2,'organ':'Syntetisk styrelse'})
-    paths=rendera_rapportvyer_v9(v,f.profil,tmp_path,presentation=p,leverans=l)
-    for d,path in zip(p.renderade,paths,strict=True):
-        w=docx.Document(path);t='\n'.join(texter(w))
-        assert 'Fastställt av Syntetisk styrelse' in t and 'Version 2' in t
-        assert 'förhandsvisning' not in t.lower()
-        assert all(s.text in t for a in d.avsnitt for s in a.stycken)
+    with pytest.raises(RiskanalysFel,match='fastställelse'):
+        rendera_rapportvyer_v9(v,f.profil,tmp_path,presentation=p,leverans=l)
+    assert not list(tmp_path.iterdir())
+
+
+def test_utkast_pastar_inte_att_manifest_redan_ar_faststallt(renderat):
+    _,_,_,_,_,paths=renderat
+    for path in paths:
+        t='\n'.join(texter(docx.Document(path)))
+        assert 'verifierbart när det fastställs' in t
+        assert 'utgör det verifierbara paketet' not in t
+
+
+def test_maskinfyndindex_ar_samlat_men_hela_kallan_finns_i_b1():
+    from riskanalys.dokument.presentation_v9 import listdelar
+    from tester.enhet.test_fyndgrupper import fynd
+    poster=tuple(fynd().model_copy(update={'id':f'F-{i:03d}','beskrivning':f'Egen exakt beskrivning {i}'}) for i in range(430))
+    delar=listdelar((),poster)
+    huvud=next(x for x in delar if x.leveransdel=='resultatrapport')
+    full=next(x for x in delar if x.leveransdel=='underlagsbilaga')
+    assert len(huvud.rader)<=8
+    assert any('430' in x.text for x in huvud.rader)
+    assert all(any(p.beskrivning in x.text for x in full.rader) for p in poster)

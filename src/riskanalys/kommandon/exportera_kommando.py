@@ -33,7 +33,9 @@ def kor_exportera(args: argparse.Namespace) -> int:
     regelbas = ladda_giltig_regelbas(args.regelbas) if args.regelbas != STANDARD_REGELBAS else None
     mapp = kor_export_utkast(befintlig_byramapp(args.byra), args.datum or date.today(), regelbas=regelbas)
     print(f"Utkastet är sparat i {mapp / UTKASTFIL}.")
-    if (mapp/'underlagsbilaga-UTKAST.docx').is_file():
+    if (mapp/'analysbilaga-UTKAST.docx').is_file():
+        print(f"Analysbilaga: {mapp / 'analysbilaga-UTKAST.docx'}. Underlagsbilaga: {mapp / 'underlagsbilaga-UTKAST.docx'}. Läs alla tre delarna tillsammans.")
+    elif (mapp/'underlagsbilaga-UTKAST.docx').is_file():
         print(f"Kompletterande underlagsbilaga: {mapp / 'underlagsbilaga-UTKAST.docx'}. Läs båda delarna tillsammans.")
     print("Varje sida är märkt UTKAST. Öppna fynd och oklarheter står i åtgärdslistan sist i dokumentet.")
     print(f"Nästa steg: sakgranska avsnitten med 'riskanalys sakgranska {args.byra}'.")

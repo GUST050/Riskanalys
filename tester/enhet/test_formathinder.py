@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION
+from riskanalys.dokument.skrivversion import V8 as FORMATVERSION
 from riskanalys.dokument.skrivversion import V5, V6, V7, V8
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Textstycke
 from riskanalys.faststallelse import faststall as faststallmodul
@@ -29,13 +29,13 @@ def test_blandat_format_stoppar():
     # Angrip formatsparren även efter manipulation förbi dokumentmodellens versionsvalidering.
     d = d.model_copy(update={'avsnitt': (*d.avsnitt, _avsnitt('D-ARB.6.2', 'D-ARB-tjanst-v3'))})
     hinder = formathinder(ladda_regelbas(), d)
-    assert len(hinder) == 1 and "D-ARB.6.2" in hinder[0] and "Skriv om utkastet" in hinder[0]
-    assert hinder[0].startswith("Tjänsteavsnittet D-ARB.6.2 har formatet D-ARB-tjanst-v3, men aktuellt format är ")
+    assert len(hinder) == 1 and "D-ARB.6.2" in hinder[0]
+    assert "D-ARB-tjanst-v8" in hinder[0]
 
 
 def test_saknad_formatmarkering_i_tjansteavsnitt_stoppar():
     (hinder,) = formathinder(ladda_regelbas(), _dok(_avsnitt("D-ARB.6.1", None)))
-    assert hinder.startswith(f"Tjänsteavsnittet D-ARB.6.1 saknar formatmarkering, men aktuellt format är {FORMATVERSION}.")
+    assert "sparade format" in hinder and "stöds inte" in hinder
     assert "har formatet" not in hinder and "utan formatmarkering" not in hinder
 
 
@@ -46,8 +46,8 @@ def test_aktuellt_format_i_alla_tjansteavsnitt_godtas():
 @pytest.mark.parametrize('version', [V5, V6, V7])
 def test_historiskt_format_stoppar_ny_faststallelse(version):
     (hinder,) = formathinder(ladda_regelbas(), _dok(_avsnitt('D-ARB.6.1', version)))
-    assert f'har formatet {version}, men aktuellt format är {FORMATVERSION}.' in hinder
-    assert 'Skriv om utkastet och granska på nytt.' in hinder
+    assert version in hinder and 'stöds inte' in hinder
+    assert 'sakgranska på nytt' in hinder
 
 
 def test_aldre_regelbas_utan_omfattningsmetod_berors_inte():
@@ -71,7 +71,7 @@ def test_faststall_stoppas_av_formatsparren_och_skapar_inget_paket(kedja, signer
     beslut = Beslut(organ="styrelsen", datum=date(2026, 11, 15), namn="Testa Testsson", roll="FfR")
     with pytest.raises(FaststallelseFel) as fel:
         faststall(kedja, signerad_regelbas_rot, regelbas, beslut)
-    assert any(h.startswith("Tjänsteavsnittet D-ARB.6.1 saknar formatmarkering") and "Skriv om utkastet" in h
+    assert any("stöds inte för ny fastställelse" in h and "Uppdatera uttryckligen" in h
                for h in fel.value.hinder), fel.value.hinder
     assert not (kedja / FASTSTALLDA / "v1").exists()
     assert not (kedja / FASTSTALLDA).exists() or list((kedja / FASTSTALLDA).iterdir()) == []

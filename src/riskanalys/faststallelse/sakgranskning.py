@@ -32,11 +32,16 @@ def granskad_summa(avsnitt: Avsnitt, profil: Profil) -> str:
 
 
 def _har_struktur(dokument: Dokument) -> bool:
-    return dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8") or any(a.underrubriker for a in dokument.avsnitt)
+    return dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8", "D-ARB-resultat-v9") or any(a.underrubriker for a in dokument.avsnitt)
 
 
 def struktur_summa(dokument: Dokument, *, presentation=None) -> str:
     """Titel, format och faktisk avsnittsordning i det granskade dokumentet."""
+    if dokument.formatversion == 'D-ARB-resultat-v9':
+        from riskanalys.dokument.rapportvyer_v9 import vystruktur_v9
+        return for_text(json.dumps({'dokument':dokument.model_dump(mode='json'),
+            'vyer':vystruktur_v9(dokument),'presentation':presentation.model_dump(mode='json') if presentation else None},
+            ensure_ascii=False,sort_keys=True,separators=(',',':')))
     if dokument.formatversion == "D-ARB-tjanst-v8":
         from riskanalys.dokument.rapportvyer import vystruktur
         return for_text(json.dumps({'titel': dokument.titel, 'format': dokument.formatversion,
@@ -44,7 +49,7 @@ def struktur_summa(dokument: Dokument, *, presentation=None) -> str:
                 [(u.fore_stycke,u.rubrik) for u in a.underrubriker],
                 [(t.id,t.fore_stycke,t.rubrik,t.kolumner) for t in a.tabeller]) for a in dokument.avsnitt]},
             ensure_ascii=False,separators=(',', ':')))
-    if dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8"):
+    if dokument.formatversion in ("D-ARB-tjanst-v5", "D-ARB-tjanst-v5.1", "D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8", "D-ARB-resultat-v9"):
         return for_text(json.dumps({"titel": dokument.titel, "format": dokument.formatversion,
             "avsnitt": [(a.id, a.rubrik, a.visningsnummer,
                          [(u.fore_stycke, u.rubrik) for u in a.underrubriker],
@@ -79,7 +84,7 @@ def registrera_sakgranskning(
     *, analysbindning: str | None = None, presentation=None,
 ) -> tuple[Sakgranskning, ...]:
     """Returnerar sakgranskningarna med en ny post för avsnittet så som det ser ut med profilens namn."""
-    if dokument.formatversion == "D-ARB-tjanst-v8" and presentation is None:
+    if dokument.formatversion in ("D-ARB-tjanst-v8","D-ARB-resultat-v9") and presentation is None:
         raise SakgranskningsFel("V8 kräver fullständig presentation före sakgranskning.")
     avsnitt = dokument.avsnitt_med_id().get(avsnitt_id)
     if avsnitt is None:
@@ -108,12 +113,12 @@ def galler_sakgranskning(
     *, analysbindning: str | None = None, presentation=None,
 ) -> Sakgranskning | None:
     """Den senaste sakgranskningen av avsnittet i exakt den lydelse som exporten skulle få."""
-    if dokument and dokument.formatversion == "D-ARB-tjanst-v8" and presentation is None:
+    if dokument and dokument.formatversion in ("D-ARB-tjanst-v8","D-ARB-resultat-v9") and presentation is None:
         return None
     summa = granskad_summa(avsnitt, profil)
     ny_struktur = bool(dokument and _har_struktur(dokument))
     poster = sakgranskningar
-    if dokument and dokument.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8"):
+    if dokument and dokument.formatversion in ("D-ARB-tjanst-v6", "D-ARB-tjanst-v7", "D-ARB-tjanst-v8", "D-ARB-resultat-v9"):
         senaste = next((post for post in reversed(poster) if post.avsnitt == avsnitt.id), None)
         poster = (senaste,) if senaste is not None else ()
     giltiga = [post for post in poster if post.avsnitt == avsnitt.id and post.kontrollsumma == summa

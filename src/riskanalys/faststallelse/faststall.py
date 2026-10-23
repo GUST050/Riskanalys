@@ -12,7 +12,7 @@ from datetime import date
 from pathlib import Path
 
 from riskanalys.bedomning.korning import BEDOMNINGAR, aktualitetshinder, las_bedomning, las_bedomningsprofil
-from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION as FORMATVERSION
+from riskanalys.dokument.rapportversion import V8,V9
 from riskanalys.dokument.modeller import Avsnitt, Dokument
 from riskanalys.dokument.rendering import faststalld_status, rendera_docx
 from riskanalys.dokument.skrivning import UTKAST
@@ -32,6 +32,7 @@ from riskanalys.regelverk.urval import valj
 
 FASTSTALLDA = "faststallda"
 BESLUTSFIL = "beslut.yaml"
+_SLUTRENDERING = object()  # Privat förmåga som endast fastställelsekedjan lämnar till renderaren.
 _VERSION = re.compile(r"^v(\d+)$")
 _IGNORERA = shutil.ignore_patterns("__pycache__", ".DS_Store", "utkast", ".granskning-*")
 
@@ -131,12 +132,14 @@ def formathinder(regelbas: Regelbas, dokument: Dokument) -> list[str]:
     """Varje tjänsteavsnitt ska ha aktuellt format före ny fastställelse; äldre paket läses som förut (spec 8.4.9 punkt 9)."""
     if not regelbas.metod.omfattning:
         return []
-    return [
-        f"Tjänsteavsnittet {a.id} {_formatbeskrivning(a)}, men aktuellt format är "
-        f"{FORMATVERSION}. Skriv om utkastet och granska på nytt."
-        for a in dokument.avsnitt
-        if a.id.startswith("D-ARB.6.") and a.formatversion != FORMATVERSION
-    ]
+    # Nybyggnadsstandard får inte ändra formatet på sparade utkast.
+    sparat=dokument.formatversion
+    if sparat not in (V8,V9):
+        return [f'Dokumentets sparade format {sparat} stöds inte för ny fastställelse. Uppdatera uttryckligen och sakgranska på nytt.']
+    return [f'Avsnitt {a.id} har fel format eller leveransdel för det sparade paketet {sparat}.'
+        for a in dokument.avsnitt if a.formatversion!=sparat or a.leveransdel not in
+        (('lasrapport','underlagsbilaga') if sparat==V8 else ('resultatrapport','analysbilaga','underlagsbilaga'))]
+
 
 
 def faststall(byramapp: Path, regelbas_rot: Path, regelbas: Regelbas, beslut: Beslut) -> Path:
@@ -280,7 +283,16 @@ def _bygg_paket(
     spara_historik(pagaende, underlag.historik.med(_faststallelse(beslut, version)))
     spara_yaml(pagaende / BESLUTSFIL, beslut.model_dump(mode="python"))
     statusrad = faststalld_status(beslut.organ, beslut.datum, version)
-    if underlag.dokument.formatversion == 'D-ARB-tjanst-v8':
+    if underlag.dokument.formatversion == V9:
+        from riskanalys.dokument.leverans_v9 import LeveransV9
+        from riskanalys.dokument.rapportvyer_v9 import bygg_rapportvyer_v9
+        from riskanalys.dokument.rendering_v9 import rendera_rapportvyer_v9
+        leverans=LeveransV9(datum=beslut.datum,bedomning=metadata['bedomning'],granskning=granskningsmapp.name,
+            version=version,organ=beslut.organ)
+        rendera_rapportvyer_v9(bygg_rapportvyer_v9(underlag.dokument),underlag.profil,pagaende,
+            presentation=underlag.presentation,leverans=leverans,_faststallelse=_SLUTRENDERING)
+        (pagaende/'leverans.json').write_text(leverans.model_dump_json(indent=2),encoding='utf-8')
+    elif underlag.dokument.formatversion == 'D-ARB-tjanst-v8':
         from riskanalys.dokument.rapportpaket_v8 import Leverans, LEVERANSFIL
         from riskanalys.dokument.rapportvyer import bygg_rapportvyer
         from riskanalys.dokument.rendering import rendera_rapportvyer
@@ -318,7 +330,10 @@ def _publicera(pagaende: Path, slutlig: Path) -> Path:
 
 
 def _presentation(granskningsmapp, bedomning, dokument, profil, regelbas):
-    if dokument.formatversion == 'D-ARB-tjanst-v8':
-        from riskanalys.dokument.rapportpaket_v8 import las_presentation
+    if dokument.formatversion in (V8,V9):
+        if dokument.formatversion==V9:
+            from riskanalys.dokument.rapportpaket_v9 import las_presentation_v9 as las_presentation
+        else:
+            from riskanalys.dokument.rapportpaket_v8 import las_presentation
         return las_presentation(granskningsmapp,bedomning,profil,regelbas=regelbas)
     return None

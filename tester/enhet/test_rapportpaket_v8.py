@@ -128,7 +128,6 @@ def test_faststallt_v8_paket_har_tva_filer_och_samma_version(tmp_path,monkeypatc
     rr,rb=syntetisk_expertkopia(tmp_path/'expert')
     k=bygg_bunden_kedja(rb,tmp_path/'kedja',regelrot=rr,godkann=True,formatversion=V8)
     # Uttrycklig V8-integrationsväg före defaultaktivering.
-    monkeypatch.setattr('riskanalys.faststallelse.faststall.FORMATVERSION',V8)
     beslut=Beslut(organ='styrelsen',namn='Syntetisk',roll='FfR',datum=DAG)
     from riskanalys.faststallelse.faststall import FaststallelseFel
     from riskanalys.faststallelse.sakgranskning import las_sakgranskningar,spara_sakgranskningar

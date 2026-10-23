@@ -143,6 +143,8 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
         import json
         from riskanalys.dokument.presentation_v9 import bygg_presentation_v9
         from riskanalys.dokument.resultatmodell_v9 import kallartefakter
+        from riskanalys.granskning.dokument_v9 import kravkarta_v9
+        (mapp/'kravkarta-v9.json').write_text(json.dumps(kravkarta_v9(regelbas,profil,bedomning,bygge),ensure_ascii=False,indent=2),encoding='utf-8')
         presentation=bygg_presentation_v9(bygge,analys=snapshot.paket,fynd=fynd,bedomning=bedomning,profil=profil)
         for namn,obj in (('analysdokument-v8.json',bygge.analysdokument),('resultatunderlag-v9.json',bygge.underlag),
                          ('resultatbygge-v9.json',bygge),('presentation.json',presentation)):

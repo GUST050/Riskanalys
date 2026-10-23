@@ -28,7 +28,7 @@ def kontrollera_presentation(vyer,profil,presentation):
 
 
 def rendera_rapportvyer_v9(vyer:RapportvyerV9,profil:Profil,mapp:Path,*,
-                          presentation:PresentationV9,leverans:LeveransV9) -> tuple[Path,Path,Path]:
+                          presentation:PresentationV9,leverans:LeveransV9,_faststallelse=None) -> tuple[Path,Path,Path]:
     from riskanalys.dokument.wordstil import formatera_dokument
     from riskanalys.dokument.rendering import _tabell,_falt
     from riskanalys.dokument.presentation_v8 import skriv_presentationsrader
@@ -37,6 +37,10 @@ def rendera_rapportvyer_v9(vyer:RapportvyerV9,profil:Profil,mapp:Path,*,
         leverans=LeveransV9.model_validate(leverans.model_dump(mode='json'))
     except (ValidationError,AttributeError) as exc:
         raise RiskanalysFel('V9-rendering kräver en giltig V9-leverans med sammanhörande beslutsuppgifter.') from exc
+    if leverans.version is not None:
+        from riskanalys.faststallelse.faststall import _SLUTRENDERING
+        if _faststallelse is not _SLUTRENDERING:
+            raise RiskanalysFel('Slutstatus får bara skapas av den prövade fastställelsekedjan. Exportera annars som utkast.')
     mall=presentation.leveransmall
     filnamn=mall.filnamn_for(leverans);status=mall.status_for(leverans)
     mapp=Path(mapp)

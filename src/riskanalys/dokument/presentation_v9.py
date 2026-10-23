@@ -15,7 +15,7 @@ from riskanalys.granskning.modeller import Fynd
 from riskanalys.fel import RiskanalysFel
 
 PRESENTATIONSVERSION='D-ARB-v9-presentation-1'
-RENDERINGSPOLICY='V9-lokala-original-1'
+RENDERINGSPOLICY='V9-lokala-original-2'
 
 
 class Fryst(BaseModel):
@@ -80,6 +80,18 @@ def renderade_vyer(vyer,profil):
         renderat_avsnitt(a,profil) for a in getattr(vyer,del_).avsnitt)}) for del_ in DELAR)
 
 
+def fyndindex_v9(word,fynd):
+    from collections import Counter
+    from riskanalys.granskning.fyndgrupper import gruppera_fynd
+    word.add_heading('Maskinell granskning',level=1)
+    grupper=gruppera_fynd(fynd)
+    word.add_paragraph(f'{len(fynd)} maskinfynd, åtskilda från de lokala analysluckorna i R6. '
+        f'Alla ID, originaltexter, åtgärder och hänvisningar finns i underlagsbilagans fullständiga fyndkälla, '
+        f'fyndgrupp 1–{len(grupper)}. Gruppering ändrar inga beslut eller fastställelsespärrar.')
+    for (allvar,status),antal in Counter((f.allvar,f.status) for f in fynd).items():
+        word.add_paragraph(f'{antal} fynd: allvar {allvar}; status {status}.')
+
+
 def listdelar(atgarder,fynd):
     """Återanvänd rena, befintliga fulltextbyggare mot enbart de frysta posterna."""
     delar=[];tjanster={}
@@ -89,7 +101,7 @@ def listdelar(atgarder,fynd):
         delar.append(ListdelV9(leveransdel='underlagsbilaga',placering='slut:rutinatgarder',rader=presentationsrader(fulla_atgarder,analys)))
     if fynd:
         for del_,full in (('resultatrapport',False),('underlagsbilaga',True)):
-            delar.append(ListdelV9(leveransdel=del_,placering='slut:fynd',rader=presentationsrader(fyndlista,fynd,full=full)))
+            delar.append(ListdelV9(leveransdel=del_,placering='slut:fynd',rader=presentationsrader(fyndlista,fynd,full=True) if full else presentationsrader(fyndindex_v9,fynd)))
     return tuple(delar)
 
 

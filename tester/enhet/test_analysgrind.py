@@ -291,7 +291,8 @@ def test_v7_paket_verifieras_utan_levande_modellregister(historisk_v7_kedja,monk
     import shutil
     from riskanalys.faststallelse.faststall import faststall,verifiera_version
     from riskanalys.faststallelse.modeller import Beslut
-    monkeypatch.setattr('riskanalys.faststallelse.faststall.FORMATVERSION','D-ARB-tjanst-v7')
+    # Bygg ett uttryckligen historiskt V7-paket; dagens grind tillåter inte ny V7-fastställelse.
+    monkeypatch.setattr('riskanalys.faststallelse.faststall.formathinder',lambda *args:[])
     byra,r,rb,gm=historisk_v7_kedja
     paket=faststall(byra,r,rb,Beslut(organ='styrelsen',datum=DAG,namn='Syntetisk',roll='FfR'))
     assert (paket/'analys/snapshot.json').is_file()

@@ -42,6 +42,17 @@ def bygg_resultatpaket_v9(rb,profil,bedomning,resultat,historik,*,analys,gransin
         bilagor.append(a.model_copy(update={'formatversion':V9,'leveransdel':del_,'visningsnummer':nummer,'stycken':tuple(stycken)}))
     dokument=Dokument.model_validate(Dokument(id='D-ARB',titel=original.titel,
                                    avsnitt=(*huvud,*bilagor)).model_dump(mode='json'))
+    from riskanalys.dokument.rendering import renderat_avsnitt,synliga_texter
+    huvudord=sum(len(x.split()) for a in huvud for x in synliga_texter(renderat_avsnitt(a,profil)))
+    if huvudord>4000 or sum(a.id.startswith('D-ARB.R5.') for a in huvud)>4:
+        from riskanalys.dokument.modeller import Textstycke
+        varning=Textstycke(typ='beskrivning',proveniens='regelbas',text=(
+            'Redaktionell längdvarning: fler tjänster eller långa originaltexter kan ge mer än åtta resultatsidor. '
+            'Kontrollera sidantal och läsbarhet i Word/PDF; ingen text har kapats.'),
+            referenser=['kalla:bedomning#','kalla:analys#'])
+        a=dokument.avsnitt[0]
+        dokument=dokument.model_copy(update={'avsnitt':(a.model_copy(update={'stycken':(*a.stycken,varning)}),*dokument.avsnitt[1:])})
+        huvud=(dokument.avsnitt[0],*huvud[1:])
     kallor=kallartefakter(rb,profil,bedomning,resultat,historik,analys,original)
     konstruktioner=[]
     for a in huvud:

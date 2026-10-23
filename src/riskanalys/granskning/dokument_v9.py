@@ -34,4 +34,25 @@ def resultatfynd_v9(rb,profil,bedomning,resultat,historik,*,analys,bygge,dokumen
         except ValueError as exc:lagg('D-ARB',str(exc))
     underlag=bygg_resultatunderlag(rb,profil,bedomning,resultat,historik,analys=analys,analysdokument=bygge.analysdokument)
     if underlag!=bygge.underlag:lagg('D-ARB.R4','Urval, matris, medlemskap eller källsummor avviker från analysen.')
+    for rad in kravkarta_v9(rb,profil,bedomning,bygge):
+        if not rad['analys'] or not rad['sammanfattning']:
+            lagg('D-ARB','Kravkartan saknar analys eller R-sammanfattning för '+rad['krav'])
     return fynd
+
+
+def kravkarta_v9(rb,profil,bedomning,bygge):
+    """Tillämpligt krav-ID → verkliga analys-/R-avsnitt och fulla belägg i B1."""
+    from riskanalys.dokument.omfattning import krav_for_dokument,dokumentmal
+    from riskanalys.regelverk.urval import valj
+    from riskanalys.dokument.resultatmodell_v9 import referens
+    u=valj(rb,bedomning.regelpaket,bedomning.datum,bedomning.lan)
+    original=bygge.analysdokument.model_dump(mode='json');k={'analysdokument':original}
+    r=[]
+    for valt in krav_for_dokument(rb,u,profil,'D-ARB'):
+        for mal in dokumentmal(valt.krav,'D-ARB'):
+            analyser=[(i,a) for i,a in enumerate(bygge.analysdokument.avsnitt) if a.id==mal or a.id.startswith(mal+'.')]
+            samman=[a.id for a in bygge.dokument.avsnitt if any(a.id==x or a.id.startswith(x+'.') for x in KRAVKARTA.get(mal,()))]
+            r.append({'krav':valt.krav.id,'mal':mal,'analys':[a.id for _,a in analyser],
+                'sammanfattning':samman,'underlag':['D-ARB.B1'],
+                'kallor':[referens(k,'analysdokument',f'/avsnitt/{i}').model_dump(mode='json') for i,_ in analyser]})
+    return r

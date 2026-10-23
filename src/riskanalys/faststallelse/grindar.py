@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from riskanalys.dokument.presentation_v8 import Presentation
+from riskanalys.dokument.presentation_v9 import PresentationV9
 from datetime import date
 
 from riskanalys.analys.modeller import Analyspaket
@@ -40,7 +41,7 @@ class Faststallelseunderlag:
     granskningsdatum: date
     analys: Analyspaket | None = None
     analysbindning: str | None = None
-    presentation: Presentation | None = None
+    presentation: Presentation | PresentationV9 | None = None
 
 
 def hinder_for_faststallelse(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]:

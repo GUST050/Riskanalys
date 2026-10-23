@@ -15,6 +15,7 @@ class LeveransmallV9(BaseModel):
     inledning: str=('Gemensam paketversion: {paketversion}. Bedömningsversion: {bedomning}. '
         'Granskningsversion: {granskning}. Läs tillsammans med {andra}. '
         'Alla tre delarna och deras gemensamma manifest utgör det verifierbara paketet.')
+    utkastpaket: str='Utkastet blir verifierbart när det fastställs med alla tre delar och ett gemensamt manifest.'
     hanvisning: str='Se {fil}, avsnitt {avsnitt}.'
 
     def filnamn_for(self,l):
@@ -27,7 +28,9 @@ class LeveransmallV9(BaseModel):
 
     def inledning_for(self,l,del_):
         andra=[f for n,f in zip(DELAR,self.filnamn_for(l),strict=True) if n!=del_]
-        return self.inledning.format(paketversion='utkast' if l.version is None else f'v{l.version}',
+        mall=self.inledning if l.version is not None else self.inledning.replace(
+            'Alla tre delarna och deras gemensamma manifest utgör det verifierbara paketet.',self.utkastpaket)
+        return mall.format(paketversion='utkast' if l.version is None else f'v{l.version}',
             bedomning=l.bedomning,granskning=l.granskning,andra=' och '.join(andra))
 
 

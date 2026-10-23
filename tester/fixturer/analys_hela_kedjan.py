@@ -406,7 +406,7 @@ def bygg_bunden_kedja(rb,rot,*,regelrot,godkann=False,variation=False,formatvers
                 svarssumma=p.svarssumma(a),godkand=True,namn=t.forfattare if i%2==0 else 'Syntetisk Bo',roll='FfR',datum=DAG)
             cas=l.registrera_analysbeslut(f.byramapp,rb,beslut,forvantad_summa=cas,bedomningsmapp=bm,utkastmapp=um)
     a=l.las_analys(f.byramapp)
-    gm=kor_granskning(f.byramapp,rb,DAG)
+    gm=kor_granskning(f.byramapp,rb,DAG,rapportformat="v8")
     if godkann:
         from riskanalys.granskning.korning import las_granskning
         from riskanalys.faststallelse.sakgranskning import registrera_sakgranskning,spara_sakgranskningar

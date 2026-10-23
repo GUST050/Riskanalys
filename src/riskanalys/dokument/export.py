@@ -46,10 +46,11 @@ def kor_export_utkast(byramapp: Path, datum: date, *, granskningsmapp: Path | No
     metadata = granskningens_metadata(granskningsmapp)
     profil = granskningens_profil(byramapp, granskningsmapp)
     dokument, fynd = las_granskning(granskningsmapp)
-    if dokument.formatversion == 'D-ARB-tjanst-v8':
+    if dokument.formatversion in ('D-ARB-tjanst-v8','D-ARB-resultat-v9'):
         from riskanalys.analys.lagring import analyslas
         with analyslas(byramapp):
-            return exportera_v8_last(byramapp, datum, granskningsmapp, regelbas=regelbas)
+            exportor=exportera_v9_last if dokument.formatversion=='D-ARB-resultat-v9' else exportera_v8_last
+            return exportor(byramapp, datum, granskningsmapp, regelbas=regelbas)
     bilaga = atgardslista(fynd, utkastens_oklarheter(byramapp, metadata["utkast"]), formatversion=dokument.formatversion)
     mapp = ny_korningsmapp(byramapp, EXPORT)
     rendera_docx(dokument, profil, utkaststatus(datum), mapp / UTKASTFIL, bilaga)
@@ -60,6 +61,14 @@ def kor_export_utkast(byramapp: Path, datum: date, *, granskningsmapp: Path | No
 
 
 def exportera_v8_last(byramapp: Path, datum: date, granskningsmapp: Path, *, regelbas=None) -> Path:
+    return _exportera_bundet_last(byramapp,datum,granskningsmapp,regelbas=regelbas,v9=False)
+
+
+def exportera_v9_last(byramapp: Path, datum: date, granskningsmapp: Path, *, regelbas=None) -> Path:
+    return _exportera_bundet_last(byramapp,datum,granskningsmapp,regelbas=regelbas,v9=True)
+
+
+def _exportera_bundet_last(byramapp: Path, datum: date, granskningsmapp: Path, *, regelbas=None,v9=False) -> Path:
     """Anroparen håller profil→analys→drift; båda dokument publiceras med ett namnbyte."""
     import shutil
     from datetime import datetime, timezone
@@ -84,6 +93,9 @@ def exportera_v8_last(byramapp: Path, datum: date, granskningsmapp: Path, *, reg
         if hinder:
             raise RiskanalysFel(' '.join(hinder))
     profil = granskningens_profil(byramapp, granskningsmapp)
+    if v9:
+        from riskanalys.dokument.rapportpaket_v9 import las_presentation_v9 as las_presentation
+        from riskanalys.dokument.leverans_v9 import LeveransV9 as Leverans
     presentation = las_presentation(granskningsmapp, bedomning, profil, regelbas=regelbas)
     leverans = Leverans(datum=datum, bedomning=bedomningsmapp.name, granskning=granskningsmapp.name)
     kallor: dict[str, Path] = {'granskning': granskningsmapp, 'bedomning': bedomningsmapp}
@@ -94,11 +106,16 @@ def exportera_v8_last(byramapp: Path, datum: date, granskningsmapp: Path, *, reg
         arbetsmapp.mkdir()
         for namn, kalla in kallor.items():
             shutil.copytree(kalla, arbetsmapp / namn)
-        rendera_rapportvyer(
-            bygg_rapportvyer(dokument), profil, leverans.statusrad, arbetsmapp,
-            analys=snapshot.paket, fynd=fynd, bedomning=bedomning,
-            presentation=presentation, leverans=leverans,
-        )
+        if v9:
+            from riskanalys.dokument.rapportvyer_v9 import bygg_rapportvyer_v9
+            from riskanalys.dokument.rendering_v9 import rendera_rapportvyer_v9
+            rendera_rapportvyer_v9(bygg_rapportvyer_v9(dokument),profil,arbetsmapp,presentation=presentation,leverans=leverans)
+        else:
+            rendera_rapportvyer(
+                bygg_rapportvyer(dokument), profil, leverans.statusrad, arbetsmapp,
+                analys=snapshot.paket, fynd=fynd, bedomning=bedomning,
+                presentation=presentation, leverans=leverans,
+            )
         (arbetsmapp / LEVERANSFIL).write_text(leverans.model_dump_json(indent=2), encoding='utf-8')
         kontrollera_kallor(byramapp, granskningsmapp)
         if snapshot.paket is not None or las_analys(byramapp) is not None:
