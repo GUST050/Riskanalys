@@ -197,3 +197,31 @@ def test_maskinfyndindex_ar_samlat_men_hela_kallan_finns_i_b1():
     assert len(huvud.rader)<=8
     assert any('430' in x.text for x in huvud.rader)
     assert all(any(p.beskrivning in x.text for x in full.rader) for p in poster)
+
+
+def test_blockerande_fynd_forklarar_faststallelsesparren():
+    from riskanalys.dokument.presentation_v9 import listdelar
+    from tester.enhet.test_fyndgrupper import fynd
+    post=fynd().model_copy(update={'allvar':'blockerande'})
+    huvud=next(d for d in listdelar((),(post,)) if d.leveransdel=='resultatrapport')
+    rad=next(r.text for r in huvud.rader if 'allvar blockerande' in r.text)
+    assert 'Blockerande fynd hindrar fastställelse.' in rad
+
+
+def test_korningsidentiteter_visas_som_lasbar_tid_utan_att_andras():
+    from riskanalys.dokument.leverans_v9 import LEVERANSMALL_V9,LeveransV9
+    l=LeveransV9(datum=date(2026,10,23),bedomning='20261023T085137940563Z',granskning='20261023T090000123456Z')
+    text=LEVERANSMALL_V9.inledning_for(l,'resultatrapport')
+    assert 'Bedömningstid: 2026-10-23 kl. 10:51:37 (Europe/Stockholm)' in text
+    assert 'Granskningstid: 2026-10-23 kl. 11:00:00 (Europe/Stockholm)' in text
+    assert l.bedomning=='20261023T085137940563Z'
+    assert l.granskning=='20261023T090000123456Z'
+    assert l.bedomning not in text and l.granskning not in text
+
+
+def test_aldre_leveransmall_behaller_ursprunglig_inledning():
+    from riskanalys.dokument.leverans_v9 import LeveransmallV9,LeveransV9
+    l=LeveransV9(datum=date(2026,10,23),bedomning='20261023T085137940563Z',granskning='20261023T090000123456Z')
+    mall=LeveransmallV9(version='D-ARB-v9-leveransmall-1',
+        inledning='Bedömningsversion: {bedomning}. Granskningsversion: {granskning}.')
+    assert mall.inledning_for(l,'resultatrapport')==f'Bedömningsversion: {l.bedomning}. Granskningsversion: {l.granskning}.'

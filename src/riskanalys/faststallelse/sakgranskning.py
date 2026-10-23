@@ -83,6 +83,34 @@ def registrera_sakgranskning(
     kommentar: str | None = None,
     *, analysbindning: str | None = None, presentation=None,
 ) -> tuple[Sakgranskning, ...]:
+    """Registrera enskilda avsnitt; V9:s resultatrapport kräver samlad granskning."""
+    avsnitt = dokument.avsnitt_med_id().get(avsnitt_id)
+    if avsnitt and _ar_resultatavsnitt(avsnitt):
+        raise SakgranskningsFel(
+            'Resultatrapporten ska granskas samlat. Använd --resultatrapport och --visad-struktursumma.'
+        )
+    return _registrera_sakgranskning(
+        sakgranskningar, dokument, profil, avsnitt_id, godkand, roll, namn, datum, kommentar,
+        analysbindning=analysbindning, presentation=presentation,
+    )
+
+
+def _ar_resultatavsnitt(avsnitt: Avsnitt) -> bool:
+    return avsnitt.formatversion == 'D-ARB-resultat-v9' and avsnitt.leveransdel == 'resultatrapport'
+
+
+def _registrera_sakgranskning(
+    sakgranskningar: tuple[Sakgranskning, ...],
+    dokument: Dokument,
+    profil: Profil,
+    avsnitt_id: str,
+    godkand: bool,
+    roll: str,
+    namn: str | None,
+    datum: date,
+    kommentar: str | None = None,
+    *, analysbindning: str | None = None, presentation=None, granskningssatt=None,
+) -> tuple[Sakgranskning, ...]:
     """Returnerar sakgranskningarna med en ny post för avsnittet så som det ser ut med profilens namn."""
     if dokument.formatversion in ("D-ARB-tjanst-v8","D-ARB-resultat-v9") and presentation is None:
         raise SakgranskningsFel("V8 kräver fullständig presentation före sakgranskning.")
@@ -97,6 +125,7 @@ def registrera_sakgranskning(
     post = Sakgranskning(
         avsnitt=avsnitt.id,
         analysbindning=analysbindning,
+        granskningssatt=granskningssatt,
         kontrollsumma=granskad_summa(avsnitt, profil),
         dokumentstruktur=struktur_summa(dokument, presentation=presentation) if _har_struktur(dokument) else None,
         godkand=godkand,
@@ -122,6 +151,7 @@ def galler_sakgranskning(
         senaste = next((post for post in reversed(poster) if post.avsnitt == avsnitt.id), None)
         poster = (senaste,) if senaste is not None else ()
     giltiga = [post for post in poster if post.avsnitt == avsnitt.id and post.kontrollsumma == summa
+               and (not _ar_resultatavsnitt(avsnitt) or post.granskningssatt == 'samlad_resultatrapport')
                and post.analysbindning == analysbindning
                and (post.dokumentstruktur == struktur_summa(dokument, presentation=presentation) if post.dokumentstruktur and dokument
                     else not post.dokumentstruktur and not ny_struktur)]
@@ -134,5 +164,8 @@ def sakgranskningsstatus(sakgranskningar: tuple[Sakgranskning, ...], avsnitt: Av
         utfall = "godkänt" if galler.godkand else f"underkänt ({galler.kommentar})"
         return f"{utfall} {galler.datum.isoformat()} av {galler.namn}, roll {galler.roll}"
     if any(post.avsnitt == avsnitt.id for post in sakgranskningar):
+        senaste = next(post for post in reversed(sakgranskningar) if post.avsnitt == avsnitt.id)
+        if _ar_resultatavsnitt(avsnitt) and senaste.granskningssatt is None:
+            return 'samlad granskning kan inte styrkas; granska igen med --resultatrapport och --visad-struktursumma'
         return "ändrat efter sakgranskningen, granska igen"
     return "ej sakgranskat"

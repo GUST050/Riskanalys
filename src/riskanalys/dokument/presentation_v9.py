@@ -15,7 +15,7 @@ from riskanalys.granskning.modeller import Fynd
 from riskanalys.fel import RiskanalysFel
 
 PRESENTATIONSVERSION='D-ARB-v9-presentation-1'
-RENDERINGSPOLICY='V9-lokala-original-2'
+RENDERINGSPOLICY='V9-lokala-original-3'
 
 
 class Fryst(BaseModel):
@@ -89,7 +89,8 @@ def fyndindex_v9(word,fynd):
         f'Alla ID, originaltexter, åtgärder och hänvisningar finns i underlagsbilagans fullständiga fyndkälla, '
         f'fyndgrupp 1–{len(grupper)}. Gruppering ändrar inga beslut eller fastställelsespärrar.')
     for (allvar,status),antal in Counter((f.allvar,f.status) for f in fynd).items():
-        word.add_paragraph(f'{antal} fynd: allvar {allvar}; status {status}.')
+        forklaring=' Blockerande fynd hindrar fastställelse.' if allvar=='blockerande' else ''
+        word.add_paragraph(f'{antal} fynd: allvar {allvar}; status {status}.'+forklaring)
 
 
 def listdelar(atgarder,fynd):

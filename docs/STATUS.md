@@ -1,3 +1,13 @@
+# Rättning efter R4–R7 – del 1 tekniskt slutverifierad
+
+Den enskilda V9-vägen avvisar R-beslut. Samlad granskning märks i attestposterna; äldre R-poster utan styrkt granskningssätt gäller inte inför ny fastställelse. Historiska V8/V9-paket verifieras fortsatt oförändrade. Fyndförklaring, läsbara tider och A15:s sidflöde är rättade; fyrtjänstfallets A minskar från 37 till 36 PDF-sidor med samma text. Huvudrapporterna är fortsatt 7/8 sidor.
+
+**Färsk fullsvit: 3 448 godkända, ett liveprov bortvalt, noll fel/överhoppade prov, exit 0**, Python 3.12.15, 2207.161 s inklusive collection. Snabbprofil **140 godkända / 48,760 s**. Exakt collection/JUnit och 816 oförändrade kod-/test-/regel-/verktygsresurser. Regelbas- och diffkontroll passerar. Första fullsvitens 208 nekade loopback-prov och äldre typfallsprov är redovisade; den nya kompletta körningen är grön med lokala testportar tillåtna och samlad R-granskning i typfallsprovet.
+
+[Granskningssvar, ändringar och PDF-läsprov](superpowers/reviews/2026-10-23-svar-r4-r7-granskning.md). Regelbasen och riskmodellens 25 filer är oförändrade. Del 2 och del 3 är inte påbörjade; användarens granskning krävs efter del 1. Grenen lämnas lokalt. Ingen push eller merge.
+
+## Föregående leverans – historik
+
 # Resultatrapport R4–R7 – tekniskt slutverifierad 2026-10-23
 
 R4–R7 är genomförda på `codex/kravstod-tjansteexponering`. Nya rapportbyggen använder V9: resultatrapport, fullständig analysbilaga A och underlagsbilaga B1 i ett gemensamt paket. Granskning, sakgranskning, atomisk export/fastställelse, historisk verifiering och tre skyddade nedladdningar ingår. Inga nya sakfrågor eller AI-anrop; riskmodellens filer och regelbas är oförändrade.

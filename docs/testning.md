@@ -37,4 +37,6 @@ Slutlig snabbprofil: **140 godkända / 44,751 s**. Slutlig fullprofil: **3436 go
 
 Analysprofilen innehåller 293 prov, inklusive V9-granskning/export, visad CLI-sakgranskning och tre HTTP-nedladdningar. Den gav **293/376,465 s** före de två sista testhjälparrättningarna och kördes inte separat på nytt; hela urvalet ingår i den slutliga fullprofilen. Analysprofilen överskrider det tidigare målet 180 s. Ingen bortsortering av dyra ordinarie prov eller ytterligare testoptimering ingår.
 
+Avvikelsen **376,465 s mot målet 180 s** accepteras i uppdragets del 1 (2026-10-23). Målet ligger kvar för ett separat förbättringsarbete; detta är inget påstående om att analysprofilens tidsmål är uppnått.
+
 Historiska V6/V7/V8-fixturer väljer sina sparade format uttryckligen. En kvarvarande V8-hårdkodning i M2-CLI-kedjan rättades med fem reproducerande fall. Ett intermittent BrokenPipe i det äldre HTTP-testet reproducerades och rättades i testklientens framing; HTTP 404/413/400-kontrollerna är kvar, utan återförsök eller högre timeout. Hela webbfilen gav 14 gröna prov och 500 faktiska upprepade trestegsförlopp passerade. Fullsviten omfattar även dessa ändringar. [Slutprov och alla råbevis](superpowers/reviews/2026-10-23-resultatrapport-r4-r7.md).

@@ -41,7 +41,8 @@ def kedja(bas,tmp_path):
 
 def test_sakgranskad_gemensam_analys_kan_faststallas(kedja):
     from riskanalys.granskning.korning import las_granskning
-    from riskanalys.faststallelse.sakgranskning import registrera_sakgranskning,spara_sakgranskningar
+    from riskanalys.faststallelse.sakgranskning import registrera_sakgranskning,spara_sakgranskningar,struktur_summa
+    from riskanalys.faststallelse.resultatgranskning import registrera_resultatgranskning
     from riskanalys.dokument.rapportpaket_v9 import las_presentation_v9 as las_presentation
     from riskanalys.faststallelse.faststall import faststall,verifiera_version
     from riskanalys.faststallelse.modeller import Beslut
@@ -52,9 +53,13 @@ def test_sakgranskad_gemensam_analys_kan_faststallas(kedja):
     assert all(r.riktning not in ('oklar','mojlig_underskattning') for r in rows)
     text=' '.join(s.text for av in d.avsnitt for s in av.stycken)
     assert 'Referens: samma scenario med ytterligare +1' in text and 'Syntetisk belagd gemensam orsak' in text
-    pres=las_presentation(k.granskningsmapp,f.bedomning,f.profil,regelbas=f.regelbas);poster=()
+    pres=las_presentation(k.granskningsmapp,f.bedomning,f.profil,regelbas=f.regelbas)
+    poster=registrera_resultatgranskning((),d,f.profil,presentation=pres,
+        visad_struktursumma=struktur_summa(d,presentation=pres),analysbindning=p.registersumma(a),
+        godkand=True,roll='FfR',namn='Syntetisk dokumentgranskare',datum=DAG)
     for av in d.avsnitt:
-        poster=registrera_sakgranskning(poster,d,f.profil,av.id,True,'FfR','Syntetisk dokumentgranskare',DAG,analysbindning=p.registersumma(a),presentation=pres)
+        if av.leveransdel!='resultatrapport':
+            poster=registrera_sakgranskning(poster,d,f.profil,av.id,True,'FfR','Syntetisk dokumentgranskare',DAG,analysbindning=p.registersumma(a),presentation=pres)
     spara_sakgranskningar(f.byramapp,poster)
     version=faststall(f.byramapp,k.regelrot,f.regelbas,Beslut(organ='styrelsen',namn='Syntetisk beslutsfattare',roll='FfR',datum=DAG))
     assert verifiera_version(f.byramapp,1)==[]

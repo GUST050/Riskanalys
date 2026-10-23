@@ -1,6 +1,8 @@
 """Word från tre frysta V9-vyer; inga anrop till export, motor eller AI."""
 from pathlib import Path
 from docx import Document
+from docx.oxml.ns import qn
+from docx.shared import Pt
 from pydantic import ValidationError
 from riskanalys.dokument.leverans_v9 import DELAR,LeveransV9
 from riskanalys.dokument.presentation_v9 import PresentationV9
@@ -62,9 +64,16 @@ def rendera_rapportvyer_v9(vyer:RapportvyerV9,profil:Profil,mapp:Path,*,
                     if u.fore_stycke==n:word.add_heading(u.rubrik,level=2)
                 for t in a.tabeller:
                     if t.fore_stycke==n:_tabell(word,t,hall_ihop_rader=True,formatversion=V9)
-                if n<len(a.stycken):word.add_paragraph(a.stycken[n].text)
+                if n<len(a.stycken):
+                    p=word.add_paragraph(a.stycken[n].text)
+                    if del_=='analysbilaga' and a.id=='D-ARB.B2':
+                        p.paragraph_format.space_after=Pt(0)
             for h in presentation.hanvisningar:
                 if h.avsnitt==a.id:
+                    # Håll hänvisningen på samma sida som sista stycket, även i bilaga A.
+                    sista=word.element.body[-2]  # Sista innehållselementet före sectPr.
+                    if sista.tag==qn('w:p'):
+                        word.paragraphs[-1].paragraph_format.keep_with_next=True
                     word.add_paragraph(mall.hanvisning.format(fil=filnamn[DELAR.index(h.maldel)],avsnitt=', '.join(h.mal)))
         for p in presentation.delar:
             if p.leveransdel==del_:skriv_presentationsrader(word,p.rader)

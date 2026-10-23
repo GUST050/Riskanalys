@@ -33,6 +33,14 @@ def test_befintligt_v8_och_v9_med_v8_skrivresultat_kan_faststallas_efter_standar
             if a.leveransdel!='resultatrapport':
                 poster=registrera_sakgranskning(poster,d,f.profil,a.id,True,'FfR','Syntetisk',DAG,analysbindning=registersumma(f.analys),presentation=p)
         spara_sakgranskningar(f.byramapp,poster)
+        # Gamla R-poster har korrekta summor men styrker inte den samlade handlingen.
+        from riskanalys.faststallelse.modeller import Sakgranskning
+        aldre=tuple(Sakgranskning.model_validate(p.model_dump(mode='json',exclude={'granskningssatt'})) for p in poster)
+        spara_sakgranskningar(f.byramapp,aldre)
+        with pytest.raises(FaststallelseFel,match='--resultatrapport'):
+            faststall(f.byramapp,k.regelrot,f.regelbas,beslut)
+        assert not (f.byramapp/'faststallda/v1').exists()
+        spara_sakgranskningar(f.byramapp,poster)
     final=faststall(f.byramapp,k.regelrot,f.regelbas,beslut)
     assert verifiera_version(f.byramapp,1)==[]
     assert len(list(final.glob('*.docx')))==(3 if format=='v9' else 2)

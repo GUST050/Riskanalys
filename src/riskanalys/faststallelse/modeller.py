@@ -1,6 +1,7 @@
 """Sakgranskning och beslut om fastställelse (spec 10)."""
 
 from datetime import date
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, model_serializer
 
@@ -21,12 +22,15 @@ class Sakgranskning(Fryst):
     kommentar: str | None = None
     dokumentstruktur: str | None = None
     analysbindning: str | None = None
+    granskningssatt: Literal['samlad_resultatrapport'] | None = None
 
     @model_serializer(mode="wrap")
     def _historiskt_format(self, handler):
         data = handler(self)
         if self.analysbindning is None:
             data.pop("analysbindning", None)
+        if self.granskningssatt is None:
+            data.pop("granskningssatt", None)
         return data
 
 

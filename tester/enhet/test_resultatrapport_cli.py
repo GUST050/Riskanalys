@@ -25,6 +25,12 @@ def test_cli_ny_standard_och_samlad_granskning(resultatkedja,tmp_path,monkeypatc
     assert 'Resultatrapport, analysbilaga och underlagsbilaga' in visat
     assert 'Läsrapport och kompletterande underlagsbilaga' not in visat
     assert all(a.id in visat for a in d.avsnitt if a.leveransdel=='resultatrapport')
+    fil=byra/'sakgranskning/sakgranskningar.yaml';fore=fil.read_bytes()
+    for beslut in (['--godkann'],['--underkann','--kommentar','Syntetiskt fel']):
+        assert main(['sakgranska',*grund,'--avsnitt','D-ARB.R2','--namn','Syntetisk',*beslut])==1
+        assert fil.read_bytes()==fore
+        fel=capsys.readouterr()
+        assert '--resultatrapport' in fel.err and '--visad-struktursumma' in fel.err
     assert main(['sakgranska',*grund,'--resultatrapport','--godkann','--namn','Syntetisk',
                  '--visad-struktursumma','fel'])==1
     assert las_sakgranskningar(byra)==()

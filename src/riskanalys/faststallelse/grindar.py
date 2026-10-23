@@ -149,7 +149,9 @@ def _sakgranskning(underlag: Faststallelseunderlag) -> list[str]:
     for avsnitt in underlag.dokument.avsnitt:
         galler = galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument, analysbindning=underlag.analysbindning, presentation=underlag.presentation)
         if galler is None:
-            hinder.append(f"Avsnitt {avsnitt.id} är inte sakgranskat i nuvarande lydelse.")
+            anvisning = (' Använd --resultatrapport och --visad-struktursumma för förnyad samlad granskning.'
+                if avsnitt.formatversion == 'D-ARB-resultat-v9' and avsnitt.leveransdel == 'resultatrapport' else '')
+            hinder.append(f"Avsnitt {avsnitt.id} är inte sakgranskat i nuvarande lydelse." + anvisning)
         elif not galler.godkand:
             hinder.append(f"Avsnitt {avsnitt.id} underkändes vid sakgranskningen: {galler.kommentar}")
     return hinder

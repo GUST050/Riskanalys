@@ -1,19 +1,28 @@
 """Tre filer med granskade fasta mallar och begränsade leveransvärden."""
-from datetime import date
+from datetime import date, datetime, timezone
 from typing import Literal
+from zoneinfo import ZoneInfo
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 DELAR=('resultatrapport','analysbilaga','underlagsbilaga')
 
 
+def _lasbar_korningstid(identitet: str) -> str:
+    try:
+        tid = datetime.strptime(identitet, '%Y%m%dT%H%M%S%fZ').replace(tzinfo=timezone.utc)
+    except ValueError:
+        return identitet
+    return tid.astimezone(ZoneInfo('Europe/Stockholm')).strftime('%Y-%m-%d kl. %H:%M:%S (Europe/Stockholm)')
+
+
 class LeveransmallV9(BaseModel):
     model_config=ConfigDict(frozen=True,extra='forbid')
-    version: str='D-ARB-v9-leveransmall-1'
+    version: str='D-ARB-v9-leveransmall-2'
     filnamn: tuple[str,str,str]=('allman-riskbedomning-{suffix}.docx','analysbilaga-{suffix}.docx','underlagsbilaga-{suffix}.docx')
     utkaststatus: str='UTKAST – ej fastställt av byrån. Skapat {datum}.'
     slutstatus: str='Fastställt av {organ} {datum}. Version {version}.'
-    inledning: str=('Gemensam paketversion: {paketversion}. Bedömningsversion: {bedomning}. '
-        'Granskningsversion: {granskning}. Läs tillsammans med {andra}. '
+    inledning: str=('Gemensam paketversion: {paketversion}. Bedömningstid: {bedomning}. '
+        'Granskningstid: {granskning}. Läs tillsammans med {andra}. '
         'Alla tre delarna och deras gemensamma manifest utgör det verifierbara paketet.')
     utkastpaket: str='Utkastet blir verifierbart när det fastställs med alla tre delar och ett gemensamt manifest.'
     hanvisning: str='Se {fil}, avsnitt {avsnitt}.'
@@ -31,7 +40,9 @@ class LeveransmallV9(BaseModel):
         mall=self.inledning if l.version is not None else self.inledning.replace(
             'Alla tre delarna och deras gemensamma manifest utgör det verifierbara paketet.',self.utkastpaket)
         return mall.format(paketversion='utkast' if l.version is None else f'v{l.version}',
-            bedomning=l.bedomning,granskning=l.granskning,andra=' och '.join(andra))
+            bedomning=_lasbar_korningstid(l.bedomning) if self.version=='D-ARB-v9-leveransmall-2' else l.bedomning,
+            granskning=_lasbar_korningstid(l.granskning) if self.version=='D-ARB-v9-leveransmall-2' else l.granskning,
+            andra=' och '.join(andra))
 
 
 LEVERANSMALL_V9=LeveransmallV9()
