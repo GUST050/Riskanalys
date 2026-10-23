@@ -10,6 +10,7 @@ from riskanalys.regelverk.villkor import VillkorsFel, tolka_villkor
 from riskanalys.regelverk.validering_m2 import m2fel
 from riskanalys.regelverk.validering_scenario import scenariofel
 from riskanalys.regelverk.inventering import kontrollera_inventarium
+from riskanalys.regelverk.metodbeslut import beslutsfel
 
 AVSNITT_ID = re.compile(r"^D-[A-Z]+(\.\d+)+$")
 KAPITEL = re.compile(r"^(\d+(?: [a-z])? kap\.)")
@@ -40,6 +41,7 @@ def validera(regelbas: Regelbas) -> list[str]:
         *_tillamplighet(regelbas),
         *m2fel(regelbas),
         *scenariofel(regelbas),
+        *beslutsfel(regelbas),
     ]
 
 

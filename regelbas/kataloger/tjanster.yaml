@@ -346,7 +346,6 @@
   - H-01
   - H-02
   - H-MOD-01
-  - H-MOD-02
   - H-MOD-04
   - H-TF-01
   - H-TF-02
@@ -429,7 +428,13 @@
     eller ge underlag för vidareföring även av legalt intjänade medel till terrorändamål. Brottsligt ursprung
     krävs inte för TF; ändamål och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus
     och sektor, medan just arbetsmomentets koppling är programmets metodtolkning. Inget betalningsmandat
-    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.'
+    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.
+    D1, provisorisk avgränsning: H-MOD-02 beräknas inte i ren löneberedning/lönerapportering eftersom
+    lästa källor beskriver faktura-, moms- och varuleveransled utan att belägga detta arbetsmoment i en
+    ren lönetjänst. Moms-/fakturagranskning och betalningar bedöms i de tjänster där de faktiskt erbjuds.
+    Samma kund kan ha andra tjänster men sådan samförekomst antas inte. Lönens eget falska underlag och
+    löneuttag av brottsvinst finns kvar genom H-TJ-04 och H-02. Avgränsningen är ett ej granskat metodval,
+    inte bevis för att en lönekund saknar momsbrott.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Löneberedning och lönerapportering

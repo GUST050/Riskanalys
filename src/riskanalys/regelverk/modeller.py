@@ -657,6 +657,47 @@ class Kundmall(Strikt):
                        "metodforslag": self.c_metodforslag})
 
 
+class Metodkallbelagg(Strikt):
+    kalla: str
+    avsnitt: str = Field(min_length=1)
+    sida: int | None = Field(default=None, ge=1)
+    citat: str = Field(min_length=1)
+    tolkning: str = Field(min_length=1)
+
+
+class Metodbeslut(Strikt):
+    """Ett provisoriskt metodval, dess underlag och hela genomförandebindning."""
+    id: str = Field(pattern=r"^D(?:[1-9]|-LAGRE)$")
+    namn: str = Field(min_length=1)
+    grund: Literal['metodval'] = 'metodval'
+    valt: str = Field(min_length=1)
+    alternativ: tuple[str, ...] = Field(min_length=2)
+    skal: str = Field(min_length=1)
+    osakerhet: str = Field(min_length=1)
+    kallor: tuple[str, ...] = Field(min_length=1)
+    kallbelagg: tuple[Metodkallbelagg, ...] = Field(min_length=1)
+    objekt: dict[str, str] = Field(min_length=1)
+    modellfiler: dict[str, str] = Field(min_length=1)
+    aterforing: str = Field(min_length=1)
+    sakkunnig: Sakkunnig = Sakkunnig()
+
+    @model_validator(mode='after')
+    def kontrollera(self):
+        import re
+        from pathlib import PurePosixPath
+        if len(set(self.alternativ))!=len(self.alternativ) or self.valt not in self.alternativ:
+            raise ValueError('Valet måste finnas bland minst två olika alternativ.')
+        if any(not re.fullmatch(KONTROLLSUMMA,v) for v in (*self.objekt.values(),*self.modellfiler.values())):
+            raise ValueError('Objekt och modellfiler kräver SHA-256-kontrollsummor.')
+        for fil in self.modellfiler:
+            if (not fil.startswith('src/riskanalys/') or not fil.endswith('.py') or
+                '..' in PurePosixPath(fil).parts or '\\' in fil or PurePosixPath(fil).as_posix()!=fil):
+                raise ValueError('Modellfilen måste ligga under src/riskanalys och vara en Python-fil.')
+        if any(b.kalla not in self.kallor for b in self.kallbelagg):
+            raise ValueError('Källbelägg måste bindas till beslutets källor.')
+        return self
+
+
 class Regelbas(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -683,12 +724,15 @@ class Regelbas(BaseModel):
     kundmall: Kundmall | None = None
     facit: dict[str, Any] | None = None
     lagre_risk: dict[str, IndikatorLagreRisk] = {}
+    metodbeslut: dict[str, Metodbeslut] = {}
 
     @model_serializer(mode='wrap')
     def serialisera(self, handler):
         data = handler(self)
         if not self.lagre_risk:
             data.pop('lagre_risk', None)
+        if not self.metodbeslut:
+            data.pop('metodbeslut', None)
         return data
 
     @property
@@ -718,6 +762,7 @@ class Regelbas(BaseModel):
             self.hot,
             self.sarbarheter,
             self.lagre_risk,
+            self.metodbeslut,
             self.kontroller,
             self.tjanster,
             self.bristmonster,

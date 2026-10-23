@@ -51,6 +51,9 @@ def granskningsobjekt(rb: Regelbas, paket_id: str) -> dict[str, str]:
         for rad in rb.kundmall.rader:
             objekt[rad.id] = _summa(utan_granskningsmetadata(rad.model_dump(mode='json')))
         objekt['KUNDMETOD-C'] = rb.kundmall.c_innehallssumma()
+    from riskanalys.regelverk.metodbeslut import beslutssumma, objektindex
+    index=objektindex(rb) if rb.metodbeslut else {}
+    objekt.update({id:beslutssumma(rb,b,index=index) for id,b in rb.metodbeslut.items()})
     return objekt
 
 
@@ -185,7 +188,7 @@ def applicera_attester(rb: Regelbas, b: Granskningsbeslut) -> Regelbas:
         'paragrafkarta': paket.paragrafkarta.model_copy(update={'sakkunnig': attest('PARAGRAFKARTA')}),
     })
     updates = {'krav': krav, 'regelpaket': {**rb.regelpaket, b.paket: paket}}
-    for namn in ('hot', 'sarbarheter', 'kontroller', 'tjanster', 'lagre_risk'):
+    for namn in ('hot', 'sarbarheter', 'kontroller', 'tjanster', 'lagre_risk', 'metodbeslut'):
         updates[namn] = {
             k: v.model_copy(update={'sakkunnig': attest(k, v.sakkunnig)}) for k, v in getattr(rb, namn).items()
         }

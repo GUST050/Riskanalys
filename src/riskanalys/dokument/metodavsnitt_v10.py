@@ -30,6 +30,13 @@ def bygg_metod(rb):
     s.append(stycke('Skalorden ovan kommer från de bundna matrisraderna. Förklaringar och tabellceller är metodval; '
         'de utgör inga nya åtgärdskrav per nivå. Kontrollernas lokala effekt och giltigheten av en sänkning prövas separat. '
         'Aktuell sakkunnigstatus: ' + ', '.join(r.id + ' ' + r.sakkunnig.status for r in regler if hasattr(r, 'sakkunnig')) + '.', refs))
+    if rb.metodbeslut:
+        s.append(stycke('Provisoriska metodbeslut: valen nedan är förslag och kräver sakkunniggranskning av '
+            'både sakobjekt och genomförandefiler före fastställelse. Portföljfaktorer är modellindikatorer; '
+            'de visar inte vilka kunder som har faktorn i varje tjänst.', (kallkod('regelbas', '/metodbeslut'),)))
+        tabeller.append(tabell('metodbeslut', 'Provisoriska metodbeslut', ('ID', 'Fråga', 'Val', 'Status'),
+            [rad((b.id, b.namn, b.valt, b.sakkunnig.status),
+                 (kallkod('regelbas', '/metodbeslut/' + b.id),)) for b in rb.metodbeslut.values()]))
     return avsnitt('4.1', 'Metod, skalor och matriser', s, tabeller)
 
 

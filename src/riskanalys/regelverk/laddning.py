@@ -16,6 +16,7 @@ from riskanalys.regelverk.modeller import (
     Falt,
     Hot,
     IndikatorLagreRisk,
+    Metodbeslut,
     InventeradLydelse,
     Kalla,
     Kontroll,
@@ -94,6 +95,8 @@ def ladda_regelbas(rot: Path = STANDARD_REGELBAS) -> Regelbas:
     data["krav"] = _poster(rot, sorted((rot / "krav").glob("*.yaml")), Krav, fel)
     lagre = rot / 'kataloger/lagre_risk.yaml'
     data['lagre_risk'] = _poster(rot, [lagre], IndikatorLagreRisk, fel) if lagre.exists() else {}
+    beslut = rot / 'beslutstabeller/metodbeslut.yaml'
+    data['metodbeslut'] = _poster(rot, [beslut], Metodbeslut, fel) if beslut.exists() else {}
     data["regelpaket"] = _poster(rot, sorted((rot / "regelpaket").glob("*.yaml")), Regelpaket, fel, en_per_fil=True)
     inventarium = []
     for fil in sorted((rot / "inventering").glob("*.yaml")):

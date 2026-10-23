@@ -1,7 +1,7 @@
 - id: C-07
   namn: Bankavstämning mot underlag
-  beskrivning: Byrån stämmer av kundens bankkonton mot bokfört underlag och utreder differenser
-    och transaktioner som saknar underlag.
+  beskrivning: Byrån stämmer av kundens bankkonton mot bokfört underlag och utreder differenser och transaktioner
+    som saknar underlag.
   utformning_falt: P-KONTROLL.C-07.utformning
   genomforande_falt: P-KONTROLL.C-07.genomforande
   kallor:
@@ -31,13 +31,12 @@
     - H-TF-01
     - H-TF-02
     kan_belagga: 'Metodval: avstämning av tillgängliga kontoutdrag mot bokfört underlag kan synliggöra
-      differenser och transaktioner som saknar förklaring. Detta kan vara observationsunderlag för
-      vidare utredning, inte bevis för en verklig affär.'
-    begransningar: En matchande faktura styrker inte ensam att affären är verklig; underlag kan vara
-      fabricerade. Avstämningen omfattar bara tillgängliga konton och led, inte automatiskt parallella
-      bankengagemang. PSP kan dölja den faktiska mottagaren och syftet; plattformars fragmenterade
-      information medger inte antagen full täckning. Räckvidden för osynliga flöden är okänd och måste
-      kompletteras lokalt.
+      differenser och transaktioner som saknar förklaring. Detta kan vara observationsunderlag för vidare
+      utredning, inte bevis för en verklig affär.'
+    begransningar: En matchande faktura styrker inte ensam att affären är verklig; underlag kan vara fabricerade.
+      Avstämningen omfattar bara tillgängliga konton och led, inte automatiskt parallella bankengagemang.
+      PSP kan dölja den faktiska mottagaren och syftet; plattformars fragmenterade information medger
+      inte antagen full täckning. Räckvidden för osynliga flöden är okänd och måste kompletteras lokalt.
     forutsattningar: Tillgång till de konton, perioder och transaktionsunderlag som faktiskt omfattas
       samt förståelse för kundens verksamhet. Dokumentera insynsluckor och pröva underlagens tillförlitlighet
       och bakomliggande parter separat. Beskrivningen bekräftar inget utfört arbete eller uppnådd effekt.
@@ -67,22 +66,21 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Avstämning kan identifiera oförklarade differenser och transaktioner utan underlag
-      (H-03) och återföring till annat konto (H-MOD-01) i de tillgängliga bankflödena; SRC-NRA-2024-25
-      7.19 s. 123 nämner båda mönstren. Tjänstens eget hot H-TJ-01 (osanna underlag och brottsvinster
-      som vanliga affärshändelser) är inte mål: avstämningen visar att betalning och underlag stämmer
-      överens, men räckvidden anger att en matchande faktura inte styrker att affären är verklig. Av
-      samma skäl är H-01, H-02 och H-MOD-02 inte mål. H-MOD-04 är inte prövat som mål och ger ingen
-      sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
-      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
-      effekt. Räckviddens begränsningar kvarstår. Källstöd: SRC-VAGL-2025-03, fysisk PDF-sida 16–17;
-      SRC-NRA-2024-25, 7.19 s. 123.'
+    motivering: 'Avstämning kan identifiera oförklarade differenser och transaktioner utan underlag (H-03)
+      och återföring till annat konto (H-MOD-01) i de tillgängliga bankflödena; SRC-NRA-2024-25 7.19 s.
+      123 nämner båda mönstren. Tjänstens eget hot H-TJ-01 (osanna underlag och brottsvinster som vanliga
+      affärshändelser) är inte mål: avstämningen visar att betalning och underlag stämmer överens, men
+      räckvidden anger att en matchande faktura inte styrker att affären är verklig. Av samma skäl är
+      H-01, H-02 och H-MOD-02 inte mål. H-MOD-04 är inte prövat som mål och ger ingen sänkning. TF-hoten
+      sänks inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment,
+      inte belägg för lokal utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.
+      Källstöd: SRC-VAGL-2025-03, fysisk PDF-sida 16–17; SRC-NRA-2024-25, 7.19 s. 123.'
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-01
   namn: Kontroll av löpande bokföring
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-01.utformning
   genomforande_falt: P-KONTROLL.C-TJ-01.genomforande
   grund: metodval
@@ -112,11 +110,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -135,22 +133,21 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Underlagsprövning och frågor om affärssyfte riktas mot tjänstens eget missbruk, att
-      osanna underlag och brottsvinster redovisas som vanliga affärshändelser (H-TJ-01), mot fakturor
-      utan verklig prestation (H-01) och mot oförklarade flöden i bokföringen (H-03). SRC-NRA-2024-25
-      7.19 s. 122–123 beskriver att konsulten kan användas för att få falska underlag och fakturor att
-      framstå som riktiga och att otillräcklig kundkännedom gör att transaktioner utan underlag inte
-      upptäcks; SRC-VAGL-2025-03 fysisk PDF-sida 16 och 23 anger att sådana omständigheter utreds genom
-      frågor och begärda underlag. H-02, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger
-      ingen sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
-      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
-      effekt. Räckviddens begränsningar kvarstår.'
+    motivering: Underlagsprövning och frågor om affärssyfte riktas mot tjänstens eget missbruk, att osanna
+      underlag och brottsvinster redovisas som vanliga affärshändelser (H-TJ-01), mot fakturor utan verklig
+      prestation (H-01) och mot oförklarade flöden i bokföringen (H-03). SRC-NRA-2024-25 7.19 s. 122–123
+      beskriver att konsulten kan användas för att få falska underlag och fakturor att framstå som riktiga
+      och att otillräcklig kundkännedom gör att transaktioner utan underlag inte upptäcks; SRC-VAGL-2025-03
+      fysisk PDF-sida 16 och 23 anger att sådana omständigheter utreds genom frågor och begärda underlag.
+      H-02, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks
+      inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment,
+      inte belägg för lokal utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-02
   namn: Kontroll av bokslut och årsredovisning
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-02.utformning
   genomforande_falt: P-KONTROLL.C-TJ-02.genomforande
   grund: metodval
@@ -180,11 +177,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -203,21 +200,20 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Prövning av bokslutsunderlag och avvikande flöden riktas mot tjänstens eget missbruk,
+    motivering: Prövning av bokslutsunderlag och avvikande flöden riktas mot tjänstens eget missbruk,
       att en övertygande årsredovisning och förfalskade underlag legitimerar brottsvinster (H-TJ-02),
       mot osanna verifikationer (H-01) och mot oförklarade belopp (H-03). SRC-NRA-2024-25 7.19 s. 123
-      beskriver bokslut och övertygande årsredovisning på felaktiga grunder och transaktioner utan
-      underlag; SRC-VAGL-2025-03 fysisk PDF-sida 23 nämner räkenskaper som inte stödjer
-      årsredovisningen. H-02, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen
-      sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
-      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
-      effekt. Räckviddens begränsningar kvarstår.'
+      beskriver bokslut och övertygande årsredovisning på felaktiga grunder och transaktioner utan underlag;
+      SRC-VAGL-2025-03 fysisk PDF-sida 23 nämner räkenskaper som inte stödjer årsredovisningen. H-02,
+      H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks inte
+      av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment,
+      inte belägg för lokal utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-03
   namn: Kontroll av deklarationer och deklarationsombud
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-03.utformning
   genomforande_falt: P-KONTROLL.C-TJ-03.genomforande
   grund: metodval
@@ -247,11 +243,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -271,22 +267,21 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Prövning av deklarationsunderlag riktas mot tjänstens eget missbruk, osanna
-      deklarationsunderlag (H-TJ-03), mot osanna fakturor (H-01) och momsunderlag utan verklig affär
-      (H-MOD-02) samt mot avvikande flöden som syns i underlaget (H-03). SRC-NRA-2024-25 7.19 s. 122–123
-      räknar skattedeklarationer och deklarationsombud till sektorn och beskriver falska underlag och
-      transaktioner utan underlag; SRC-VAGL-2025-03 fysisk PDF-sida 23 nämner osanna fakturor och
-      karusellbedrägeri. H-03 avser bara flöden som syns i deklarationsunderlaget; kontrollen har inte
-      generell insyn i alla betalningsled. H-02, H-MOD-01 och H-MOD-04 är inte prövade som mål och ger
-      ingen sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
-      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
-      effekt. Räckviddens begränsningar kvarstår.'
+    motivering: Prövning av deklarationsunderlag riktas mot tjänstens eget missbruk, osanna deklarationsunderlag
+      (H-TJ-03), mot osanna fakturor (H-01) och momsunderlag utan verklig affär (H-MOD-02) samt mot avvikande
+      flöden som syns i underlaget (H-03). SRC-NRA-2024-25 7.19 s. 122–123 räknar skattedeklarationer
+      och deklarationsombud till sektorn och beskriver falska underlag och transaktioner utan underlag;
+      SRC-VAGL-2025-03 fysisk PDF-sida 23 nämner osanna fakturor och karusellbedrägeri. H-03 avser bara
+      flöden som syns i deklarationsunderlaget; kontrollen har inte generell insyn i alla betalningsled.
+      H-02, H-MOD-01 och H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks inte
+      av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment,
+      inte belägg för lokal utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-04
   namn: Kontroll av lönehantering
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-04.utformning
   genomforande_falt: P-KONTROLL.C-TJ-04.genomforande
   grund: metodval
@@ -309,18 +304,17 @@
     - H-01
     - H-02
     - H-MOD-01
-    - H-MOD-02
     - H-MOD-04
     - H-TF-01
     - H-TF-02
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -339,21 +333,21 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Prövning av löneunderlag och betalningssyfte riktas mot tjänstens eget missbruk, osanna
-      löner som legitimerar brottsvinster eller finansierar svart arbetskraft (H-TJ-04), mot
-      brottsvinster som redovisas som intäkter (H-02) och mot oförklarade löneflöden (H-03).
-      SRC-NRA-2024-25 7.19 s. 123 beskriver brottsvinster som bokförs som försäljning och tas ut som lön
-      och utdelning samt osanna fakturor som avlönar svart arbetskraft; SRC-VAGL-2025-03 fysisk PDF-sida
-      17 beskriver samma uttag som lön och utdelning. H-01, H-MOD-01, H-MOD-02 och H-MOD-04 är inte
-      prövade som mål och ger ingen sänkning. TF-hoten sänks inte av kontroller i metoden och är inte
-      mål. Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal
-      utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+    motivering: Prövning av löneunderlag och betalningssyfte riktas mot tjänstens eget missbruk, osanna
+      löner som legitimerar brottsvinster eller finansierar svart arbetskraft (H-TJ-04), mot brottsvinster
+      som redovisas som intäkter (H-02) och mot oförklarade löneflöden (H-03). SRC-NRA-2024-25 7.19 s.
+      123 beskriver brottsvinster som bokförs som försäljning och tas ut som lön och utdelning samt osanna
+      fakturor som avlönar svart arbetskraft; SRC-VAGL-2025-03 fysisk PDF-sida 17 beskriver samma uttag
+      som lön och utdelning. H-01, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen
+      sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning
+      av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller effekt. Räckviddens
+      begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-05
   namn: Kontroll av betalningar och attest i kundens namn
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-05.utformning
   genomforande_falt: P-KONTROLL.C-TJ-05.genomforande
   grund: metodval
@@ -383,11 +377,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -406,21 +400,20 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Prövning av betalningsunderlag och mottagare riktas mot tjänstens eget missbruk,
-      ogrundade utlandsbetalningar och slussning via betalningsuppdraget (H-TJ-05), mot oförklarade
-      överföringar (H-03) och begärd återföring till annat konto (H-MOD-01). SRC-NRA-2024-25 7.19 s. 123
-      nämner felbetalning till annat konto och verksamhetsfrämmande utlandsbetalningar; SRC-VAGL-2025-03
-      fysisk PDF-sida 16–17 beskriver felbetalningar och utlandsbetalningar som ska granskas närmare.
-      H-01, H-02, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks
-      inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans
-      granskningsmoment, inte belägg för lokal utformning, genomförande eller effekt. Räckviddens
-      begränsningar kvarstår.'
+    motivering: Prövning av betalningsunderlag och mottagare riktas mot tjänstens eget missbruk, ogrundade
+      utlandsbetalningar och slussning via betalningsuppdraget (H-TJ-05), mot oförklarade överföringar
+      (H-03) och begärd återföring till annat konto (H-MOD-01). SRC-NRA-2024-25 7.19 s. 123 nämner felbetalning
+      till annat konto och verksamhetsfrämmande utlandsbetalningar; SRC-VAGL-2025-03 fysisk PDF-sida 16–17
+      beskriver felbetalningar och utlandsbetalningar som ska granskas närmare. H-01, H-02, H-MOD-02 och
+      H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks inte av kontroller i metoden
+      och är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal
+      utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-06
   namn: Kontroll av klientmedelskonto
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-06.utformning
   genomforande_falt: P-KONTROLL.C-TJ-06.genomforande
   grund: metodval
@@ -450,11 +443,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -471,21 +464,20 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Prövning av kund, syfte och ägarbild bakom klientmedelsflöden riktas mot tjänstens eget
-      missbruk, att konto i byråns namn döljer vilken kund eller företrädare som står bakom medlen
-      (H-TJ-06), och mot oförklarade in- och utbetalningar (H-03). SRC-NRA-2024-25 7.19 s. 123 beskriver
-      att varken företaget eller dess företrädare behöver stå som kontoinnehavare när klientmedelskonton
-      används, samt otillräcklig kundkännedom. Byråns konto ger inte automatiskt kunskap om medlens
-      ursprung. H-01, H-02, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen
-      sänkning. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en
-      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
-      effekt. Räckviddens begränsningar kvarstår.'
+    motivering: Prövning av kund, syfte och ägarbild bakom klientmedelsflöden riktas mot tjänstens eget
+      missbruk, att konto i byråns namn döljer vilken kund eller företrädare som står bakom medlen (H-TJ-06),
+      och mot oförklarade in- och utbetalningar (H-03). SRC-NRA-2024-25 7.19 s. 123 beskriver att varken
+      företaget eller dess företrädare behöver stå som kontoinnehavare när klientmedelskonton används,
+      samt otillräcklig kundkännedom. Byråns konto ger inte automatiskt kunskap om medlens ursprung. H-01,
+      H-02, H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks
+      inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment,
+      inte belägg för lokal utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-07
   namn: Kontroll av ekonomisk rådgivning och ekonomichefstjänster
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-07.utformning
   genomforande_falt: P-KONTROLL.C-TJ-07.genomforande
   grund: metodval
@@ -515,11 +507,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -536,21 +528,20 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Prövning av underlag och transaktioners affärssyfte inom rådgivningsuppdraget riktas
-      mot tjänstens eget missbruk, att kompetensen används för trovärdiga underlag och strukturerade
-      transaktioner (H-TJ-07), och mot oförklarade flöden (H-03). SRC-NRA-2024-25 7.19 s. 123 beskriver
-      att konsulten kan skapa dokument och underlag som ger ett trovärdigt intryck och dölja
-      penningtvättstransaktioner. Rådgivningsmandatet ger inte generell underlagskontroll. H-01, H-02,
-      H-MOD-01, H-MOD-02 och H-MOD-04 är inte prövade som mål och ger ingen sänkning. TF-hoten sänks
-      inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans
-      granskningsmoment, inte belägg för lokal utformning, genomförande eller effekt. Räckviddens
-      begränsningar kvarstår.'
+    motivering: Prövning av underlag och transaktioners affärssyfte inom rådgivningsuppdraget riktas mot
+      tjänstens eget missbruk, att kompetensen används för trovärdiga underlag och strukturerade transaktioner
+      (H-TJ-07), och mot oförklarade flöden (H-03). SRC-NRA-2024-25 7.19 s. 123 beskriver att konsulten
+      kan skapa dokument och underlag som ger ett trovärdigt intryck och dölja penningtvättstransaktioner.
+      Rådgivningsmandatet ger inte generell underlagskontroll. H-01, H-02, H-MOD-01, H-MOD-02 och H-MOD-04
+      är inte prövade som mål och ger ingen sänkning. TF-hoten sänks inte av kontroller i metoden och
+      är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal
+      utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-08
   namn: Kontroll av skatterådgivning utöver deklarationer
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-08.utformning
   genomforande_falt: P-KONTROLL.C-TJ-08.genomforande
   grund: metodval
@@ -576,11 +567,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -598,22 +589,22 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Verifiering av underlag, syfte och ägarbild inom skatterådgivningen riktas mot
-      tjänstens eget missbruk, komplexa strukturer, brevlådeföretag och slussbolag som döljer pengars
-      ursprung (H-TJ-08), mot oförklarade flöden i upplägget (H-03) och mot dolda företrädare
-      (H-MOD-03). SRC-NRA-2024-25 7.20 s. 126–127 beskriver samma strukturer, att de försvårar
-      spårningen av pengarnas ursprung, att osanna underlag ger transaktioner en skenbar förklaring och
-      att kundkännedom och kontroll av kundens ekonomiska situation behövs mot anonymitet bakom komplexa
-      ägarstrukturer. Kontrollen omfattar därmed alla tre PT-hot i tjänsten; TF-hoten H-TF-01 och
-      H-TF-03 är inte mål, och s. 128 anger inga kända TF-modus för sektorn. Bredden är ett ogranskat
-      metodval som sakkunnig bör pröva. Katalogmål är en metodtolkning av källans granskningsmoment,
-      inte belägg för lokal utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+    motivering: Verifiering av underlag, syfte och ägarbild inom skatterådgivningen riktas mot tjänstens
+      eget missbruk, komplexa strukturer, brevlådeföretag och slussbolag som döljer pengars ursprung (H-TJ-08),
+      mot oförklarade flöden i upplägget (H-03) och mot dolda företrädare (H-MOD-03). SRC-NRA-2024-25
+      7.20 s. 126–127 beskriver samma strukturer, att de försvårar spårningen av pengarnas ursprung, att
+      osanna underlag ger transaktioner en skenbar förklaring och att kundkännedom och kontroll av kundens
+      ekonomiska situation behövs mot anonymitet bakom komplexa ägarstrukturer. Kontrollen omfattar därmed
+      alla tre PT-hot i tjänsten; TF-hoten H-TF-01 och H-TF-03 är inte mål, och s. 128 anger inga kända
+      TF-modus för sektorn. Bredden är ett ogranskat metodval som sakkunnig bör pröva. Katalogmål är en
+      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
+      effekt. Räckviddens begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-09
   namn: Kontroll av bolagsbildning, lagerbolag och bolagsförmedling
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-09.utformning
   genomforande_falt: P-KONTROLL.C-TJ-09.genomforande
   grund: metodval
@@ -639,11 +630,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -661,22 +652,22 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Verifiering av identitet, faktisk ägarkontroll, syfte och köpeskillingens ursprung vid
-      bolagsbildning och bolagsförmedling riktas mot tjänstens eget missbruk, historikbolag som blir
-      brottsverktyg (H-TJ-09), mot oförklarade flöden vid överföringen av köpeskillingen (H-03) och mot
-      dolda företrädare (H-MOD-03). SRC-NRA-2024-25 7.25 s. 144–145 beskriver historikbolag som
-      brottsverktyg, att flera mindre belopp från olika konton gör pengarnas ursprung svårt att upptäcka
-      och att kundkännedom med uppgifter om kundens ekonomiska situation och pengarnas ursprung krävs.
-      Kontrollen omfattar därmed alla tre PT-hot i tjänsten; TF-hoten H-TF-01 och H-TF-03 är inte mål,
-      och s. 146 anger inga kända TF-modus för sektorn. Bredden är ett ogranskat metodval som sakkunnig
-      bör pröva. Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal
-      utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+    motivering: Verifiering av identitet, faktisk ägarkontroll, syfte och köpeskillingens ursprung vid
+      bolagsbildning och bolagsförmedling riktas mot tjänstens eget missbruk, historikbolag som blir brottsverktyg
+      (H-TJ-09), mot oförklarade flöden vid överföringen av köpeskillingen (H-03) och mot dolda företrädare
+      (H-MOD-03). SRC-NRA-2024-25 7.25 s. 144–145 beskriver historikbolag som brottsverktyg, att flera
+      mindre belopp från olika konton gör pengarnas ursprung svårt att upptäcka och att kundkännedom med
+      uppgifter om kundens ekonomiska situation och pengarnas ursprung krävs. Kontrollen omfattar därmed
+      alla tre PT-hot i tjänsten; TF-hoten H-TF-01 och H-TF-03 är inte mål, och s. 146 anger inga kända
+      TF-modus för sektorn. Bredden är ett ogranskat metodval som sakkunnig bör pröva. Katalogmål är en
+      metodtolkning av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller
+      effekt. Räckviddens begränsningar kvarstår.
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-10
   namn: Kontroll av registrerad adress eller postadress
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-10.utformning
   genomforande_falt: P-KONTROLL.C-TJ-10.genomforande
   grund: metodval
@@ -702,11 +693,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -723,21 +714,21 @@
     - SRC-NRA-2024-25
     - SRC-LST-GOR-ARB
     grund: metodval
-    motivering: 'Verifiering av kunden och den faktiska ägarkontrollen vid adresstjänsten riktas mot
-      tjänstens eget missbruk, adress som döljer verksamhetens verkliga plats (H-TJ-10), och mot dolda
-      företrädare och målvakter (H-MOD-03). SRC-NRA-2024-25 7.26 s. 147 beskriver att hotaktörer
-      använder adresser för att verka anonymt, kan anlita en målvakt och att anonymiteten beror på hur
-      noggrann kundkännedomen är. H-03 är inte mål: källan beskriver inte att kundens flöden passerar
-      adresstjänsten, och frågan om pengarnas ursprung på s. 148 gäller kundkännedomen, inte en
-      granskning av flöden som tjänsten inte hanterar. TF-hoten sänks inte av kontroller i metoden och
-      är inte mål. Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal
-      utformning, genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+    motivering: 'Verifiering av kunden och den faktiska ägarkontrollen vid adresstjänsten riktas mot tjänstens
+      eget missbruk, adress som döljer verksamhetens verkliga plats (H-TJ-10), och mot dolda företrädare
+      och målvakter (H-MOD-03). SRC-NRA-2024-25 7.26 s. 147 beskriver att hotaktörer använder adresser
+      för att verka anonymt, kan anlita en målvakt och att anonymiteten beror på hur noggrann kundkännedomen
+      är. H-03 är inte mål: källan beskriver inte att kundens flöden passerar adresstjänsten, och frågan
+      om pengarnas ursprung på s. 148 gäller kundkännedomen, inte en granskning av flöden som tjänsten
+      inte hanterar. TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning
+      av källans granskningsmoment, inte belägg för lokal utformning, genomförande eller effekt. Räckviddens
+      begränsningar kvarstår.'
   sakkunnig:
     status: ej_granskad
 - id: C-TJ-11
   namn: Kontroll av styrelseuppdrag eller bolagsrättsligt ansvar
-  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera
-    utförd kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
+  beskrivning: Verifiera underlag, syfte, ägarbild och avvikande flöden i uppdraget; dokumentera utförd
+    kontroll. Generisk kontroll ska konkretiseras i rutiner i M6.
   utformning_falt: P-KONTROLL.C-TJ-11.utformning
   genomforande_falt: P-KONTROLL.C-TJ-11.genomforande
   grund: metodval
@@ -763,11 +754,11 @@
     kan_belagga: Okänd scenariotäckning. Katalogkontrollens generella beskrivning anger möjliga granskningsmoment,
       men styrker inte vad en konkret tillämpning kan belägga.
     begransningar: Räckvidden är inte fastställd i det lästa källunderlaget. Källan beskriver sektorns
-      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och
-      ett öppet kompletteringsbehov.
+      risker, inte att den generella kontrollen täcker alla angivna hot. Detta är ett metodval och ett
+      öppet kompletteringsbehov.
     forutsattningar: Konkretisera arbetsmoment, tillgängliga underlag, faktisk insyn och egen verifiering
-      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och
-      dokumentera kvarstående luckor innan tillräcklighet påstås.
+      av eventuella leverantörers arbete. Pröva kontrollen separat för varje relevant scenario och dokumentera
+      kvarstående luckor innan tillräcklighet påstås.
     grund: metodval
     kallhanvisningar:
     - kalla: SRC-NRA-2024-25
@@ -786,21 +777,21 @@
     - SRC-LST-GOR-ARB
     grund: metodval
     motivering: 'Prövning av ägarbild och verkligt syfte med företrädaruppdrag riktas mot tjänstens eget
-      missbruk, att uppdraget möjliggör bolag som brottsverktyg och döljer den faktiska kontrollen
-      (H-TJ-11), och mot dolda företrädare (H-MOD-03). SRC-VAGL-2025-03 fysisk PDF-sida 17 beskriver
-      målvakter som uppträder som ledningspersoner utan att vara bolagets verkliga företrädare;
-      SRC-NRA-2024-25 7.25 s. 144 beskriver bolag som brottsverktyg. H-03 är inte mål: ingen registrerad
-      källa beskriver kontroll av flöden genom företrädaruppdraget, och SRC-NRA-2024-25 7.27 s. 149 har
-      inte hot- eller sårbarhetsbedömt styrelserepresentation. Om uppdraget ger insyn i bolagets flöden
-      är en öppen fråga för sakkunnig. TF-hoten sänks inte av kontroller i metoden och är inte mål.
-      Katalogmål är en metodtolkning av källans granskningsmoment, inte belägg för lokal utformning,
-      genomförande eller effekt. Räckviddens begränsningar kvarstår.'
+      missbruk, att uppdraget möjliggör bolag som brottsverktyg och döljer den faktiska kontrollen (H-TJ-11),
+      och mot dolda företrädare (H-MOD-03). SRC-VAGL-2025-03 fysisk PDF-sida 17 beskriver målvakter som
+      uppträder som ledningspersoner utan att vara bolagets verkliga företrädare; SRC-NRA-2024-25 7.25
+      s. 144 beskriver bolag som brottsverktyg. H-03 är inte mål: ingen registrerad källa beskriver kontroll
+      av flöden genom företrädaruppdraget, och SRC-NRA-2024-25 7.27 s. 149 har inte hot- eller sårbarhetsbedömt
+      styrelserepresentation. Om uppdraget ger insyn i bolagets flöden är en öppen fråga för sakkunnig.
+      TF-hoten sänks inte av kontroller i metoden och är inte mål. Katalogmål är en metodtolkning av källans
+      granskningsmoment, inte belägg för lokal utformning, genomförande eller effekt. Räckviddens begränsningar
+      kvarstår.'
   sakkunnig:
     status: ej_granskad
 - id: C-SANK
   namn: Kontroll av sanktionsanknytning
-  beskrivning: Utred identitet, ägande/kontroll, tillämpliga förbud och eventuella tillstånd.
-    Ingen automatisk screening i M2.
+  beskrivning: Utred identitet, ägande/kontroll, tillämpliga förbud och eventuella tillstånd. Ingen automatisk
+    screening i M2.
   utformning_falt: P-KONTROLL.C-SANK.utformning
   genomforande_falt: P-KONTROLL.C-SANK.genomforande
   grund: metodval
