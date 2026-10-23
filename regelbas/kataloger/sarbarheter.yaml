@@ -209,7 +209,11 @@
   - H-MOD-02
   metodmotivering: 'Scenariokoppling (ogranskat metodval): Riskbranschens underlag är svårare att pröva
     när bankflöden saknas. Ersättning av de enskilda faktorerna sker endast i scenarier där denna kombination
-    själv verkar.'
+    själv verkar. D4: Antal kunder per tjänst identifierar inte gemensamma kunder eller riskfaktorer.
+    Uttryckliga kombinationsgrupper redovisas separat med population, period och källa. S-KOMB-01 är en
+    modellkombination av portföljindikatorer och bevisar inte kundöverlapp. Den ger ingen ny automatisk
+    kombinationsfaktor. Även när marginaltal matematiskt ger en nedre gräns för flertjänstkunder är identitet
+    och risköverlapp okända. Grupperna är observationsunderlag och ändrar inte motorvikterna.'
   sakkunnig:
     status: ej_granskad
 - id: S-TJ-01
@@ -454,13 +458,13 @@
   metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
     och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
     relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Insamling och vidareförmedling
-    via ideella organisationer kan dölja terrorismändamål. Finanspolisens TF-lägesbild (fysisk PDF-sida 2)
-    beskriver också mönstret som många överföringar från okända avsändare som förs vidare; därför kopplas
+    via ideella organisationer kan dölja terrorismändamål. Finanspolisens TF-lägesbild (fysisk PDF-sida
+    2) beskriver också mönstret som många överföringar från okända avsändare som förs vidare; därför kopplas
     faktorn även till oförklarade in- och utflöden, som gäller både penningtvätt och TF. Lägesbilden varken
-    stöder eller utesluter uttryckligen en koppling till penningtvätt; den anger (sida 4) att TF ofta går
-    via samma kanaler som penningtvätt. Kopplingen till penningtvätt är ett konservativt, ogranskat metodval
-    i avvaktan på sakkunnig prövning: faktorn har tidigare höjt penningtvättsrisken, och att ta bort den
-    höjningen vore en sänkning som kräver sakkunnigbeslut.'
+    stöder eller utesluter uttryckligen en koppling till penningtvätt; den anger (sida 4) att TF ofta
+    går via samma kanaler som penningtvätt. Kopplingen till penningtvätt är ett konservativt, ogranskat
+    metodval i avvaktan på sakkunnig prövning: faktorn har tidigare höjt penningtvättsrisken, och att
+    ta bort den höjningen vore en sänkning som kräver sakkunnigbeslut.'
   omrade: kund
   grund: metodval
   villkor:
