@@ -455,16 +455,12 @@
   namn: Ideella föreningar eller liknande organisationsformer
   beskrivning: Insamling och vidareförmedling av medel kan missbrukas för terrorfinansiering; organisationsformen
     är inte ensam bevis för missbruk.
-  metodmotivering: 'Byråövergripande indikator används konservativt för varje erbjuden tjänst. Ett steg
-    och summering med tak i sannolikhetsskalan är ogranskade metodval; kombinationer och tjänstspecifik
-    relevans ska sakgranskas och kalibreras. Scenariokoppling (ogranskat metodval): Insamling och vidareförmedling
-    via ideella organisationer kan dölja terrorismändamål. Finanspolisens TF-lägesbild (fysisk PDF-sida
-    2) beskriver också mönstret som många överföringar från okända avsändare som förs vidare; därför kopplas
-    faktorn även till oförklarade in- och utflöden, som gäller både penningtvätt och TF. Lägesbilden varken
-    stöder eller utesluter uttryckligen en koppling till penningtvätt; den anger (sida 4) att TF ofta
-    går via samma kanaler som penningtvätt. Kopplingen till penningtvätt är ett konservativt, ogranskat
-    metodval i avvaktan på sakkunnig prövning: faktorn har tidigare höjt penningtvättsrisken, och att
-    ta bort den höjningen vore en sänkning som kräver sakkunnigbeslut.'
+  metodmotivering: 'D7: Den lästa TF-lägesbilden stöder TF-relevans men ger inte en självständig generell
+    PT-kedja av organisationsformen. S-ARB-05 verkar därför bara i TF-dimensionen. H-03 är fortsatt både
+    PT och TF och andra belagda PT-faktorer kvarstår. Organisationsformen ensam är inte bevis för missbruk.
+    Detta kan sänka PT-sårbarhet och risk i tidigare ideellscenarier. Samma kanaler som PT bevisar inte
+    generell PT-effekt av organisationsformen. PEP och ideell får fortfarande summeras som portföljindikatorer
+    i TF utan att faktisk gemensam kund påstås; överlapp är en separat kunskapslucka enligt D4.'
   omrade: kund
   grund: metodval
   villkor:
@@ -473,7 +469,7 @@
     varde: true
   effekt:
     sannolikhet: 1
-  galler: bada
+  galler: terrorfinansiering
   kallor:
   - SRC-FIPO-TF-2025
   - SRC-LST-GOR-ARB

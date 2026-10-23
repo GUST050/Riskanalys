@@ -503,7 +503,7 @@
     S-ARB-02: sha256:e4541e1dc464bf8d2c3be92b19e5f9a52fa56646898386b8e7722ac479161548
     S-ARB-03: sha256:3e5700e502dbb8b0413deb6f26ca38555797c97eb32311c0d5b6a85c62843d95
     S-ARB-04: sha256:44aa563533a68f3c6312c75f31b3f83ee68c6356b90ed07575cb2acfd5e313b8
-    S-ARB-05: sha256:c85c693560eb939b600c55db26d9b6114e1b48ebed33aaefd8332352f881d49a
+    S-ARB-05: sha256:cfda0eaffe7591cde354813450ca73b7574816f20ddac1c12a76ab269f6fe2f1
     S-ARB-06: sha256:35452c637734cf6f44779502bf47a21508917aed6aca4225fed85975540d5d57
     S-ARB-07: sha256:1cd704e3e8d86f45a55d8a3f4b66837fd6dd295d083e7c9597256f7f5fef3026
     S-ARB-08: sha256:c3d3d77e56fcbb01485859009f49a94ee596699079a053c01ee4eb0b8e9d975c
@@ -852,7 +852,7 @@
     S-ARB-02: sha256:e4541e1dc464bf8d2c3be92b19e5f9a52fa56646898386b8e7722ac479161548
     S-ARB-03: sha256:3e5700e502dbb8b0413deb6f26ca38555797c97eb32311c0d5b6a85c62843d95
     S-ARB-04: sha256:44aa563533a68f3c6312c75f31b3f83ee68c6356b90ed07575cb2acfd5e313b8
-    S-ARB-05: sha256:c85c693560eb939b600c55db26d9b6114e1b48ebed33aaefd8332352f881d49a
+    S-ARB-05: sha256:cfda0eaffe7591cde354813450ca73b7574816f20ddac1c12a76ab269f6fe2f1
     S-ARB-06: sha256:35452c637734cf6f44779502bf47a21508917aed6aca4225fed85975540d5d57
     S-ARB-07: sha256:1cd704e3e8d86f45a55d8a3f4b66837fd6dd295d083e7c9597256f7f5fef3026
     S-ARB-08: sha256:c3d3d77e56fcbb01485859009f49a94ee596699079a053c01ee4eb0b8e9d975c
@@ -932,6 +932,94 @@
     src/riskanalys/regelverk/validering_scenario.py: sha256:789cbf2c6c05d73fdd2534654fca7173be39edc20c29bd0f0a3404f02ccbdeb5
     src/riskanalys/regelverk/villkor.py: sha256:b33cacbd8ad9bda8651ccc022cdc39f61229a30d6b27ecef19ecef82c94c8ab3
   aterforing: 'Vid avslag: ompröva D6 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
+    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
+    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
+    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
+    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  sakkunnig:
+    status: ej_granskad
+- id: D7
+  namn: Ideella kunder och H-03
+  grund: metodval
+  valt: Ideell indikator höjer endast TF
+  alternativ:
+  - Ideell indikator höjer endast TF
+  - Låt organisationsformen höja både PT och TF
+  skal: Den lästa TF-lägesbilden stöder TF-relevans men ger inte en självständig generell PT-kedja av
+    organisationsformen. S-ARB-05 verkar därför bara i TF-dimensionen. H-03 är fortsatt både PT och TF
+    och andra belagda PT-faktorer kvarstår. Organisationsformen ensam är inte bevis för missbruk.
+  osakerhet: Detta kan sänka PT-sårbarhet och risk i tidigare ideellscenarier. Samma kanaler som PT bevisar
+    inte generell PT-effekt av organisationsformen. PEP och ideell får fortfarande summeras som portföljindikatorer
+    i TF utan att faktisk gemensam kund påstås; överlapp är en separat kunskapslucka enligt D4.
+  kallor:
+  - SRC-FIPO-TF-2025
+  kallbelagg:
+  - kalla: SRC-FIPO-TF-2025
+    sida: 2
+    avsnitt: Fysisk PDF-sida
+    citat: plattform för finansiering av terrorism
+    tolkning: Direkt stöd för TF; inte en fristående PT-höjning av associationsformen.
+  - kalla: SRC-FIPO-TF-2025
+    sida: 4
+    avsnitt: Fysisk PDF-sida
+    citat: samma kanaler
+    tolkning: Gemensamma kanaler bevisar inte att just organisationsformen höjer PT.
+  objekt:
+    H-03: sha256:e6f6008693fcd286fb9cd555dd601b8e874f387af570ec20753af452242777c3
+    H-TF-01: sha256:d8bb53cc2582dcb99f7b5f8f44dd68967f550db0bb0ad57ac6832c8583776529
+    H-TF-03: sha256:015d8398800b82741aec8345c6cc072f42ca2001f1e0af0e39e92f7b48382d0a
+    S-ARB-05: sha256:cfda0eaffe7591cde354813450ca73b7574816f20ddac1c12a76ab269f6fe2f1
+    S-KUND-02: sha256:c4b7602c5a33c5e8511eec14af025f6ab1ef842e5d6c9c566d1cd85f08e06953
+    SRC-FIPO-TF-2025: sha256:8df7513091ae5ca732877660bcdace1285168605f0c0e3c7b8d2b55ba4f53dfa
+    T-BOLAG-01: sha256:11fb063047677db95a768b675183d1e2b03a677093da03995c5f75efba1fe1a2
+    T-BOLAG-02: sha256:4ba3614dc768057f43d4108782a4ca2999439139ec817a20f01f3828ad782f43
+    T-BOLAG-03: sha256:784775c3209ba7e2283261a24adacb4e4dd144a132997eb971d3de426b7fa1b6
+    T-RED-01: sha256:ad80af7353adcccde28f945ce637ec8b736638e7f104dfd7b0be63b46285819d
+    T-RED-02: sha256:164bfb6b97870f6d5d58577856f98c3a0c057da0d04f23cdfc14c6c9e7cc6a3f
+    T-RED-03: sha256:86c6dddc7760df32e0151ef8b3ff20f0e75d835aa75d429a5305661880105e81
+    T-RED-04: sha256:b9c708d67fcd96c9449da7ea4eca2040f51eb802fc2168566ada534274c78594
+    T-RED-05: sha256:562885d1e2c3fd97d8a85a97bb0b52b3fea91b6e7e4132a2df4dfdd8ec7bd957
+    T-RED-06: sha256:989750a047d3aa5dab3321876d430061a15ece9a8b167f4b5612fa0ffd1774f6
+    T-RED-07: sha256:26d6702c069773736563d3ba9192929727a6f024a20e81e9210c6fe890706366
+    T-RED-08: sha256:39c3c768a557b8058d0b1b55251ba64a0712ebce6cc6ee1a7d95c2ccac350e64
+    T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
+    T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
+  modellfiler:
+    src/riskanalys/bedomning/__init__.py: sha256:8727f73160cd23de741df3ff167bc50c13dcf5d1e72c790cce46b18f163cebf0
+    src/riskanalys/bedomning/erfarenheter.py: sha256:668c77694de32b1ee6781660d0649f67c509b6787dda68d7ab03f203b630419c
+    src/riskanalys/bedomning/kundmodell/__init__.py: sha256:4f27e682332da5075ac64780477ca6b60beb61965ed89b8ed19617805b8a0b32
+    src/riskanalys/bedomning/kundmodell/modeller.py: sha256:5fa38bd23497ba8e59024f3a9a493cdc59ba6b259f08b2a4be3b42492683db92
+    src/riskanalys/bedomning/kundmodell/pep.py: sha256:434e5a6c0dfeae9a16085156128771115aefeaa99148089594f4d5321173a860
+    src/riskanalys/bedomning/kundmodell/tabeller.py: sha256:5419e3d842a67ea8637d71f2370edfe02ac46fa805eca6b92e583eb846853692
+    src/riskanalys/bedomning/kundmodell/utvardering.py: sha256:f3f2f898147848c4df8a70ca656ac1de93430152be20c541908abb4f3d9a6e7c
+    src/riskanalys/bedomning/modeller.py: sha256:fced85971084d466cbf164c440db083e3f043fb25dd4fde4694f7d5629e303f1
+    src/riskanalys/bedomning/motor.py: sha256:72e286e8f2e616a3066525c2b22b7c22146da644dabd1cb0c2ef40cd3b53769c
+    src/riskanalys/bedomning/omfattning.py: sha256:0bc2c2d6a068dfbba71eb60f7982e3e7043caf9aa59f561a2d20958f43ea3c5d
+    src/riskanalys/bedomning/sanktioner.py: sha256:8d6f6806f79c99e51b5d97323b72f09c1963f4b40644948b4221e024f0d55e88
+    src/riskanalys/bedomning/scenarier.py: sha256:4a14de8189c670029a1432a690d839fff973567d99fdc17de11e717ec531c4ee
+    src/riskanalys/bedomning/sektorsrisk.py: sha256:b96e516a776c6da99e89f5741283ca0fe1ba623742eb60dd95f9bff1e13768c8
+    src/riskanalys/dokument/kapitel3_v10.py: sha256:6a96c49fcff34539d48e30d324300f1f8ac8581d9a562ddf201c13edbd3d983e
+    src/riskanalys/dokument/metodavsnitt_v10.py: sha256:664db9f53e9baadac7bc13093acf8a558f8db2efb0a01939d7c182359ea418b4
+    src/riskanalys/drift/modellidentitet.py: sha256:dcacd8a3c611f29e6941659a7855014aa3430a0062da54fd122cf9ced365271a
+    src/riskanalys/fel.py: sha256:44058f0e480eb26ffd4f5b26976f942b6c22e3a2eadda8ae8b5b0bc541bb5740
+    src/riskanalys/lagring/__init__.py: sha256:1b8372a54889228e37a993acabf30ed8d8d9578c8f5afa2ec34d1890f1fd934f
+    src/riskanalys/lagring/kontrollsumma.py: sha256:c6b911b14df7c959c0c3a775cd433fc29cf196090852dc1cf13132d300312236
+    src/riskanalys/profil/__init__.py: sha256:f3810d9ff18c39662a4a117f9c1b6dbb0efdc9d9fc503333b1fa32a944fc2aa6
+    src/riskanalys/profil/katalogstatistik.py: sha256:03be61bc38320cd8c12efa7d335ec4ea0dfcdf1f14f503470bcb53014807c574
+    src/riskanalys/profil/modeller.py: sha256:12f9c6c581e7c12f9cd3ee6a688af56ead2dbe9cc2711a97104012aa2124f82f
+    src/riskanalys/profil/omfattning.py: sha256:3f08454b45af81d4b17ad073a3b15fbce7cb5e96bb0414714616f85a95560c76
+    src/riskanalys/regelverk/__init__.py: sha256:6ed4466d57d48e2cdd450d29a35f461c1eb6180bee9de0023227924f3bf26cf7
+    src/riskanalys/regelverk/laddning.py: sha256:16101de1e7d698b0777bbb91059edc5ee87480548489be9d825f0617bb9dece3
+    src/riskanalys/regelverk/metodbeslut.py: sha256:713e2d9023a12b6efb2428c5c72b3a1e8618de5fee654f7925dade3e255c86a6
+    src/riskanalys/regelverk/modeller.py: sha256:f967a3976bae4c59c5ee145c26e8e2d11e54d635d5c89a2d924fb1a284a875ec
+    src/riskanalys/regelverk/sakkunnig.py: sha256:7d96f6e194baae24ef2a201f193b058754c26471ee56a7cad4c5b95165c59af0
+    src/riskanalys/regelverk/tillsyn.py: sha256:b3568eb53ea85f73da0acdf2091d5e5f3dd6cfbe6ef710953f80f5b886c0d339
+    src/riskanalys/regelverk/urval.py: sha256:950aabaee6c327eed859eeabda551cd659189a5c3ed568da499ea5424eb2a9a3
+    src/riskanalys/regelverk/validering.py: sha256:6342933f266c763da7d7a1c96139e3a9e76cfac90ed106a534d7c58540f070a8
+    src/riskanalys/regelverk/validering_m2.py: sha256:716c0bcd65b151ddc6349115a7fde89ae50b14071852d80ae57dc3da1f68cb77
+    src/riskanalys/regelverk/validering_scenario.py: sha256:789cbf2c6c05d73fdd2534654fca7173be39edc20c29bd0f0a3404f02ccbdeb5
+    src/riskanalys/regelverk/villkor.py: sha256:b33cacbd8ad9bda8651ccc022cdc39f61229a30d6b27ecef19ecef82c94c8ab3
+  aterforing: 'Vid avslag: ompröva D7 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
     får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
     ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
     modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
