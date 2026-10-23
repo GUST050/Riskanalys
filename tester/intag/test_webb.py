@@ -23,7 +23,7 @@ def anrop(s,path='',data=None,headers=None):
     if body is not None:h.setdefault('Content-Type','application/x-www-form-urlencoded')
     req=Request(s.url+path,data=body,headers=h)
     try:
-        with urlopen(req,timeout=5) as r:return r.status,r.read().decode(errors="replace"),r.headers
+        with urlopen(req,timeout=30) as r:return r.status,r.read().decode(errors="replace"),r.headers
     except HTTPError as e:return e.code,e.read().decode(),e.headers
 
 

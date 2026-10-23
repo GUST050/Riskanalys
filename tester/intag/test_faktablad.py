@@ -122,7 +122,8 @@ def test_okant_antal_ger_samma_motivering_for_noll_och_tre_procent(rb_intag, kla
 
 def _kundbas(rb, klar, aktiva, riskbransch):
     upp = dict(klar.uppgifter)
-    for falt_id, varde in (("P-KUND.antal_aktiva", aktiva), ("P-KUND.antal_riskbransch", riskbransch)):
+    for falt_id, varde in (("P-KUND.antal_aktiva", aktiva), ("P-KUND.antal_riskbransch", riskbransch), ("P-GEO.antal_hemvist_sverige", aktiva),
+                           ("P-GEO.antal_hemvist_ovriga_ees", 0), ("P-GEO.antal_hemvist_utanfor_ees", 0)):
         upp[falt_id] = upp[falt_id].model_copy(update={"varde": varde})
     return harled_andelar(klar.model_copy(update={"uppgifter": upp}), rb,
                           frozenset({"P-KUND.antal_aktiva", "P-KUND.antal_riskbransch"}))
@@ -163,6 +164,10 @@ def _med_antal(rb, profil, varden: dict):
     upp = dict(profil.uppgifter)
     for falt_id, varde in varden.items():
         upp[falt_id] = upp[falt_id].model_copy(update={"varde": varde})
+    if "P-KUND.antal_aktiva" in varden:
+        for id, varde in (("P-GEO.antal_hemvist_sverige", varden["P-KUND.antal_aktiva"]),
+                          ("P-GEO.antal_hemvist_ovriga_ees", 0), ("P-GEO.antal_hemvist_utanfor_ees", 0)):
+            upp[id] = upp[id].model_copy(update={"varde": varde})
     return harled_andelar(profil.model_copy(update={"uppgifter": upp}), rb, frozenset(varden))
 
 
@@ -248,7 +253,7 @@ def test_intagsoversikt_visar_lokal_precision(tmp_path, rb_intag, klar):
     from riskanalys.intag.vyer import oversikt
     profil = _med_antal(rb_intag, klar, {'P-KUND.antal_riskbransch': 195, 'P-KUND.antal_aktiva': 1000})
     falt = rb_intag.falt[RISKBRANSCH].model_copy(update={'intag': SimpleNamespace(obligatorisk=False)})
-    t = SimpleNamespace(besvarade=1, antal=1, komplett=False, saknade=(), hinder=())
+    t = SimpleNamespace(besvarade=1, antal=1, komplett=False, utkastklart=False, saknade=(), hinder=())
     s = SimpleNamespace(prefix='/', csrf='test', kompletteringar=(), utkast=None, tjanst=SimpleNamespace(rb=rb_intag, mapp=tmp_path, oversikt=lambda p:t, finns=lambda:True))
     text = oversikt(s, profil=profil, qs=[SimpleNamespace(falt=falt)])
     assert '19,5 %' in text

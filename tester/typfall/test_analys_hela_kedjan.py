@@ -11,7 +11,7 @@ def fall(regelbas_v1, tmp_path):
     return skapa_fall(regelbas_v1, tmp_path)
 
 
-def test_fyrtjanstfall_har_sakligt_bekraftade_64_block_och_48_val(fall):
+def test_fyrtjanstfall_har_sakligt_bekraftade_64_block_och_46_val(fall):
     from riskanalys.analys.guide import arbetsborda
     from riskanalys.analys.provning import analysbrister, faktisk_reduktion, blocksumma, sankta_scenarier
     rb, p, b, a = fall.regelbas, fall.profil, fall.bedomning, fall.analys
@@ -33,10 +33,10 @@ def test_fyrtjanstfall_har_sakligt_bekraftade_64_block_och_48_val(fall):
                 'rätta kontrolluppgifterna eller registrera metodkonflikt.') in fynd
         assert f'{id}: Reduktionsprövningen stämmer inte med motorns faktiska reduktion.' not in fynd
     w = arbetsborda(a)
-    assert (w.alltid, w.villkorade, w.bekraftade_block, w.unika_scenarier, w.gemensamma_val) == (40,24,64,16,48)
-    assert sum(len(rb.tjanster[t.tjanst].hot) for t in a.tjanster) == 52
+    assert (w.alltid, w.villkorade, w.bekraftade_block, w.unika_scenarier, w.gemensamma_val) == (40,24,64,16,46)
+    assert sum(len(rb.tjanster[t.tjanst].hot) for t in a.tjanster) == 50
     for t in a.tjanster:
-        assert len(t.scenariokopplingar) == 12
+        assert len(t.scenariokopplingar) == (10 if t.tjanst == "T-RED-04" else 12)
         assert t.betalningsinsyn.status == 'bedomd' and t.leverantorer
         assert {s.omrade for s in t.sarbarhetsprovningar} >= {'kund','kanal','geo','verk'}
         assert t.kontroller and t.reduktionsmotivering and t.sektorsjamforelse and t.sanktioner

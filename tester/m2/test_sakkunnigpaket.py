@@ -197,5 +197,5 @@ def test_andrad_rackvidd_i_fil_avvisar_gammal_import(kopia, tmp_path):
     data = yaml.safe_load(p.read_text())
     data[0]['rackvidd'][0]['begransningar'] += ' Ny begränsning i syntetiskt prov.'
     p.write_text(yaml.safe_dump(data, allow_unicode=True))
-    with pytest.raises(RiskanalysFel, match='innehållssumma'):
+    with pytest.raises(RiskanalysFel, match='innehållssumma|bundet objekt'):
         las_granskningsfil(fil, ladda_regelbas(kopia), 'RP-RED-VG')

@@ -64,7 +64,7 @@ def test_ffr_ej_tillamplig_kraver_belagt_ansvar_men_skapar_inte_falsk_verifiera(
  from riskanalys.dokument.rendering import renderat_avsnitt
  p=profil(regelbas_v1);p=p.model_copy(update={'uppgifter':{**p.uppgifter,'P-ROLL.ffr_namn':Uppgift(status='ej_tillämplig',motivering='Syntetiskt organisationsbeslut om ansvarsfördelningen',datum=date(2026,10,10),bekraftad_av='Test'),'P-ROLL.ansvarsfunktion':u('Syntetisk ansvarig')}})
  b=bedom(regelbas_v1,valj(regelbas_v1,p.byra.regelpaket,p.byra.datum,p.byra.lan),p)
- text=' '.join(s.text for s in renderat_avsnitt(bygg_arb(regelbas_v1,p,b,{},Historik()).avsnitt_med_id()['D-ARB.1'],p).stycken)
+ text=' '.join(s.text for s in renderat_avsnitt(bygg_arb(regelbas_v1,p,b,{},Historik(),formatversion='D-ARB-tjanst-v6').avsnitt_med_id()['D-ARB.1'],p).stycken)
  assert '[VERIFIERA: FfR]' not in text and 'Syntetisk ansvarig' in text
 
 @pytest.mark.parametrize('felt,varde',[('K-D.skalig_misstanke','false'),('K-SAKNAS',True)])

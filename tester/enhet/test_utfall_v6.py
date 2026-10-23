@@ -211,7 +211,7 @@ def test_obesvarade_valfria_fordelningar_skapar_ingen_b1_blockering(v6underlag):
     rb, p, _, _, h = v6underlag
     ids = {f.id for f in rb.falt.values() if f.id.startswith('P-TJ.') and
         f.id.endswith(('_antal_utland_transaktion', '_antal_utland_agare', '_antal_riskbransch', '_antal_kontant'))}
-    assert len(ids) == 44
+    assert len(ids) == 52  # Fyra frivilliga fördelningar för 13 tjänster efter steg B.
     upp = {k: u for k, u in p.uppgifter.items() if k not in ids}
     upp['P-GEO.antal_utland_transaktion'] = upp['P-GEO.antal_utland_transaktion'].model_copy(update={'varde': 6})
     p = harled_andelar(p.model_copy(update={'uppgifter': upp}), rb, frozenset({'P-GEO.antal_utland_transaktion'}))

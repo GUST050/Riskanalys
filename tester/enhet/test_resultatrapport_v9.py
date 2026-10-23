@@ -21,7 +21,7 @@ def test_r4_matris_visar_gemensam_kedja_en_gang_for_fyra_tjanster(resultatfall):
     assert sum('H-01' in r.celler[0].text and 'PT' in r.celler[0].text
                for t in r4.tabeller for r in t.rader)==1
     row=next(r for t in r4.tabeller for r in t.rader if 'H-01' in r.celler[0].text and 'PT' in r.celler[0].text)
-    assert [c.text.split('\n')[0].replace('*','').replace('†','') for c in row.celler[1:]] == ['hög → hög','hög → måttlig','hög → måttlig','hög → hög']
+    assert [c.text.split('\n')[0].replace('*','').replace('†','') for c in row.celler[1:]] == ['hög → hög','hög → måttlig','hög → måttlig','Saknas i denna variant']
 
 
 def test_r4_och_r5_tillsammans_tacker_varje_tjansts_hela_kedja(resultatfall):

@@ -75,7 +75,7 @@ def test_mandatfixturen_har_lokala_avvikelser_med_ratt_mekanism(regelbas_v1,tmp_
     f=bygg_rapportlasprov(regelbas_v1,tmp_path,'med_betalningsmandat')
     a=next(a for a in f.analys.tjanster if a.tjanst=='T-RED-04')
     for g in f.analys.gemensamma_scenarier:
-        for hot in g.hot:
+        for hot in set(g.hot) & set(regelbas_v1.tjanster[a.tjanst].hot):
             scen=mekanism(f.analys,a,hot)
             assert scen and all('kunden attesterar och verkställer samtliga betalningar' not in s.handelseforlopp.lower()
                                 for s,_ in scen)

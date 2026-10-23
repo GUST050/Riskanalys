@@ -44,7 +44,8 @@ def bygg_resultatavsnitt_v10(rb, profil, b, resultat, historik, *, analys, under
         (faltref(profil, 'P-ORG.namn'), kallkod('bedomning'))), *summary.stycken[1:])})
     risks = byid['D-ARB.R2'].tabeller[0]
     skala = ('låg', 'måttlig', 'hög', 'mycket hög')
-    t_by_name = {rb.tjanster[t.tjanst].namn: t for t in b.tjanster if t.erbjuds}
+    # Även obesvarat utbud har en synlig rad med okänd risk i V9-underlaget.
+    t_by_name = {rb.tjanster[t.tjanst].namn: t for t in b.tjanster}
     def nyckel(row):
         t = t_by_name[row.celler[0].text]
         def rank(v):

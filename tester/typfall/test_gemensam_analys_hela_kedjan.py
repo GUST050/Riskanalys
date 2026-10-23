@@ -43,7 +43,7 @@ def test_sakgranskad_gemensam_analys_kan_faststallas(kedja):
     from riskanalys.granskning.korning import las_granskning
     from riskanalys.faststallelse.sakgranskning import registrera_sakgranskning,spara_sakgranskningar,struktur_summa
     from riskanalys.faststallelse.resultatgranskning import registrera_resultatgranskning
-    from riskanalys.dokument.rapportpaket_v9 import las_presentation_v9 as las_presentation
+    from riskanalys.dokument.rapportpaket_v10 import las_presentation_v10 as las_presentation
     from riskanalys.faststallelse.faststall import faststall,verifiera_version
     from riskanalys.faststallelse.modeller import Beslut
     from riskanalys.analys.riktning import harled_riktningar
@@ -64,7 +64,7 @@ def test_sakgranskad_gemensam_analys_kan_faststallas(kedja):
     version=faststall(f.byramapp,k.regelrot,f.regelbas,Beslut(organ='styrelsen',namn='Syntetisk beslutsfattare',roll='FfR',datum=DAG))
     assert verifiera_version(f.byramapp,1)==[]
     assert all((version/f).is_file() for f in ('allman-riskbedomning-v1.docx','analysbilaga-v1.docx','underlagsbilaga-v1.docx'))
-    assert Counter(logg)=={'samlad_tillampning':4,'lokal_avvikelse':4,'scenarioval':48,'tackningsprovning':2,'blockbekraftelse':64}
+    assert Counter(logg)=={'samlad_tillampning':4,'lokal_avvikelse':4,'scenarioval':46,'tackningsprovning':2,'blockbekraftelse':64}
 
 
 @pytest.mark.parametrize('fel,ord',[('bara_inneboende','kvarstående'),('bara_kvarstaende','inneboende'),('utan_tackning','saknar uttrycklig täckning'),('referens','under referensen'),('fel_dimension','hot/dimension'),('oklar','oklar'),('saknad_koppling','saknar tjänst')])

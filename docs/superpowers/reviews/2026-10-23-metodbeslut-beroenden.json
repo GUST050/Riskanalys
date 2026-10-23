@@ -1,12 +1,12 @@
 {
-  "version": "2.12.1",
-  "regelbas": "sha256:878b1fc33d7fe249c70730d0bd62b3210c7886fd5884fc6293b0879c6182f3e2",
+  "version": "2.12.2",
+  "regelbas": "sha256:21cf1f9fc25a110f31ce5addc47c133b1ed5689b2ac64b117409e5ce63dcb4c0",
   "samtliga_status": "ej_granskad",
   "beslut": [
     {
       "id": "D1",
       "valt": "Avgränsa momskarusell från ren löneberedning",
-      "attest_innehallssumma": "sha256:b9cb271793950041cd8e7b42e5e6fd54a9c2d4b4760929273c7cbbdc0b5b8c49",
+      "attest_innehallssumma": "sha256:d3fe75150b3f83270459bc938c34c423b67450afd0c3a2e20c4d9297f90d38cb",
       "objekt": {
         "T-RED-04": "sha256:b9c708d67fcd96c9449da7ea4eca2040f51eb802fc2168566ada534274c78594",
         "H-MOD-02": "sha256:e81a9070f50b62168b81abaed59d1f856667fad297132d43f15449832e7a0ecc",
@@ -16,7 +16,8 @@
         "SRC-VAGL-2025-03": "sha256:a8df49b3ea6d382654dbe3dbcc086f6bd30030b53a004ce775515aea9628eb2e",
         "SRC-NRA-2024-25": "sha256:55dccd914cc9bd991ed57be17fbed2eec6cd0ef31954a44f958880bb4fd17776",
         "SRC-TS-2026-14": "sha256:e1892a8a6c7774a97ae4afbbdbe1985fe9d93a860a3732ecaae82401db84f657",
-        "KR-C-TJ-04-T-RED-04": "sha256:b3f47db2e5f5786e0fb9ace6605866cdc3eb6c001c4afc5e8dbe928f683f695d"
+        "KR-C-TJ-04-T-RED-04": "sha256:b3f47db2e5f5786e0fb9ace6605866cdc3eb6c001c4afc5e8dbe928f683f695d",
+        "P-TJ.red04_iakttagna_hot": "sha256:9b9d78003bb45abd150bde0ef75d9119d6578562bf53e1694a4b248a8d5193c9"
       },
       "modellfiler": {
         "src/riskanalys/__init__.py": "sha256:21efe78e44b63598313a1bd2f7a0717b4d5f76074b63b09114a8bffba95ffbd0",
@@ -126,7 +127,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -271,7 +272,7 @@
     {
       "id": "D2",
       "valt": "Avgränsa fakturahotet, behåll brottsvinst som lön",
-      "attest_innehallssumma": "sha256:afc59ed18712de8b53559af3005d7f701aab8c984211c0542ba6432024952eef",
+      "attest_innehallssumma": "sha256:1dad1377250e8bf73d4a5b85f3b08ac200f63d6ac88d6fbba28f31b15c833c69",
       "objekt": {
         "C-TJ-04": "sha256:d12bd606061dafa83ce465df311ef21bc3440bb73843a58efb7589b45e0c524b",
         "H-01": "sha256:d3821cc815e521ea85905635f64755d92543671a707aa87b705e5b2a722a0306",
@@ -391,7 +392,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -536,7 +537,7 @@
     {
       "id": "D3",
       "valt": "Behåll konservativ portföljmodell med synlig begränsning",
-      "attest_innehallssumma": "sha256:054951786dbc85e772851bac48d7a1b32cb66459c09aaf8f6bb960f17d0d16ec",
+      "attest_innehallssumma": "sha256:96adbc67070ab45a32bdab326ab46745204c3b06772d88240ac3344b7670d70d",
       "objekt": {
         "P-GEO.andel_agare_utanfor_ees": "sha256:634a19e813f8545cca0c92f9f8cfa295f1de7a33e3c4ceea97259cfe52b417f4",
         "P-GEO.andel_hogrisktredjeland": "sha256:18c64d9aa43c395fabc91e6fc5783023b1e529eeea6fb0d2df89d24c4df2ee9f",
@@ -718,7 +719,7 @@
         "P-TJ.red04_betalningsmandat": "sha256:ecfbb77e3a3f77ce96198477266421f4352ad27186f0f47c6d1ac4e9d70aeb75",
         "P-TJ.red04_erbjuds": "sha256:274ce66cb82a8c8597db35fe1beacc2f8bc4da21c3223d1b4a37ba17d99ac763",
         "P-TJ.red04_geografi": "sha256:25225aa6655872e2e24c3521c9784d95b1053a901ca0fe58210dd343d3adeafb",
-        "P-TJ.red04_iakttagna_hot": "sha256:9b0c3b2f9110c847919a9d88c9dd959bb48feefba0e6a690d3c70c2409e52c7f",
+        "P-TJ.red04_iakttagna_hot": "sha256:9b9d78003bb45abd150bde0ef75d9119d6578562bf53e1694a4b248a8d5193c9",
         "P-TJ.red04_kanaler": "sha256:05db51f8ecbe09b2068a95ac154fc01d5e3d23c91d34e50abd7d4b2762385c54",
         "P-TJ.red04_kundtyper": "sha256:c31353d48a09e6fed0bbdbd1dc7132eff07ef4dc44b16d7098ee28c87ca23cf0",
         "P-TJ.red04_omsattning": "sha256:34d3b03dc6d976f09e7165f984a77335792c14484680d5d0a48844916e745b56",
@@ -994,7 +995,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -1139,7 +1140,7 @@
     {
       "id": "D4",
       "valt": "Bara belagda grupper visar kundöverlapp",
-      "attest_innehallssumma": "sha256:daaf4838ab5b2fa8a973a49470b5df98a4997cd9028ed33f25b404f12d02a00c",
+      "attest_innehallssumma": "sha256:cb40f405ae718e61bbb0c61e1256a4a53884f84c0261794dbf3c185d30f93788",
       "objekt": {
         "S-KANAL-01": "sha256:252138f02d7f1085c1bac32214bfcaed1649c244091cce6af48f63a5ebea6074",
         "S-KOMB-01": "sha256:644cd2ed4eba883e48918d144bd2709c6c18f734a82d38e59f7d32e210d165bc",
@@ -1267,7 +1268,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -1412,7 +1413,7 @@
     {
       "id": "D5",
       "valt": "Behåll max per dimension med synlig bredd",
-      "attest_innehallssumma": "sha256:a209830b4f46d478c37d64f98fea1696afdb9f54d881f8354f0dbc072860fc00",
+      "attest_innehallssumma": "sha256:f2c5fe72d3fb27f4ad463a750e90a50a11297dcfebdfb7fe0c890e11facb73b1",
       "objekt": {
         "BT-TJ-01": "sha256:773e7574965c9b912818f6facc56209c0404b7f8596f41524e266223b4fa1bd5",
         "H-01": "sha256:d3821cc815e521ea85905635f64755d92543671a707aa87b705e5b2a722a0306",
@@ -1564,7 +1565,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -1709,7 +1710,7 @@
     {
       "id": "D6",
       "valt": "Behåll allvarlig TF-konsekvens och separat sannolikhet",
-      "attest_innehallssumma": "sha256:1400e12313bbdfae4be75572801d2f8f9a0b7200cb94eaa26d425820038ac786",
+      "attest_innehallssumma": "sha256:1eb3e51c649ff98201c0407e21fe603689918029b9477a743be39bae4614358f",
       "objekt": {
         "BT-MATRIS-01": "sha256:b32e198fef08913c3fcadc52c5affb900c44628f169c1fc78e9c92439d61f7aa",
         "BT-MATRIS-02": "sha256:209f8dbe3426ee5b0016af382adde28c8b0d3a36b9a7522a6fb618346aa6bad0",
@@ -1913,7 +1914,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -2058,7 +2059,7 @@
     {
       "id": "D7",
       "valt": "Ideell indikator höjer endast TF",
-      "attest_innehallssumma": "sha256:ca8add3f3b8c4de90029b222b529d879ade93baafa6f5476531aaaefbc958cd7",
+      "attest_innehallssumma": "sha256:d174d174ee6c0a0673e51ce74f3e040cb8873d76ca6595218d21c6ab396ad9d9",
       "objekt": {
         "H-03": "sha256:e6f6008693fcd286fb9cd555dd601b8e874f387af570ec20753af452242777c3",
         "H-TF-01": "sha256:d8bb53cc2582dcb99f7b5f8f44dd68967f550db0bb0ad57ac6832c8583776529",
@@ -2188,7 +2189,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -2333,7 +2334,7 @@
     {
       "id": "D8",
       "valt": "Behåll högst ett PT-steg per belagt täckt scenario",
-      "attest_innehallssumma": "sha256:94f7a25f467859f6ba735bf7d2126d8108194b0b9cfa105a08322e47cb27ccc5",
+      "attest_innehallssumma": "sha256:974b6c54c9e349225fc505c9bf5d1782c416e1b4449134d391cec420fdb41faa",
       "objekt": {
         "BT-KVAR-01": "sha256:ef4660589179d4f1e41e8c11bc53612549f2bfd95e4813cad0fb4287da83b293",
         "BT-KVAR-02": "sha256:7173a9cff673a5071ff13a2432128d0c8cd2f3a4620b7b154e817840f88fc448",
@@ -2490,7 +2491,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -2635,7 +2636,7 @@
     {
       "id": "D9",
       "valt": "Behåll indikatorpåslag och tak med scenarioavgränsad ersättning",
-      "attest_innehallssumma": "sha256:c93df1826386f90ac3ae291de1452329d8e8cf404ffe725507e32f4e7c68a7f2",
+      "attest_innehallssumma": "sha256:ee8b52a9cf8f08994ee05db38b8452f30d69dd17a04f7e404123267ed0a634e2",
       "objekt": {
         "BT-SANN-02-01": "sha256:6309d1fcbf0864b3a95faecaacf0c9494bc865c88173d44d912fc30287741fc2",
         "BT-SANN-02-02": "sha256:6a29582468150012f5935a76749716bf11444475a001478c91f7b6eba455b60a",
@@ -2869,7 +2870,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",
@@ -3014,7 +3015,7 @@
     {
       "id": "D-LAGRE",
       "valt": "Enbart redovisning, ingen automatisk nivåeffekt",
-      "attest_innehallssumma": "sha256:4c6740c777eba3324a20c024d432ecf0044f61ca75c0a9ef7af696791aa5047f",
+      "attest_innehallssumma": "sha256:7f008086005e776c53abf29e7692d416b164eda2b160d80f6052aa55a6500be0",
       "objekt": {
         "L-PTL-04-01": "sha256:c10a9cd770850cb4f6a0a7410f26bef75cfff1172acd2683cf74f5ac2c0cdc75",
         "L-PTL-04-02": "sha256:57a89e7286882226e9d10d22ddfd8686d015755b724c8b557a2f7358c5acb48b",
@@ -3137,7 +3138,7 @@
         "src/riskanalys/dokument/rendering_v9.py": "sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea",
         "src/riskanalys/dokument/resultatmodell_v10.py": "sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996",
         "src/riskanalys/dokument/resultatmodell_v9.py": "sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea",
-        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0",
+        "src/riskanalys/dokument/resultatrapport_v10.py": "sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a",
         "src/riskanalys/dokument/resultatrapport_v9.py": "sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e",
         "src/riskanalys/dokument/resultattexter_v9.py": "sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109",
         "src/riskanalys/dokument/resultatunderlag_v9.py": "sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77",

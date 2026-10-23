@@ -5,13 +5,14 @@
   alternativ:
   - Avgränsa momskarusell från ren löneberedning
   - Behåll indirekt momsanknytning i varje löneuppdrag
-  skal: Källan knyter momskarusell till fakturor, leveranser och betalning. Ren löneberedning ger inte
-    generell insyn i dessa led. Separata erbjudna tjänster bedöms var för sig; falskt löneunderlag och
-    löneuttag av brottsvinst kvarstår som andra hot. En indirekt kundanknytning räcker inte för ett eget
-    direkt momsscenario i löneberedning.
-  osakerhet: Källan avgränsar inte uttryckligen alla löneuppdrag. Det kan finnas kombinerade uppdrag och
-    avvikande mandat; dessa behöver lokal motivering och vid behov katalogrevision. Borttaget scenario
-    är en potentiell sänkning och redovisas även när tjänstens max är oförändrat.
+  skal: Källan knyter momskarusell till fakturor, leveranser och betalning. Ren löneberedning
+    ger inte generell insyn i dessa led. Separata erbjudna tjänster bedöms var för
+    sig; falskt löneunderlag och löneuttag av brottsvinst kvarstår som andra hot.
+    En indirekt kundanknytning räcker inte för ett eget direkt momsscenario i löneberedning.
+  osakerhet: Källan avgränsar inte uttryckligen alla löneuppdrag. Det kan finnas kombinerade
+    uppdrag och avvikande mandat; dessa behöver lokal motivering och vid behov katalogrevision.
+    Borttaget scenario är en potentiell sänkning och redovisas även när tjänstens
+    max är oförändrat.
   kallor:
   - SRC-VAGL-2025-03
   - SRC-NRA-2024-25
@@ -21,20 +22,20 @@
     avsnitt: Underlag och dokumentation; fysisk PDF-sida
     sida: 23
     citat: transportdokumenten
-    tolkning: Faktura-, transport- och kontantbetalningsled ger karusellmisstanke; ren löneberedning behandlas
-      inte.
+    tolkning: Faktura-, transport- och kontantbetalningsled ger karusellmisstanke;
+      ren löneberedning behandlas inte.
   - kalla: SRC-NRA-2024-25
     avsnitt: 7.19; fysisk PDF-sida
     sida: 123
     citat: lön och utdelning
-    tolkning: Stöder kvarvarande löneuttag från brottsvinster; inget direkt kalibrerat momskarusellscenario
-      för lön.
+    tolkning: Stöder kvarvarande löneuttag från brottsvinster; inget direkt kalibrerat
+      momskarusellscenario för lön.
   - kalla: SRC-TS-2026-14
     avsnitt: Identifiering av tjänster och produkter; fysisk PDF-sida
     sida: 7
     citat: individuell analys
-    tolkning: Motiverar prövning per arbetsmoment men föreskriver inte att just denna kataloglänk ska
-      tas bort.
+    tolkning: Motiverar prövning per arbetsmoment men föreskriver inte att just denna
+      kataloglänk ska tas bort.
   objekt:
     T-RED-04: sha256:b9c708d67fcd96c9449da7ea4eca2040f51eb802fc2168566ada534274c78594
     H-MOD-02: sha256:e81a9070f50b62168b81abaed59d1f856667fad297132d43f15449832e7a0ecc
@@ -45,6 +46,7 @@
     SRC-NRA-2024-25: sha256:55dccd914cc9bd991ed57be17fbed2eec6cd0ef31954a44f958880bb4fd17776
     SRC-TS-2026-14: sha256:e1892a8a6c7774a97ae4afbbdbe1985fe9d93a860a3732ecaae82401db84f657
     KR-C-TJ-04-T-RED-04: sha256:b3f47db2e5f5786e0fb9ace6605866cdc3eb6c001c4afc5e8dbe928f683f695d
+    P-TJ.red04_iakttagna_hot: sha256:9b9d78003bb45abd150bde0ef75d9119d6578562bf53e1694a4b248a8d5193c9
   modellfiler: &id001
     src/riskanalys/__init__.py: sha256:21efe78e44b63598313a1bd2f7a0717b4d5f76074b63b09114a8bffba95ffbd0
     src/riskanalys/analys/__init__.py: sha256:e6dc66c05580787771512f7b65cb954e399e835d2428f176f09306c8f1f2f041
@@ -153,7 +155,7 @@
     src/riskanalys/dokument/rendering_v9.py: sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea
     src/riskanalys/dokument/resultatmodell_v10.py: sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996
     src/riskanalys/dokument/resultatmodell_v9.py: sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea
-    src/riskanalys/dokument/resultatrapport_v10.py: sha256:f370b69c3eba5420c11adf77fcbb5f7ad815b74634616b5c1894b352054caac0
+    src/riskanalys/dokument/resultatrapport_v10.py: sha256:b773f1fbfe9f51aa00b2e6aa0aed7d6410fc10e2c2154c4b76c859f63320901a
     src/riskanalys/dokument/resultatrapport_v9.py: sha256:0af38243b59ee306d1ade1d2279c88a7053305911e16c55039c7556db9641e3e
     src/riskanalys/dokument/resultattexter_v9.py: sha256:ece2b19436f88eba55b3ea720614678be95185048310bd3e936e5960692e9109
     src/riskanalys/dokument/resultatunderlag_v9.py: sha256:543fe3faecd0670208adbaff6635046e0b768a7b47e43126c737a06a946b0f77
@@ -290,10 +292,11 @@
     src/riskanalys/regelverk/validering_m2.py: sha256:716c0bcd65b151ddc6349115a7fde89ae50b14071852d80ae57dc3da1f68cb77
     src/riskanalys/regelverk/validering_scenario.py: sha256:789cbf2c6c05d73fdd2534654fca7173be39edc20c29bd0f0a3404f02ccbdeb5
     src/riskanalys/regelverk/villkor.py: sha256:b33cacbd8ad9bda8651ccc022cdc39f61229a30d6b27ecef19ecef82c94c8ab3
-  aterforing: 'Vid avslag: ompröva T-RED-04:s H-MOD-02-länk och arbetsmoment, återställ eller villkora
-    den uttryckligen i ny regelversion. Bind om D1 och senare beslut som binder T-RED-04. Räkna om sexfall/kontraster
-    och hela scenariokatalogen, uppdatera modellvalideringsfacit, bygg nya analyser/skrivunderlag/rapporter/PDF:er
-    och sakkunnigpaket samt kräv ny samlad sakgranskning. Äldre låsta paket bevaras.'
+  aterforing: 'Vid avslag: ompröva T-RED-04:s H-MOD-02-länk och arbetsmoment, återställ
+    eller villkora den uttryckligen i ny regelversion. Bind om D1 och senare beslut
+    som binder T-RED-04. Räkna om sexfall/kontraster och hela scenariokatalogen, uppdatera
+    modellvalideringsfacit, bygg nya analyser/skrivunderlag/rapporter/PDF:er och sakkunnigpaket
+    samt kräv ny samlad sakgranskning. Äldre låsta paket bevaras.'
   sakkunnig:
     status: ej_granskad
 - id: D2
@@ -303,11 +306,13 @@
   alternativ:
   - Avgränsa fakturahotet, behåll brottsvinst som lön
   - Behåll H-01 och H-02 i varje löneuppdrag
-  skal: Ren löneberedning behandlar löneuppgifter, inte generellt leverantörsfakturor. Falskt löneunderlag
-    finns i H-TJ-04; löneuttag som legitimerar brottsvinst finns i H-02. H-01 prövas i separat erbjuden
-    faktura-/bokföringstjänst och vid nytt utvidgat arbetsmoment.
-  osakerhet: En byrå kan ha kombinerade uppdrag och korskopplad insyn. Avgränsningen förutsätter tjänstekatalogens
-    rena löneuppdrag; den bevisar inte att fakturakedjor saknas hos kunden.
+  skal: Ren löneberedning behandlar löneuppgifter, inte generellt leverantörsfakturor.
+    Falskt löneunderlag finns i H-TJ-04; löneuttag som legitimerar brottsvinst finns
+    i H-02. H-01 prövas i separat erbjuden faktura-/bokföringstjänst och vid nytt
+    utvidgat arbetsmoment.
+  osakerhet: En byrå kan ha kombinerade uppdrag och korskopplad insyn. Avgränsningen
+    förutsätter tjänstekatalogens rena löneuppdrag; den bevisar inte att fakturakedjor
+    saknas hos kunden.
   kallor:
   - SRC-NRA-2024-25
   - SRC-TS-2026-14
@@ -317,7 +322,8 @@
     sida: 123
     avsnitt: 7.19; fysisk PDF-sida
     citat: lön och utdelning
-    tolkning: Brottsvinster kan tas ut som lön; det bevisar inte att löneberedaren ser leverantörsfakturan.
+    tolkning: Brottsvinster kan tas ut som lön; det bevisar inte att löneberedaren
+      ser leverantörsfakturan.
   - kalla: SRC-TS-2026-14
     sida: 7
     avsnitt: Fysisk PDF-sida
@@ -339,11 +345,12 @@
     SRC-VAGL-2025-03: sha256:a8df49b3ea6d382654dbe3dbcc086f6bd30030b53a004ce775515aea9628eb2e
     T-RED-04: sha256:b9c708d67fcd96c9449da7ea4eca2040f51eb802fc2168566ada534274c78594
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D2 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D2 och dess angivna sakobjekt/modellfiler i ny
+    regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
 - id: D3
@@ -353,13 +360,15 @@
   alternativ:
   - Behåll konservativ portföljmodell med synlig begränsning
   - Beräkna kundfaktorer med belagd tjänstefördelning
-  skal: Gemensamma organisationsfaktorer gäller verksamheten. Kund- och geografifaktorer används tills
-    vidare som konservativa modellindikatorer bland tjänstens relevanta hot. De fyra frivilliga tjänsteantalen
-    används som lokalt sakunderlag, inte som numeriska avgränsningar; de täcker inte alla faktorer och
-    deras trösklar är inte kalibrerade. Ingen faktisk samtidig kundexponering påstås.
-  osakerhet: Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag i motorn. Det är
-    en uttrycklig modellbegränsning, inte en slutsats att kunden finns i tjänsten. En tjänstespecifik
-    modell behöver fullständig datamappning, okändhantering och separat kalibrering.
+  skal: Gemensamma organisationsfaktorer gäller verksamheten. Kund- och geografifaktorer
+    används tills vidare som konservativa modellindikatorer bland tjänstens relevanta
+    hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som
+    numeriska avgränsningar; de täcker inte alla faktorer och deras trösklar är inte
+    kalibrerade. Ingen faktisk samtidig kundexponering påstås.
+  osakerhet: Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag
+    i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden
+    finns i tjänsten. En tjänstespecifik modell behöver fullständig datamappning,
+    okändhantering och separat kalibrering.
   kallor:
   - SRC-TS-2026-14
   kallbelagg:
@@ -372,8 +381,8 @@
     sida: 8
     avsnitt: Fysisk PDF-sida
     citat: respektive kundkategori
-    tolkning: Kräver motiverad tjänsteanknytning. Källan anger inte hur en ofullständig tjänstefördelning
-      ska viktas.
+    tolkning: Kräver motiverad tjänsteanknytning. Källan anger inte hur en ofullständig
+      tjänstefördelning ska viktas.
   objekt:
     P-GEO.andel_agare_utanfor_ees: sha256:634a19e813f8545cca0c92f9f8cfa295f1de7a33e3c4ceea97259cfe52b417f4
     P-GEO.andel_hogrisktredjeland: sha256:18c64d9aa43c395fabc91e6fc5783023b1e529eeea6fb0d2df89d24c4df2ee9f
@@ -555,7 +564,7 @@
     P-TJ.red04_betalningsmandat: sha256:ecfbb77e3a3f77ce96198477266421f4352ad27186f0f47c6d1ac4e9d70aeb75
     P-TJ.red04_erbjuds: sha256:274ce66cb82a8c8597db35fe1beacc2f8bc4da21c3223d1b4a37ba17d99ac763
     P-TJ.red04_geografi: sha256:25225aa6655872e2e24c3521c9784d95b1053a901ca0fe58210dd343d3adeafb
-    P-TJ.red04_iakttagna_hot: sha256:9b0c3b2f9110c847919a9d88c9dd959bb48feefba0e6a690d3c70c2409e52c7f
+    P-TJ.red04_iakttagna_hot: sha256:9b9d78003bb45abd150bde0ef75d9119d6578562bf53e1694a4b248a8d5193c9
     P-TJ.red04_kanaler: sha256:05db51f8ecbe09b2068a95ac154fc01d5e3d23c91d34e50abd7d4b2762385c54
     P-TJ.red04_kundtyper: sha256:c31353d48a09e6fed0bbdbd1dc7132eff07ef4dc44b16d7098ee28c87ca23cf0
     P-TJ.red04_omsattning: sha256:34d3b03dc6d976f09e7165f984a77335792c14484680d5d0a48844916e745b56
@@ -723,11 +732,12 @@
     T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
     T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D3 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D3 och dess angivna sakobjekt/modellfiler i ny
+    regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
 - id: D4
@@ -737,11 +747,13 @@
   alternativ:
   - Bara belagda grupper visar kundöverlapp
   - Härled kundöverlapp ur tjänsternas marginaltal
-  skal: Antal kunder per tjänst identifierar inte gemensamma kunder eller riskfaktorer. Uttryckliga kombinationsgrupper
-    redovisas separat med population, period och källa. S-KOMB-01 är en modellkombination av portföljindikatorer
-    och bevisar inte kundöverlapp. Den ger ingen ny automatisk kombinationsfaktor.
-  osakerhet: Även när marginaltal matematiskt ger en nedre gräns för flertjänstkunder är identitet och
-    risköverlapp okända. Grupperna är observationsunderlag och ändrar inte motorvikterna.
+  skal: Antal kunder per tjänst identifierar inte gemensamma kunder eller riskfaktorer.
+    Uttryckliga kombinationsgrupper redovisas separat med population, period och källa.
+    S-KOMB-01 är en modellkombination av portföljindikatorer och bevisar inte kundöverlapp.
+    Den ger ingen ny automatisk kombinationsfaktor.
+  osakerhet: Även när marginaltal matematiskt ger en nedre gräns för flertjänstkunder
+    är identitet och risköverlapp okända. Grupperna är observationsunderlag och ändrar
+    inte motorvikterna.
   kallor:
   - SRC-TS-2026-14
   kallbelagg:
@@ -749,8 +761,8 @@
     sida: 7
     avsnitt: Fysisk PDF-sida
     citat: i kombination
-    tolkning: Stöder prövning av samverkan; det matematiska förbudet att identifiera gemensamma kunder
-      ur marginaltal är programmets evidensgräns.
+    tolkning: Stöder prövning av samverkan; det matematiska förbudet att identifiera
+      gemensamma kunder ur marginaltal är programmets evidensgräns.
   objekt:
     S-KANAL-01: sha256:252138f02d7f1085c1bac32214bfcaed1649c244091cce6af48f63a5ebea6074
     S-KOMB-01: sha256:644cd2ed4eba883e48918d144bd2709c6c18f734a82d38e59f7d32e210d165bc
@@ -770,11 +782,12 @@
     T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
     T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D4 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D4 och dess angivna sakobjekt/modellfiler i ny
+    regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
 - id: D5
@@ -784,11 +797,13 @@
   alternativ:
   - Behåll max per dimension med synlig bredd
   - Vikta eller medelvärdesbilda scenarier
-  skal: En väsentlig exponeringskedja ska inte döljas av många låga scenarier. Högsta inneboende risk
-    respektive högsta kvarstående PT beräknas var för sig. Alla avgörande scenarier och otäckta maxled
-    redovisas; PT och TF hålls åtskilda. Max är ett provisoriskt metodval, inte en föreskriven formel.
-  osakerhet: Antal scenarier är katalogberoende och är inte en sannolikhet eller exponeringsandel. Max
-    kan dölja bredd i slutnivån, därför måste full scenariomatris och motivering läsas.
+  skal: En väsentlig exponeringskedja ska inte döljas av många låga scenarier. Högsta
+    inneboende risk respektive högsta kvarstående PT beräknas var för sig. Alla avgörande
+    scenarier och otäckta maxled redovisas; PT och TF hålls åtskilda. Max är ett provisoriskt
+    metodval, inte en föreskriven formel.
+  osakerhet: Antal scenarier är katalogberoende och är inte en sannolikhet eller exponeringsandel.
+    Max kan dölja bredd i slutnivån, därför måste full scenariomatris och motivering
+    läsas.
   kallor:
   - SRC-TS-2026-14
   kallbelagg:
@@ -796,7 +811,8 @@
     sida: 10
     avsnitt: Fysisk PDF-sida
     citat: hur stora konsekvenserna skulle bli
-    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt eller kontrollreduktion.
+    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt
+      eller kontrollreduktion.
   objekt:
     BT-TJ-01: sha256:773e7574965c9b912818f6facc56209c0404b7f8596f41524e266223b4fa1bd5
     H-01: sha256:d3821cc815e521ea85905635f64755d92543671a707aa87b705e5b2a722a0306
@@ -840,11 +856,12 @@
     T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
     T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D5 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D5 och dess angivna sakobjekt/modellfiler i ny
+    regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
 - id: D6
@@ -854,13 +871,15 @@
   alternativ:
   - Behåll allvarlig TF-konsekvens och separat sannolikhet
   - Kalibrera TF-konsekvens och kontrollavdrag per tjänst
-  skal: TF bedöms separat. Konsekvensens skyddsintresse är möjlig skada på människor och samhälle vid
-    terrorändamål; bedömningsenheten är ett relevant missbruksscenario i tjänsten, inte kundens betalningsbelopp.
-    Allvarlig konsekvens behålls provisoriskt. Sannolikhet följer scenariots relevanta hot och TF-faktorer
-    i aktuell matris. Ingen TF-kontrollreduktion beräknas; verksam TF-kontroll kan beskrivas lokalt men
-    har ingen kalibrerad avdragsskala.
-  osakerhet: Skyddsintresse, fast konsekvens och matrisceller är ej granskade metodval. Myndighetens lägesbild
-    fastställer inte dessa val och rapportantal är inte frekvens. TF behöver inte vara lägre än PT.
+  skal: TF bedöms separat. Konsekvensens skyddsintresse är möjlig skada på människor
+    och samhälle vid terrorändamål; bedömningsenheten är ett relevant missbruksscenario
+    i tjänsten, inte kundens betalningsbelopp. Allvarlig konsekvens behålls provisoriskt.
+    Sannolikhet följer scenariots relevanta hot och TF-faktorer i aktuell matris.
+    Ingen TF-kontrollreduktion beräknas; verksam TF-kontroll kan beskrivas lokalt
+    men har ingen kalibrerad avdragsskala.
+  osakerhet: Skyddsintresse, fast konsekvens och matrisceller är ej granskade metodval.
+    Myndighetens lägesbild fastställer inte dessa val och rapportantal är inte frekvens.
+    TF behöver inte vara lägre än PT.
   kallor:
   - SRC-TS-2026-14
   - SRC-FIPO-TF-2025
@@ -869,13 +888,14 @@
     sida: 10
     avsnitt: Fysisk PDF-sida
     citat: hur stora konsekvenserna skulle bli
-    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt eller kontrollreduktion.
+    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt
+      eller kontrollreduktion.
   - kalla: SRC-FIPO-TF-2025
     sida: 4
     avsnitt: Fysisk PDF-sida
     citat: legala medel
-    tolkning: Visar att brottsligt ursprung och belopp inte kan användas som generell TF-avgränsning;
-      anger ingen konsekvensskala.
+    tolkning: Visar att brottsligt ursprung och belopp inte kan användas som generell
+      TF-avgränsning; anger ingen konsekvensskala.
   objekt:
     BT-MATRIS-01: sha256:b32e198fef08913c3fcadc52c5affb900c44628f169c1fc78e9c92439d61f7aa
     BT-MATRIS-02: sha256:209f8dbe3426ee5b0016af382adde28c8b0d3a36b9a7522a6fb618346aa6bad0
@@ -971,11 +991,12 @@
     T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
     T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D6 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D6 och dess angivna sakobjekt/modellfiler i ny
+    regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
 - id: D7
@@ -985,12 +1006,14 @@
   alternativ:
   - Ideell indikator höjer endast TF
   - Låt organisationsformen höja både PT och TF
-  skal: Den lästa TF-lägesbilden stöder TF-relevans men ger inte en självständig generell PT-kedja av
-    organisationsformen. S-ARB-05 verkar därför bara i TF-dimensionen. H-03 är fortsatt både PT och TF
-    och andra belagda PT-faktorer kvarstår. Organisationsformen ensam är inte bevis för missbruk.
-  osakerhet: Detta kan sänka PT-sårbarhet och risk i tidigare ideellscenarier. Samma kanaler som PT bevisar
-    inte generell PT-effekt av organisationsformen. PEP och ideell får fortfarande summeras som portföljindikatorer
-    i TF utan att faktisk gemensam kund påstås; överlapp är en separat kunskapslucka enligt D4.
+  skal: Den lästa TF-lägesbilden stöder TF-relevans men ger inte en självständig generell
+    PT-kedja av organisationsformen. S-ARB-05 verkar därför bara i TF-dimensionen.
+    H-03 är fortsatt både PT och TF och andra belagda PT-faktorer kvarstår. Organisationsformen
+    ensam är inte bevis för missbruk.
+  osakerhet: Detta kan sänka PT-sårbarhet och risk i tidigare ideellscenarier. Samma
+    kanaler som PT bevisar inte generell PT-effekt av organisationsformen. PEP och
+    ideell får fortfarande summeras som portföljindikatorer i TF utan att faktisk
+    gemensam kund påstås; överlapp är en separat kunskapslucka enligt D4.
   kallor:
   - SRC-FIPO-TF-2025
   kallbelagg:
@@ -1025,11 +1048,12 @@
     T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
     T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D7 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D7 och dess angivna sakobjekt/modellfiler i ny
+    regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
 - id: D8
@@ -1039,13 +1063,15 @@
   alternativ:
   - Behåll högst ett PT-steg per belagt täckt scenario
   - Kalibrera avdrag efter kontrollgrad och scenariotäckning
-  skal: Motoravdrag kräver belagd utformning, genomförande och verksam effekt samma period samt katalogmål
-    för samma tjänst och hot. Högst ett PT-steg, golv låg, är provisoriskt metodval. Katalogmål bevisar
-    inte lokalt uppdrag, stickprov eller full täckning. Lokal analys prövar observationsunderlag, begränsningar
-    och godtagbarhet; en oprövad sänkning märks och får inte framställas som godkänd. TF får inget avdrag.
-  osakerhet: Ett steg och minst en verksam kontroll är inte myndighetskalibrerade. C-TJ-08/09:s äldre
-    breda PT-mål kräver lokal prövning; de utvidgas inte till nya MOD-hot för att sänka tjänstens max.
-    En kontroll på ett maxscenario täcker inte andra maxscenarier.
+  skal: Motoravdrag kräver belagd utformning, genomförande och verksam effekt samma
+    period samt katalogmål för samma tjänst och hot. Högst ett PT-steg, golv låg,
+    är provisoriskt metodval. Katalogmål bevisar inte lokalt uppdrag, stickprov eller
+    full täckning. Lokal analys prövar observationsunderlag, begränsningar och godtagbarhet;
+    en oprövad sänkning märks och får inte framställas som godkänd. TF får inget avdrag.
+  osakerhet: Ett steg och minst en verksam kontroll är inte myndighetskalibrerade.
+    C-TJ-08/09:s äldre breda PT-mål kräver lokal prövning; de utvidgas inte till nya
+    MOD-hot för att sänka tjänstens max. En kontroll på ett maxscenario täcker inte
+    andra maxscenarier.
   kallor:
   - SRC-TS-2026-14
   kallbelagg:
@@ -1053,7 +1079,8 @@
     sida: 10
     avsnitt: Fysisk PDF-sida
     citat: hur stora konsekvenserna skulle bli
-    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt eller kontrollreduktion.
+    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt
+      eller kontrollreduktion.
   objekt:
     BT-KVAR-01: sha256:ef4660589179d4f1e41e8c11bc53612549f2bfd95e4813cad0fb4287da83b293
     BT-KVAR-02: sha256:7173a9cff673a5071ff13a2432128d0c8cd2f3a4620b7b154e817840f88fc448
@@ -1102,11 +1129,12 @@
     T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
     T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D8 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D8 och dess angivna sakobjekt/modellfiler i ny
+    regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
 - id: D9
@@ -1116,13 +1144,14 @@
   alternativ:
   - Behåll indikatorpåslag och tak med scenarioavgränsad ersättning
   - Inför kalibrerade vikter, områdespoäng eller nya trösklar
-  skal: Effekter summeras med golv låg och tak hög i samma hot och dimension. Ersättning gäller bara när
-    ersättande faktor själv verkar i scenariot. +1, minst-en-/andelströsklar och tak är provisoriska heuristiska
-    metodval, inga sannolikhetsestimat eller antaganden om oberoende. Varje kvarvarande orsak och tillämpat
-    villkor redovisas även efter mättnad. B:s snävare distansvillkor bevaras.
-  osakerhet: Korrelerade indikatorer kan mätta modellen. Katalogområden bevisar inte självständiga orsaker
-    och alternativa vikter saknar kalibreringsunderlag. En kontra flera orsaker kan därför ha samma nivå
-    utan att orsaksbilden är densamma.
+  skal: Effekter summeras med golv låg och tak hög i samma hot och dimension. Ersättning
+    gäller bara när ersättande faktor själv verkar i scenariot. +1, minst-en-/andelströsklar
+    och tak är provisoriska heuristiska metodval, inga sannolikhetsestimat eller antaganden
+    om oberoende. Varje kvarvarande orsak och tillämpat villkor redovisas även efter
+    mättnad. B:s snävare distansvillkor bevaras.
+  osakerhet: Korrelerade indikatorer kan mätta modellen. Katalogområden bevisar inte
+    självständiga orsaker och alternativa vikter saknar kalibreringsunderlag. En kontra
+    flera orsaker kan därför ha samma nivå utan att orsaksbilden är densamma.
   kallor:
   - SRC-TS-2026-14
   kallbelagg:
@@ -1130,12 +1159,14 @@
     sida: 7
     avsnitt: Fysisk PDF-sida
     citat: i kombination
-    tolkning: Stöder prövning av samverkan men anger inte oberoende, vikt, tröskel eller tak.
+    tolkning: Stöder prövning av samverkan men anger inte oberoende, vikt, tröskel
+      eller tak.
   - kalla: SRC-TS-2026-14
     sida: 10
     avsnitt: Fysisk PDF-sida
     citat: hur stora konsekvenserna skulle bli
-    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt eller kontrollreduktion.
+    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt
+      eller kontrollreduktion.
   objekt:
     BT-SANN-02-01: sha256:6309d1fcbf0864b3a95faecaacf0c9494bc865c88173d44d912fc30287741fc2
     BT-SANN-02-02: sha256:6a29582468150012f5935a76749716bf11444475a001478c91f7b6eba455b60a
@@ -1261,11 +1292,12 @@
     T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
     T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D9 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D9 och dess angivna sakobjekt/modellfiler i ny
+    regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
 - id: D-LAGRE
@@ -1275,20 +1307,23 @@
   alternativ:
   - Enbart redovisning, ingen automatisk nivåeffekt
   - Avdrag efter belagd relevans-, överlapps- och kontrollprövning
-  skal: PTL:s omständigheter kan tyda på låg risk men anger inga automatiska avdrag. Nuvarande data räcker
-    inte för att knyta lägre kundrisk till varje tjänsts specifika missbruksscenario eller skilja överlapp
-    från redan tillgodoräknade kontroller. Alla fem indikatorer redovisas separat utan nivåeffekt. EES-hemvist
-    neutraliserar inte riskbransch, kontanter eller andra högre indikatorer.
-  osakerhet: Ett framtida tjänsteavdrag kräver kalibrering, kund-/tjänsterelevans, känd samtidighet och
-    prövning av dubbelräkning. Okända länder eller saknat centralt landunderlag är inte låg risk. Valet
-    att avstå automatisk sänkning är också ett ej granskat metodval.
+  skal: PTL:s omständigheter kan tyda på låg risk men anger inga automatiska avdrag.
+    Nuvarande data räcker inte för att knyta lägre kundrisk till varje tjänsts specifika
+    missbruksscenario eller skilja överlapp från redan tillgodoräknade kontroller.
+    Alla fem indikatorer redovisas separat utan nivåeffekt. EES-hemvist neutraliserar
+    inte riskbransch, kontanter eller andra högre indikatorer.
+  osakerhet: Ett framtida tjänsteavdrag kräver kalibrering, kund-/tjänsterelevans,
+    känd samtidighet och prövning av dubbelräkning. Okända länder eller saknat centralt
+    landunderlag är inte låg risk. Valet att avstå automatisk sänkning är också ett
+    ej granskat metodval.
   kallor:
   - SRC-PTL
   kallbelagg:
   - kalla: SRC-PTL
     avsnitt: 2 kap. 4 §; registrerad lydelse 2020-01-01
     citat: kan tyda på
-    tolkning: Möjlig indikator, inte föreskrivet automatiskt avdrag i tjänstens allmänna riskbedömning.
+    tolkning: Möjlig indikator, inte föreskrivet automatiskt avdrag i tjänstens allmänna
+      riskbedömning.
   objekt:
     L-PTL-04-01: sha256:c10a9cd770850cb4f6a0a7410f26bef75cfff1172acd2683cf74f5ac2c0cdc75
     L-PTL-04-02: sha256:57a89e7286882226e9d10d22ddfd8686d015755b724c8b557a2f7358c5acb48b
@@ -1303,10 +1338,11 @@
     P-KUND.antal_reglerad_marknad: sha256:2e36d2a9ca5878aaaf9705008c11161d8c41766aceb49f5a54f1198a34ba3b27
     SRC-PTL: sha256:ee6e0dc9594804c6f8cabddd622455eb5d5aa2062ac30b0213bb33791009ac34
   modellfiler: *id001
-  aterforing: 'Vid avslag: ompröva D-LAGRE och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
-    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
-    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
-    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
-    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  aterforing: 'Vid avslag: ompröva D-LAGRE och dess angivna sakobjekt/modellfiler
+    i ny regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut
+    som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut.
+    Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter,
+    bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv
+    ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad

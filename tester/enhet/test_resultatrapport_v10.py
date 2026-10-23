@@ -140,3 +140,25 @@ def test_alla_fria_profiltexter_i_huvudrapport_ar_bokstavliga(resultatfall):
     a=p.renderade[0].avsnitt_med_id()
     assert upp['P-ORG.namn'].varde in a['D-ARB.R0'].stycken[0].text
     assert upp['P-BESK.erfarenheter'].varde in text((a['D-ARB.R2.1'],))
+
+
+def test_obesvarat_tjansteutbud_bevarar_preliminara_motorutfall(regelbas_v1):
+    from datetime import date
+    from riskanalys.profil.hantering import skapa_profil
+    from riskanalys.profil.modeller import Byra
+    from riskanalys.bedomning.motor import bedom
+    from riskanalys.regelverk.urval import valj
+    from riskanalys.drift.historik import Historik
+    from riskanalys.dokument.arb import bygg_arb
+    p=skapa_profil(regelbas_v1,Byra(id='syntetisk',regelpaket='RP-RED-VG',
+        lan='Västra Götaland',datum=date(2026,10,23)))
+    b=bedom(regelbas_v1,valj(regelbas_v1,p.byra.regelpaket,p.byra.datum,p.byra.lan),p)
+    d=bygg_arb(regelbas_v1,p,b,{},Historik())
+    rows=d.avsnitt_med_id()['D-ARB.R0'].tabeller[0].rader
+    assert len(rows)==len(regelbas_v1.tjanster)
+    bynamn={regelbas_v1.tjanster[t.tjanst].namn:t for t in b.tjanster}
+    assert all(t.erbjuds is None for t in b.tjanster)
+    for r in rows:
+        t=bynamn[r.celler[0].text]
+        assert r.celler[1].text==(t.inneboende.risk if t.inneboende else 'okänt')
+        assert r.celler[-1].text==t.status=='preliminär'

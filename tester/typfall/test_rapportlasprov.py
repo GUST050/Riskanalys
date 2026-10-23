@@ -227,6 +227,12 @@ def test_v7_frysta_anropsbytes_och_motor_bestaar(regelbas_v1,tmp_path):
     """Fryst kompatibilitetsprov: ändrat offentligt AI-kontrakt/motor syns."""
     import json
     from tester.fixturer.rapportlasprov import frys_b_offline
+    # Frysta bytes använder sin ursprungliga katalog, inte senare metodbeslut.
+    import gzip
+    from pathlib import Path
+    from riskanalys.regelverk.modeller import Regelbas
+    regelbas_v1=Regelbas.model_validate_json(gzip.decompress(
+        (Path(__file__).parents[1]/"fixturer/promptar_v5_v6_regelbas_2_0_0.json.gz").read_bytes()))
     f=bygg(regelbas_v1,tmp_path/'fall','fyra_tjanster')
     rot=frys_b_offline(f,tmp_path/'fryst')
     h=json.loads((rot/'manifest.json').read_text())['filer']
