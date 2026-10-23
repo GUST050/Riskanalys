@@ -1,10 +1,20 @@
+# Regelbasen steg A – inventering för granskning
+
+Användaren har godkänt del 1 (`654066f`) och uttryckligen gett klartecken till del 2 steg A, enbart dokumentation. [Luckförteckningen](superpowers/reviews/2026-10-23-katalogluckor.md) jämför katalogerna med PTL 2:1–5, de tre regionala föreskrifternas 2 kapitel, marsvägledningen, Länsstyrelsens webbvägledning samt relevanta delar av nationell riskbedömning och registrerade lägesbilder. Alla 15 lagexempel och vägledningens tjänster/modus har motsvarighet, kompletteringsförslag eller uttrycklig avgränsning.
+
+Förslaget redovisar fem nya högre-risk-indikatorer, ett distansförtydligande, fem lägre-risk-indikatorer utan automatisk sänkning, tre konkreta modusförslag och fyra möjliga nya tjänstegrenar. Frågeförslaget innebär 11 nya gemensamma frågor, eller 97 nya frågedefinitioner om alla fyra tjänste- och kontrollgrenarna följer nuvarande mönster; ett snävare alternativ redovisas. Två källavvikelser är öppet noterade: vägledningens hänvisning till Stockholms föreskrift samt ändrade bytes i den nu hämtade Europolrapporten.
+
+**Enbart dokument ändrade.** Samma 816 resurser är byteidentiska med del 1:s gröna fullsvit: 3 448 godkända, ett liveprov bortvalt, noll fel/överhoppade prov. Ingen ny fullsvit behövs för dessa dokumentationsändringar enligt AGENTS regel 6; diff- och referenskontroll är genomförda. Regelbas 2.0.0, kod, tester, risknivåer och sakkunnigstatus är orörda. Ny lokal gren `codex/regelbas-inventering`; ingen push eller merge. **Steg B inväntar användarens granskning av luckförteckningen.**
+
+## Del 1 godkänd av användaren – tidigare teknisk redovisning
+
 # Rättning efter R4–R7 – del 1 tekniskt slutverifierad
 
 Den enskilda V9-vägen avvisar R-beslut. Samlad granskning märks i attestposterna; äldre R-poster utan styrkt granskningssätt gäller inte inför ny fastställelse. Historiska V8/V9-paket verifieras fortsatt oförändrade. Fyndförklaring, läsbara tider och A15:s sidflöde är rättade; fyrtjänstfallets A minskar från 37 till 36 PDF-sidor med samma text. Huvudrapporterna är fortsatt 7/8 sidor.
 
 **Färsk fullsvit: 3 448 godkända, ett liveprov bortvalt, noll fel/överhoppade prov, exit 0**, Python 3.12.15, 2207.161 s inklusive collection. Snabbprofil **140 godkända / 48,760 s**. Exakt collection/JUnit och 816 oförändrade kod-/test-/regel-/verktygsresurser. Regelbas- och diffkontroll passerar. Första fullsvitens 208 nekade loopback-prov och äldre typfallsprov är redovisade; den nya kompletta körningen är grön med lokala testportar tillåtna och samlad R-granskning i typfallsprovet.
 
-[Granskningssvar, ändringar och PDF-läsprov](superpowers/reviews/2026-10-23-svar-r4-r7-granskning.md). Regelbasen och riskmodellens 25 filer är oförändrade. Del 2 och del 3 är inte påbörjade; användarens granskning krävs efter del 1. Grenen lämnas lokalt. Ingen push eller merge.
+[Granskningssvar, ändringar och PDF-läsprov](superpowers/reviews/2026-10-23-svar-r4-r7-granskning.md). Regelbasen och riskmodellens 25 filer är oförändrade. Användaren har därefter godkänt del 1; steg A redovisas överst. Grenen lämnas lokalt. Ingen push eller merge.
 
 ## Föregående leverans – historik
 
