@@ -41,6 +41,8 @@ def bygg_resultatunderlag(rb, profil, bedomning, resultat, historik, *, analys, 
     erbjudna = [(i,t) for i,t in enumerate(bedomning.tjanster) if t.erbjuds]
     for bi,t in erbjudna:
         ai,a = analyser.get(t.tjanst,(None,None))
+        from riskanalys.analys.provning import ej_godtagna_sankningar
+        sankningar=ej_godtagna_sankningar(rb,profil,analys,a,t) if a else ()
         for si,s in enumerate(t.scenarier):
             refs = (ref('bedomning',f'/tjanster/{bi}/scenarier/{si}'),)
             ursprung = mekanism(analys,a,s.hot)
@@ -55,13 +57,18 @@ def bygg_resultatunderlag(rb, profil, bedomning, resultat, historik, *, analys, 
             if s.dimension == 'pt' and s.kvarstaende is not None and s.kvarstaende == t.kvarstaende:
                 ids.append(lagg(f'{t.tjanst}:{s.hot}:{s.dimension}:efter',('avgor_efter',),(*refs,*mrefs),
                                 tjanst=t.tjanst,hot=(s.hot,),dimension=s.dimension,riskled='kvarstaende'))
+            if any(b.scenario==s for b in sankningar):
+                ids.append(lagg(f'{t.tjanst}:{s.hot}:{s.dimension}:ej_godtagen',('avvikelse',),
+                    (*refs,ref('analys',f'/tjanster/{ai}'),ref('analys','/belagg'),ref('profil'),ref('regelbas')),
+                    tjanst=t.tjanst,hot=(s.hot,),dimension=s.dimension,riskled='kvarstaende'))
             grupper[key][t.tjanst] = (s,tuple(ids),refs,mrefs)
         if a is None:
             brister.append(Presentationsbrist(kod='saknad_analys',avsnitt='D-ARB.R5',
                 beskrivning=f'{t.tjanst}: lokal analys saknas.',kallor=(ref('bedomning',f'/tjanster/{bi}'),)))
             continue
         for falt in ('pt_motivering','tf_motivering'):
-            if not getattr(a,falt).strip():
+            from riskanalys.analys.provning import _saktext
+            if not _saktext(getattr(a,falt)):
                 brister.append(Presentationsbrist(kod='saknad_'+falt,avsnitt='D-ARB.R5',
                     beskrivning=f'{t.tjanst}: komplettera {falt}.',kallor=(ref('analys',f'/tjanster/{ai}/{falt}'),)))
         for n,p in enumerate(a.sarbarhetsprovningar):
@@ -95,7 +102,7 @@ def bygg_resultatunderlag(rb, profil, bedomning, resultat, historik, *, analys, 
                  (ref('analys',f'/gemensamma_verksamhetsposter/{n}'),))
     if not any('erfarenhet' in p.skal for p in poster):
         lagg('egen-erfarenhet',('erfarenhet',),(ref('bedomning'),))
-    matris = []
+    matris = [];nummer={'R4':0,'R5':0}
     for (dim,hot,identitet),cells in sorted(grupper.items(), key=lambda x:(x[0][0]!='pt',list(grupper).index(x[0]))):
         if not any(c[1] for c in cells.values()):continue
         mrefs = tuple(dict.fromkeys(r for c in cells.values() for r in c[3]))
@@ -104,6 +111,7 @@ def bygg_resultatunderlag(rb, profil, bedomning, resultat, historik, *, analys, 
                   medlemmar=cells[t.tjanst][1] if t.tjanst in cells else (),
                   kallor=cells[t.tjanst][2] if t.tjanst in cells else (ref('bedomning',f'/tjanster/{bi}/scenarier'),))
                   for bi,t in erbjudna)
-        matris.append(ScenarioradV9(id=f'R4-{len(matris)+1}',hot=hot,dimension=dim,mekanismkallor=mrefs,celler=c))
+        del_='R4' if len(cells)>1 else 'R5';nummer[del_]+=1
+        matris.append(ScenarioradV9(id=f'{del_}-{nummer[del_]}',hot=hot,dimension=dim,mekanismkallor=mrefs,celler=c))
     return ResultatunderlagV9(poster=tuple(poster),brister=tuple(brister),matris=tuple(matris),
                              kallsummor=tuple((a,summa(v)) for a,v in k.items()))

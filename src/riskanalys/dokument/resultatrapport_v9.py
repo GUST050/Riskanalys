@@ -3,6 +3,7 @@ from riskanalys.dokument.modeller import Avsnitt,Textstycke,Dokumenttabell,Tabel
 from riskanalys.dokument.rapportversion import V9
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
 from riskanalys.dokument.resultatmodell_v9 import pointerdel
+from riskanalys.dokument.resultattexter_v9 import etikett,celltext,slutsats,gemensamma_motiveringar,sankningsforklaringar
 
 
 def kolumngrupper(tjanster):
@@ -37,6 +38,10 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
     from riskanalys.dokument.resultatunderlag_v9 import mekanism
     valda=list(tjanster_med_avsnitt(bedomning))
     lokala={a.tjanst:(n,a) for n,a in enumerate(analys.tjanster)} if analys else {}
+    from riskanalys.analys.provning import ej_godtagna_sankningar, _saktext
+    sankningar={t.tjanst:ej_godtagna_sankningar(rb,profil,analys,lokala[t.tjanst][1],t)
+                for _,t in valda if t.tjanst in lokala}
+    gemmot=gemensamma_motiveringar(analys)
     namn=lambda id:rb.tjanster[id].namn
     namnuppgift=profil.uppgifter.get('P-ORG.namn')
     org=str(namnuppgift.varde) if namnuppgift else '[VERIFIERA]'
@@ -45,6 +50,7 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
                'Förhandsvisning av resultatrapport, ej fastställt av byrån. Riskbedömningen omfattar '
                'resultatrapport, bilaga A Analys och bilaga B1 Underlag.',
                (kallkod('profil','/uppgifter/P-ORG.namn'),kallkod('bedomning')),lokal=True),
+        stycke(slutsats(bedomning,analys),(kallkod('bedomning'),kallkod('analys'))),
         stycke('Tjänster: '+', '.join(namn(t.tjanst) for _,t in valda)+'. Ansvar och omfattning: bilaga A, D-ARB.1–3.',
                (kallkod('bedomning','/tjanster'),kallkod('regelbas','/tjanster'))),))
     rader=[]
@@ -78,12 +84,15 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
         if analys and p.id.startswith('gemensam:'):
             g=next(g for g in analys.gemensamma_sarbarhetsprovningar if 'gemensam:'+g.id==p.id)
             if 'egen_sarbarhet' in p.skal or 'osakerhet' in p.skal:
-                gem.append(stycke(f'{g.status}, {g.dimension.upper()}, hot {", ".join(g.hot) or "saknas"}: '
+                gem.append(stycke(f'{etikett(g.status)}, {g.dimension.upper()}, hot {", ".join(g.hot) or "saknas"}: '
                                    f'{g.beskrivning} {g.motivering}',refs,lokal=True))
         elif analys and p.id.startswith('verksamhet:'):
             g=next(g for g in analys.gemensamma_verksamhetsposter if 'verksamhet:'+g.id==p.id)
             if g.slag=='erfarenhet' or g.status!='bekraftad':
-                gem.append(stycke(f'{g.slag}, {g.status}: {g.text}',refs,lokal=True))
+                gem.append(stycke(f'{g.slag}, {etikett(g.status)}: {g.text}',refs,lokal=True))
+    for (falt,text),medlemmar in gemmot.items():
+        gem.append(stycke('Gemensam '+falt[:2].upper()+'-motivering för '+', '.join(namn(id) for _,id in medlemmar)+': '+text,
+            tuple(kallkod('analys',f'/tjanster/{i}/{falt}') for i,_ in medlemmar),lokal=True))
     # Faktorernas identitet och mekanism en gång, inte upprepat i varje tjänst.
     faktorer=tuple(dict.fromkeys(id for row in underlag.matris for c in row.celler if c.scenario for id in c.scenario.sarbarheter))
     gem.append(stycke('Gemensamma riskfaktorer i de valda scenarierna: '+
@@ -102,15 +111,17 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
             for id in grupp:
                 c=next(c for c in row.celler if c.tjanst==id)
                 s=c.scenario
-                txt=(f'{s.risk} → {s.kvarstaende or "ej beräknad"}\n'
-                     +('Avgör före. ' if s.avgorande else '')
-                     +('Avgör efter.' if any('efter' in x for x in c.medlemmar) else '')) if s else {
-                         'saknas':'Saknas i denna variant', 'ej_relevant':'Ej relevant enligt lokal prövning',
-                         'okant':'Okänt underlag'}[c.status]
-                cells.append((txt,(id,*(kallkod(r.artefakt,r.pointer) for r in c.kallor))))
+                orsaker=tuple(b.orsak for b in sankningar.get(id,()) if b.scenario==s)
+                txt=celltext(c,orsaker)
+                cells.append((txt,(id,*(kallkod(r.artefakt,r.pointer) for r in c.kallor),
+                    kallkod('analys'),kallkod('profil'),kallkod('regelbas'))))
             rows.append(cells)
         if rows:tabeller.append(tabell('v9-matris-'+str(gi),'Gemensamma scenarier före och efter kontroll',
                                       ('Hot och dimension',*(id+' '+namn(id) for id in grupp)),rows,fore=len(gem)))
+    gem.append(stycke('* avgör tjänstens nivå före kontroll; † avgör motorns kvarstående nivå. '
+        'En markerad oprövad eller ej godtagen sänkning är inte en belagd kontrollverkan. '
+        'Den inneboende scenarionivån gäller tills den lokala prövningen godtar sänkningen; analysgodkännande spärras. '
+        'TF:s kvarstående nivå beräknas inte.',(kallkod('analys'),kallkod('bedomning'))))
     for row in delade:
         used=set();parts=[];refs=[]
         for c in row.celler:
@@ -136,7 +147,9 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
         flera=any(sum(s.avgorande and s.dimension==dim for s in t.scenarier)>1 for dim in ('pt','tf'))
         antaltext=('Flera scenarier ger var för sig tjänstens risknivå; ' if flera else
                    'Tjänstens avgörande scenarier redovisas nedan; ')
-        s.append(stycke('Gemensamma kedjor: '+', '.join(r.id for r in rows if r in delade)+'. '
+        deladeid=', '.join(r.id for r in rows if r in delade)
+        kedjor='Gemensamma kedjor: '+deladeid+'. ' if deladeid else 'Scenarierna nedan har tjänstens egen mekanism. '
+        s.append(stycke(kedjor
             +antaltext+'samtliga avgörande före-/efterled ingår. '
             'Detta speglar metodens utfall; prioriteringen av hot kräver fortsatt lokal prövning. '
             f'Full exponering och arbetsmoment: Bilaga A, {avsid}.',
@@ -145,33 +158,47 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
             c=next(c for c in row.celler if c.tjanst==t.tjanst);v=c.scenario
             if row not in delade:
                 s.append(stycke(f'Eget scenario {row.id}, {row.hot} {row.dimension.upper()}: {rb.hot[row.hot].namn}. '
-                    f'Sannolikhet {v.sannolikhet}, konsekvens {v.konsekvens}; risk {v.risk}, kvarstående {v.kvarstaende or "ej beräknad"}.',
+                    f'Sannolikhet {v.sannolikhet}, konsekvens {v.konsekvens}; '+celltext(c,tuple(
+                        b.orsak for b in sankningar.get(t.tjanst,()) if b.scenario==v))+'.',
                     (t.tjanst,*(kallkod(r.artefakt,r.pointer) for r in (*c.kallor,*row.mekanismkallor)))))
                 from riskanalys.dokument.resultatmodell_v9 import los_pointer
                 for mr in row.mekanismkallor:
                     value=los_pointer(analys.model_dump(mode='json'),mr.pointer)
                     if value.get('handelseforlopp'):
                         s.append(stycke(value['handelseforlopp'],(kallkod(mr.artefakt,mr.pointer),),lokal=True))
-        controls=[]
+        controlgrupper={}
         for row in rows:
             c=next(c for c in row.celler if c.tjanst==t.tjanst);v=c.scenario
             if v.dimension=='pt' and v.tackande_kontroller:
-                controls.append(f'{row.id}: '+', '.join(v.tackande_kontroller)+f'; motorns kvarstående nivå {v.kvarstaende}')
+                controlgrupper.setdefault((v.tackande_kontroller,v.kvarstaende),[]).append(row.id)
+        controls=[', '.join(ids)+': '+', '.join(rb.kontroller[id].namn+' ('+id+')' for id in ks)+
+                  '; motorns kvarstående nivå '+(niva or 'ej beräknad') for (ks,niva),ids in controlgrupper.items()]
         s.append(stycke('Kontrollpåverkan: '+('; '.join(controls) or 'ingen bärande reduktion i de avgörande scenarierna')+'. '
             'Belagd lokal effekt och eventuella invändningar ska prövas separat; se bilaga A, D-ARB.7 och tjänstens kontrollprövning.',
-            (t.tjanst,kallkod('bedomning',f'/tjanster/{bi}'),kallkod('analys',prefix) if a else kallkod('analys'))))
+            (t.tjanst,kallkod('bedomning',f'/tjanster/{bi}'),kallkod('analys',prefix) if a else kallkod('analys'),
+             kallkod('regelbas','/kontroller'))))
         if a:
+            for txt in sankningsforklaringar(rb,sankningar[t.tjanst]):
+                s.append(stycke(txt,(t.tjanst,kallkod('analys',prefix),kallkod('analys','/belagg'),
+                    kallkod('profil'),kallkod('regelbas'),kallkod('bedomning',f'/tjanster/{bi}'))))
             for p in underlag.poster:
                 if p.tjanst==t.tjanst and p.hantering=='sammanfattas' and any(x in p.skal for x in ('egen_sarbarhet','avvikelse','osakerhet')):
+                    if p.kallor[0].artefakt!='analys':continue  # motoravvikelsen förklaras vid kontrollprövningen ovan
                     from riskanalys.dokument.resultatmodell_v9 import los_pointer
                     value=los_pointer(analys.model_dump(mode='json'),p.kallor[0].pointer)
                     txt=value.get('motivering') or value.get('referensmotivering')
                     if txt:s.append(stycke('Lokal prövning: '+txt,postref(p),lokal=True))
             for falt,label in (('pt_motivering','PT'),('tf_motivering','TF')):
-                s.append(stycke(label+': '+(getattr(a,falt) or '[VERIFIERA] Motivering saknas.'),
+                v=getattr(a,falt)
+                if (falt,v) in gemmot:
+                    s.append(stycke(label+': se den gemensamma fullständiga motiveringen i R4.',
+                        (kallkod('analys',prefix+'/'+falt),)))
+                    continue
+                markor='' if _saktext(v) else '[KOMPLETTERA: Lokal motivering är inte färdig.] '
+                s.append(stycke(label+': '+markor+(v or 'Motivering saknas.'),
                                 (kallkod('analys',prefix+'/'+falt),),lokal=True))
-            s.append(stycke('Åtgärder: '+(', '.join(p.id for p in a.rutinatgarder) or 'inga registrerade')+
-                '. Status och uppföljning framgår av R6.',(kallkod('analys',prefix+'/rutinatgarder'),)))
+            s.append(stycke('Åtgärder för '+namn(t.tjanst)+': se R6 för namn, identitet, status och uppföljning.'
+                if a.rutinatgarder else 'Inga åtgärder registrerade.',(kallkod('analys',prefix+'/rutinatgarder'),)))
         else:s.append(stycke('[VERIFIERA] Lokal analys och PT-/TF-motiveringar saknas.',(kallkod('analys'),)))
         lok.append(avsnitt('D-ARB.R5.'+avsid.removeprefix('D-ARB.6.'),namn(t.tjanst),s))
     s6=[]
@@ -180,9 +207,24 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
         from riskanalys.dokument.resultatmodell_v9 import los_pointer
         v=los_pointer(analys.model_dump(mode='json'),p.kallor[0].pointer)
         if 'atgard' in p.skal:
-            txt=(f'{p.tjanst} {v["id"]}: {v["atgard"]} Status {v["status"]}; ansvar {v.get("ansvar") or "saknas"}; '
-                 f'uppföljning {v.get("uppfoljning") or "ej beslutad"}; prioritet {v.get("prioritet","ej beslutad")}.')
-        else:txt=f'{p.tjanst} {v["id"]}, {v["typ"]}, {v["status"]}: {v["beskrivning"]} {v["motivering"]}'
+            txt=(f'{namn(p.tjanst)}: {v["atgard"]} ({v["id"]}). Status {etikett(v["status"])}; ansvar {v.get("ansvar") or "saknas"}; '
+                 f'uppföljning {v.get("uppfoljning") or "ej beslutad"}; prioritet {etikett(v.get("prioritet","ej beslutad"))}.')
+        else:
+            beskrivning=v['beskrivning'];motivering=v['motivering']
+            # Endast exakt textåteranvändning, ingen härledd koppling mellan lucka och åtgärd.
+            samma=next(((i,a,j,r) for i,a in enumerate(analys.tjanster) for j,r in enumerate(a.rutinatgarder)
+                        if a.tjanst==p.tjanst and beskrivning and beskrivning in r.atgard),None)
+            refs=list(postref(p))
+            if samma:
+                i,a,j,r=samma
+                beskrivning=f'Beskrivningen återges ordagrant i raden {r.id}.'
+                refs.append(kallkod('analys',f'/tjanster/{i}/rutinatgarder/{j}'))
+                if motivering==v['beskrivning']:motivering='Samma text utgör luckans motivering.'
+            txt=(f'{namn(p.tjanst)} ({v["id"]}), {etikett(v["typ"])}, {etikett(v["status"])}: '
+                 +' '.join(dict.fromkeys((beskrivning,motivering)))+
+                 f' Ansvar {v.get("ansvar") or "saknas"}; tidsfrist {v.get("tidsfrist") or "ej beslutad"}.')
+            s6.append(stycke(txt,refs,lokal=True))
+            continue
         s6.append(stycke(txt,postref(p),lokal=True))
     for b in underlag.brister:s6.append(stycke('[VERIFIERA] '+b.beskrivning,tuple(kallkod(r.artefakt,r.pointer) for r in b.kallor)))
     s6.append(stycke('Registreringsordning är ingen beslutad prioritering. Fulla åtgärdsposter, belägg och maskinfynd: '

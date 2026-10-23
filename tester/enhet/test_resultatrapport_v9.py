@@ -21,7 +21,7 @@ def test_r4_matris_visar_gemensam_kedja_en_gang_for_fyra_tjanster(resultatfall):
     assert sum('H-01' in r.celler[0].text and 'PT' in r.celler[0].text
                for t in r4.tabeller for r in t.rader)==1
     row=next(r for t in r4.tabeller for r in t.rader if 'H-01' in r.celler[0].text and 'PT' in r.celler[0].text)
-    assert [c.text.split('\n')[0] for c in row.celler[1:]] == ['hög → hög','hög → måttlig','hög → måttlig','hög → hög']
+    assert [c.text.split('\n')[0].replace('*','').replace('†','') for c in row.celler[1:]] == ['hög → hög','hög → måttlig','hög → måttlig','hög → hög']
 
 
 def test_r4_och_r5_tillsammans_tacker_varje_tjansts_hela_kedja(resultatfall):
@@ -45,7 +45,7 @@ def test_r5_visar_egna_scenarier_och_avvikande_kontrollutfall(resultatfall):
 
 def test_hela_pt_tf_motiveringen_stannar_i_r5_men_exponering_hanvisas_till_a(resultatfall):
     b=bygg(resultatfall)
-    r5='\n'.join(s.text for a in b.dokument.avsnitt if a.id.startswith('D-ARB.R5.') for s in a.stycken)
+    r5='\n'.join(s.text for a in b.dokument.avsnitt if a.id.startswith(('D-ARB.R4','D-ARB.R5.')) for s in a.stycken)
     for a in resultatfall.analys.tjanster:
         assert a.pt_motivering in r5 and a.tf_motivering in r5
         assert a.exponering not in r5
@@ -71,7 +71,8 @@ def test_atgardsmedlemmar_bevarar_status_och_ej_beslutad_prioritet(resultatfall)
     v=text(type('D',(),{'avsnitt':(r6,)})())
     for a in resultatfall.analys.tjanster:
         for r in a.rutinatgarder:
-            assert r.id in v and r.status in v
+            from riskanalys.dokument.resultattexter_v9 import etikett
+            assert r.id in v and etikett(r.status) in v
     assert 'ej beslutad' in v
 
 

@@ -49,8 +49,8 @@ def forifyll_analys(rb,profil,bedomning,bindning,*,schema=1) -> Analyspaket:
             scenarier=tuple(scenario(t.tjanst+':'+h,h) for h in kat.hot if antal[h]==1),
             sarbarhetsprovningar=tuple(sarbarheter),
             reduktionsprovning='okand' if faktisk_reduktion(t) else 'ej_reduktion',
-            pt_motivering=f'Motorns PT-utfall: {t.inneboende.risk if t.inneboende else "okänt"}; kvarstående {t.kvarstaende or "okänd"}. Lokal rimlighetsprövning återstår.',
-            tf_motivering=f'Motorns TF-utfall: {t.terrorfinansiering.risk if t.terrorfinansiering else "okänt"}. Separat lokal prövning återstår.'))
+            pt_motivering=f'[KOMPLETTERA: Motorns PT-utfall: {t.inneboende.risk if t.inneboende else "okänt"}; kvarstående {t.kvarstaende or "okänd"}. Motivera tjänstens risk utifrån dess hot, sårbarheter och lokala kontrollprövning.]',
+            tf_motivering=f'[KOMPLETTERA: Motorns TF-utfall: {t.terrorfinansiering.risk if t.terrorfinansiering else "okänt"}. Motivera tjänstens TF-risk separat utifrån dess hot och sårbarheter.]'))
     paket=Analyspaket(bindning=bindning,belagg=belagg,gemensamma_scenarier=gemensamma,tjanster=tuple(tjanster))
     if schema==1:
         return paket

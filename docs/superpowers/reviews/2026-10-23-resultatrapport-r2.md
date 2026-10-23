@@ -1,5 +1,7 @@
 # Resultatrapport R0–R2 för PDF-granskning
 
+**Ersatt efter Claude-granskningen:** se [rättningen och de nya förhandsvisningarna](2026-10-23-svar-claude-resultatrapport-r2.md). Nedanstående mätvärden och PDF-filer beskriver den tidigare versionen på `f653eea`.
+
 **Status 2026-10-23:** offlineimplementationen för R0–R2 är utförd. Användarens uttryckliga PDF-klartecken återstår. R3–R7 har inte påbörjats. Rapportstandarden och AI-skrivformatet är fortfarande V8. Ingen push eller merge.
 
 Planeringsbas: `f1351b8`, produktbas `4a878b9`. R1 är arbetscommit `061a0c9`. R2:s arbetscommit framgår av Git-historiken efter denna rapport. [Design](../specs/2026-10-22-resultatrapport-design.md) och [plan](../plans/2026-10-22-resultatrapport-plan.md) gäller med användarens två standardbytesprov och regeln om högst fyra tjänstekolumner.

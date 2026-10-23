@@ -10,6 +10,8 @@
 
 **Spec:** [2026-10-22-resultatrapport-design.md](../specs/2026-10-22-resultatrapport-design.md), revision 2, uppdaterad 2026-10-23 efter Claudes granskning. Även planen är revision 2. R0–R2 är godkända för genomförande och nu implementerade för PDF-granskning. R3–R7 inväntar användarens uttryckliga klartecken efter R2.
 
+**R2-rättning efter `f653eea`:** användarens tre PDF-fynd rättas före förnyat klartecken. Oprövade/ej godtagna sänkningar ska synas i cellen och förklaras i R5, även om scenariot inte avgör tjänstens nivå. Gamla och nya standardmotiveringar ska spärras i analysgrinden och ge presentationsbrist. Mandatfixturen ska ha egen mekanism, avvikelsekoppling och konsekventa hela motiveringar. R3–R7:s kontrollpunkt består. [Genomförande och verifiering](../reviews/2026-10-23-svar-claude-resultatrapport-r2.md).
+
 **Base:** `4a878b9bb35a2489e902fd341a6391cc4ce4f7fa`, `codex/kravstod-tjansteexponering`. Läs AGENTS.md, designspecens avsnitt 4/5/8/10–11, aktuell STATUS och detta designunderlag. Verifiera basen igen vid genomförandet; senare ändringar får inte skrivas över eller behandlas som om basen vore oförändrad.
 **Dokumentbas:** revision 1 ligger i `6e34cfd`; produktkoden har inte ändrats av dokumentrevisionerna.
 **Genomförandebeslut 2026-10-23:** R0–R2 får börja med tilläggen nedan; R2:s obligatoriska PDF-granskning kvarstår. R3–R7 är inte godkända genom att denna start godkänts.

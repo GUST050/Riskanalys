@@ -8,7 +8,7 @@ De 64 D9-styckena blir fyra. Läsrapporten minskar **2 320 ord i båda fallen**,
 
 ## Resultatrapport R0–R2 för PDF-granskning 2026-10-23
 
-R0–R2 är implementerade som offlineförhandsvisning: gemensam scenariomatris, tjänsternas egna skillnader och hela PT-/TF-motiveringar, bevarad analys i A/B1 och en enda dokumentversionskonstant. Två PDF-filer om sex sidor vardera är kontrollerade visuellt. Riktat sluturval: 238 godkända/83,88 s; snabbprofil: 137/49,167 s med 796 oförändrade resurser. Ingen färsk fullsvit eller produktleverans; V8 är fortsatt standard. **R3–R7 inväntar användarens uttryckliga klartecken efter läsning av båda PDF-filerna.** [Filer, mätkontrakt och kvarstående steg](superpowers/reviews/2026-10-23-resultatrapport-r2.md).
+R0–R2 är implementerade som offlineförhandsvisning. Efter Claude-granskningen på `f653eea` är oprövade/ej godtagna kontrollsänkningar märkta och förklarade, nya och gamla standardmotiveringar spärrade och mandatfixturens egna mekanismer samt hela motiveringar rättade. Nya PDF-filer har **7 respektive 8 sidor**, samtliga visuellt kontrollerade. Riktat sluturval **94 godkända/104,16 s**; snabbprofil **140/52,858 s**, 798 oförändrade resurser. Ingen färsk fullsvit eller produktleverans; V8 är fortsatt standard. **R3–R7 inväntar användarens uttryckliga klartecken till de nya PDF-filerna.** [Rättning, filer, bevis och två mindre redaktionella önskemål som återstår](superpowers/reviews/2026-10-23-svar-claude-resultatrapport-r2.md). Den första R2-redovisningen ligger kvar som historik.
 
 ## Föregående leverans och verifiering
 

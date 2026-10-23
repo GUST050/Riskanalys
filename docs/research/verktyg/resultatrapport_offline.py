@@ -42,6 +42,7 @@ def rendera_forhandsvisning(dokument,profil,sokvag):
                 formatera_tabell(word,table,t.id,formatversion='D-ARB-tjanst-v8')
                 # Samma miniminivå även när generell stilfunktion ändras.
                 for row in table.rows:
+                    row._tr.get_or_add_trPr().append(OxmlElement('w:cantSplit'))
                     for cell in row.cells:
                         for p in cell.paragraphs:
                             for run in p.runs:run.font.size=Pt(9.5)

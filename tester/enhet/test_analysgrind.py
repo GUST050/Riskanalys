@@ -210,6 +210,34 @@ def aktuell_kedja(_positiv_v8_kedja,tmp_path):
     return k.fall.byramapp,k.regelrot,k.fall.regelbas,k.granskningsmapp
 
 
+@pytest.mark.parametrize('falt,varde',[
+    ('pt_motivering','Motorns PT-utfall: hög; kvarstående hög. Lokal rimlighetsprövning återstår.'),
+    ('tf_motivering','Motorns TF-utfall: mycket hög. Separat lokal prövning återstår.'),
+])
+def test_standardmotivering_stoppar_verklig_analysattest(aktuell_kedja,falt,varde):
+    from riskanalys.analys import lagring as l, provning as p
+    from riskanalys.analys.tjanst import Analystjanst
+    from riskanalys.profil.lagring import las_profil
+    from riskanalys.granskning.korning import granskningens_bedomningsmapp
+    from riskanalys.bedomning.korning import las_bedomning
+    from riskanalys.fel import RiskanalysFel
+    byra,_,rb,gm=aktuell_kedja;q=l.las_analys(byra)
+    bm=granskningens_bedomningsmapp(byra,gm)
+    assert not p.analysbrister(rb,las_profil(byra),las_bedomning(bm),q)
+    a=q.tjanster[0].model_copy(update={falt:varde})
+    ny=q.model_copy(update={'tjanster':(a,*q.tjanster[1:])})
+    # Förnya visningssummorna: felet ska vara innehållet, inte en gammal bekräftelse.
+    ny=ny.model_copy(update={'tjanster':tuple(t.model_copy(update={'block':tuple(
+        b.model_copy(update={'bekraftad_summa':p.blocksumma(ny,t.tjanst,b.nummer)})
+        for b in t.block)}) for t in ny.tjanster)})
+    revision=l.spara_analys(byra,ny,forvantad_summa=p.registersumma(q))
+    fore=(byra/l.ANALYSFIL).read_bytes()
+    with pytest.raises(RiskanalysFel,match=falt+' saknar ett färdigt svar'):
+        Analystjanst(byra,rb).beslut(a.tjanst,True,'Syntetisk granskare','ansvarig',
+                                    las_bedomning(bm).datum,'',revision)
+    assert (byra/l.ANALYSFIL).read_bytes()==fore
+
+
 def test_aktiv_obesvarad_frivillig_fordelning_hindrar_inte_v8_faststallelse(tmp_path,monkeypatch):
     """En frivillig lucka är synlig/okänd utan VERIFIERA i en fastställbar V8-kedja."""
     import docx

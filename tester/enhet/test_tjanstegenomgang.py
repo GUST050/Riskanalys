@@ -22,6 +22,17 @@ def bekrafta(f,p,tid=None):
  from riskanalys.analys.engangssvar import bygg_tjanstbekraftelse
  return bygg_tjanstbekraftelse(f.regelbas,f.profil,f.bedomning,p,tid or p.tjanster[0].tjanst,'Syntetisk')
 
+@pytest.mark.parametrize('falt,varde',[
+ ('pt_motivering','Motorns PT-utfall: hög; kvarstående hög. Lokal rimlighetsprövning återstår.'),
+ ('tf_motivering','Motorns TF-utfall: mycket hög. Separat lokal prövning återstår.'),
+ ('pt_motivering','[KOMPLETTERA: Gör lokal PT-prövning.]'),
+])
+def test_tjanstegenomgang_bekraftar_inte_standardmotivering(grund,falt,varde):
+ f,p=grund;p=globalt(p);a=p.tjanster[0].model_copy(update={falt:varde})
+ p=p.model_copy(update={'tjanster':(a,*p.tjanster[1:])})
+ with pytest.raises(RiskanalysFel,match=falt+' saknar ett färdigt svar'):
+  bekrafta(f,p)
+
 def test_en_global_och_fyra_tjanstehandlingar_utan_scenarioklick(grund):
  f,p=grund;p=globalt(p);motor=f.bedomning.model_dump_json()
  for a in p.tjanster:p=bekrafta(f,p,a.tjanst)

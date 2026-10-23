@@ -28,6 +28,15 @@ def test_offline_aterger_samtliga_r_stycken_och_matrisvarden(resultatfall,tmp_pa
     assert abs(doc.sections[0].page_width.mm-210)<0.1  # Word lagrar hela twips.
 
 
+def test_korta_matrisrader_halls_ihop_over_sidbrytning(resultatfall,tmp_path):
+    from docs.research.verktyg.resultatrapport_offline import rendera_forhandsvisning
+    from riskanalys.dokument.rapportvyer_v9 import bygg_rapportvyer_v9
+    f=resultatfall;d=bygg_rapportvyer_v9(bygg(f).dokument).resultatrapport
+    doc=Document(rendera_forhandsvisning(d,f.profil,tmp_path/'r.docx'))
+    assert doc.tables
+    assert all(row._tr.xpath('./w:trPr/w:cantSplit') for t in doc.tables for row in t.rows)
+
+
 def test_offline_sparar_kallsummor_och_markerar_forhandsvisning(resultatfall,tmp_path):
     from docs.research.verktyg.resultatrapport_offline import spara_fall
     import json

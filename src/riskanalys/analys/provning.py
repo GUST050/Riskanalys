@@ -20,6 +20,10 @@ BLOCKFALT = {
     15:('sektorsjamforelse','sanktioner'), 16:('slutsats','rutinatgarder','gap'),
 }
 _MARKOR = re.compile(r'\[(?:VERIFIERA|KOMPLETTERA|FYLL I)[^\]]*\]',re.I)
+_GAMMAL_MOTIVERING = re.compile(
+    r'Motorns (?:PT-utfall: (?:låg|måttlig|hög|mycket hög|okänt); kvarstående '
+    r'(?:låg|måttlig|hög|mycket hög|okänd)\. Lokal rimlighetsprövning återstår\.'
+    r'|TF-utfall: (?:låg|måttlig|hög|mycket hög|okänt)\. Separat lokal prövning återstår\.)')
 
 
 def summa(data) -> str:
@@ -273,7 +277,8 @@ def positiva_observationsbrister(rb, profil, a, c, scenarier, belagg) -> tuple[s
 
 
 def _saktext(text):
-    return isinstance(text,str) and bool(text.strip()) and not _MARKOR.search(text)
+    return (isinstance(text,str) and bool(text.strip()) and not _MARKOR.search(text)
+            and not _GAMMAL_MOTIVERING.fullmatch(' '.join(text.split())))
 
 
 def analysbrister(rb, profil, bedomning, paket: Analyspaket) -> tuple[str,...]:

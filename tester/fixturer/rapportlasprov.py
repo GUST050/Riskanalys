@@ -93,9 +93,10 @@ def bygg_rapportlasprov(regelbas: Regelbas, rot: Path, fall: str) -> SyntetisktF
         if fall != 'fyra_tjanster':
             update.update(exponering=fras[t.tjanst].exponering,
                           exponeringsbelagg=fras[t.tjanst].exponeringsbelagg,
-                          pt_motivering=fras[t.tjanst].pt_motivering,
-                          tf_motivering=fras[t.tjanst].tf_motivering,
                           reduktionsprovning=fras[t.tjanst].reduktionsprovning)
+            if fall != 'med_betalningsmandat':
+                update.update(pt_motivering=fras[t.tjanst].pt_motivering,
+                              tf_motivering=fras[t.tjanst].tf_motivering)
         if t.tjanst == 'T-RED-04' and fall == 'med_betalningsmandat':
             # Variantens fakta ändrar alla återanvända mandat-/insynspåståenden,
             # även i scenario, kontrolltillämpning, luckor och åtgärder. Utfört
@@ -110,6 +111,8 @@ def bygg_rapportlasprov(regelbas: Regelbas, rot: Path, fall: str) -> SyntetisktF
                 'Löneunderlag och föreslagen betalningsfil, men inga kontoutdrag eller bekräftelser om faktisk utbetalning.':
                     'Löneunderlag, betalningsfil och kontoutdrag för de löneutbetalningar som byrån verkställer är tillgängliga inom uppdragets fulla bankinsyn.',
                 'även utan betalningsmandat': 'även med betalningsmandat',
+                'Kundattest och avsaknad av betalningsmandat avgränsar arbetsmomenten':
+                    'Kundattest och ett avgränsat betalningsmandat för löner bestämmer arbetsmomenten',
             }
             def mandattext(varde):
                 if isinstance(varde, str):
@@ -122,6 +125,7 @@ def bygg_rapportlasprov(regelbas: Regelbas, rot: Path, fall: str) -> SyntetisktF
                     return {k: mandattext(v) for k, v in varde.items()}
                 return varde
             t = type(t).model_validate(mandattext(t.model_dump(mode='json')))
+            update['block']=tuple(x.model_copy(update={'bekraftad_summa':None}) for x in t.block)
         if t.tjanst == 'T-RED-04' and fall in ('utan_betalningsmandat','med_betalningsmandat','motstridig_analys'):
             text=('Byrån verkställer betalningar från kundens konto enligt separat mandat.'
                   if fall != 'utan_betalningsmandat' else
@@ -129,6 +133,22 @@ def bygg_rapportlasprov(regelbas: Regelbas, rot: Path, fall: str) -> SyntetisktF
             if fall == 'med_betalningsmandat':
                 text += ' Mandat och tillgång till kontoutdrag bevisar inte genomförd kontroll, verksam effekt eller verifierat affärssyfte.'
             update['betalningsinsyn']=t.betalningsinsyn.model_copy(update={'motivering':text})
+            if fall == 'med_betalningsmandat':
+                from riskanalys.analys.modeller import Scenariokoppling
+                from riskanalys.analys.provning import scenariosumma
+                egna=[];kopplingar=[]
+                for g in paket.gemensamma_scenarier:
+                    lokalt=g.model_copy(update={'id':t.tjanst+':mandat:'+g.id,
+                        'handelseforlopp':g.handelseforlopp.replace(
+                            'kunden attesterar och verkställer samtliga betalningar',
+                            'kunden attesterar underlagen och byrån verkställer löneutbetalningarna enligt separat mandat'),
+                        'motivering':'Löneuppdragets betalningsmandat och fulla bankinsyn ändrar mekanismen. Genomförd kontroll och dess effekt är fortfarande oprövade.'})
+                    egna.append(lokalt)
+                    kopplingar.append(Scenariokoppling(scenario=g.id,tillampning='avviker',
+                        scenariosumma=scenariosumma(g),lokal_scenario=lokalt.id,
+                        motivering=lokalt.motivering))
+                update['scenarier']=(*t.scenarier,*egna)
+                update['scenariokopplingar']=tuple(kopplingar)
             if fall == 'motstridig_analys':
                 update['gap']=(*t.gap,Analysgap(id='H7.1:mandatkonflikt',typ='motstridigt_underlag',
                     beskrivning='Profilen anger inget betalningsmandat medan analysen säger att byrån verkställer betalningar.',
