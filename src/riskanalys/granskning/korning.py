@@ -75,14 +75,14 @@ def oppna_fragor(utkast: dict[str, AvsnittsUtkast]) -> tuple[tuple[str, Oklarhet
     return tuple(fragor)
 
 
-def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *, bedomningsmapp: Path | None = None, utkastmapp: Path | None = None) -> Path:
+def kor_granskning(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *, bedomningsmapp: Path | None = None, utkastmapp: Path | None = None, rapportformat: str | None = None) -> Path:
     from riskanalys.analys.lagring import analyslas
     # Som fastställelsen: bara omfattningsmetoden läser det lokala analysregistret.
     with analyslas(byramapp) if regelbas.metod.omfattning else nullcontext():
-        return _kor_granskning_last(byramapp,regelbas,granskningsdatum,bedomningsmapp=bedomningsmapp,utkastmapp=utkastmapp)
+        return _kor_granskning_last(byramapp,regelbas,granskningsdatum,bedomningsmapp=bedomningsmapp,utkastmapp=utkastmapp,rapportformat=rapportformat)
 
 
-def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *, bedomningsmapp: Path | None = None, utkastmapp: Path | None = None) -> Path:
+def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: date, *, bedomningsmapp: Path | None = None, utkastmapp: Path | None = None, rapportformat: str | None = None) -> Path:
     bedomningsmapp = bedomningsmapp or senaste_korning(byramapp, BEDOMNINGAR, f"bedom {byramapp.name}")
     kontrollera_aktuell(byramapp, bedomningsmapp, regelbas)
     bedomning = las_bedomning(bedomningsmapp)
@@ -90,6 +90,11 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
     urval = valj(regelbas, bedomning.regelpaket, bedomning.datum, bedomning.lan)
     utkast, utkastmapp = godkanda_utkast(byramapp, bedomningsmapp, utkastmapp=utkastmapp)
     historik = las_historik(byramapp)
+    from riskanalys.dokument.rapportversion import V8,V9,AKTUELL_DOKUMENTVERSION
+    if rapportformat not in (None,"v8","v9"):
+        raise RiskanalysFel("Välj rapportformat v8 eller v9.")
+    valtformat={"v8":V8,"v9":V9}.get(rapportformat,AKTUELL_DOKUMENTVERSION)
+    bygge=None
     snapshot = None
     rapport = None
     if regelbas.metod.omfattning:
@@ -99,10 +104,17 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
         snapshot = (las_analyssnapshot_last(byramapp,regelbas,granskningsdatum,bedomningsmapp=bedomningsmapp,utkastmapp=utkastmapp)
                     if utkastmapp else Analyssnapshot(None,'',('Skrivresultat och lokal analys saknas.',),()))
         rapport = fryst_modellrapport(snapshot)
-        dokument = bygg_arb(regelbas,profil,bedomning,utkast,historik,analys=snapshot.paket,modellrapport=rapport)
+        if valtformat==V9:
+            if any(not isinstance(r,Tjanstresultat) or r.formatversion!=V8 for r in utkast.values()):
+                raise RiskanalysFel('V9 kräver kompatibla V8-skrivresultat. Skrivningen måste uppdateras uttryckligen; inga AI-anrop görs här.')
+            from riskanalys.dokument.arb_v9 import bygg_resultatpaket_v9
+            bygge=bygg_resultatpaket_v9(regelbas,profil,bedomning,utkast,historik,analys=snapshot.paket,modellrapport=rapport)
+            dokument=bygge.dokument
+        else:
+            dokument = bygg_arb(regelbas,profil,bedomning,utkast,historik,analys=snapshot.paket,modellrapport=rapport,formatversion=V8 if rapportformat=='v8' else None)
     else:
         dokument = bygg_arb(regelbas, profil, bedomning, utkast, historik)
-    fynd = granska(regelbas, urval, profil, bedomning, dokument, historik, granskningsdatum, oppna_fragor(utkast), skrivresultat=utkast, analys=snapshot.paket if snapshot else None, modellrapport=rapport, analysbrister_filer=snapshot.brister if snapshot else ())
+    fynd = granska(regelbas, urval, profil, bedomning, dokument, historik, granskningsdatum, oppna_fragor(utkast), skrivresultat=utkast, analys=snapshot.paket if snapshot else None, modellrapport=rapport, analysbrister_filer=snapshot.brister if snapshot else (),bygge=bygge)
     mapp = ny_korningsmapp(byramapp, GRANSKNING)
     (mapp / DOKUMENTFIL).write_text(dokument.model_dump_json(indent=2), encoding="utf-8")
     (mapp / FYNDFIL).write_text(_FYNDLISTA.dump_json(fynd, indent=2).decode("utf-8"), encoding="utf-8")
@@ -127,6 +139,16 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
         from riskanalys.dokument.rapportpaket_v8 import PRESENTATIONSFIL
         presentation = bygg_presentation(dokument, analys=snapshot.paket if snapshot else None, fynd=fynd, bedomning=bedomning, profil=profil)
         (mapp/PRESENTATIONSFIL).write_text(presentation.model_dump_json(indent=2), encoding='utf-8')
+    if bygge is not None:
+        import json
+        from riskanalys.dokument.presentation_v9 import bygg_presentation_v9
+        from riskanalys.dokument.resultatmodell_v9 import kallartefakter
+        presentation=bygg_presentation_v9(bygge,analys=snapshot.paket,fynd=fynd,bedomning=bedomning,profil=profil)
+        for namn,obj in (('analysdokument-v8.json',bygge.analysdokument),('resultatunderlag-v9.json',bygge.underlag),
+                         ('resultatbygge-v9.json',bygge),('presentation.json',presentation)):
+            (mapp/namn).write_text(obj.model_dump_json(indent=2),encoding='utf-8')
+        (mapp/'transformationer-v9.json').write_text(json.dumps([t.model_dump(mode='json') for t in bygge.transformationer],ensure_ascii=False,indent=2),encoding='utf-8')
+        (mapp/'kallor-v9.json').write_text(json.dumps(kallartefakter(regelbas,profil,bedomning,utkast,historik,snapshot.paket,bygge.analysdokument),ensure_ascii=False,indent=2),encoding='utf-8')
     skriv_manifest(mapp, metadata)
     return mapp
 

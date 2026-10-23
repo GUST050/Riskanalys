@@ -22,8 +22,12 @@ def test_v8_sakfalt_bevaras_med_uttommande_metadataundantag(resultatfall):
         # Endast exakt gammal programförklaring får bytas, aldrig andra sakfält.
         from riskanalys.dokument.arb_v8 import HELHET
         from riskanalys.dokument.arb_v9 import HELHET_V9
-        for s in fore['stycken']:
-            s['text']=s['text'].replace(HELHET,HELHET_V9)
+        for i,s in enumerate(fore['stycken']):
+            ptr=f'/avsnitt/{b.analysdokument.avsnitt.index(a)}/stycken/{i}/text'
+            for tr in b.transformationer:
+                if tr.pointer==ptr:
+                    assert s['text']==tr.fore
+                    s['text']=tr.efter
         assert fore==efter
     assert b.transformationer
     assert all(t.orsak in ('format','leveransdel','visningsnummer','tredelsforklaring') for t in b.transformationer)

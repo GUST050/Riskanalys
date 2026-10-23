@@ -44,6 +44,8 @@
     "tester/enhet/test_tillampningsbyte.py",
     "tester/enhet/test_rapportversion.py",
     "tester/enhet/test_resultatunderlag_v9.py",
-    "tester/enhet/test_resultatrapport_v9.py::test_fler_an_fyra_tjanster_delar_matrisen_utan_att_tappa_celler"
+    "tester/enhet/test_resultatrapport_v9.py::test_fler_an_fyra_tjanster_delar_matrisen_utan_att_tappa_celler",
+    "tester/enhet/test_dokument_v9.py",
+    "tester/enhet/test_tredelstexter_v9.py"
   ]
 }

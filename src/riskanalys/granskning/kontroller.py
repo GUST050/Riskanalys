@@ -31,9 +31,21 @@ def granska(
     historik: Historik,
     granskningsdatum: date,
     oklarheter: tuple[tuple[str, Oklarhet], ...] = (),
-    *, skrivresultat=None, analys=None, modellrapport=None, analysbrister_filer=(),
+    *, skrivresultat=None, analys=None, modellrapport=None, analysbrister_filer=(), bygge=None,
 ) -> tuple[Fynd, ...]:
     """Fynd för dokumentet. oklarheter är AI-utkastens öppna frågor per avsnitt; var och en blir ett fynd."""
+    if dokument.formatversion == 'D-ARB-resultat-v9':
+        from riskanalys.dokument.arb_v9 import bygg_resultatpaket_v9
+        from riskanalys.granskning.dokument_v9 import resultatfynd_v9
+        bygge=bygge or bygg_resultatpaket_v9(regelbas,profil,bedomning,skrivresultat or {},historik,
+            analys=analys,modellrapport=modellrapport)
+        bas=granska(regelbas,urval,profil,bedomning,bygge.analysdokument,historik,granskningsdatum,
+            oklarheter,skrivresultat=skrivresultat,analys=analys,modellrapport=modellrapport,
+            analysbrister_filer=analysbrister_filer)
+        extra=resultatfynd_v9(regelbas,profil,bedomning,skrivresultat or {},historik,analys=analys,
+            bygge=bygge,dokument=dokument,modellrapport=modellrapport,granskningsdatum=granskningsdatum)
+        return (*bas,*(Fynd(id=f'F-{granskningsdatum.isoformat()}-{i:03d}',**x)
+                      for i,x in enumerate(extra,len(bas)+1)))
     utkast = [
         *_tackning(regelbas, urval, profil, dokument),
         *_preliminar(bedomning),

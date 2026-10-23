@@ -19,10 +19,16 @@ def bygg_resultatpaket_v9(rb,profil,bedomning,resultat,historik,*,analys,gransin
     transformer, bilagor = [], []
     for n,a in enumerate(original.avsnitt):
         del_='underlagsbilaga' if a.leveransdel=='underlagsbilaga' else 'analysbilaga'
-        nummer='B1' if a.id=='D-ARB.B1' else 'A'+(a.visningsnummer or str(n+1))
+        nummer='B1' if a.id=='D-ARB.B1' else 'A15' if a.id=='D-ARB.B2' else 'A'+(a.visningsnummer or str(n+1))
         stycken=[]
         for j,s in enumerate(a.stycken):
             text=s.text
+            radata=('Råa lokala svar: ordagranna kompletteringar och fältsökvägar. '
+                    'Läsrapport och kompletterande underlagsbilaga utgör tillsammans hela riskbedömningens dokumentation.')
+            if (a.id=='D-ARB.B1' and text==radata and s.proveniens=='lokal' and not s.literala_spann):
+                efter='Råa lokala svar: ordagranna kompletteringar och fältsökvägar. '+HELHET_V9
+                transformer.append(TransformationV9(pointer=f'/avsnitt/{n}/stycken/{j}/text',fore=text,efter=efter,orsak='tredelsforklaring'))
+                s=s.model_copy(update={'text':efter})
             if (a.id in ('D-ARB.1','D-ARB.B2') and text == HELHET
                     and s.proveniens in (None,'regelbas') and not s.literala_spann):
                 efter=text.replace(HELHET,HELHET_V9)
