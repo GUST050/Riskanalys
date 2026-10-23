@@ -95,7 +95,14 @@
     även av legalt intjänade medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål
     och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets
     koppling är programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal
-    relevans ska prövas och kontrollmål utvidgas inte automatiskt.'
+    relevans ska prövas och kontrollmål utvidgas inte automatiskt. D3: Gemensamma organisationsfaktorer
+    gäller verksamheten. Kund- och geografifaktorer används tills vidare som konservativa modellindikatorer
+    bland tjänstens relevanta hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte
+    som numeriska avgränsningar; de täcker inte alla faktorer och deras trösklar är inte kalibrerade.
+    Ingen faktisk samtidig kundexponering påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående
+    portföljpåslag i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden finns
+    i tjänsten. En tjänstespecifik modell behöver fullständig datamappning, okändhantering och separat
+    kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Kontering och löpande bokföring
@@ -207,7 +214,14 @@
     ge underlag för vidareföring även av legalt intjänade medel till terrorändamål. Brottsligt ursprung
     krävs inte för TF; ändamål och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus
     och sektor, medan just arbetsmomentets koppling är programmets metodtolkning. Inget betalningsmandat
-    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.'
+    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.
+    D3: Gemensamma organisationsfaktorer gäller verksamheten. Kund- och geografifaktorer används tills
+    vidare som konservativa modellindikatorer bland tjänstens relevanta hot. De fyra frivilliga tjänsteantalen
+    används som lokalt sakunderlag, inte som numeriska avgränsningar; de täcker inte alla faktorer och
+    deras trösklar är inte kalibrerade. Ingen faktisk samtidig kundexponering påstås. Även en dokumenterad
+    lokal nolla kan därför ge kvarstående portföljpåslag i motorn. Det är en uttrycklig modellbegränsning,
+    inte en slutsats att kunden finns i tjänsten. En tjänstespecifik modell behöver fullständig datamappning,
+    okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Bokslutsarbete och avstämningar
@@ -318,7 +332,14 @@
     ge underlag för vidareföring även av legalt intjänade medel till terrorändamål. Brottsligt ursprung
     krävs inte för TF; ändamål och mottagarkedja är här den möjliga mekanismen. Källorna beskriver modus
     och sektor, medan just arbetsmomentets koppling är programmets metodtolkning. Inget betalningsmandat
-    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.'
+    eller faktisk händelse antas; lokal relevans ska prövas och kontrollmål utvidgas inte automatiskt.
+    D3: Gemensamma organisationsfaktorer gäller verksamheten. Kund- och geografifaktorer används tills
+    vidare som konservativa modellindikatorer bland tjänstens relevanta hot. De fyra frivilliga tjänsteantalen
+    används som lokalt sakunderlag, inte som numeriska avgränsningar; de täcker inte alla faktorer och
+    deras trösklar är inte kalibrerade. Ingen faktisk samtidig kundexponering påstås. Även en dokumenterad
+    lokal nolla kan därför ge kvarstående portföljpåslag i motorn. Det är en uttrycklig modellbegränsning,
+    inte en slutsats att kunden finns i tjänsten. En tjänstespecifik modell behöver fullständig datamappning,
+    okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Upprättande av deklarationer
@@ -435,7 +456,14 @@
     löneuttag av brottsvinst finns kvar genom H-TJ-04 och H-02. Avgränsningen är ett ej granskat metodval,
     inte bevis för att en lönekund saknar momsbrott. D2: Ren löneberedning behandlar löneuppgifter, inte
     generellt leverantörsfakturor. Falskt löneunderlag finns i H-TJ-04; löneuttag som legitimerar brottsvinst
-    finns i H-02. H-01 prövas i separat erbjuden faktura-/bokföringstjänst och vid nytt utvidgat arbetsmoment.'
+    finns i H-02. H-01 prövas i separat erbjuden faktura-/bokföringstjänst och vid nytt utvidgat arbetsmoment.
+    D3: Gemensamma organisationsfaktorer gäller verksamheten. Kund- och geografifaktorer används tills
+    vidare som konservativa modellindikatorer bland tjänstens relevanta hot. De fyra frivilliga tjänsteantalen
+    används som lokalt sakunderlag, inte som numeriska avgränsningar; de täcker inte alla faktorer och
+    deras trösklar är inte kalibrerade. Ingen faktisk samtidig kundexponering påstås. Även en dokumenterad
+    lokal nolla kan därför ge kvarstående portföljpåslag i motorn. Det är en uttrycklig modellbegränsning,
+    inte en slutsats att kunden finns i tjänsten. En tjänstespecifik modell behöver fullständig datamappning,
+    okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Löneberedning och lönerapportering
@@ -549,7 +577,14 @@
     på klientmedelskonto kan felaktigt utbetalda offentliga medel föras vidare eller blandas med andra
     kundmedel så att deras brottsliga ursprung döljs. Faktiskt mandat och medlens ursprung måste prövas;
     själva utbetalningen bevisar inte penningtvätt. Kopplingen är ogranskad metodtolkning av de registrerade
-    underlagen om välfärdsbrott och falska löneuppgifter.'
+    underlagen om välfärdsbrott och falska löneuppgifter. D3: Gemensamma organisationsfaktorer gäller
+    verksamheten. Kund- och geografifaktorer används tills vidare som konservativa modellindikatorer bland
+    tjänstens relevanta hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som
+    numeriska avgränsningar; de täcker inte alla faktorer och deras trösklar är inte kalibrerade. Ingen
+    faktisk samtidig kundexponering påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående
+    portföljpåslag i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden finns
+    i tjänsten. En tjänstespecifik modell behöver fullständig datamappning, okändhantering och separat
+    kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Utföra eller attestera betalningar i kundens namn
@@ -663,7 +698,14 @@
     Vid betalningar i kundens namn respektive på klientmedelskonto kan felaktigt utbetalda offentliga
     medel föras vidare eller blandas med andra kundmedel så att deras brottsliga ursprung döljs. Faktiskt
     mandat och medlens ursprung måste prövas; själva utbetalningen bevisar inte penningtvätt. Kopplingen
-    är ogranskad metodtolkning av de registrerade underlagen om välfärdsbrott och falska löneuppgifter.'
+    är ogranskad metodtolkning av de registrerade underlagen om välfärdsbrott och falska löneuppgifter.
+    D3: Gemensamma organisationsfaktorer gäller verksamheten. Kund- och geografifaktorer används tills
+    vidare som konservativa modellindikatorer bland tjänstens relevanta hot. De fyra frivilliga tjänsteantalen
+    används som lokalt sakunderlag, inte som numeriska avgränsningar; de täcker inte alla faktorer och
+    deras trösklar är inte kalibrerade. Ingen faktisk samtidig kundexponering påstås. Även en dokumenterad
+    lokal nolla kan därför ge kvarstående portföljpåslag i motorn. Det är en uttrycklig modellbegränsning,
+    inte en slutsats att kunden finns i tjänsten. En tjänstespecifik modell behöver fullständig datamappning,
+    okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Hantering av klientmedel för kundens räkning
@@ -763,7 +805,13 @@
     medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
     den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
     programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
-    prövas och kontrollmål utvidgas inte automatiskt.'
+    prövas och kontrollmål utvidgas inte automatiskt. D3: Gemensamma organisationsfaktorer gäller verksamheten.
+    Kund- och geografifaktorer används tills vidare som konservativa modellindikatorer bland tjänstens
+    relevanta hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som numeriska
+    avgränsningar; de täcker inte alla faktorer och deras trösklar är inte kalibrerade. Ingen faktisk
+    samtidig kundexponering påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag
+    i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden finns i tjänsten. En
+    tjänstespecifik modell behöver fullständig datamappning, okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Ekonomisk rådgivning och rapportering
@@ -859,7 +907,13 @@
     medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
     den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
     programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
-    prövas och kontrollmål utvidgas inte automatiskt.'
+    prövas och kontrollmål utvidgas inte automatiskt. D3: Gemensamma organisationsfaktorer gäller verksamheten.
+    Kund- och geografifaktorer används tills vidare som konservativa modellindikatorer bland tjänstens
+    relevanta hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som numeriska
+    avgränsningar; de täcker inte alla faktorer och deras trösklar är inte kalibrerade. Ingen faktisk
+    samtidig kundexponering påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag
+    i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden finns i tjänsten. En
+    tjänstespecifik modell behöver fullständig datamappning, okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-SKATT
   arbetsmoment:
   - Rådgivning om skatter och avgifter
@@ -958,7 +1012,13 @@
     medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
     den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
     programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
-    prövas och kontrollmål utvidgas inte automatiskt.'
+    prövas och kontrollmål utvidgas inte automatiskt. D3: Gemensamma organisationsfaktorer gäller verksamheten.
+    Kund- och geografifaktorer används tills vidare som konservativa modellindikatorer bland tjänstens
+    relevanta hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som numeriska
+    avgränsningar; de täcker inte alla faktorer och deras trösklar är inte kalibrerade. Ingen faktisk
+    samtidig kundexponering påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag
+    i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden finns i tjänsten. En
+    tjänstespecifik modell behöver fullständig datamappning, okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-BOLAG
   arbetsmoment:
   - Bildande och förmedling av juridiska personer
@@ -1030,7 +1090,13 @@
   metodmotivering: 'Förslag: grundnivån och kombinationerna ska granskas och kalibreras separat. NRA:s
     sektorsrisk är inte direkt likställd med motorns skala. Källornas modus är möjliga tillvägagångssätt,
     inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
-    relevansprövning och kalibrering.'
+    relevansprövning och kalibrering. D3: Gemensamma organisationsfaktorer gäller verksamheten. Kund-
+    och geografifaktorer används tills vidare som konservativa modellindikatorer bland tjänstens relevanta
+    hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som numeriska avgränsningar;
+    de täcker inte alla faktorer och deras trösklar är inte kalibrerade. Ingen faktisk samtidig kundexponering
+    påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag i motorn. Det är
+    en uttrycklig modellbegränsning, inte en slutsats att kunden finns i tjänsten. En tjänstespecifik
+    modell behöver fullständig datamappning, okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-ADRESS
   arbetsmoment:
   - Tillhandahållande av registrerad adress eller postadress
@@ -1107,7 +1173,13 @@
     inte konstaterade händelser hos byrån. Nya byråövergripande indikatorers viktning kräver tjänstevis
     relevansprövning och kalibrering. NRA 7.27, s. 149 har inte hot- eller sårbarhetsbedömt denna sektor.
     Ingen sektorsrisk från bolagsbildning används som jämförelsegrund. Grundnivåerna är kvarvarande ogranskade
-    metodvärden som måste prövas separat i C/D.'
+    metodvärden som måste prövas separat i C/D. D3: Gemensamma organisationsfaktorer gäller verksamheten.
+    Kund- och geografifaktorer används tills vidare som konservativa modellindikatorer bland tjänstens
+    relevanta hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som numeriska
+    avgränsningar; de täcker inte alla faktorer och deras trösklar är inte kalibrerade. Ingen faktisk
+    samtidig kundexponering påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag
+    i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden finns i tjänsten. En
+    tjänstespecifik modell behöver fullständig datamappning, okändhantering och separat kalibrering.'
   sektorreferens: null
   arbetsmoment:
   - Uppdrag som styrelseledamot eller bolagsrättsligt ansvarig åt kund
@@ -1215,7 +1287,13 @@
     medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
     den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
     programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
-    prövas och kontrollmål utvidgas inte automatiskt.'
+    prövas och kontrollmål utvidgas inte automatiskt. D3: Gemensamma organisationsfaktorer gäller verksamheten.
+    Kund- och geografifaktorer används tills vidare som konservativa modellindikatorer bland tjänstens
+    relevanta hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som numeriska
+    avgränsningar; de täcker inte alla faktorer och deras trösklar är inte kalibrerade. Ingen faktisk
+    samtidig kundexponering påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag
+    i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden finns i tjänsten. En
+    tjänstespecifik modell behöver fullständig datamappning, okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Framtagning och granskning av ansökningsunderlag
@@ -1332,7 +1410,13 @@
     medel till terrorändamål. Brottsligt ursprung krävs inte för TF; ändamål och mottagarkedja är här
     den möjliga mekanismen. Källorna beskriver modus och sektor, medan just arbetsmomentets koppling är
     programmets metodtolkning. Inget betalningsmandat eller faktisk händelse antas; lokal relevans ska
-    prövas och kontrollmål utvidgas inte automatiskt.'
+    prövas och kontrollmål utvidgas inte automatiskt. D3: Gemensamma organisationsfaktorer gäller verksamheten.
+    Kund- och geografifaktorer används tills vidare som konservativa modellindikatorer bland tjänstens
+    relevanta hot. De fyra frivilliga tjänsteantalen används som lokalt sakunderlag, inte som numeriska
+    avgränsningar; de täcker inte alla faktorer och deras trösklar är inte kalibrerade. Ingen faktisk
+    samtidig kundexponering påstås. Även en dokumenterad lokal nolla kan därför ge kvarstående portföljpåslag
+    i motorn. Det är en uttrycklig modellbegränsning, inte en slutsats att kunden finns i tjänsten. En
+    tjänstespecifik modell behöver fullständig datamappning, okändhantering och separat kalibrering.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Due diligence vid företagsöverlåtelse
