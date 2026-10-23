@@ -65,8 +65,15 @@ konsekvens:
 terrorfinansiering:
   id: BT-TF-01
   grund: metodval
-  forklaring: Terrorfinansiering bedöms separat. Sannolikheten utgår från tjänstens grundnivå för terrorfinansiering
-    och höjs av sårbarheter som gäller terrorfinansiering. Konsekvensen är alltid allvarlig.
+  forklaring: TF bedöms separat. Konsekvensens skyddsintresse är möjlig skada på människor och samhälle
+    vid terrorändamål; bedömningsenheten är ett relevant missbruksscenario i tjänsten, inte kundens betalningsbelopp.
+    Allvarlig konsekvens behålls provisoriskt. Sannolikhet följer scenariots relevanta hot och TF-faktorer
+    i aktuell matris. Ingen TF-kontrollreduktion beräknas; verksam TF-kontroll kan beskrivas lokalt men
+    har ingen kalibrerad avdragsskala. Skyddsintresse, fast konsekvens och matrisceller är ej granskade
+    metodval. Myndighetens lägesbild fastställer inte dessa val och rapportantal är inte frekvens. TF
+    behöver inte vara lägre än PT.
+  sakkunnig:
+    status: ej_granskad
 kvarstaende_ej_belagd:
   id: BT-KVAR-01
   grund: metodval

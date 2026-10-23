@@ -773,3 +773,168 @@
     kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
+- id: D6
+  namn: TF-konsekvens, sannolikhet och kontroll
+  grund: metodval
+  valt: Behåll allvarlig TF-konsekvens och separat sannolikhet
+  alternativ:
+  - Behåll allvarlig TF-konsekvens och separat sannolikhet
+  - Kalibrera TF-konsekvens och kontrollavdrag per tjänst
+  skal: TF bedöms separat. Konsekvensens skyddsintresse är möjlig skada på människor och samhälle vid
+    terrorändamål; bedömningsenheten är ett relevant missbruksscenario i tjänsten, inte kundens betalningsbelopp.
+    Allvarlig konsekvens behålls provisoriskt. Sannolikhet följer scenariots relevanta hot och TF-faktorer
+    i aktuell matris. Ingen TF-kontrollreduktion beräknas; verksam TF-kontroll kan beskrivas lokalt men
+    har ingen kalibrerad avdragsskala.
+  osakerhet: Skyddsintresse, fast konsekvens och matrisceller är ej granskade metodval. Myndighetens lägesbild
+    fastställer inte dessa val och rapportantal är inte frekvens. TF behöver inte vara lägre än PT.
+  kallor:
+  - SRC-TS-2026-14
+  - SRC-FIPO-TF-2025
+  kallbelagg:
+  - kalla: SRC-TS-2026-14
+    sida: 10
+    avsnitt: Fysisk PDF-sida
+    citat: hur stora konsekvenserna skulle bli
+    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt eller kontrollreduktion.
+  - kalla: SRC-FIPO-TF-2025
+    sida: 4
+    avsnitt: Fysisk PDF-sida
+    citat: legala medel
+    tolkning: Visar att brottsligt ursprung och belopp inte kan användas som generell TF-avgränsning;
+      anger ingen konsekvensskala.
+  objekt:
+    BT-MATRIS-01: sha256:b32e198fef08913c3fcadc52c5affb900c44628f169c1fc78e9c92439d61f7aa
+    BT-MATRIS-02: sha256:209f8dbe3426ee5b0016af382adde28c8b0d3a36b9a7522a6fb618346aa6bad0
+    BT-MATRIS-03: sha256:e7a2ed52f7e14c67a0f588a6ae5600d277dac4dc4d79739ff200d589f129da98
+    BT-MATRIS-04: sha256:afd98462ef2416acaf64d17b39f2d1fecada1abaaffddf7340c7c24ea299abea
+    BT-MATRIS-05: sha256:b688cad3724d98ec42d9c30e1ac6b3b1d09707d0e3fd6719c23f2cae3edc1b0e
+    BT-MATRIS-06: sha256:9f52c371a9cd2ad3a9fe7830de468385b591fe2fd491f2e0efb45956110fc3fb
+    BT-MATRIS-07: sha256:51a9ab52f4498a9743458ec2d13280a8b09de702067394d830929af46287233e
+    BT-MATRIS-08: sha256:87688a6f4c5b3e434160f0264fb732e087833686d363102c99a2b11be7cf4127
+    BT-MATRIS-09: sha256:5b82a305e9123bda7a4a3d89498b19b1e891c212d14770d999b96d2eae704273
+    BT-SANN-02-01: sha256:6309d1fcbf0864b3a95faecaacf0c9494bc865c88173d44d912fc30287741fc2
+    BT-SANN-02-02: sha256:6a29582468150012f5935a76749716bf11444475a001478c91f7b6eba455b60a
+    BT-SANN-02-03: sha256:04f14cef29acb70fa49f1e1dc102fd7df50be2f27ae229a0b8c55a8bb6cefe3c
+    BT-SANN-02-04: sha256:80ce309b63cbde6f9ab88a57816b9e6d64f63f45d9aff183e409bea19c500cc9
+    BT-SANN-02-05: sha256:7b2511a81bb9b643e32766a1b66e12f47ea99322d6d32fe5a4ab8d78e0486329
+    BT-SANN-02-06: sha256:3e45eba370bb09206a91701b7d971291b0dcb05bc5c81201b27159ff06551846
+    BT-SANN-02-07: sha256:ec750375b55f3d48633281659e3a67e714438142e3333d069d1259fbda058410
+    BT-SANN-02-08: sha256:d1e2a858e133bcb8558637fdde556ac80968ed7c9345628405a456ff54d286ea
+    BT-SANN-02-09: sha256:3ac1d7f13d9e4482a85045d245f70b379647cdfb7840d7d540e105018893dc4e
+    BT-TF-01: sha256:070018712867e456717de4a616fa3940aaf79cb2b6e6180416f6d0ee0c7f3fab
+    H-01: sha256:d3821cc815e521ea85905635f64755d92543671a707aa87b705e5b2a722a0306
+    H-02: sha256:1d2037fb67a6aee079864383c77323cdd63615c20a72c7ef06a6c7a07520befd
+    H-03: sha256:e6f6008693fcd286fb9cd555dd601b8e874f387af570ec20753af452242777c3
+    H-MOD-01: sha256:300950de8c2beea4a290d4baf911f9e5f7d58ab7b307d83d97d3fcaf4dade1a6
+    H-MOD-02: sha256:e81a9070f50b62168b81abaed59d1f856667fad297132d43f15449832e7a0ecc
+    H-MOD-03: sha256:515faad799ea4adbc80324563b2bd832c8b6b0e84ede22b79c375c21e8182df7
+    H-MOD-04: sha256:a42f50efa6c947420808cd022000cb5a823d05b787a41b13b9f3c49836541cf4
+    H-MOD-05: sha256:748da3a0cf664671ac788eacaa622095ec20db0fa5c7c4ad6c9feeb2b5e71e47
+    H-MOD-06: sha256:99424d7b1b7390f14ea27438d2bacd130f2935aae737cde88e7cd60d245388e9
+    H-MOD-07: sha256:e59f0bc2a7507a6e742fb63820c9124cfe25267572247e311b59ffa383099a42
+    H-TF-01: sha256:d8bb53cc2582dcb99f7b5f8f44dd68967f550db0bb0ad57ac6832c8583776529
+    H-TF-02: sha256:85dc8563cedeef5102df1ab8aebf66e3665fd744a5695b578b1467f5b7b33b22
+    H-TF-03: sha256:015d8398800b82741aec8345c6cc072f42ca2001f1e0af0e39e92f7b48382d0a
+    H-TJ-01: sha256:606fbe581dca5457c4b705d90548a096967a25216e070bf0fe1ef19d434fb874
+    H-TJ-02: sha256:b70622441ed915be870a7520b2c6f63a951c4c58312b575dbb70a5198284fb72
+    H-TJ-03: sha256:aeb0f1ed97e83277460717bd5a4eef92b37d021c527bf0183b9b6a57bc9390e6
+    H-TJ-04: sha256:9314faf51fce10496034ac842af397410900b79cb39061f677b03e4d8f285dd0
+    H-TJ-05: sha256:a3f8fc6ed7543af10a397c3b48cdb6d9c8881e4854d10e80bda4f55b828ab979
+    H-TJ-06: sha256:886811a6cf891f6b0e96ae81553f61c3a86dfa270d37da8951e87789e1e76b50
+    H-TJ-07: sha256:43d3eaddf776dee99e3d2ccf2ff55de7c54d2f5272365a5fd87af3755499ff69
+    H-TJ-08: sha256:61cbcdaa77cd54bada0f52e3c1eae34e20b5b935a4274e7204b48eff6692a037
+    H-TJ-09: sha256:54a96d4afafa2f1283acf1da29817d9be14d52bc8a5018b2150d3f31f614f667
+    H-TJ-10: sha256:432140da1ba9e8446d45149312c37f9ad07f769c2ae310c7f49ada02a997b8ff
+    H-TJ-11: sha256:0775bcf0f5ac0525163e0eb457846c06fb2d956c6ee843aefa26d845fb2aae70
+    H-TJ-12: sha256:ddc4c55430efaea6471bc8adb2cff6b1a6b8e05d299f513ed5138854a580f3f5
+    H-TJ-13: sha256:e6f2fec21fd0d0e2236664ab4c92a27025b18b201d772aff84479fe0fee42799
+    S-ARB-01: sha256:d7edd68d39fef8f4861fbce3944b9612a2c437bc619f66f783d99db475c6adf8
+    S-ARB-02: sha256:e4541e1dc464bf8d2c3be92b19e5f9a52fa56646898386b8e7722ac479161548
+    S-ARB-03: sha256:3e5700e502dbb8b0413deb6f26ca38555797c97eb32311c0d5b6a85c62843d95
+    S-ARB-04: sha256:44aa563533a68f3c6312c75f31b3f83ee68c6356b90ed07575cb2acfd5e313b8
+    S-ARB-05: sha256:c85c693560eb939b600c55db26d9b6114e1b48ebed33aaefd8332352f881d49a
+    S-ARB-06: sha256:35452c637734cf6f44779502bf47a21508917aed6aca4225fed85975540d5d57
+    S-ARB-07: sha256:1cd704e3e8d86f45a55d8a3f4b66837fd6dd295d083e7c9597256f7f5fef3026
+    S-ARB-08: sha256:c3d3d77e56fcbb01485859009f49a94ee596699079a053c01ee4eb0b8e9d975c
+    S-ARB-09: sha256:65f935f0011340516389865a6c5eaaabb85c373c930dacf32680ff38d3270cda
+    S-ARB-10: sha256:dcaf17559d72f64e02776cbc734407ec3ad6bbd3b17336dc2f2c25d13c56bff6
+    S-ARB-11: sha256:4224be26325620f50b06c8309d25ff1d456e4c447e221e7ff5b65110a6423692
+    S-ARB-12: sha256:62c4f0b90fb3c0d95390ef21529e4fef47db100ed06a65f3c05520cf6ccc9edc
+    S-ARB-13: sha256:db7e0e8862f9cad6379f740f4b0de8e1cc62702135a881b87f508fa69f426a4a
+    S-ARB-14: sha256:f5a5d9635d2b1e4aa62c7d702e6f69c27d7456ecd3971b98900ebf0b97329036
+    S-ARB-15: sha256:74c66634ffb266cbfe045a870392f02d9932f2694bfaa6b4002d9dfac53255ab
+    S-ARB-16: sha256:8c8dd31d249076d77a4064f512e2958d4d895d7da5662ae9fd8ce9e422f7930d
+    S-ARB-17: sha256:02eb85d84749a5baa4e4223167cb6803d39844f7d8cdc916994f466c29492c50
+    S-ARB-18: sha256:bba894670206c89c758ca18bf144bba6ddb5f63f1db50f884498b536190d344e
+    S-ARB-19: sha256:a623007111d581b218eb66c0c1c152f21f1c7f93bfb0a465171214f7c5c0f81b
+    S-ARB-20: sha256:7c7c3bd4c99eb5ee63f1275bfb3618ed13ecfd4800d5b3612d8da7f6446a0bc7
+    S-ARB-21: sha256:766cdec1ebe9c0d987c5fdd56ac6d810547f27edc9487d3d43f37bebc3908c00
+    S-ARB-22: sha256:6ba0b6ef58fdfb162575c2c0f4280e6ac8b8c828dad4e095b5fddeed5d395c39
+    S-ARB-23: sha256:595cf29ae8dcc911fef14ea83acbdb6c2fb77667afe2761a8d1a724d26ce5e4d
+    S-GEO-01: sha256:7dc5d7bc89f3732cc8ea3a9576fbbb1703347b5b85ab9042cb4d19dc32621738
+    S-KANAL-01: sha256:252138f02d7f1085c1bac32214bfcaed1649c244091cce6af48f63a5ebea6074
+    S-KOMB-01: sha256:644cd2ed4eba883e48918d144bd2709c6c18f734a82d38e59f7d32e210d165bc
+    S-KUND-01: sha256:854cc709af7e1187fe2231268262b5db4751049e709f757a9d120a681d670701
+    S-KUND-02: sha256:c4b7602c5a33c5e8511eec14af025f6ab1ef842e5d6c9c566d1cd85f08e06953
+    S-TJ-01: sha256:1c3b54b7bad2d1e82f253a94aa7cfc23a9f3c3904ae78a507d274b5740670290
+    S-TJ-02: sha256:444a4384d900f7b62e7d0e673b9b54a544bd0526b7767b4c3517ba09886902cf
+    S-TJ-03: sha256:8f52dfacfaf3b5d93cc9800cc16174a569f0543cadc3eb74daa2c64f02aeb5cf
+    S-TJ-04: sha256:e5d191a1141551563b384ad8bd7354bb921d66e7fbeac8c668fa897fa44c5df3
+    S-VERK-01: sha256:f4b3632a70c7c7ffcf4a1a90cc86b13c81822143107238834b4b772a636d6371
+    SRC-FIPO-TF-2025: sha256:8df7513091ae5ca732877660bcdace1285168605f0c0e3c7b8d2b55ba4f53dfa
+    SRC-TS-2026-14: sha256:e1892a8a6c7774a97ae4afbbdbe1985fe9d93a860a3732ecaae82401db84f657
+    T-BOLAG-01: sha256:11fb063047677db95a768b675183d1e2b03a677093da03995c5f75efba1fe1a2
+    T-BOLAG-02: sha256:4ba3614dc768057f43d4108782a4ca2999439139ec817a20f01f3828ad782f43
+    T-BOLAG-03: sha256:784775c3209ba7e2283261a24adacb4e4dd144a132997eb971d3de426b7fa1b6
+    T-RED-01: sha256:ad80af7353adcccde28f945ce637ec8b736638e7f104dfd7b0be63b46285819d
+    T-RED-02: sha256:164bfb6b97870f6d5d58577856f98c3a0c057da0d04f23cdfc14c6c9e7cc6a3f
+    T-RED-03: sha256:86c6dddc7760df32e0151ef8b3ff20f0e75d835aa75d429a5305661880105e81
+    T-RED-04: sha256:b9c708d67fcd96c9449da7ea4eca2040f51eb802fc2168566ada534274c78594
+    T-RED-05: sha256:562885d1e2c3fd97d8a85a97bb0b52b3fea91b6e7e4132a2df4dfdd8ec7bd957
+    T-RED-06: sha256:989750a047d3aa5dab3321876d430061a15ece9a8b167f4b5612fa0ffd1774f6
+    T-RED-07: sha256:26d6702c069773736563d3ba9192929727a6f024a20e81e9210c6fe890706366
+    T-RED-08: sha256:39c3c768a557b8058d0b1b55251ba64a0712ebce6cc6ee1a7d95c2ccac350e64
+    T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
+    T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
+  modellfiler:
+    src/riskanalys/bedomning/__init__.py: sha256:8727f73160cd23de741df3ff167bc50c13dcf5d1e72c790cce46b18f163cebf0
+    src/riskanalys/bedomning/erfarenheter.py: sha256:668c77694de32b1ee6781660d0649f67c509b6787dda68d7ab03f203b630419c
+    src/riskanalys/bedomning/kundmodell/__init__.py: sha256:4f27e682332da5075ac64780477ca6b60beb61965ed89b8ed19617805b8a0b32
+    src/riskanalys/bedomning/kundmodell/modeller.py: sha256:5fa38bd23497ba8e59024f3a9a493cdc59ba6b259f08b2a4be3b42492683db92
+    src/riskanalys/bedomning/kundmodell/pep.py: sha256:434e5a6c0dfeae9a16085156128771115aefeaa99148089594f4d5321173a860
+    src/riskanalys/bedomning/kundmodell/tabeller.py: sha256:5419e3d842a67ea8637d71f2370edfe02ac46fa805eca6b92e583eb846853692
+    src/riskanalys/bedomning/kundmodell/utvardering.py: sha256:f3f2f898147848c4df8a70ca656ac1de93430152be20c541908abb4f3d9a6e7c
+    src/riskanalys/bedomning/modeller.py: sha256:fced85971084d466cbf164c440db083e3f043fb25dd4fde4694f7d5629e303f1
+    src/riskanalys/bedomning/motor.py: sha256:72e286e8f2e616a3066525c2b22b7c22146da644dabd1cb0c2ef40cd3b53769c
+    src/riskanalys/bedomning/omfattning.py: sha256:0bc2c2d6a068dfbba71eb60f7982e3e7043caf9aa59f561a2d20958f43ea3c5d
+    src/riskanalys/bedomning/sanktioner.py: sha256:8d6f6806f79c99e51b5d97323b72f09c1963f4b40644948b4221e024f0d55e88
+    src/riskanalys/bedomning/scenarier.py: sha256:4a14de8189c670029a1432a690d839fff973567d99fdc17de11e717ec531c4ee
+    src/riskanalys/bedomning/sektorsrisk.py: sha256:b96e516a776c6da99e89f5741283ca0fe1ba623742eb60dd95f9bff1e13768c8
+    src/riskanalys/dokument/kapitel3_v10.py: sha256:6a96c49fcff34539d48e30d324300f1f8ac8581d9a562ddf201c13edbd3d983e
+    src/riskanalys/dokument/metodavsnitt_v10.py: sha256:664db9f53e9baadac7bc13093acf8a558f8db2efb0a01939d7c182359ea418b4
+    src/riskanalys/drift/modellidentitet.py: sha256:dcacd8a3c611f29e6941659a7855014aa3430a0062da54fd122cf9ced365271a
+    src/riskanalys/fel.py: sha256:44058f0e480eb26ffd4f5b26976f942b6c22e3a2eadda8ae8b5b0bc541bb5740
+    src/riskanalys/lagring/__init__.py: sha256:1b8372a54889228e37a993acabf30ed8d8d9578c8f5afa2ec34d1890f1fd934f
+    src/riskanalys/lagring/kontrollsumma.py: sha256:c6b911b14df7c959c0c3a775cd433fc29cf196090852dc1cf13132d300312236
+    src/riskanalys/profil/__init__.py: sha256:f3810d9ff18c39662a4a117f9c1b6dbb0efdc9d9fc503333b1fa32a944fc2aa6
+    src/riskanalys/profil/katalogstatistik.py: sha256:03be61bc38320cd8c12efa7d335ec4ea0dfcdf1f14f503470bcb53014807c574
+    src/riskanalys/profil/modeller.py: sha256:12f9c6c581e7c12f9cd3ee6a688af56ead2dbe9cc2711a97104012aa2124f82f
+    src/riskanalys/profil/omfattning.py: sha256:3f08454b45af81d4b17ad073a3b15fbce7cb5e96bb0414714616f85a95560c76
+    src/riskanalys/regelverk/__init__.py: sha256:6ed4466d57d48e2cdd450d29a35f461c1eb6180bee9de0023227924f3bf26cf7
+    src/riskanalys/regelverk/laddning.py: sha256:16101de1e7d698b0777bbb91059edc5ee87480548489be9d825f0617bb9dece3
+    src/riskanalys/regelverk/metodbeslut.py: sha256:713e2d9023a12b6efb2428c5c72b3a1e8618de5fee654f7925dade3e255c86a6
+    src/riskanalys/regelverk/modeller.py: sha256:f967a3976bae4c59c5ee145c26e8e2d11e54d635d5c89a2d924fb1a284a875ec
+    src/riskanalys/regelverk/sakkunnig.py: sha256:7d96f6e194baae24ef2a201f193b058754c26471ee56a7cad4c5b95165c59af0
+    src/riskanalys/regelverk/tillsyn.py: sha256:b3568eb53ea85f73da0acdf2091d5e5f3dd6cfbe6ef710953f80f5b886c0d339
+    src/riskanalys/regelverk/urval.py: sha256:950aabaee6c327eed859eeabda551cd659189a5c3ed568da499ea5424eb2a9a3
+    src/riskanalys/regelverk/validering.py: sha256:6342933f266c763da7d7a1c96139e3a9e76cfac90ed106a534d7c58540f070a8
+    src/riskanalys/regelverk/validering_m2.py: sha256:716c0bcd65b151ddc6349115a7fde89ae50b14071852d80ae57dc3da1f68cb77
+    src/riskanalys/regelverk/validering_scenario.py: sha256:789cbf2c6c05d73fdd2534654fca7173be39edc20c29bd0f0a3404f02ccbdeb5
+    src/riskanalys/regelverk/villkor.py: sha256:b33cacbd8ad9bda8651ccc022cdc39f61229a30d6b27ecef19ecef82c94c8ab3
+  aterforing: 'Vid avslag: ompröva D6 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
+    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
+    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
+    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
+    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  sakkunnig:
+    status: ej_granskad
