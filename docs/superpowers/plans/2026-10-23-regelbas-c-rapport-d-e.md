@@ -42,9 +42,9 @@
 **Files:** `docs/superpowers/reviews/2026-10-23-rapport-datatackning.md`, separat konkret rapportplan under `docs/superpowers/plans/` efter mappning av befintlig V9-kedja.
 **Interfaces:** Profil.uppgifter, Bedomning, Analyspaket, regelkataloger, historik, rutinåtgärder; ingen ny datakälla får antas.
 
-- [ ] Mappa varje rad i dispositionen till fält/objekt/pointer eller dokumenterad okänd uppgift.
+- [x] Mappa varje rad i dispositionen till fält/objekt/pointer eller dokumenterad okänd uppgift.
 - [ ] För nivå per område, kundriskklasser, rutinavsnitt och samverkan: två alternativ, rekommendation, frågeantal och konsekvens. Be användaren välja; fortsätt C/annan oberoende kartläggning under väntan.
-- [ ] Lås den nya rapportversionens format-/historikgräns i rapportplanen; inga V9-omskrivningar.
+- [x] Lås den nya rapportversionens format-/historikgräns i rapportplanen; inga V9-omskrivningar. Se `2026-10-23-rapport-v10.md`; fyra användarval inväntas före kod.
 
 ### Task 3: Del 3 – offline och därefter produktkedja
 

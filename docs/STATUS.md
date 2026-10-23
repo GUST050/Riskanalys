@@ -2,7 +2,7 @@
 
 B sparat lokalt som `902da79`. C föreslår regelbas **2.2.0**: samtliga 26 hot har lästa källcitat, precisa sidor och en uttrycklig notering om att underlag för annan hotnivå saknas. Medel behålls; samtliga 27 erbjudna tjänsteutfall i sex fasta syntetiska fall är identiska med B. Alla objekt är `ej_granskad`.
 
-[C:s käll- och effektunderlag](superpowers/reviews/2026-10-23-regelbas-steg-c.md). [Datatäckningsinventeringen för hela den nya rapporten](superpowers/reviews/2026-10-23-rapport-datatackning.md) är klar och de fyra föreskrivna användarvalen har ställts. Ingen rapportkod har byggts före dessa val.
+[C:s käll- och effektunderlag](superpowers/reviews/2026-10-23-regelbas-steg-c.md). [Datatäckningsinventeringen för hela den nya rapporten](superpowers/reviews/2026-10-23-rapport-datatackning.md) är klar och de fyra föreskrivna användarvalen har ställts. Ingen rapportkod har byggts före dessa val. [V10-planen](superpowers/plans/2026-10-23-rapport-v10.md) anger formatgräns, källbindning, offlinebygge och produktintegration efter PDF-kontroll. [Förberedelsen inför D](superpowers/reviews/2026-10-23-steg-d-forberedelse.md) kartlägger varje metodfrågas genomförande, kontraster och följdberoenden; inga D-beslut är ännu genomförda.
 
 Användaren har gett klartecken att fortsätta C, del 3, D och E och samla testerna till slutet där möjligt. Nödvändiga käll-/bygg-/katalogkontroller görs löpande; regressioner skrivs och körs samlat senare. **Ingen grön fullsvit eller slutleverans påstås. Ingen push eller merge.** PDF-kontrollpunkterna hanteras när konkreta filer finns.
 
