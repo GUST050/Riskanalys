@@ -33,7 +33,7 @@ def lagg_till(underparsers: Any) -> None:
     parser = underparsers.add_parser("sakgranska", help="Gå igenom och godkänn avsnitten ett och ett.")
     parser.add_argument("byra")
     val=parser.add_mutually_exclusive_group()
-    val.add_argument("--resultatrapport",action="store_true",help="Visa eller sakgranska exakt alla R-avsnitt samlat.")
+    val.add_argument("--resultatrapport",action="store_true",help="Visa eller sakgranska hela resultatrapporten samlat.")
     parser.add_argument("--visad-struktursumma",help="Summan från den resultatrapport som faktiskt lästs.")
     val.add_argument("--avsnitt", help="Avsnittets ID, till exempel D-ARB.6.1. Utan beslut visas texten.")
     beslut = parser.add_mutually_exclusive_group()
@@ -64,19 +64,21 @@ def _kor_sakgranska_last(args: argparse.Namespace) -> int:
     sakgranskningar = las_sakgranskningar(byramapp)
     presentation = None
     rb = None
-    if dokument.formatversion in ('D-ARB-tjanst-v8','D-ARB-resultat-v9'):
+    if dokument.formatversion in ('D-ARB-tjanst-v8','D-ARB-resultat-v9','D-ARB-resultat-v10'):
         from riskanalys.dokument.rapportpaket_v8 import las_presentation
-        if dokument.formatversion=='D-ARB-resultat-v9':
+        if dokument.formatversion=='D-ARB-resultat-v10':
+            from riskanalys.dokument.rapportpaket_v10 import las_presentation_v10 as las_presentation
+        elif dokument.formatversion=='D-ARB-resultat-v9':
             from riskanalys.dokument.rapportpaket_v9 import las_presentation_v9 as las_presentation
         rb = ladda_giltig_regelbas(args.regelbas)
         presentation=las_presentation(granskningsmapp,
             las_bedomning(granskningens_bedomningsmapp(byramapp,granskningsmapp)),profil,regelbas=rb)
-        print('Resultatrapport, analysbilaga och underlagsbilaga ska granskas tillsammans.' if dokument.formatversion=='D-ARB-resultat-v9' else 'Läsrapport och kompletterande underlagsbilaga ska granskas tillsammans.')
+        print('Resultatrapport, analysbilaga och underlagsbilaga ska granskas tillsammans.' if dokument.formatversion in ('D-ARB-resultat-v9','D-ARB-resultat-v10') else 'Läsrapport och kompletterande underlagsbilaga ska granskas tillsammans.')
         for del_ in presentation.delar:
             print(f'{del_.leveransdel} – {del_.placering}')
             for rad in del_.rader:print(rad.text)
     analysbindning = None
-    if dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8','D-ARB-resultat-v9'):
+    if dokument.formatversion in ('D-ARB-tjanst-v6', 'D-ARB-tjanst-v7', 'D-ARB-tjanst-v8','D-ARB-resultat-v9','D-ARB-resultat-v10'):
         from riskanalys.granskning.analysunderlag import las_fryst_analys, aktuell_analys_hinder
         analysbindning = las_fryst_analys(granskningsmapp).registersumma
         if args.godkann or args.underkann:
@@ -84,8 +86,8 @@ def _kor_sakgranska_last(args: argparse.Namespace) -> int:
             hinder = aktuell_analys_hinder(byramapp,rb,granskningsmapp,args.datum or date.today(),krav_godkand=args.godkann)
             if hinder:raise SakgranskningsFel(' '.join(hinder))
     if getattr(args,'resultatrapport',False):
-        if dokument.formatversion!='D-ARB-resultat-v9':
-            raise SakgranskningsFel('Samlad resultatgranskning kräver ett uttryckligt uppdaterat V9-utkast.')
+        if dokument.formatversion not in ('D-ARB-resultat-v9','D-ARB-resultat-v10'):
+            raise SakgranskningsFel('Samlad resultatgranskning kräver ett uttryckligt uppdaterat resultatutkast.')
         from riskanalys.faststallelse.sakgranskning import struktur_summa
         from riskanalys.faststallelse.resultatgranskning import registrera_resultatgranskning
         print('Visad struktursumma: '+struktur_summa(dokument,presentation=presentation))
@@ -99,7 +101,7 @@ def _kor_sakgranska_last(args: argparse.Namespace) -> int:
                 visad_struktursumma=getattr(args,'visad_struktursumma',None),analysbindning=analysbindning,
                 godkand=args.godkann,roll=args.roll,namn=args.namn,datum=args.datum or date.today(),kommentar=args.kommentar)
             spara_sakgranskningar(byramapp,nya)
-            print('Resultatrapportens R-avsnitt registrerade. A och B1 kräver separat sakgranskning.')
+            print('Resultatrapportens samtliga avsnitt registrerade. A och B1 kräver separat sakgranskning.')
         return 0
     if args.godkann or args.underkann:
         if not args.avsnitt:

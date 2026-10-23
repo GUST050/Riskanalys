@@ -7,7 +7,12 @@ from riskanalys.dokument.rapportvyer_v9 import bygg_rapportvyer_v9
 
 def registrera_resultatgranskning(sakgranskningar,dokument,profil,*,presentation,
         visad_struktursumma,analysbindning,godkand,roll,namn,datum,kommentar=None):
-    kontrollera_presentation(bygg_rapportvyer_v9(dokument),profil,presentation)
+    if dokument.formatversion=='D-ARB-resultat-v10':
+        from riskanalys.dokument.rendering_v10 import kontrollera_presentation as kontrollera
+        from riskanalys.dokument.rapportvyer_v10 import bygg_rapportvyer_v10
+        kontrollera(bygg_rapportvyer_v10(dokument),profil,presentation)
+    else:
+        kontrollera_presentation(bygg_rapportvyer_v9(dokument),profil,presentation)
     if (not analysbindning or not visad_struktursumma or
         visad_struktursumma!=struktur_summa(dokument,presentation=presentation) or
         summa(dokument.model_dump(mode='json'))!=presentation.dokument):

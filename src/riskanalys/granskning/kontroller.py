@@ -34,9 +34,12 @@ def granska(
     *, skrivresultat=None, analys=None, modellrapport=None, analysbrister_filer=(), bygge=None,
 ) -> tuple[Fynd, ...]:
     """Fynd för dokumentet. oklarheter är AI-utkastens öppna frågor per avsnitt; var och en blir ett fynd."""
-    if dokument.formatversion == 'D-ARB-resultat-v9':
+    if dokument.formatversion in ('D-ARB-resultat-v9','D-ARB-resultat-v10'):
         from riskanalys.dokument.arb_v9 import bygg_resultatpaket_v9
         from riskanalys.granskning.dokument_v9 import resultatfynd_v9
+        if dokument.formatversion=='D-ARB-resultat-v10':
+            from riskanalys.dokument.arb_v10 import bygg_resultatpaket_v10 as bygg_resultatpaket_v9
+            from riskanalys.granskning.dokument_v10 import resultatfynd_v10 as resultatfynd_v9
         bygge=bygge or bygg_resultatpaket_v9(regelbas,profil,bedomning,skrivresultat or {},historik,
             analys=analys,modellrapport=modellrapport)
         bas=granska(regelbas,urval,profil,bedomning,bygge.analysdokument,historik,granskningsdatum,

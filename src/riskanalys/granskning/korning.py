@@ -90,10 +90,10 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
     urval = valj(regelbas, bedomning.regelpaket, bedomning.datum, bedomning.lan)
     utkast, utkastmapp = godkanda_utkast(byramapp, bedomningsmapp, utkastmapp=utkastmapp)
     historik = las_historik(byramapp)
-    from riskanalys.dokument.rapportversion import V8,V9,AKTUELL_DOKUMENTVERSION
-    if rapportformat not in (None,"v8","v9"):
-        raise RiskanalysFel("Välj rapportformat v8 eller v9.")
-    valtformat={"v8":V8,"v9":V9}.get(rapportformat,AKTUELL_DOKUMENTVERSION)
+    from riskanalys.dokument.rapportversion import V8,V9,V10,AKTUELL_DOKUMENTVERSION
+    if rapportformat not in (None,"v8","v9","v10"):
+        raise RiskanalysFel("Välj rapportformat v8, v9 eller v10.")
+    valtformat={"v8":V8,"v9":V9,"v10":V10}.get(rapportformat,AKTUELL_DOKUMENTVERSION)
     bygge=None
     snapshot = None
     rapport = None
@@ -104,10 +104,12 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
         snapshot = (las_analyssnapshot_last(byramapp,regelbas,granskningsdatum,bedomningsmapp=bedomningsmapp,utkastmapp=utkastmapp)
                     if utkastmapp else Analyssnapshot(None,'',('Skrivresultat och lokal analys saknas.',),()))
         rapport = fryst_modellrapport(snapshot)
-        if valtformat==V9:
+        if valtformat in (V9,V10):
             if any(not isinstance(r,Tjanstresultat) or r.formatversion!=V8 for r in utkast.values()):
-                raise RiskanalysFel('V9 kräver kompatibla V8-skrivresultat. Skrivningen måste uppdateras uttryckligen; inga AI-anrop görs här.')
+                raise RiskanalysFel('Resultatrapporten kräver kompatibla V8-skrivresultat. Skrivningen måste uppdateras uttryckligen; inga AI-anrop görs här.')
             from riskanalys.dokument.arb_v9 import bygg_resultatpaket_v9
+            if valtformat==V10:
+                from riskanalys.dokument.arb_v10 import bygg_resultatpaket_v10 as bygg_resultatpaket_v9
             bygge=bygg_resultatpaket_v9(regelbas,profil,bedomning,utkast,historik,analys=snapshot.paket,modellrapport=rapport)
             dokument=bygge.dokument
         else:
@@ -144,13 +146,17 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
         from riskanalys.dokument.presentation_v9 import bygg_presentation_v9
         from riskanalys.dokument.resultatmodell_v9 import kallartefakter
         from riskanalys.granskning.dokument_v9 import kravkarta_v9
-        (mapp/'kravkarta-v9.json').write_text(json.dumps(kravkarta_v9(regelbas,profil,bedomning,bygge),ensure_ascii=False,indent=2),encoding='utf-8')
+        version='v10' if dokument.formatversion==V10 else 'v9'
+        if version=='v10':
+            from riskanalys.dokument.presentation_v10 import bygg_presentation_v10 as bygg_presentation_v9
+            from riskanalys.granskning.dokument_v10 import kravkarta_v10 as kravkarta_v9
+        (mapp/f'kravkarta-{version}.json').write_text(json.dumps(kravkarta_v9(regelbas,profil,bedomning,bygge),ensure_ascii=False,indent=2),encoding='utf-8')
         presentation=bygg_presentation_v9(bygge,analys=snapshot.paket,fynd=fynd,bedomning=bedomning,profil=profil)
-        for namn,obj in (('analysdokument-v8.json',bygge.analysdokument),('resultatunderlag-v9.json',bygge.underlag),
-                         ('resultatbygge-v9.json',bygge),('presentation.json',presentation)):
+        for namn,obj in (('analysdokument-v8.json',bygge.analysdokument),(f'resultatunderlag-{version}.json',bygge.underlag),
+                         (f'resultatbygge-{version}.json',bygge),('presentation.json',presentation)):
             (mapp/namn).write_text(obj.model_dump_json(indent=2),encoding='utf-8')
-        (mapp/'transformationer-v9.json').write_text(json.dumps([t.model_dump(mode='json') for t in bygge.transformationer],ensure_ascii=False,indent=2),encoding='utf-8')
-        (mapp/'kallor-v9.json').write_text(json.dumps(kallartefakter(regelbas,profil,bedomning,utkast,historik,snapshot.paket,bygge.analysdokument),ensure_ascii=False,indent=2),encoding='utf-8')
+        (mapp/f'transformationer-{version}.json').write_text(json.dumps([t.model_dump(mode='json') for t in bygge.transformationer],ensure_ascii=False,indent=2),encoding='utf-8')
+        (mapp/f'kallor-{version}.json').write_text(json.dumps(kallartefakter(regelbas,profil,bedomning,utkast,historik,snapshot.paket,bygge.analysdokument),ensure_ascii=False,indent=2),encoding='utf-8')
     skriv_manifest(mapp, metadata)
     return mapp
 

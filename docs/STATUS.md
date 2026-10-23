@@ -1,3 +1,13 @@
+# V10 godkänt för produktintegration
+
+Användaren har godkänt båda referensfallens PDF-förslag (första alternativet: ”Godkänn rapportförslaget”). V10 kopplas nu till granskning, export, samlad sakgranskning och fastställelse. Nya rapporter använder kapitel 0–5. Befintliga V8/V9-utkast behåller sparat format vid vanlig uppdatering; byte till V10 är uttryckligt och kräver förnyad samlad sakgranskning. Historiska V9-vägar är bevarade.
+
+Godkänt offlineunderlag: huvudrapporter **19/20 sidor**, A **37/41**, B1 **195/203**, ofiltrerade maskinfynd **430/440**. Riktmärket tio sidor är inte uppnått; innehållet är bevarat. Regressioner skrivs med ändringarna och körs vid slutet enligt användarens instruktion. Ingen grön fullsvit påstås.
+
+**Fortsatt ordning:** produktintegration, D, nya referens-PDF:er för användarens slutkontroll, sedan E och samlad verifiering. Ingen push eller merge.
+
+## Föregående arbetsstatus
+
 # V10 offlineförslag – inväntar PDF-läsning
 
 Användaren valde första alternativet i alla fyra rapportfrågor. V10 är byggt offline med disposition 0–5, 33 indikatorer, fem lägre-risk-rader och 15 lagexempel. Noll nya frågor eller verkliga AI-anrop. Regelbas 2.2.0 och motorn är oförändrade. **V9 är fortfarande produktstandard.**

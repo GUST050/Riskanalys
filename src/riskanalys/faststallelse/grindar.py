@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from riskanalys.dokument.presentation_v8 import Presentation
 from riskanalys.dokument.presentation_v9 import PresentationV9
+from riskanalys.dokument.presentation_v10 import PresentationV10
 from datetime import date
 
 from riskanalys.analys.modeller import Analyspaket
@@ -41,7 +42,7 @@ class Faststallelseunderlag:
     granskningsdatum: date
     analys: Analyspaket | None = None
     analysbindning: str | None = None
-    presentation: Presentation | PresentationV9 | None = None
+    presentation: Presentation | PresentationV9 | PresentationV10 | None = None
 
 
 def hinder_for_faststallelse(underlag: Faststallelseunderlag, beslutsdatum: date) -> list[str]:
@@ -150,7 +151,7 @@ def _sakgranskning(underlag: Faststallelseunderlag) -> list[str]:
         galler = galler_sakgranskning(underlag.sakgranskningar, avsnitt, underlag.profil, underlag.dokument, analysbindning=underlag.analysbindning, presentation=underlag.presentation)
         if galler is None:
             anvisning = (' Använd --resultatrapport och --visad-struktursumma för förnyad samlad granskning.'
-                if avsnitt.formatversion == 'D-ARB-resultat-v9' and avsnitt.leveransdel == 'resultatrapport' else '')
+                if avsnitt.formatversion in ('D-ARB-resultat-v9','D-ARB-resultat-v10') and avsnitt.leveransdel == 'resultatrapport' else '')
             hinder.append(f"Avsnitt {avsnitt.id} är inte sakgranskat i nuvarande lydelse." + anvisning)
         elif not galler.godkand:
             hinder.append(f"Avsnitt {avsnitt.id} underkändes vid sakgranskningen: {galler.kommentar}")

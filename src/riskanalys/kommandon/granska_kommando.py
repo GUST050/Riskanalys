@@ -13,7 +13,7 @@ def lagg_till(underparsers: Any) -> None:
     parser = underparsers.add_parser("granska", help="Bygg dokumentet och granska det maskinellt.")
     parser.add_argument("byra")
     parser.add_argument("--datum", type=datumargument, default=None, help="Granskningsdatum. Standard är i dag.")
-    parser.add_argument("--rapportformat",choices=("v8","v9"),default=None,help="Uttryckligt rapportformat utan nya AI-anrop.")
+    parser.add_argument("--rapportformat",choices=("v8","v9","v10"),default=None,help="Uttryckligt rapportformat utan nya AI-anrop.")
     regelbasargument(parser)
     parser.set_defaults(kor=kor_granska)
 

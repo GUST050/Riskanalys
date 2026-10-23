@@ -52,7 +52,7 @@
 
 - [x] Bygg offline enligt godkända dataalternativ. Alla fem statusar, egna lägre-risk-tabeller, lagens 15 punkter och kapitel 0–5. Inga nya AI-anrop.
 - [x] Rendera båda verkliga referenspaketen till PDF; kontrollera alla huvudrapportsidor och ingen kapad text. Mät faktisk sidmängd. Lämna konkreta PDF:er vid användarkontrollpunkten.
-- [ ] Efter klartecken: integrera export, formatbyte, frysta källor, samlad sakgranskning och fastställelse. Historiska V9-vägar bevaras. Arbetscommit, rapportversion och granskningsunderlag.
+- [x] Efter klartecken: integrera export, formatbyte, frysta källor, samlad sakgranskning och fastställelse. Historiska V9-vägar bevaras. Arbetscommit, rapportversion och granskningsunderlag.
 
 ### Task 4: D – ett provisoriskt val per beslut
 

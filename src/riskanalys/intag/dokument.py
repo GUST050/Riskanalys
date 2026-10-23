@@ -79,8 +79,8 @@ def uppdatera_export(byramapp: Path, rb, tidigare: Path, *, rapportformat: str |
 
 def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path, *, rapportformat: str | None = None) -> Path:
     """Lokal analys eller utvärdering kan granskas och exporteras från befintlig AI-text."""
-    if rapportformat not in (None,'v8','v9'):
-        raise RiskanalysFel('Välj rapportformat v8 eller v9.')
+    if rapportformat not in (None,'v8','v9','v10'):
+        raise RiskanalysFel('Välj rapportformat v8, v9 eller v10.')
     historik = historikens_kontrollsumma(byramapp)
     if verifiera_manifest(tidigare.parent):
         raise RiskanalysFel('Det tidigare utkastet är ändrat. Skapa ett nytt utkast.')
@@ -96,12 +96,15 @@ def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path, *, rapportformat:
         raise RiskanalysFel('Tidigare AI-riskavsnitt saknas. Skapa ett nytt utkast.')
     from riskanalys.granskning.korning import _kor_granskning_last, las_granskning
     sparat=las_granskning(gammal)[0].formatversion
-    valt=rapportformat or {'D-ARB-tjanst-v8':'v8','D-ARB-resultat-v9':'v9'}.get(sparat)
+    valt=rapportformat or {'D-ARB-tjanst-v8':'v8','D-ARB-resultat-v9':'v9','D-ARB-resultat-v10':'v10'}.get(sparat)
     if valt is None:
         raise RiskanalysFel('Det äldre utkastet kräver en uttrycklig ny V8-skrivning före formatbyte.')
     granskning = _kor_granskning_last(byramapp, rb, date.today(), bedomningsmapp=bedomningsmapp,
                                utkastmapp=byramapp / UTKAST / underlag['utkast'],rapportformat=valt)
-    if las_granskning(granskning)[0].formatversion=='D-ARB-resultat-v9':
+    if las_granskning(granskning)[0].formatversion=='D-ARB-resultat-v10':
+        from riskanalys.dokument.export import exportera_v10_last
+        fil=exportera_v10_last(byramapp,date.today(),granskning,regelbas=rb)/UTKASTFIL
+    elif las_granskning(granskning)[0].formatversion=='D-ARB-resultat-v9':
         from riskanalys.dokument.export import exportera_v9_last
         fil=exportera_v9_last(byramapp,date.today(),granskning,regelbas=rb)/UTKASTFIL
     elif las_granskning(granskning)[0].formatversion=='D-ARB-tjanst-v8':
@@ -134,6 +137,12 @@ def rapportdel(utkast:Path,del_:str) -> Path:
         raise RiskanalysFel('Okänd rapportdel. Läs om översikten.')
     m=utkast.parent
     if verifiera_manifest(m):raise RiskanalysFel('Exportpaketet är ändrat eller ofullständigt. Uppdatera utkastet.')
+    from riskanalys.dokument.rapportpaket_v10 import ar_v10_paket
+    if ar_v10_paket(m,las_manifest(m)):
+        from riskanalys.dokument.leverans_v10 import LeveransV10
+        l=LeveransV10.model_validate_json((m/'leverans.json').read_text())
+        if l.version is not None:raise RiskanalysFel('Nedladdningen kräver ett märkt utkast.')
+        return m/l.filnamn[{'word':0,'analysbilaga':1,'underlag':2}[del_]]
     if ar_v9_paket(m,las_manifest(m)):
         l=LeveransV9.model_validate_json((m/'leverans.json').read_text())
         if l.version is not None:raise RiskanalysFel('Nedladdningen kräver ett märkt utkast.')

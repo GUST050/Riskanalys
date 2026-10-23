@@ -170,8 +170,10 @@ def oversikt(s,fel='',profil=None,qs=None):
             html+=f'<p><a class="button" href="{s.prefix}word">Hämta Word-rapport</a></p>'
             if (s.utkast.parent/'underlagsbilaga-UTKAST.docx').is_file():
                 html+=f'<p><a class="button" href="{s.prefix}underlag">Hämta underlagsbilaga</a></p><p>Läs båda delarna tillsammans för fullständig dokumentation.</p>'
-                html+='<p>Du kan skapa en separat kort resultatrapport med bilagor utan nya AI-anrop. Formatbytet kräver förnyad sakgranskning av alla tre delar. Originalutkastet bevaras.</p>'
-                html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('rapportformat','v9')+'<button>Skapa resultatrapport med två bilagor</button></form>'
+        from riskanalys.lagring.manifest import las_manifest
+        if las_manifest(s.utkast.parent).metadata.get('dokumentformat') in ('D-ARB-tjanst-v8','D-ARB-resultat-v9'):
+            html+='<p>Du kan skapa resultatrapporten med kapitel 0–5 och två bilagor utan nya AI-anrop. Formatbytet kräver förnyad sakgranskning av alla tre delar. Originalutkastet bevaras.</p>'
+            html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('rapportformat','v10')+'<button>Skapa resultatrapport med kapitel 0–5</button></form>'
         html+='<p>Efter ändringar i lokal analys eller utvärdering kan du granska och uppdatera Word från befintlig AI-text. Ändrade verksamhetsfakta kräver en ny skrivning.</p>'
         html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+'<button>Uppdatera Word-utkast utan nya AI-anrop</button></form>'
     from riskanalys.drift.historik import las_historik

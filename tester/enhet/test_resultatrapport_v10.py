@@ -70,8 +70,8 @@ def test_v9_och_bilagornas_disposition_bevaras(resultatfall):
         assert a.model_dump(exclude={'formatversion'}) == b.model_dump(exclude={'formatversion'})
     assert fore.model_dump_json() == sparat
     assert fore.dokument.formatversion == 'D-ARB-resultat-v9'
-    from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION, V9
-    assert AKTUELL_DOKUMENTVERSION == V9  # offlinefasen får inte byta produktstandard
+    from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION, V10
+    assert AKTUELL_DOKUMENTVERSION == V10  # användaren har godkänt PDF-förslaget
 
 
 def test_metodtext_foljer_bunden_regelbas(resultatfall):

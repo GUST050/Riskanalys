@@ -149,5 +149,7 @@ def verifiera_manifest(mapp: Path) -> list[str]:
         fel.append(f"Fil finns inte i manifestet: {namn}")
     from riskanalys.dokument.rapportpaket_v8 import verifiera_rapportpaket
     from riskanalys.dokument.rapportpaket_v9 import ar_v9_paket,verifiera_rapportpaket_v9
-    if ar_v9_paket(mapp,manifest):verifiera_rapportpaket=verifiera_rapportpaket_v9
+    from riskanalys.dokument.rapportpaket_v10 import ar_v10_paket,verifiera_rapportpaket_v10
+    if ar_v10_paket(mapp,manifest):verifiera_rapportpaket=verifiera_rapportpaket_v10
+    elif ar_v9_paket(mapp,manifest):verifiera_rapportpaket=verifiera_rapportpaket_v9
     return [*fel, *verifiera_rapportpaket(mapp, manifest)]

@@ -12,7 +12,7 @@ from datetime import date
 from pathlib import Path
 
 from riskanalys.bedomning.korning import BEDOMNINGAR, aktualitetshinder, las_bedomning, las_bedomningsprofil
-from riskanalys.dokument.rapportversion import V8,V9
+from riskanalys.dokument.rapportversion import V8,V9,V10
 from riskanalys.dokument.modeller import Avsnitt, Dokument
 from riskanalys.dokument.rendering import faststalld_status, rendera_docx
 from riskanalys.dokument.skrivning import UTKAST
@@ -134,7 +134,7 @@ def formathinder(regelbas: Regelbas, dokument: Dokument) -> list[str]:
         return []
     # Nybyggnadsstandard får inte ändra formatet på sparade utkast.
     sparat=dokument.formatversion
-    if sparat not in (V8,V9):
+    if sparat not in (V8,V9,V10):
         return [f'Dokumentets sparade format {sparat} stöds inte för ny fastställelse. Uppdatera uttryckligen och sakgranska på nytt.']
     return [f'Avsnitt {a.id} har fel format eller leveransdel för det sparade paketet {sparat}.'
         for a in dokument.avsnitt if a.formatversion!=sparat or a.leveransdel not in
@@ -283,7 +283,16 @@ def _bygg_paket(
     spara_historik(pagaende, underlag.historik.med(_faststallelse(beslut, version)))
     spara_yaml(pagaende / BESLUTSFIL, beslut.model_dump(mode="python"))
     statusrad = faststalld_status(beslut.organ, beslut.datum, version)
-    if underlag.dokument.formatversion == V9:
+    if underlag.dokument.formatversion == V10:
+        from riskanalys.dokument.leverans_v10 import LeveransV10
+        from riskanalys.dokument.rapportvyer_v10 import bygg_rapportvyer_v10
+        from riskanalys.dokument.rendering_v10 import rendera_rapportvyer_v10
+        leverans=LeveransV10(datum=beslut.datum,bedomning=metadata['bedomning'],granskning=granskningsmapp.name,
+            version=version,organ=beslut.organ)
+        rendera_rapportvyer_v10(bygg_rapportvyer_v10(underlag.dokument),underlag.profil,pagaende,
+            presentation=underlag.presentation,leverans=leverans,_faststallelse=_SLUTRENDERING)
+        (pagaende/'leverans.json').write_text(leverans.model_dump_json(indent=2),encoding='utf-8')
+    elif underlag.dokument.formatversion == V9:
         from riskanalys.dokument.leverans_v9 import LeveransV9
         from riskanalys.dokument.rapportvyer_v9 import bygg_rapportvyer_v9
         from riskanalys.dokument.rendering_v9 import rendera_rapportvyer_v9
@@ -330,8 +339,10 @@ def _publicera(pagaende: Path, slutlig: Path) -> Path:
 
 
 def _presentation(granskningsmapp, bedomning, dokument, profil, regelbas):
-    if dokument.formatversion in (V8,V9):
-        if dokument.formatversion==V9:
+    if dokument.formatversion in (V8,V9,V10):
+        if dokument.formatversion==V10:
+            from riskanalys.dokument.rapportpaket_v10 import las_presentation_v10 as las_presentation
+        elif dokument.formatversion==V9:
             from riskanalys.dokument.rapportpaket_v9 import las_presentation_v9 as las_presentation
         else:
             from riskanalys.dokument.rapportpaket_v8 import las_presentation
