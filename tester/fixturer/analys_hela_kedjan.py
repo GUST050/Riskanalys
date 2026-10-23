@@ -108,6 +108,9 @@ def skapa_fall(rb,rot: Path,*,variation=False) -> SyntetisktFall:
 
 def _tjanst(rb,t,gem,motorresultat,*,variation):
     id=t.tjanst
+    # Gemensamma original finns kvar i paketet. Detta positiva syntetiska
+    # tjänstesvar tillämpar bara hot som ingår i just tjänstens aktuella katalog.
+    gem=tuple(s for s in gem if set(s.hot)<=set(rb.tjanster[id].hot))
     reduktion=p.faktisk_reduktion(motorresultat)
     lok=tuple(s.model_copy(update={'relevans':'relevant',
         'motivering':'Tjänstens egna arbetsmoment kan ge felaktiga underlag ett legitimt utseende. Kontrollen prövas mot ursprungshandlingar och kvarstående begränsningar.',
@@ -326,6 +329,8 @@ def syntetisk_expertkopia(rot):
                 r['kan_belagga']='Syntetiskt antaget scenarioomfång enbart för positivt tekniskt kedjeprov; inget verkligt käll- eller M1-facit.'
                 r['begransningar']='Syntetisk testförutsättning. Får aldrig överföras till riktig regelbas eller byrå.'
     fil.write_text(yaml.safe_dump(data,allow_unicode=True,sort_keys=False))
+    from tester.fixturer.metodbeslut import bind_om_testbeslut
+    bind_om_testbeslut(regelrot)
     out=rot/'syntetisk-omgranskning'
     kor(env,'regelbas','granskningsunderlag','--regelbas',str(regelrot),'--paket','RP-RED-VG','--datum',str(DAG),'--ut',str(out))
     mall=out/'granskningsmall.yaml';d=yaml.safe_load(mall.read_text())

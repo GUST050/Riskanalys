@@ -1,3 +1,11 @@
+# D genomfört som förslag – PDF-slutkontroll och testning
+
+V10-produktanpassningen är sparad som `8abd6d9`. D1–D9 och lägre-risk-beslutet har egna arbetscommits/regelversioner, nu **2.12.0**. Alla förslag är `ej_granskad`. [Samlat D-underlag med sänkningar och beroenden](superpowers/reviews/2026-10-23-metodbeslut-samlat.md).
+
+Nya referens-PDF:er efter D: **20/21 sidor**, A **38/40**, B1 **195/200**, maskinfynd **430/432**, 0 presentationsfynd. Innehåll/källor/manifester kontrollerade och huvudrapporterna visuellt genomgångna. Användarens föreskrivna slutkontroll har begärts före steg E. Samlade riktade tester pågår; snabb/full återstår. Ingen push/merge eller grön slutleverans påstås.
+
+## Föregående arbetsstatus
+
 # V10 godkänt för produktintegration
 
 Användaren har godkänt båda referensfallens PDF-förslag (första alternativet: ”Godkänn rapportförslaget”). V10 kopplas nu till granskning, export, samlad sakgranskning och fastställelse. Nya rapporter använder kapitel 0–5. Befintliga V8/V9-utkast behåller sparat format vid vanlig uppdatering; byte till V10 är uttryckligt och kräver förnyad samlad sakgranskning. Historiska V9-vägar är bevarade.

@@ -47,6 +47,10 @@ def main(argv=None):
                 raise ValueError('Sparad regelbas avviker. Bygg nya referensfall för den nya versionen.')
             f = SimpleNamespace(regelbas=rb, profil=Profil.model_validate(data['profil']),
                 bedomning=Bedomning.model_validate(data['bedomning']), analys=Analyspaket.model_validate(data['analys']))
+            # JSON bevarar ISO-värdet men inte datumtypen i Uppgifts värdeunion.
+            f.profil=f.profil.model_copy(update={'uppgifter':{id:u.model_copy(update={'varde':date.fromisoformat(u.varde)})
+                if id in rb.falt and rb.falt[id].typ=='datum' and isinstance(u.varde,str) else u
+                for id,u in f.profil.uppgifter.items()}})
             r = {id: Tjanstresultat.model_validate(v) for id, v in data['skrivresultat'].items()}
             h = Historik.model_validate(data['historik'])
             kontext = json.loads((a.fran / namn / 'granskningskontext.json').read_text())

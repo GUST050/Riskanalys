@@ -147,6 +147,10 @@ def bygg_rapportlasprov(regelbas: Regelbas, rot: Path, fall: str) -> SyntetisktF
                 from riskanalys.analys.provning import scenariosumma
                 egna=[];kopplingar=[]
                 for g in paket.gemensamma_scenarier:
+                    # Bara tjänstens nu aktuella kataloghot får en syntetisk lokal
+                    # mandatvariant. Historiska fria original bevaras i sin frysta källa.
+                    if not set(g.hot) <= set(regelbas.tjanster[t.tjanst].hot):
+                        continue
                     lokalt=g.model_copy(update={'id':t.tjanst+':mandat:'+g.id,
                         'handelseforlopp':g.handelseforlopp.replace(
                             'kunden attesterar och verkställer samtliga betalningar',

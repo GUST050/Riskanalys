@@ -58,10 +58,10 @@
 
 **Files/interfaces:** `regelbas/beslutstabeller/metod.yaml`, relevanta katalog-/fältfiler, typade modeller/laddning/sakkunnigbindning, motorns berörda moduler, rapportens metodförklaringar. Exakta beslut delas upp i dokumenterade arbetssteg före implementation.
 
-- [ ] Läs D1–D9-tabellen och tidigare jämförelseunderlag. För varje val: källa, alternativ, genomförandeobjekt/modellfiler och kostnad vid avslag.
-- [ ] Bygg D1, D2, D3, D4, D5, D6, D7, D8 och D9 samt lägre-risk-beslut var för sig, med egen regelversion/commit och före-/efterfacit. Oförändrat beteende kan väljas när källstöd för förändring saknas, men ska ha explicit motivering och granskningsobjekt.
-- [ ] Redovisa per steg och totalt mot 2.0.0 för enmansbyrå, betalningsmandat, riskbranscher, få faktorer och båda referensfallen. Lista alla sänkningar och kunskapsluckor.
-- [ ] Nya PDF:er efter D visar aktuell metod, inte statisk TF-text. Lämna vid slutkontrollpunkten före E.
+- [x] Läs D1–D9-tabellen och tidigare jämförelseunderlag. För varje val: källa, alternativ, genomförandeobjekt/modellfiler och kostnad vid avslag.
+- [x] Bygg D1, D2, D3, D4, D5, D6, D7, D8 och D9 samt lägre-risk-beslut var för sig, med egen regelversion/commit och före-/efterfacit. Oförändrat beteende kan väljas när källstöd för förändring saknas, men ska ha explicit motivering och granskningsobjekt.
+- [x] Redovisa per steg och totalt mot 2.0.0 för enmansbyrå, betalningsmandat, riskbranscher, få faktorer och båda referensfallen. Lista alla sänkningar och kunskapsluckor.
+- [x] Nya PDF:er efter D visar aktuell metod, inte statisk TF-text. Lämna vid slutkontrollpunkten före E.
 
 ### Task 5: E och samlad slutverifiering
 

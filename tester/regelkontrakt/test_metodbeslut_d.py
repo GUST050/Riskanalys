@@ -85,3 +85,10 @@ def test_saknad_genomforandefil_kan_inte_godkannas(regelbas_v1):
     rb=regelbas_v1;b=rb.metodbeslut['D1'];f=dict(b.modellfiler);f.pop(next(iter(f)))
     ny=rb.model_copy(update={'metodbeslut':{**rb.metodbeslut,'D1':b.model_copy(update={'modellfiler':f})}})
     assert any('D1' in x and 'obligatoriska' in x for x in validera(ny))
+
+
+def test_ny_mandatfixtur_skapa_bara_tjanstens_aktuella_hot(regelbas_v1,tmp_path):
+    from tester.fixturer.rapportlasprov import bygg_rapportlasprov
+    f=bygg_rapportlasprov(regelbas_v1,tmp_path,'med_betalningsmandat')
+    for t in f.analys.tjanster:
+        assert all(set(s.hot)<=set(regelbas_v1.tjanster[t.tjanst].hot) for s in t.scenarier)

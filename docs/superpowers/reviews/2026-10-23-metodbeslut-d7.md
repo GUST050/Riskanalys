@@ -47,3 +47,15 @@ Fulla före-/efterutfall, varje numerisk sänkning, borttaget scenario, regelbas
 Vid avslag: ompröva D7 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket, kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.
 
 Regelbasvalidering och beräkningsbygge passerar; ingen grön testsvit påstås. Ingen push eller merge.
+
+## Särskild sänkningsredovisning – 40 kontrastprofiler
+
+Kontraster körda med identiska validerbara profilbytes genom varje verklig D-version. Var och en av de 29 byråövergripande indikatorerna ingår ensam, därutöver neutralt fall, ideell, PEP, kombination med känd/okänd kundsamförekomst, flera orsaker, riskbransch med bankdata och lokal tjänstenolla/positivt/okänt antal. Totalt 40 profiler; två ekvivalenta ideellvarianter ingår för att både jämförelseparet och kataloginventeringen ska vara kompletta.
+
+D7 sänker H-03 PT i ideell-ensam-fallet: sårbarhet hög→medel, sannolikhet hög→medel och risk hög→måttlig i T-RED-01/02/03/04/07/08/09 och T-BOLAG-02. Inneboende PT på tjänsten sänks hög→måttlig i dessa åtta. T-BOLAG-02:s kvarstående tjänstenivå sänks också hög→måttlig. I övriga sju håller otäckta andra scenarier kvar tjänstens kvarstående måttlig, trots att H-03:s mekaniska kvarstående efter befintligt kontrollavdrag sjunker måttlig→låg. Katalogmål och motoravdrag är här inte bevis för godtagbar lokal kontrollverkan.
+
+TF är oförändrad. PEP plus ideell, även vid okänt faktiskt kundöverlapp, redovisas som portföljmodell enligt D3/D4 och inte som konstaterad gemensam kund. 64 sänkta led i jämförelsefilen motsvarar två ekvivalenta profiler × åtta PT-scenarier × fyra riskled; det är inte 64 olika scenarier. De sex fasta byråfallen ger fortfarande inga sänkta slutnivåer.
+
+Starkare skäl för sänkningen: den lästa källan pekar uttryckligen ut en TF-plattform, medan den tidigare PT-effekten byggde på ett konservativt arv och gemensamma kanaler. Gemensamma kanaler ensamma belägger inte den specifika organisationsformens självständiga PT-effekt. Den tidigare PT-höjningen tas därför bort i förslaget, medan faktisk kontant-, ägar-, PEP- eller flödesrisk kvarstår. Detta är ett provisoriskt relevansval; sakkunnig kan avslå det och utlöser då angivet återföringsförfarande.
+
+Fulla fall, alla sänkta led och fulla före-/efterscenarier: `.superpowers/evidens/2026-10-23-metodbeslut/kontraster2/D7-jamforelse.json`. Första kontrastprototypen använde en ogiltig statusbeteckning i okändfallet; den ersattes av validerad `saknas` och används inte som slutfacit.
