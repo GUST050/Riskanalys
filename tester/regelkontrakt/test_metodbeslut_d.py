@@ -43,3 +43,45 @@ def test_loneavgransning_och_ideell_tf_only(regelbas_v1):
     assert {'H-02','H-TJ-04'}<=set(rb.tjanster['T-RED-04'].hot)
     assert rb.sarbarheter['S-ARB-05'].galler=='terrorfinansiering'
     assert all(not s.nivaeffekt for s in rb.lagre_risk.values())
+
+
+def test_loneberedning_och_separat_bokforing_bedomer_egna_hot(regelbas_v1):
+    from tester.fixturer.faktorer import faktorprofil
+    from tester.fixturer.arb_kedja import bedom_kedja
+    _,b=bedom_kedja(regelbas_v1,faktorprofil(regelbas_v1,(),alla_tjanster=True))
+    ts={t.tjanst:t for t in b.tjanster}
+    assert not {'H-01','H-MOD-02'}&{s.hot for s in ts['T-RED-04'].scenarier}
+    assert {'H-01','H-MOD-02'}<={s.hot for s in ts['T-RED-01'].scenarier}
+    assert 'H-02' in {s.hot for s in ts['T-RED-04'].scenarier}
+
+
+def test_ideell_ensam_hojer_inte_pt_men_finns_i_tf(regelbas_v1):
+    from tester.fixturer.faktorer import faktorprofil
+    from tester.fixturer.arb_kedja import bedom_kedja
+    _,b=bedom_kedja(regelbas_v1,faktorprofil(regelbas_v1,('S-ARB-05',),alla_tjanster=True))
+    scenarios=[s for t in b.tjanster if t.erbjuds for s in t.scenarier]
+    assert all('S-ARB-05' not in s.sarbarheter for s in scenarios if s.dimension=='pt')
+    assert any('S-ARB-05' in s.sarbarheter for s in scenarios if s.dimension=='tf')
+
+
+def test_pep_och_ideell_redovisas_utan_antaget_kundoverlapp(regelbas_v1):
+    from tester.fixturer.faktorer import faktorprofil
+    from tester.fixturer.arb_kedja import bedom_kedja
+    profil=faktorprofil(regelbas_v1,('S-ARB-05','S-KUND-02'),alla_tjanster=True)
+    _,b=bedom_kedja(regelbas_v1,profil)
+    assert not profil.kombinationsgrupper
+    assert any({'S-ARB-05','S-KUND-02'}<=set(s.sarbarheter) for t in b.tjanster for s in t.scenarier if s.dimension=='tf' and s.hot=='H-03')
+
+
+def test_tf_har_allvarlig_konsekvens_utan_kontrollavdrag(regelbas_v1):
+    from tester.fixturer.faktorer import faktorprofil
+    from tester.fixturer.arb_kedja import bedom_kedja
+    _,b=bedom_kedja(regelbas_v1,faktorprofil(regelbas_v1,(),alla_tjanster=True))
+    tf=[s for t in b.tjanster for s in t.scenarier if s.dimension=='tf']
+    assert tf and all(s.konsekvens=='allvarlig' and s.kvarstaende is None and not s.tackande_kontroller for s in tf)
+
+
+def test_saknad_genomforandefil_kan_inte_godkannas(regelbas_v1):
+    rb=regelbas_v1;b=rb.metodbeslut['D1'];f=dict(b.modellfiler);f.pop(next(iter(f)))
+    ny=rb.model_copy(update={'metodbeslut':{**rb.metodbeslut,'D1':b.model_copy(update={'modellfiler':f})}})
+    assert any('D1' in x and 'obligatoriska' in x for x in validera(ny))

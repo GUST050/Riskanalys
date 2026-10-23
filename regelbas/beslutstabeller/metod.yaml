@@ -312,8 +312,11 @@ scenario:
   aggregering:
     id: BT-TJ-01
     grund: metodval
-    forklaring: Tjänstens inneboende och kvarstående risk är högsta scenariorisken per dimension. Alla
-      scenarier som delar högsta risk är avgörande. Maxregeln är ogranskat metodval, inte ett lagkrav.
+    forklaring: En väsentlig exponeringskedja ska inte döljas av många låga scenarier. Högsta inneboende
+      risk respektive högsta kvarstående PT beräknas var för sig. Alla avgörande scenarier och otäckta
+      maxled redovisas; PT och TF hålls åtskilda. Max är ett provisoriskt metodval, inte en föreskriven
+      formel. Antal scenarier är katalogberoende och är inte en sannolikhet eller exponeringsandel. Max
+      kan dölja bredd i slutnivån, därför måste full scenariomatris och motivering läsas.
     kallor: *id001
     sakkunnig:
       status: ej_granskad
