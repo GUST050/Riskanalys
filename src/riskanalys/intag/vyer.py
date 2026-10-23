@@ -164,9 +164,14 @@ def oversikt(s,fel='',profil=None,qs=None):
         html+='<h2>Skapa allmän riskbedömning som Word-utkast</h2><p>AI skriver riskavsnitten från tillåtna strukturerade uppgifter. Ett API-anrop till Claude kan kosta pengar. Beskrivningar sätts in lokalt. Resultatet är ett Word-utkast med granskningsbilaga vid öppna fynd.</p>'
         html+=f'<form method="post" action="{s.prefix}skriv">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('skrivtoken',s.skrivtoken(profilrevision(p)))+'<button>Skapa Word-utkast med Claude</button></form>'
     if s.utkast:
-        html+=f'<p><a class="button" href="{s.prefix}word">Hämta Word-rapport</a></p>'
-        if (s.utkast.parent/'underlagsbilaga-UTKAST.docx').is_file():
-            html+=f'<p><a class="button" href="{s.prefix}underlag">Hämta underlagsbilaga</a></p><p>Läs båda delarna tillsammans för fullständig dokumentation.</p>'
+        if (s.utkast.parent/'analysbilaga-UTKAST.docx').is_file():
+            html+=f'<p><a class="button" href="{s.prefix}word">Hämta resultatrapport</a> <a class="button" href="{s.prefix}analysbilaga">Hämta analysbilaga</a> <a class="button" href="{s.prefix}underlag">Hämta underlagsbilaga</a></p><p>Läs alla tre delarna tillsammans. Resultatrapporten visar slutsatserna; bilagorna innehåller hela analysen och underlaget.</p>'
+        else:
+            html+=f'<p><a class="button" href="{s.prefix}word">Hämta Word-rapport</a></p>'
+            if (s.utkast.parent/'underlagsbilaga-UTKAST.docx').is_file():
+                html+=f'<p><a class="button" href="{s.prefix}underlag">Hämta underlagsbilaga</a></p><p>Läs båda delarna tillsammans för fullständig dokumentation.</p>'
+                html+='<p>Du kan skapa en separat kort resultatrapport med bilagor utan nya AI-anrop. Formatbytet kräver förnyad sakgranskning av alla tre delar. Originalutkastet bevaras.</p>'
+                html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('rapportformat','v9')+'<button>Skapa resultatrapport med två bilagor</button></form>'
         html+='<p>Efter ändringar i lokal analys eller utvärdering kan du granska och uppdatera Word från befintlig AI-text. Ändrade verksamhetsfakta kräver en ny skrivning.</p>'
         html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+'<button>Uppdatera Word-utkast utan nya AI-anrop</button></form>'
     from riskanalys.drift.historik import las_historik

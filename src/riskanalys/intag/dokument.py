@@ -71,14 +71,16 @@ def las_utkast(byramapp: Path, rb, fil: Path) -> bytes:
         return fil.read_bytes()
 
 
-def uppdatera_export(byramapp: Path, rb, tidigare: Path) -> Path:
+def uppdatera_export(byramapp: Path, rb, tidigare: Path, *, rapportformat: str | None = None) -> Path:
     from riskanalys.analys.lagring import analyslas
     with analyslas(byramapp) if rb.metod.omfattning else nullcontext():
-        return _uppdatera_export_last(byramapp,rb,tidigare)
+        return _uppdatera_export_last(byramapp,rb,tidigare,rapportformat=rapportformat)
 
 
-def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path) -> Path:
+def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path, *, rapportformat: str | None = None) -> Path:
     """Lokal analys eller utvärdering kan granskas och exporteras från befintlig AI-text."""
+    if rapportformat not in (None,'v8','v9'):
+        raise RiskanalysFel('Välj rapportformat v8 eller v9.')
     historik = historikens_kontrollsumma(byramapp)
     if verifiera_manifest(tidigare.parent):
         raise RiskanalysFel('Det tidigare utkastet är ändrat. Skapa ett nytt utkast.')
@@ -93,9 +95,16 @@ def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path) -> Path:
     if not underlag['utkast']:
         raise RiskanalysFel('Tidigare AI-riskavsnitt saknas. Skapa ett nytt utkast.')
     from riskanalys.granskning.korning import _kor_granskning_last, las_granskning
+    sparat=las_granskning(gammal)[0].formatversion
+    valt=rapportformat or {'D-ARB-tjanst-v8':'v8','D-ARB-resultat-v9':'v9'}.get(sparat)
+    if valt is None:
+        raise RiskanalysFel('Det äldre utkastet kräver en uttrycklig ny V8-skrivning före formatbyte.')
     granskning = _kor_granskning_last(byramapp, rb, date.today(), bedomningsmapp=bedomningsmapp,
-                               utkastmapp=byramapp / UTKAST / underlag['utkast'])
-    if las_granskning(granskning)[0].formatversion=='D-ARB-tjanst-v8':
+                               utkastmapp=byramapp / UTKAST / underlag['utkast'],rapportformat=valt)
+    if las_granskning(granskning)[0].formatversion=='D-ARB-resultat-v9':
+        from riskanalys.dokument.export import exportera_v9_last
+        fil=exportera_v9_last(byramapp,date.today(),granskning,regelbas=rb)/UTKASTFIL
+    elif las_granskning(granskning)[0].formatversion=='D-ARB-tjanst-v8':
         from riskanalys.dokument.export import exportera_v8_last
         fil=exportera_v8_last(byramapp,date.today(),granskning,regelbas=rb)/UTKASTFIL
     else:
@@ -114,3 +123,21 @@ def omfattningsknapp(s,profil):
     html+='<form method="post" action="'+escape(s.prefix,quote=True)+'omfattningsunderlag">'+dold('csrf',s.csrf)+dold('revision',profilrevision(profil))+'<button>Skapa ofullständigt omfattningsunderlag utan AI</button></form>'
     if getattr(s,'omfattningsfil',None):html+='<p><a href="'+escape(s.prefix,quote=True)+'omfattningsword">Hämta OFULLSTÄNDIGT omfattningsunderlag</a></p>'
     return html+'</details>'
+
+
+def rapportdel(utkast:Path,del_:str) -> Path:
+    """Fasta routenamn väljer en del ur det verifierade exportpaketet."""
+    from riskanalys.lagring.manifest import las_manifest
+    from riskanalys.dokument.rapportpaket_v9 import ar_v9_paket
+    from riskanalys.dokument.leverans_v9 import LeveransV9,DELAR
+    if del_ not in ('word','underlag','analysbilaga'):
+        raise RiskanalysFel('Okänd rapportdel. Läs om översikten.')
+    m=utkast.parent
+    if verifiera_manifest(m):raise RiskanalysFel('Exportpaketet är ändrat eller ofullständigt. Uppdatera utkastet.')
+    if ar_v9_paket(m,las_manifest(m)):
+        l=LeveransV9.model_validate_json((m/'leverans.json').read_text())
+        if l.version is not None:raise RiskanalysFel('Nedladdningen kräver ett märkt utkast.')
+        val={'word':0,'analysbilaga':1,'underlag':2}
+        return m/l.filnamn[val[del_]]
+    if del_=='analysbilaga':raise RiskanalysFel('Detta äldre utkast saknar separat analysbilaga. Uppdatera uttryckligen till resultatrapport.')
+    return m/('underlagsbilaga-UTKAST.docx' if del_=='underlag' else UTKASTFIL)

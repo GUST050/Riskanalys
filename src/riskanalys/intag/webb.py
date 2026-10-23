@@ -110,8 +110,9 @@ class Hantera(BaseHTTPRequestHandler):
                 from riskanalys.dokument.omfattningsutkast import las_omfattningsunderlag
                 body=las_omfattningsunderlag(s.tjanst.mapp,s.tjanst.rb,s.omfattningsfil)
                 self.svara(200,body,'application/vnd.openxmlformats-officedocument.wordprocessingml.document',extra={'Content-Disposition':'attachment; filename="'+s.omfattningsfil.name+'"'});return
-            if path in ('word','underlag'):
-                self.word(underlag=path=='underlag');return
+            if path in ('word','underlag','analysbilaga'):
+                if query:self.svara(400,'Rapportdelar tar inga fil- eller frågeparametrar.');return
+                self.word(del_=path);return
             if path:
                 self.svara(404,'Sidan finns inte.');return
             if not s.tjanst.finns():html=vyer.grund(s)
@@ -523,24 +524,23 @@ class Hantera(BaseHTTPRequestHandler):
 
     def post_uppdaterautkast(self,data):
         s=self.server
-        if set(data)-{'csrf','revision'}:
+        if set(data)-{'csrf','revision','rapportformat'} or data.get('rapportformat') not in (None,'v8','v9'):
             raise RiskanalysFel('Uppdateringsformuläret innehåller okända fält.')
         revision=profilrevision(s.tjanst.profil())
         if data.get('revision')!=revision or s.utkastrevision!=revision:
             raise RiskanalysFel('Profilen har ändrats eller formuläret hör till en annan flik. Läs om sidan och skapa ett nytt utkast vid ändrade fakta.')
         if not s.utkast:
             raise RiskanalysFel('Skapa ett Word-utkast före uppdatering.')
-        s.utkast=uppdatera_export(s.tjanst.mapp,s.tjanst.rb,s.utkast)
+        s.utkast=uppdatera_export(s.tjanst.mapp,s.tjanst.rb,s.utkast,rapportformat=data.get("rapportformat"))
 
-    def word(self, *, underlag=False):
+    def word(self, *, del_="word"):
         s=self.server
         if not s.utkast:
             self.svara(404,'Skapa ett Word-utkast först.');return
         if s.utkastrevision != profilrevision(s.tjanst.profil()):
             raise RiskanalysFel('Utkastet bygger på äldre svar. Skapa ett nytt utkast.')
-        fil=s.utkast.parent/'underlagsbilaga-UTKAST.docx' if underlag else s.utkast
-        if underlag and not fil.is_file():
-            raise RiskanalysFel('Underlagsbilagan saknas. Uppdatera båda delarna av Word-utkastet.')
+        from riskanalys.intag.dokument import rapportdel
+        fil=rapportdel(s.utkast,del_)
         innehall=las_utkast(s.tjanst.mapp, s.tjanst.rb, fil)
         self.svara(200,innehall,'application/vnd.openxmlformats-officedocument.wordprocessingml.document',extra={'Content-Disposition':f'attachment; filename="{fil.name}"'})
 
