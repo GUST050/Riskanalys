@@ -3,18 +3,19 @@
   beskrivning: Fakturor utan verklig prestation används för att flytta pengar, dölja brottsvinster eller
     göra felaktiga avdrag. De passerar byrån som vanliga verifikationer.
   kallor:
-  - SRC-VAGL-2025-03
   - SRC-NRA-2024-25
+  - SRC-VAGL-2025-03
   grund: metodval
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”osanna
+    fakturor” (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 123). Källstället stöder tillvägagångssättets relevans
+    men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de
+    berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja
+    ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-02
@@ -22,18 +23,19 @@
   beskrivning: Pengar från brott blandas in i en lagligt bedriven verksamhet och redovisas som försäljning,
     så att de ser legala ut. Lön och utdelning kan sedan ge brottsmedlen en legitim förklaring.
   kallor:
-  - SRC-VAGL-2025-03
   - SRC-NRA-2024-25
+  - SRC-VAGL-2025-03
   grund: metodval
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
     sida: 123
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”bokförs
+    som försäljning” (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 123). Källstället stöder tillvägagångssättets
+    relevans men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och
+    en av de berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt
+    höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-03
@@ -43,8 +45,8 @@
     värdeavvikelser och långsamma koncernkedjor omfattas också.
   galler_tf: true
   kallor:
-  - SRC-VAGL-2025-03
   - SRC-NRA-2024-25
+  - SRC-VAGL-2025-03
   grund: metodval
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
@@ -54,10 +56,11 @@
     avsnitt: Investeringar, tillskott och underlag
     sida: 20
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”utan
+    något underlag” (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 123). Källstället stöder tillvägagångssättets
+    relevans men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och
+    en av de berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt
+    höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-01
@@ -69,12 +72,16 @@
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
     sida: 123
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”möjliggörare”
+    (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 122). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-02
@@ -87,12 +94,16 @@
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
     sida: 123
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”möjliggörare”
+    (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 122). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-03
@@ -104,12 +115,16 @@
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
     sida: 123
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”möjliggörare”
+    (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 122). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-04
@@ -124,15 +139,19 @@
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
     sida: 123
   - kalla: SRC-BRA-2025-20
     avsnitt: Falska löneuppgifter och offentliga ersättningar
     sida: 90
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”möjliggörare”
+    (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 122). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-05
@@ -145,12 +164,16 @@
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
     sida: 123
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”möjliggörare”
+    (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 122). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-06
@@ -162,12 +185,16 @@
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
     sida: 123
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”möjliggörare”
+    (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 122). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-07
@@ -180,12 +207,16 @@
   kallhanvisningar:
   - kalla: SRC-NRA-2024-25
     avsnitt: '7.19'
+    sida: 122
+  - kalla: SRC-NRA-2024-25
+    avsnitt: '7.19'
     sida: 123
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.19, s. 123) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”möjliggörare”
+    (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 122). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-08
@@ -203,10 +234,11 @@
     avsnitt: '7.20: underground banking'
     sida: 127
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.20, s. 126) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”skatteupplägg”
+    (SRC-NRA-2024-25, 7.20, fysisk PDF-sida 126). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-09
@@ -221,10 +253,11 @@
     avsnitt: '7.25'
     sida: 144
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.25, s. 144) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”brottsverktyg”
+    (SRC-NRA-2024-25, 7.25, fysisk PDF-sida 144). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-10
@@ -239,10 +272,11 @@
     avsnitt: '7.26'
     sida: 147
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-NRA-2024-25 (7.26, s. 147) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”anonymt”
+    (SRC-NRA-2024-25, 7.26, fysisk PDF-sida 147). Källstället stöder tillvägagångssättets relevans men
+    ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda
+    byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-11
@@ -258,9 +292,10 @@
     avsnitt: '7.27'
     sida: 149
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. NRA 7.27, s. 149 har inte hot- eller sårbarhetsbedömt
-    sektorn. Ingen frekvens eller nivå hämtas från bolagsbildning i 7.25. Värdet måste prövas i C/D; en
-    egen iakttagelse kan höja ett steg medan frånvaro inte sänker.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”inte
+    hot- eller sårbarhetsbedömts” (SRC-NRA-2024-25, 7.27, fysisk PDF-sida 149). Källan har uttryckligen
+    inte hot- eller sårbarhetsbedömt sektorn. Underlag för annan nivå saknas; bolagsbildningens sektorsnivå
+    får inte lånas.'
   sakkunnig:
     status: ej_granskad
 - id: H-MOD-01
@@ -273,13 +308,17 @@
   galler_tf: false
   kallhanvisningar:
   - kalla: SRC-VAGL-2025-03
+    avsnitt: Tillvägagångssätt
+    sida: 16
+  - kalla: SRC-VAGL-2025-03
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 16
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-VAGL-2025-03 (Tillvägagångssätt, fysisk PDF-sida 16) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”Inbetalningar
+    som påstås ha gjorts av misstag” (SRC-VAGL-2025-03, Tillvägagångssätt, fysisk PDF-sida 16). Källstället
+    stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå
+    för var och en av de berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse
+    kan fortsatt höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-MOD-02
@@ -292,13 +331,17 @@
   galler_tf: false
   kallhanvisningar:
   - kalla: SRC-VAGL-2025-03
+    avsnitt: Underlag och dokumentation
+    sida: 23
+  - kalla: SRC-VAGL-2025-03
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 23
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-VAGL-2025-03 (Tillvägagångssätt, fysisk PDF-sida 23) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”misstänkt
+    karusellbedrägeri” (SRC-VAGL-2025-03, Underlag och dokumentation, fysisk PDF-sida 23). Källstället
+    stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå
+    för var och en av de berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse
+    kan fortsatt höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-MOD-03
@@ -312,13 +355,17 @@
   galler_tf: false
   kallhanvisningar:
   - kalla: SRC-FIPO-FORETAG-2026
+    avsnitt: Företagens användningsmönster
+    sida: 1
+  - kalla: SRC-FIPO-FORETAG-2026
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 1
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-FORETAG-2026 (Tillvägagångssätt, fysisk PDF-sida 1) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”används
+    som en förbrukningsvara” (SRC-FIPO-FORETAG-2026, Företagens användningsmönster, fysisk PDF-sida 1).
+    Källstället stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller en kalibrerad
+    låg/medel/hög-hotnivå för var och en av de berörda byråtjänsterna. Underlag för annan nivå saknas.
+    Egen bekräftad iakttagelse kan fortsatt höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-MOD-04
@@ -334,16 +381,22 @@
   galler_tf: false
   kallhanvisningar:
   - kalla: SRC-FIPO-SWISH-2025
+    avsnitt: Återkommande transaktionsmönster
+    sida: 1
+  - kalla: SRC-FIPO-SWISH-2025
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 1
   - kalla: SRC-FIPO-PLATTFORM-2026
     avsnitt: Virtuella värden och PSP-led
     sida: 3
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-SWISH-2025 (Tillvägagångssätt, fysisk
-    PDF-sida 1) beskriver tillvägagångssättets relevans, men ger inte en tillräckligt avgränsad frekvensbedömning
-    för detta hot i de berörda tjänsterna. Sektorns samlade risk likställs inte med hotnivån för ett enskilt
-    modus. En egen iakttagelse kan höja nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”Snabba
+    direktbetalningar är vanligt förekommande” (SRC-FIPO-SWISH-2025, Återkommande transaktionsmönster,
+    fysisk PDF-sida 1). Källstället stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens
+    eller en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda byråtjänsterna. Underlag för
+    annan nivå saknas. Att mönstret är vanligt i misstankerapportering eller att källan beskriver hög
+    risk fastställer inte frekvensen hos just tjänstens kunder. Egen bekräftad iakttagelse kan fortsatt
+    höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TF-01
@@ -357,13 +410,19 @@
   galler_tf: true
   kallhanvisningar:
   - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 2
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-TF-2025 (Tillvägagångssätt, fysisk PDF-sida 2) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”Ett
+    vanligt förekommande tillvägagångssätt i rapporteringen” (SRC-FIPO-TF-2025, Tillvägagångssätt, fysisk
+    PDF-sida 2). Källstället stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller
+    en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda byråtjänsterna. Underlag för annan
+    nivå saknas. Att mönstret är vanligt i misstankerapportering eller att källan beskriver hög risk fastställer
+    inte frekvensen hos just tjänstens kunder. Egen bekräftad iakttagelse kan fortsatt höja ett steg;
+    inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TF-02
@@ -377,16 +436,20 @@
   galler_tf: true
   kallhanvisningar:
   - kalla: SRC-FIPO-TF-2025
+    avsnitt: Tillvägagångssätt
+    sida: 2
+  - kalla: SRC-FIPO-TF-2025
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 1
   - kalla: SRC-FIPO-TF-2025
     avsnitt: Hawala, kryptovalutor och dolda syften; fysisk PDF-sida
     sida: 2
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-TF-2025 (Tillvägagångssätt, fysisk PDF-sida 1) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”mer
+    anonymiserade kanaler såsom hawala” (SRC-FIPO-TF-2025, Tillvägagångssätt, fysisk PDF-sida 2). Källstället
+    stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå
+    för var och en av de berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse
+    kan fortsatt höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TF-03
@@ -400,13 +463,17 @@
   galler_tf: true
   kallhanvisningar:
   - kalla: SRC-FIPO-TF-2025
+    avsnitt: Möjliggörare
+    sida: 4
+  - kalla: SRC-FIPO-TF-2025
     avsnitt: Tillvägagångssätt; fysisk PDF-sida
     sida: 4
   niva: medel
-  nivamotivering: Medel är ett ogranskat standardvärde. SRC-FIPO-TF-2025 (Tillvägagångssätt, fysisk PDF-sida 4) beskriver tillvägagångssättets
-    relevans, men ger inte en tillräckligt avgränsad frekvensbedömning för detta hot i de berörda tjänsterna.
-    Sektorns samlade risk likställs inte med hotnivån för ett enskilt modus. En egen iakttagelse kan höja
-    nivån ett steg; frånvaro sänker inte.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”bilda
+    ideella föreningar eller bolag” (SRC-FIPO-TF-2025, Möjliggörare, fysisk PDF-sida 4). Källstället stöder
+    tillvägagångssättets relevans men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå
+    för var och en av de berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse
+    kan fortsatt höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-MOD-05
@@ -428,8 +495,11 @@
   dimensioner:
   - pt
   niva: medel
-  nivamotivering: Ogranskat standardvärde medel. Källan beskriver relevans och möjliga mekanismer, inte
-    tillräckligt avgränsad hotfrekvens för varje byråtjänst. Nivån prövas i steg C.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”Brottsligheten
+    genererar stora brottsvinster” (SRC-MYND-OB-2025, Brott mot välfärdssystemen, fysisk PDF-sida 20).
+    Källstället stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller en kalibrerad
+    låg/medel/hög-hotnivå för var och en av de berörda byråtjänsterna. Underlag för annan nivå saknas.
+    Egen bekräftad iakttagelse kan fortsatt höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-MOD-06
@@ -443,13 +513,19 @@
   grund: metodval
   kallhanvisningar:
   - kalla: SRC-FIPO-AR-2025
+    avsnitt: Nyckelaktiviteter
+    sida: 10
+  - kalla: SRC-FIPO-AR-2025
     avsnitt: Penningtvätt med koppling till sanktionsbrott
     sida: 10
   dimensioner:
   - pt
   niva: medel
-  nivamotivering: Ogranskat standardvärde medel. Källan beskriver relevans och möjliga mekanismer, inte
-    tillräckligt avgränsad hotfrekvens för varje byråtjänst. Nivån prövas i steg C.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”Penningtvätt
+    med koppling till sanktionsbrott” (SRC-FIPO-AR-2025, Nyckelaktiviteter, fysisk PDF-sida 10). Källstället
+    stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå
+    för var och en av de berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse
+    kan fortsatt höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-MOD-07
@@ -467,8 +543,12 @@
   dimensioner:
   - pt
   niva: medel
-  nivamotivering: Ogranskat standardvärde medel. Källan beskriver relevans och möjliga mekanismer, inte
-    tillräckligt avgränsad hotfrekvens för varje byråtjänst. Nivån prövas i steg C.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”transaktionskanaler
+    för att tvätta pengar” (SRC-FIPO-FORETAG-2026, Kopplingar mellan företag och kryptovaluta, fysisk
+    PDF-sida 2). Källstället stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller
+    en kalibrerad låg/medel/hög-hotnivå för var och en av de berörda byråtjänsterna. Underlag för annan
+    nivå saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg; inget eller okänt svar sänker
+    inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-12
@@ -476,11 +556,14 @@
   beskrivning: Oriktiga ansökningar och underlag kan ge offentliga utbetalningar och dölja brottsvinster
     som legitim verksamhet.
   kallor:
-  - SRC-MYND-OB-2025
   - SRC-BRA-2025-20
+  - SRC-MYND-OB-2025
   - SRC-NRA-2024-25
   grund: metodval
   kallhanvisningar:
+  - kalla: SRC-BRA-2025-20
+    avsnitt: Falska inkomstuppgifter och offentliga utbetalningar
+    sida: 90
   - kalla: SRC-MYND-OB-2025
     avsnitt: Brott mot välfärdssystemen
     sida: 20
@@ -490,8 +573,11 @@
   dimensioner:
   - pt
   niva: medel
-  nivamotivering: Ogranskat standardvärde medel, inte avläst sektorsrisk. Avgränsat frekvensunderlag saknas;
-    prövas i C.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”falska
+    inkomstuppgifter” (SRC-BRA-2025-20, Falska inkomstuppgifter och offentliga utbetalningar, fysisk PDF-sida
+    90). Källstället stöder tillvägagångssättets relevans men ger inte en avgränsad frekvens eller en
+    kalibrerad låg/medel/hög-hotnivå för var och en av de berörda byråtjänsterna. Underlag för annan nivå
+    saknas. Egen bekräftad iakttagelse kan fortsatt höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
 - id: H-TJ-13
@@ -512,7 +598,10 @@
   dimensioner:
   - pt
   niva: medel
-  nivamotivering: Ogranskat standardvärde medel, inte avläst sektorsrisk. Avgränsat frekvensunderlag saknas;
-    prövas i C.
+  nivamotivering: 'Ogranskat metodval C: medel behålls som dokumenterat standardvärde. Källcitat: ”due
+    dilligence” (SRC-NRA-2024-25, 7.19, fysisk PDF-sida 122). Källstället stöder tillvägagångssättets
+    relevans men ger inte en avgränsad frekvens eller en kalibrerad låg/medel/hög-hotnivå för var och
+    en av de berörda byråtjänsterna. Underlag för annan nivå saknas. Egen bekräftad iakttagelse kan fortsatt
+    höja ett steg; inget eller okänt svar sänker inte.'
   sakkunnig:
     status: ej_granskad
