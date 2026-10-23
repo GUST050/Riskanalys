@@ -56,8 +56,8 @@ riskmatris:
 sannolikhet:
   id: BT-SANN-01
   grund: metodval
-  forklaring: Sannolikheten utgår från tjänstens grundnivå i katalogen. Varje sårbarhet som
-    gäller höjer den med sin effekt, som högst till hög.
+  forklaring: Sannolikheten utgår från tjänstens grundnivå i katalogen. Varje sårbarhet som gäller höjer
+    den med sin effekt, som högst till hög.
 konsekvens:
   id: BT-KONS-01
   grund: metodval
@@ -65,30 +65,28 @@ konsekvens:
 terrorfinansiering:
   id: BT-TF-01
   grund: metodval
-  forklaring: Terrorfinansiering bedöms separat. Sannolikheten utgår från tjänstens grundnivå
-    för terrorfinansiering och höjs av sårbarheter som gäller terrorfinansiering. Konsekvensen
-    är alltid allvarlig.
+  forklaring: Terrorfinansiering bedöms separat. Sannolikheten utgår från tjänstens grundnivå för terrorfinansiering
+    och höjs av sårbarheter som gäller terrorfinansiering. Konsekvensen är alltid allvarlig.
 kvarstaende_ej_belagd:
   id: BT-KVAR-01
   grund: metodval
-  forklaring: Om ingen kontroll har belagd utformning, genomförande och dokumenterad verksam
-    effekt för samma period är kvarstående risk lika med inneboende risk. Ej bedömd, begränsad
-    eller verkningslös effekt ger ingen reduktion.
+  forklaring: Om ingen kontroll har belagd utformning, genomförande och dokumenterad verksam effekt för
+    samma period är kvarstående risk lika med inneboende risk. Ej bedömd, begränsad eller verkningslös
+    effekt ger ingen reduktion.
 kvarstaende_sankning:
   id: BT-KVAR-02
   grund: metodval
-  forklaring: 'Om minst en kontroll har belagd utformning och genomförande samt dokumenterad
-    verksam effekt med utfall och begränsningar för samma period sänks penningtvättsrisken ett
-    steg per tjänst. Ett steg och any-kontroll är ogranskade metodval; granskaren ska pröva
-    täckning av tjänstens hot. TF reduceras inte av denna regel. Källstöd för effektprövningen:
-    SRC-TS-2026-14; steg är inte ett lagkrav.'
+  forklaring: 'Om minst en kontroll har belagd utformning och genomförande samt dokumenterad verksam effekt
+    med utfall och begränsningar för samma period sänks penningtvättsrisken ett steg per tjänst. Ett steg
+    och any-kontroll är ogranskade metodval; granskaren ska pröva täckning av tjänstens hot. TF reduceras
+    inte av denna regel. Källstöd för effektprövningen: SRC-TS-2026-14; steg är inte ett lagkrav.'
 omfattning:
   id: BT-OMF-01
   grund: metodval
-  forklaring: PTL 2 kap. 2 § kräver omfattning efter storlek och art. Nivånamn, trösklar (2/10
-    personer, 1/2 kontor, 3/10 miljoner kronor), riskutlöst utökning och dokumentlängd är ogranskade
-    metodval. Alla nivåer analyserar varje erbjuden tjänst och täcker samma krav. Utökad nivå
-    innebär fler tjänsteknutna scenarier och fördjupad kontrolluppföljning; byrån beslutar uppföljningstakt.
+  forklaring: PTL 2 kap. 2 § kräver omfattning efter storlek och art. Nivånamn, trösklar (2/10 personer,
+    1/2 kontor, 3/10 miljoner kronor), riskutlöst utökning och dokumentlängd är ogranskade metodval. Alla
+    nivåer analyserar varje erbjuden tjänst och täcker samma krav. Utökad nivå innebär fler tjänsteknutna
+    scenarier och fördjupad kontrolluppföljning; byrån beslutar uppföljningstakt.
   kallor:
   - SRC-PTL
   - SRC-14FS-2024-11
@@ -177,9 +175,9 @@ scenario:
   sannolikhetsmatris:
   - id: BT-SANN-02-01
     grund: metodval
-    forklaring: Hotnivå låg och sårbarhetsnivå låg ger sannolikhet låg. Trenivåskalan och denna cell
-      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
-      eller en direkt avskrift av fyrgradig EU-matris.
+    forklaring: Hotnivå låg och sårbarhetsnivå låg ger sannolikhet låg. Trenivåskalan och denna cell är
+      ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav eller
+      en direkt avskrift av fyrgradig EU-matris.
     kallor:
     - SRC-LST-GOR-ARB
     - SRC-TS-2026-14
@@ -289,9 +287,9 @@ scenario:
     sannolikhet: hög
   - id: BT-SANN-02-09
     grund: metodval
-    forklaring: Hotnivå hög och sårbarhetsnivå hög ger sannolikhet hög. Trenivåskalan och denna cell
-      är ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav
-      eller en direkt avskrift av fyrgradig EU-matris.
+    forklaring: Hotnivå hög och sårbarhetsnivå hög ger sannolikhet hög. Trenivåskalan och denna cell är
+      ogranskade metodval inspirerade av EU-metodens tyngre sårbarhetsvikt; inte ett bindande krav eller
+      en direkt avskrift av fyrgradig EU-matris.
     kallor:
     - SRC-LST-GOR-ARB
     - SRC-TS-2026-14

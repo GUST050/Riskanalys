@@ -343,7 +343,6 @@
   hot:
   - H-TJ-04
   - H-03
-  - H-01
   - H-02
   - H-MOD-01
   - H-MOD-04
@@ -434,7 +433,9 @@
     ren lönetjänst. Moms-/fakturagranskning och betalningar bedöms i de tjänster där de faktiskt erbjuds.
     Samma kund kan ha andra tjänster men sådan samförekomst antas inte. Lönens eget falska underlag och
     löneuttag av brottsvinst finns kvar genom H-TJ-04 och H-02. Avgränsningen är ett ej granskat metodval,
-    inte bevis för att en lönekund saknar momsbrott.'
+    inte bevis för att en lönekund saknar momsbrott. D2: Ren löneberedning behandlar löneuppgifter, inte
+    generellt leverantörsfakturor. Falskt löneunderlag finns i H-TJ-04; löneuttag som legitimerar brottsvinst
+    finns i H-02. H-01 prövas i separat erbjuden faktura-/bokföringstjänst och vid nytt utvidgat arbetsmoment.'
   sektorreferens: SEKTOR-REDOVISNING
   arbetsmoment:
   - Löneberedning och lönerapportering

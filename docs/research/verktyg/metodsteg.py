@@ -27,6 +27,8 @@ def profiler():
 def snapshot(rb,ut):
     ut.mkdir(parents=True,exist_ok=False)
     (ut/'regelbas.json').write_text(rb.model_dump_json(indent=2))
+    from riskanalys.drift.modellidentitet import modellfilmanifest
+    (ut/'modellfilmanifest.json').write_text(modellfilmanifest(rb).model_dump_json(indent=2))
     resultat={}
     for namn,fil,profil in profiler():
         b=bedom(rb,valj(rb,profil.byra.regelpaket,profil.byra.datum,profil.byra.lan),profil)
