@@ -20,7 +20,8 @@ def test_v7_en_del_med_bevarade_aldre_delar_och_v8_som_ny_default():
     assert len(delar_for_version(V5)) == 5
     from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION, V8
     from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION
-    assert AKTUELL_SKRIVVERSION == AKTUELL_DOKUMENTVERSION == V8
+    assert AKTUELL_SKRIVVERSION == V8
+    assert AKTUELL_DOKUMENTVERSION == 'D-ARB-resultat-v9'
 
 
 def test_v7_prompt_kedja_omfang_och_kallbunden_kontroll():

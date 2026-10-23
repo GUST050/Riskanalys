@@ -1,4 +1,5 @@
 import threading
+from http.client import HTTPConnection
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from urllib.parse import urlencode
@@ -64,7 +65,20 @@ def test_okanda_vagar_och_stor_kropp(webb):
     s,t=webb
     assert anrop(s,'../../profil.yaml')[0]==404
     assert anrop(s,'skapa',{'csrf':s.csrf,'stor':'x'*70000})[0]==413
-    assert anrop(s,'svar',{'csrf':s.csrf}, {'Transfer-Encoding':'chunked'})[0]==400
+    # Servern avvisar redan headers. Skicka ingen chunk-trailer efter avslaget:
+    # urllib kan annars få BrokenPipe innan det hinner läsa det korrekta 400-svaret.
+    c=HTTPConnection(*s.server_address,timeout=5)
+    try:
+        c.putrequest('POST',s.prefix+'svar')
+        for namn,varde in {'Origin':s.origin,'Content-Type':'application/x-www-form-urlencoded',
+                           'Content-Length':'0','Transfer-Encoding':'chunked'}.items():
+            c.putheader(namn,varde)
+        c.endheaders()
+        svar=c.getresponse()
+        assert svar.status==400
+        assert 'Ogiltig formulärlängd' in svar.read().decode()
+    finally:c.close()
+    assert not t.finns()
 
 
 @pytest.mark.fullkedja

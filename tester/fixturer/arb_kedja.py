@@ -80,7 +80,7 @@ def v6_kedja(rb: Regelbas, profil: Profil, *, analys: Analyspaket | None = None,
     """Nytt dokument genom den publika byggvägen; den ska alltid ge v6."""
     urval, bedomning = bedom_kedja(rb, profil)
     resultat, anrop = skriv(rb, profil, bedomning)
-    dokument = bygg_arb(rb, profil, bedomning, resultat, historik, analys=analys)
+    dokument = bygg_arb(rb, profil, bedomning, resultat, historik, analys=analys, formatversion=V6)
     assert dokument.formatversion == V6, dokument.formatversion
     return Kedja(urval, bedomning, resultat, dokument, anrop, analys)
 

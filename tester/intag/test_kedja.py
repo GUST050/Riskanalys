@@ -5,7 +5,7 @@ from riskanalys.bedomning.korning import kor_bedomning, las_bedomning
 from riskanalys.dokument.delskrivning import FORMATVERSION
 from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION as DOKUMENTFORMAT
 from riskanalys.dokument.leverantor import Testleverantor
-from riskanalys.dokument.skrivversion import delar_for_version
+from riskanalys.dokument.skrivversion import delar_for_version, AKTUELL_SKRIVVERSION
 from riskanalys.dokument.underlag import tjanster_med_avsnitt
 from riskanalys.faststallelse.faststall import FASTSTALLDA
 from riskanalys.dokument.modeller import AvsnittsUtkast
@@ -17,7 +17,7 @@ from tester.fixturer.m2 import bygg_delsvar as historiska_delsvar
 
 
 def bygg_delsvar(rb, profil, bedomning):
-    return historiska_delsvar(rb, profil, bedomning, formatversion=DOKUMENTFORMAT)
+    return historiska_delsvar(rb, profil, bedomning, formatversion=AKTUELL_SKRIVVERSION)
 
 
 def test_hel_kedja_ger_word_utan_fritext_till_ai(tmp_path, rb_intag, klar):
@@ -32,10 +32,13 @@ def test_hel_kedja_ger_word_utan_fritext_till_ai(tmp_path, rb_intag, klar):
     dokument=Document(fil)
     alltext='\n'.join([*(p.text for p in dokument.paragraphs),
                        *(c.text for t in dokument.tables for r in t.rows for c in r.cells)])
-    assert text in alltext and 'UTKAST' in alltext
+    delar_filer=tuple(fil.parent/n for n in ('allman-riskbedomning-UTKAST.docx','analysbilaga-UTKAST.docx','underlagsbilaga-UTKAST.docx'))
+    assert all(p.is_file() for p in delar_filer)
+    fulltext='\n'.join(p.text for f in delar_filer for p in Document(f).paragraphs)
+    assert text in fulltext and 'UTKAST' in alltext
     assert (fil.parent/'underlagsbilaga-UTKAST.docx').is_file()
     # Aktuell standard: delordningen bestäms av det verkliga formatet.
-    delar = delar_for_version(DOKUMENTFORMAT)
+    delar = delar_for_version(AKTUELL_SKRIVVERSION)
     tjanster=tjanster_med_avsnitt(b)
     assert len(tjanster) == 3
     assert len(provider.delanrop) == len(delar)*len(tjanster) == 3

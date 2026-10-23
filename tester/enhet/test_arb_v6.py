@@ -45,7 +45,7 @@ def test_v6_oversikt_forst_ogranskad_analys_och_berakning_i_b1(v6underlag):
     bilaga = d.avsnitt_med_id()['D-ARB.B1']
     assert len([t for t in bilaga.tabeller if t.id.endswith('-utfall')]) == len(v6underlag[3])
     assert not any(t.id.endswith('-utfall') for a in d.avsnitt[:-1] for t in a.tabeller)
-    assert bygg_arb(*v6underlag, analys=None) == d
+    assert bygg_arb(*v6underlag, analys=None, formatversion="D-ARB-tjanst-v6") == d
 
 
 def test_v6_visar_separat_utvarderings_och_uppdateringsdatum(v6underlag):
@@ -82,7 +82,7 @@ def test_v6_avvisar_historiska_femdelar_i_ny_byggvag(v6underlag):
     gamla = {id: skriv_tjanst(Testleverantor([godkant_delsvar(d, t) for d in ('hot', 'sarbarheter', 'kontroller', 'risknivaer', 'slutsatser')]),
         rb, p, t, id, effort='medium', personnamn=(), spara=lambda *a: None, formatversion='D-ARB-tjanst-v5') for id, t in tjanster_med_avsnitt(b)}
     with pytest.raises(RiskanalysFel, match='identitet'):
-        bygg_arb(rb, p, b, gamla, h)
+        bygg_arb(rb, p, b, gamla, h, formatversion="D-ARB-tjanst-v6")
 
 
 def test_v6_langdvarning_vid_4700_ord_bevarar_hela_lokala_analysen(v6underlag):

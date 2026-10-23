@@ -1,3 +1,15 @@
+# Resultatrapport R4–R7 – tekniskt slutverifierad 2026-10-23
+
+R4–R7 är genomförda på `codex/kravstod-tjansteexponering`. Nya rapportbyggen använder V9: resultatrapport, fullständig analysbilaga A och underlagsbilaga B1 i ett gemensamt paket. Granskning, sakgranskning, atomisk export/fastställelse, historisk verifiering och tre skyddade nedladdningar ingår. Inga nya sakfrågor eller AI-anrop; riskmodellens filer och regelbas är oförändrade.
+
+**Färsk fullsvit: 3436 godkända, ett liveprov bortvalt, noll fel/överhoppade prov, exit 0**, Python 3.12.15, 2159,897 s inklusive collection. Snabb **140/44,751 s**. Exakt collection/JUnit och 816 oförändrade kod-/test-/regel-/verktygsresurser. Regelbas-/diffkontroll passerar. Första fullkörningens historiska M2-formatantagande och den andra körningens reproducerade HTTP-testklientrace rättades före denna nya kompletta slutgrind; alla råbevis är bevarade.
+
+Två faktiska provpaket med ofiltrerade 430/438 maskinfynd har resultatrapporter på **7/8 PDF-sidor**; A **37/39**, B1 **183/190**. Hela bilagornas sidlayout är granskad via kontaktark, med särskild omkontroll av ändrade sidor. Huvudrapporten är kortare; hela paketet blir 2 711/3 363 ord längre enligt samma-fakta-kontraktet. Analysprofilen överskrider 180-sekundersmålet; ingen ny testoptimering ingår.
+
+[Underlag till Claude, acceptansmatris och alla Word-/PDF-filer](superpowers/reviews/2026-10-23-resultatrapport-r4-r7.md). Formatbyte kräver ny sakgranskning av alla tre delarna. Befintlig V8-uppdatering behåller sitt sparade format och historiska fastställda bytes bevaras. Grenen lämnas lokalt för användarens Claude-granskning; ingen push eller merge.
+
+## Föregående kontrollpunkter – historik
+
 # Resultatrapport R3 – tre frysta Word-delar för granskning 2026-10-23
 
 Användaren har gett uttryckligt klartecken till R3 efter Claude-granskning av R2 på `35b5be0`. R3 är implementerad med strikt fryst presentation, leveransmall, tre Word-filer och läsbara hänvisningar mellan filerna. Användarens fyra R3-förfiningar är gjorda. Riskmodellfiler och regelbas är orörda; inga nya frågor eller AI-anrop tillkommer.

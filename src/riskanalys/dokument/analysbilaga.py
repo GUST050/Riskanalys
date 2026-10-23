@@ -32,6 +32,6 @@ def analysbilaga(paket, profil, rb, index, brister):
         for b in t.block:
             poster.append(lokaltext(f'{tjanstnamn}, analysblock {b.nummer}: {b.aktivering}. {b.motivering} '
                 + ('Innehållsbekräftelse registrerad: '+b.bekraftad_summa+'.' if b.bekraftad_summa else 'Ingen innehållsbekräftelse registrerad.')))
-    for brist in brister:
+    for brist in sorted(brister):
         poster.append(lokaltext('Kompletteringspunkt: '+brist+' [VERIFIERA]'))
     return tuple(poster)

@@ -49,6 +49,8 @@
     "tester/enhet/test_tredelstexter_v9.py",
     "tester/enhet/test_rapportpaket_v9.py",
     "tester/enhet/test_resultatgranskning_v9.py",
-    "tester/intag/test_resultatrapport_v9.py"
+    "tester/intag/test_resultatrapport_v9.py",
+    "tester/enhet/test_resultatrapport_cli.py",
+    "tester/enhet/test_rapportmatning_v9.py"
   ]
 }

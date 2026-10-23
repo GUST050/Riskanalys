@@ -69,7 +69,8 @@ def kedja(tmp_path,paket,lan,negativ=None):
     kor(env,'skriv','testbyra','--leverantor','test','--testsvar',str(fil),*arg)
     kor(env,'utvardera','testbyra','--beskrivning','Syntetisk teknisk prövning','--datum',str(DAG))
     godkann_syntetisk_analys(byra,rb,mapp,senaste_korning(byra,'utkast','skriv'),tmp_path/'lokala-underlag',DAG)
-    kor(env,'granska','testbyra','--datum',str(DAG),*arg)
+    # Denna historiska tvådelskedja prövar V8; V9-standarden har egna kedjeprov.
+    kor(env,'granska','testbyra','--datum',str(DAG),'--rapportformat','v8',*arg)
     kor(env,'exportera','testbyra','--utkast','--datum',str(DAG),*arg)
     d,f=las_granskning(senaste_korning(byra,'granskning','granska'))
     assert d.formatversion == 'D-ARB-tjanst-v8'

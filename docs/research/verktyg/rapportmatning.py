@@ -1,7 +1,7 @@
-"""Mät V8-rapporten för H7.1:s fyrtjänstfall: ord per avsnitt och leveransdel, och upprepade stycken.
+"""Mät V8- eller V9-rapporten för H7.1:s fyrtjänstfall: ord per avsnitt och leveransdel, och upprepade stycken.
 
 Syntetiska uppgifter och Testleverantor; inga AI-anrop. Körs från repots rot:
-.venv/bin/python docs/research/verktyg/rapportmatning.py [H7.1-fall, standard fyra_tjanster]
+.venv312/bin/python docs/research/verktyg/rapportmatning.py [H7.1-fall, standard fyra_tjanster]
 """
 import argparse
 import json
@@ -43,6 +43,7 @@ def main(argv=None):
     parser.add_argument("fall",nargs="?",default="fyra_tjanster")
     parser.add_argument("--analys-schema",type=int,choices=(1,2),default=None)
     parser.add_argument('--analyslage',choices=('schema1','direkt2','overforing2'))
+    parser.add_argument('--rapportformat',choices=('v8','v9'),default='v8')
     args=parser.parse_args(argv)
     from docs.research.verktyg.analyslagen import valj_lage,bygg
     lage=valj_lage(parser,args.analyslage,args.analys_schema)
@@ -55,11 +56,15 @@ def main(argv=None):
         f = bygg(rb,Path(rot).resolve(),fall,lage)
         svar=skriv(f)
         def hashv(v):return 'sha256:'+sha256(json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
-        print('Mätkontrakt:',json.dumps({'format':'D-ARB-tjanst-v8','analys_schema':f.analys.schemaversion,'analyslage':lage,'arbetsbord':f.arbetsbord,
+        print('Mätkontrakt:',json.dumps({'format':'D-ARB-resultat-v9' if args.rapportformat=='v9' else 'D-ARB-tjanst-v8','analys_schema':f.analys.schemaversion,'analyslage':lage,'arbetsbord':f.arbetsbord,
             'tillstand':'syntetiska ogranskade svar; överföringsoriginal bevaras enbart i overforing2',
             'profil':hashv(f.profil.model_dump(mode='json')),'motor':hashv(f.bedomning.model_dump(mode='json')),
             'skrivsvar':hashv(frysta_skrivsvar(svar)),'regelbas':rb.kontrollsumma},ensure_ascii=False,sort_keys=True))
-        d = bygg_arb_v8(rb, f.profil, f.bedomning, svar, Historik(), analys=f.analys)
+        if args.rapportformat=='v9':
+            from riskanalys.dokument.arb_v9 import bygg_resultatpaket_v9
+            d=bygg_resultatpaket_v9(rb,f.profil,f.bedomning,svar,Historik(),analys=f.analys).dokument
+        else:
+            d = bygg_arb_v8(rb, f.profil, f.bedomning, svar, Historik(), analys=f.analys)
     delar = defaultdict(int)
     rader = []
     texter = []

@@ -60,6 +60,12 @@ def fulla_fynd(texter):
                   for pos, id in zip(g['positioner'], g['id'], strict=True))
 
 
+@pytest.fixture(autouse=True)
+def historiskt_v8_flode(monkeypatch):
+    from riskanalys.dokument import rapportversion
+    monkeypatch.setattr(rapportversion,'AKTUELL_DOKUMENTVERSION',rapportversion.V8)
+
+
 def bygg_flode(rb, rot, namn, *, reserv=False, maxtext=False, leverantorstyp=Testleverantor):
     f = bygg_rapportlasprov(rb, rot, namn)
     # JSON:s Any-värden saknar datumtyp; vanligt intag lagrar riktiga date-objekt.

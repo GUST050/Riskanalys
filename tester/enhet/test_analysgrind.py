@@ -13,6 +13,15 @@ DAG = date(2026, 10, 15)
 V6 = 'D-ARB-tjanst-v6'
 
 
+@pytest.fixture(scope='module',autouse=True)
+def historiska_analysgrindar():
+    # Även modulfixturen ska bygga med dåtidens standard. V9 provas separat.
+    from riskanalys.dokument import rapportversion
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(rapportversion,'AKTUELL_DOKUMENTVERSION',rapportversion.V8)
+        yield
+
+
 @pytest.fixture
 def profil(regelbas, profil_fabrik, real_varden):
     return profil_fabrik(regelbas, real_varden)

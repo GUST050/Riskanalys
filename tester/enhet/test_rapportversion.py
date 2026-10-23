@@ -8,9 +8,9 @@ def test_en_enda_aktuell_dokumentversion():
     assert skrivversion.AKTUELL_SKRIVVERSION == skrivversion.V8
 
 
-def test_flyttad_konstant_bevarar_v8_standard_fore_inforande():
+def test_enkel_konstant_valjer_v9_for_nya_rapporter():
     from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION
-    assert AKTUELL_DOKUMENTVERSION == 'D-ARB-tjanst-v8'
+    assert AKTUELL_DOKUMENTVERSION == 'D-ARB-resultat-v9'
 
 
 def test_v6_v7_byggare_far_inte_v9_som_skrivformatsfallback(monkeypatch):

@@ -29,3 +29,12 @@ Första omlagda fullsviten gav 3 214 godkända prov på 27 min 40 s; uppskattnin
 Slutversionen på källbas `2644122` har **115 prov/36,155 s** i snabbprofilen, **230/169,342 s** i analysprofilen och **3 308/1 795,884 s** i fullprofilen (väggtid inklusive collection). Ett liveprov bortvalt, noll failures/errors/skipped, exakt collection/JUnit och 783 oförändrade program-/test-/regelresurser. Den sista sviten innehåller även förenklingens nya prov. Fullsviten är fortsatt längre än 22–25-minutersuppskattningen; snabb-/analysmålen nås. [Samlad leveranskontroll](superpowers/reviews/2026-10-22-engangssvar-slutprov.md).
 
 Efter rättningen av scenarioavvikelse och D9-sammanfattning, källcommit `5c40412`: **snabb 119/34,784 s**, **analys 234/168,856 s**, **full 3 315/1 786,302 s inklusive collection**. Ett liveprov bortvalt, noll failures/errors/skipped, exakt collection/JUnit och 783 aktuella resurser oförändrade. AGENTS regel 6 är oförändrad. [Senaste rättning och bevis](superpowers/reviews/2026-10-22-svar-claude-scenario-d9.md).
+
+
+## Resultatrapport V9, slutkontroll 2026-10-23
+
+Slutlig snabbprofil: **140 godkända / 44,751 s**. Slutlig fullprofil: **3436 godkända / 2159,897 s**, inklusive collection, Python 3.12.15. Ett liveprov bortvalt i fullprofilen; noll failures/errors/skipped, exakt collection/JUnit och samma 816 oförändrade resurser i snabb/full. Körningarnas HEAD är `13a377e` med ocommittade R7-ändringar; det provade innehållet binds av snapshotet `518813e783dfba1f927800bd6b3d68578eb557362b1e6f4c8b09b2c64e1ef79d` och verifieras på nytt efter leveranscommit.
+
+Analysprofilen innehåller 293 prov, inklusive V9-granskning/export, visad CLI-sakgranskning och tre HTTP-nedladdningar. Den gav **293/376,465 s** före de två sista testhjälparrättningarna och kördes inte separat på nytt; hela urvalet ingår i den slutliga fullprofilen. Analysprofilen överskrider det tidigare målet 180 s. Ingen bortsortering av dyra ordinarie prov eller ytterligare testoptimering ingår.
+
+Historiska V6/V7/V8-fixturer väljer sina sparade format uttryckligen. En kvarvarande V8-hårdkodning i M2-CLI-kedjan rättades med fem reproducerande fall. Ett intermittent BrokenPipe i det äldre HTTP-testet reproducerades och rättades i testklientens framing; HTTP 404/413/400-kontrollerna är kvar, utan återförsök eller högre timeout. Hela webbfilen gav 14 gröna prov och 500 faktiska upprepade trestegsförlopp passerade. Fullsviten omfattar även dessa ändringar. [Slutprov och alla råbevis](superpowers/reviews/2026-10-23-resultatrapport-r4-r7.md).

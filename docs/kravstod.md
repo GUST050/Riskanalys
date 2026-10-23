@@ -1,4 +1,37 @@
-# Planer och kombinationsgrupper
+# Resultatrapport, analysbilaga och underlag
+
+Nya rapportbyggen använder nu resultatrapporten (V9). Byrån lämnar samma gemensamma svar och tjänstevisa prövningar som tidigare. Rapportbytet tillför inga sakfrågor eller AI-anrop.
+
+- **Resultatrapport:** sammanfattning, riskutfall, gemensamma scenarier, tjänsternas skillnader, hela PT-/TF-motiveringarna och åtgärder.
+- **Analysbilaga A:** hela den utförliga analysen, med hänvisningar från resultatrapporten.
+- **Underlagsbilaga B1:** originaluppgifter, beräkningar, belägg och fullständiga maskinfynd.
+
+Alla tre delarna hör till samma paket och fastställs tillsammans med ett gemensamt manifest. En utkastsexport kan innehålla öppna brister; den är inte en fastställd riskbedömning. Långa motiveringar återges hela även när rapporten därför överskrider sidmålet.
+
+## Skapa eller uppdatera rapporten
+
+I det lokala intaget visas tre nedladdningar: **Resultatrapport**, **Analysbilaga** och **Underlagsbilaga**. Samma aktualitets- och integritetskontroll gäller för alla tre. Ett äldre V8-utkast uppdateras i sitt sparade format. Välj den särskilda handlingen att skapa resultatrapporten när ett formatbyte önskas; originalet bevaras och AI-texterna används på nytt utan AI-anrop.
+
+CLI kan välja format uttryckligen:
+
+```sh
+riskanalys granska BYRA --rapportformat v9
+riskanalys exportera BYRA
+riskanalys sakgranska BYRA --resultatrapport
+```
+
+Det sista kommandot visar hela resultatrapporten och dess aktuella struktursumma. Efter faktisk läsning kan exakt alla R-avsnitt godkännas samlat:
+
+```sh
+riskanalys sakgranska BYRA --resultatrapport --godkann --visad-struktursumma VISAD_SUMMA --namn 'Sakgranskare' --roll FfR
+```
+
+Det godkänner inte A eller B1. Bilagornas ordinarie sakgranskning, analysgodkännanden och övriga fastställelsekrav kvarstår. Fel eller inaktuell summa sparar inga R-attester. Vid formatbyte krävs förnyad sakgranskning av alla tre delarna, även när analysen är oförändrad; gamla V8-attester förs inte över. Nya rapportbyggen använder V9 som standard, medan `--rapportformat v8` fortfarande kan skapa V8 uttryckligen. Historiska fastställda paket verifieras från sparade bytes utan omrendering.
+
+Huvudrapporten är kortare; hela paketet är något längre eftersom analysen finns kvar i A. [Slutprov, mätning och samtliga provfiler för Claude](superpowers/reviews/2026-10-23-resultatrapport-r4-r7.md).
+
+## Planer och kombinationsgrupper
+
 
 Programmet har lokalt underlag för förändringar och samtidig exponering. Riskmotorns metod är oförändrad. Planantaganden och grupper skickas inte till AI och tolkas inte automatiskt till poäng.
 
@@ -56,7 +89,7 @@ beskrivning: 'Planerade bokslutsuppdrag för ägarledda bolag med bankunderlag v
 uppgifter: {}
 ```
 
-V8 behålls. Gemensamma mekanismer för aktiverade faktorer står i D-ARB.5, lokal tillämpning och grupper vid tjänsten, fullständiga motorberäkningar samt planunderlag och förändringsutvärderingar i B1. Läsrapport och B1 utgör tillsammans dokumentationen. Exporten ersätter inte verksamhetens information, utbildning eller sakliga utvärdering.
+Den fullständiga analysens gemensamma mekanismer för aktiverade faktorer står i D-ARB.5 i A, lokal tillämpning och grupper vid tjänsten i A, fullständiga motorberäkningar samt planunderlag och förändringsutvärderingar i B1. I V9 utgör resultatrapport, A och B1 tillsammans dokumentationen; V8:s äldre läsrapport och B1 bevaras i äldre paket. Exporten ersätter inte verksamhetens information, utbildning eller sakliga utvärdering.
 
 ## Uppgradering av befintlig installation
 
@@ -78,7 +111,7 @@ Riskmotorn behåller de beslutade reglerna. En belagd lägre bedömning än moto
 
 En egen sårbarhet utan katalogfaktor behöver uttrycklig täckningsprövning för varje påstått hot och dimension. Pröva inneboende risk för varje egen risk och dessutom kvarstående risk när motorn sänker det berörda scenariot genom kontroll. Välj befintligt lokalt scenario, samma hot/dimension/riskled och en motiverad jämförelsenivå. Varje nödvändigt riskled har en separat länk och prövning. Beskriv hur mekanismen faktiskt täcks och ange belägg. En hög allmän tjänstenivå eller en PT-nivå täcker inte i sig ett annat hot eller TF. Bredvid jämförelsenivån visas en kontrafaktisk referens: befintligt motorscenario med ytterligare +1-faktor och samma kontrollantaganden. Referensen är inget facit och ändrar inte utfallet. En nivå under referensen behöver uttrycklig referensmotivering och sakgranskning. Ändrat underlag gör den tidigare prövningen inaktuell.
 
-Gemensamma mekanismer och byråposter står i D-ARB.5. Varje tjänst visar sin tillämpning, avvikelser och osäkerhet. Originalfält, fulla beräkningar och D9-underlag bevaras i B1. Läsrapport och B1 utgör tillsammans bedömningen. Inga privata analysuppgifter, tillämpningar eller täckningsprövningar skickas till AI. Metodbesluten D3/D9 och införandet av nya riskvikter ingår inte.
+Gemensamma mekanismer och byråposter står i D-ARB.5 i analysbilagan. Varje tjänst visar sin tillämpning, avvikelser och osäkerhet. Originalfält, fulla beräkningar och D9-underlag bevaras i B1. Resultatrapporten sammanfattar med hänvisningar; alla tre delarna utgör tillsammans bedömningen. Inga privata analysuppgifter, tillämpningar eller täckningsprövningar skickas till AI. Metodbesluten D3/D9 och införandet av nya riskvikter ingår inte.
 
 ### Uttrycklig överföring av en äldre analys
 
@@ -105,7 +138,7 @@ Besvara gemensamma sårbarhets- och verksamhetsfrågor en gång i **Gemensam byr
 
 Ordningen är gemensam bekräftelse → eventuella egna täckningsprövningar → tjänstegenomgång. Om en egen täckningsprövning bygger på ett gemensamt scenario väljs det bärande scenariot uttryckligen före prövningen. Alla nödvändiga hot, PT/TF och riskled måste täckas; en för låg jämförelsenivå behöver uttrycklig motivering. Senare ändrad prövning gör tjänstegenomgången inaktuell. En ändrad gemensam post kräver ny gemensam jämförelse/bekräftelse och nya beroende genomgångar; paketets analysbeslut förnyas enligt befintlig bindning.
 
-För ett komplett fyrtjänstfall är det en gemensam och fyra tjänstebekräftelser **efter svarsinmatning**, inte fem totala klick. Öppna kontroll-, underlags- och metodbrister behöver fortfarande lösas. Rapportläsprovens avsiktliga luckor är därför kvar, och rapporten är inte generellt kortare.
+För ett komplett fyrtjänstfall är det en gemensam och fyra tjänstebekräftelser **efter svarsinmatning**, inte fem totala klick. Öppna kontroll-, underlags- och metodbrister behöver fortfarande lösas. Rapportläsprovens avsiktliga luckor är därför kvar och löses inte genom att byta rapportformat. Resultatrapportens kortare läsvy tar inte bort underlaget i bilagorna.
 
 CLI har samma handlingar: `analys BYRA --bekrafta-byraunderlag FIL --revision SUMMA --forfattare NAMN` med filens exakta `tjanster` och typade `celler` (tjänst, slag, post, postsumma), samt `--bekrafta-tjansteunderlag TJANST_ID`. De skapar inga analysbeslut. Mätverktygen har `--analyslage schema1|direkt2|overforing2`; de gamla standardlägena och rapportmätningens `--analys-schema` är bevarade. Motstridiga lägesflaggor avvisas.
 

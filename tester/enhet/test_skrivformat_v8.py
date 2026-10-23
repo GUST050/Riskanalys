@@ -34,7 +34,8 @@ def test_v8_egen_identitet_och_explicit_provvag(bas):
     res, anrop = skriv(rb, p, t, [provsvar(rb, p, t)])
     assert delar_for_version(V8) == ('analys',)
     # H7.6:s slutaktivering: explicit V8-väg och normalväg har nu samma kontrakt.
-    assert AKTUELL_SKRIVVERSION == AKTUELL_DOKUMENTVERSION == V8
+    assert AKTUELL_SKRIVVERSION == V8
+    assert AKTUELL_DOKUMENTVERSION == 'D-ARB-resultat-v9'
     assert len(anrop) == 1 and res.del_('analys').godkant_svar
     assert Tjanstresultat.model_validate_json(res.model_dump_json()) == res
     kontrollera_resultat(rb, p, t, res, 'D-ARB.6.1', formatversion=V8)

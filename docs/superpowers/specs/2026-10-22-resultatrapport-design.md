@@ -233,3 +233,23 @@ Underlaget skiljer krav från produkt-/metodval, använder aktuell före-bas, an
 - Delning mellan tjänster är uttryckligen tillåten utan att olika kontrollutfall, statusar eller belägg slås ihop. Rapporten förklarar när flera scenarier var för sig ger slutnivån.
 - Befintlig dokumentversionskonstant flyttas och blir enda standardvalet; det tidigare förslaget med två överlappande konstanter utgår.
 - Två PDF-förhandsvisningar och användarens klartecken efter R2 är ett obligatoriskt villkor före R3–R7. Förnyad sakgranskning av befintliga utkast anges som en faktisk arbetskostnad.
+
+
+## Genomförandepreciseringar R4–R7, 2026-10-23
+
+Användaren har efter granskad R3 uttryckligen godkänt R4–R7. De tidigare designmålen och R2:s genomförda PDF-kontrollpunkt bevaras som historik. Utfallet och leveransgrinden redovisas i [slutprovet](../reviews/2026-10-23-resultatrapport-r4-r7.md).
+
+Den fullständiga maskinfyndlistan fryses fortsatt efter granskningen och påverkar inte sin egen granskning rekursivt. I verkliga syntetiska prov innehåller den 430 respektive 438 fynd. Resultatrapporten visar antal per allvar/status samt en uttrycklig hänvisning till hela den grupperade listan i B1. Den upprepar inte ett separat stycke för vart och ett av B1:s 225/229 fyndgrupper. Varje fynds ursprungliga ID, status, plats och hela beskrivning finns kvar i B1 och den frysta presentationen; ingen brist accepteras eller försvinner genom grupperingen. Lokala analysluckor och åtgärder redovisas fortsatt i R6. Detta ersätter den första renderingspolicyns långa fyndindex i R och är versionsbundet som `V9-lokala-original-2`.
+
+Den exakta programformuleringen om två delar under B1:s råa lokalsvar ingår nu i transformationslistan med källpointer och originaltext. Den frysta V8-källan, byråns egna original och AI-original ändras inte. Bilaga A:s källförteckning visas som A15. Utkastets inledning säger att paketet blir verifierbart när det fastställs med alla tre delar och ett gemensamt manifest.
+
+Endast fastställelseflödet kan använda slutstatus i V9-renderaren efter ordinarie grindar. Ett vanligt renderingsanrop med version/beslutsorgan avvisas utan att skriva en fastställd fil. Formatkontrollen vid fastställelse använder paketets sparade format och AI:s separata skrivformat, inte standardversionen för nya byggen.
+
+Kompletteringspunkter i analysbilagans byggnad sorteras deterministiskt. De hämtades tidigare ur en mängd med processberoende ordning, vilket kunde göra oförändrat fryst underlag olika vid återbyggnad. Rättningen bevarar samtliga punkter och gäller presentation, inte riskmetod eller riskmodellens identitet. Redan fastställda paket omrenderas inte.
+
+V9 är standard för nya rapportbyggen; skrivformatet är fortsatt V8. Vanlig uppdatering bevarar ett tidigare V8-utkasts format. Ett uttryckligt formatbyte bygger separat granskning/export utan nya AI-anrop och kräver ny sakgranskning. Samlad resultatgranskning omfattar exakt R-avsnitten och binds till visad struktur, hela presentationen och analysregistret; A/B1 godkänns separat.
+
+Den rådgivande omfattningsvarningen aktiveras vid fler än fyra tjänster eller över 4 000 ord i huvudtexten. Den är ingen valideringsgräns, stoppar inte export och tar inte bort text. Scenariotabeller delas med högst fyra tjänstekolumner. Läsbarheten behålls med Arial 11 punkter i brödtext, minst 9,5 i tabeller samt V8:s A4/marginaler.
+
+
+**Tekniskt slututfall:** R4–R7 är genomförda, med faktiska huvudrapporter på 7/8 PDF-sidor och fullständig A/B1 bevarad. Slutlig fullprofil 3436 godkända, ett liveprov bortvalt, noll fel/skip och 816 oförändrade resurser. Fullständig mätning, testhistorik, visuellt kontrollomfång, filer och återstående externa Claude-granskning finns i slutprovet ovan.

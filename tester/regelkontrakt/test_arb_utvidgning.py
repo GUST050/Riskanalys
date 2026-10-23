@@ -277,7 +277,7 @@ def test_andrad_deterministisk_tjanstanalys_blockeras(regelbas_v1,v6underlag,lok
     # tjänstens lokala tabell över faktisk kontroll; Slutsatser -> det lokala Slutsats-stycket.
     rb,p,b,resultat,h=v6underlag
     urval=valj(rb,p.byra.regelpaket,b.datum,p.byra.lan)
-    d=bygg_arb(rb,p,b,resultat,h,analys=lokal)
+    d=bygg_arb(rb,p,b,resultat,h,analys=lokal,formatversion="D-ARB-tjanst-v6")
     def blockerat(dokument,id):
         return any(f.avsnitt==id and f.allvar=='blockerande' for f in
                    granska(rb,urval,p,b,dokument,h,DAG,skrivresultat=resultat,analys=lokal))

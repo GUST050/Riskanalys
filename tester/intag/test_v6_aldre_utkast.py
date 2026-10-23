@@ -24,6 +24,12 @@ NY_SKRIVNING = "Kör 'riskanalys skriv' igen"
 NY_GRANSKNING = "riskanalys granska"
 
 
+@pytest.fixture(autouse=True)
+def historisk_byggstandard(monkeypatch):
+    from riskanalys.dokument import rapportversion
+    monkeypatch.setattr(rapportversion,'AKTUELL_DOKUMENTVERSION',rapportversion.V8)
+
+
 def _aldre_utkast(rb, profil, t, avsnitt_id):
     """Ett godkänt utkast i den äldre skrivarens schema, utan tjänstidentitet."""
     stycke = Textstycke(typ="analys", text="Syntetisk text från den äldre skrivaren.", referenser=[t.tjanst])

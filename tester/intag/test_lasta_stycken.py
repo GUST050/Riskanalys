@@ -292,7 +292,7 @@ def _hela_dokumentet(tmp_path, rb, profil):
     lev = Testleverantor([godkant_delsvar(d, t) for d in ("hot", "sarbarheter")])
     res = skriv_tjanst(lev, rb, profil, t, avsnitt_id, effort="medium", personnamn=(), spara=lambda d, f: None, formatversion="D-ARB-tjanst-v6")
     b = bedom(rb, valj(rb, profil.byra.regelpaket, DAG, profil.byra.lan), profil)
-    return bygg_arb(rb, profil, b, {avsnitt_id: res}, Historik())
+    return bygg_arb(rb, profil, b, {avsnitt_id: res}, Historik(), formatversion="D-ARB-tjanst-v6")
 
 
 def test_loptexten_saknar_katalogkoder_och_kontrollsummor_utom_i_bilaga_b1(tmp_path, rb_intag, klar):
