@@ -126,7 +126,7 @@ def test_rackvidd_andrar_inte_motorutfall(regelbas_v1, profil_fabrik, real_varde
 
 def test_katalogens_rackvidd_ar_ogranskad_och_avgransad(regelbas_v1):
     rb = regelbas_v1
-    assert rb.version == "2.1.0"
+    assert rb.version == "2.12.1"
     assert not validera(rb)
     for t in rb.tjanster.values():
         for id in t.kontroller:

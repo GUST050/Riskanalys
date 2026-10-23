@@ -6,6 +6,12 @@ from riskanalys.dokument.resultatmodell_v9 import pointerdel
 from riskanalys.dokument.faktorstatus_v10 import rapportbelagd
 
 
+def med_falttext(prefix, varde, suffix, refs):
+    """Programmall med exakt bokstavligt profilvärde mellan mallens delar."""
+    post=stycke(prefix+varde+suffix,refs)
+    return post.model_copy(update={'literala_spann':((len(prefix),len(prefix)+len(varde)),) if varde else ()})
+
+
 def avsnitt(nummer, rubrik, stycken=(), tabeller=()):
     return Avsnitt(id='D-ARB.R' + nummer, rubrik=rubrik, kalla='regelbas',
                    stycken=tuple(stycken), tabeller=tuple(tabeller), formatversion=V10,

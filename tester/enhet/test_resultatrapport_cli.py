@@ -1,10 +1,12 @@
 """Verkliga CLI-val och attestbindning mot en isolerad syntetisk kedja."""
 from pathlib import Path
 import shutil
+import pytest
 from tester.fixturer.resultatkedja import resultatkedja_bas,resultatkedja,DAG
 
 
-def test_cli_ny_standard_och_samlad_granskning(resultatkedja,tmp_path,monkeypatch,capsys):
+@pytest.mark.parametrize('rapportformat',[None,'v9'])
+def test_cli_ny_standard_och_samlad_granskning(resultatkedja,tmp_path,monkeypatch,capsys,rapportformat):
     from riskanalys.cli import main
     from riskanalys.granskning.korning import las_granskning
     from riskanalys.lagring.korningar import senaste_korning
@@ -15,9 +17,9 @@ def test_cli_ny_standard_och_samlad_granskning(resultatkedja,tmp_path,monkeypatc
     k=resultatkedja;data=tmp_path/'data';byra=data/k.fall.profil.byra.id
     shutil.copytree(k.fall.byramapp,byra);monkeypatch.setenv('RISKANALYS_DATA',str(data))
     grund=[byra.name,'--regelbas',str(k.regelrot),'--datum',DAG.isoformat()]
-    assert main(['granska',*grund])==0
+    assert main(['granska',*grund,*(['--rapportformat',rapportformat] if rapportformat else [])])==0
     gm=senaste_korning(byra,'granskning','granska')
-    d,_=las_granskning(gm);assert d.formatversion=='D-ARB-resultat-v9'
+    d,_=las_granskning(gm);assert d.formatversion==('D-ARB-resultat-v9' if rapportformat=='v9' else 'D-ARB-resultat-v10')
     spara_sakgranskningar(byra,())
     assert main(['sakgranska',*grund,'--resultatrapport'])==0
     visat=capsys.readouterr().out

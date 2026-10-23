@@ -59,3 +59,5 @@ TF är oförändrad. PEP plus ideell, även vid okänt faktiskt kundöverlapp, r
 Starkare skäl för sänkningen: den lästa källan pekar uttryckligen ut en TF-plattform, medan den tidigare PT-effekten byggde på ett konservativt arv och gemensamma kanaler. Gemensamma kanaler ensamma belägger inte den specifika organisationsformens självständiga PT-effekt. Den tidigare PT-höjningen tas därför bort i förslaget, medan faktisk kontant-, ägar-, PEP- eller flödesrisk kvarstår. Detta är ett provisoriskt relevansval; sakkunnig kan avslå det och utlöser då angivet återföringsförfarande.
 
 Fulla fall, alla sänkta led och fulla före-/efterscenarier: `.superpowers/evidens/2026-10-23-metodbeslut/kontraster2/D7-jamforelse.json`. Första kontrastprototypen använde en ogiltig statusbeteckning i okändfallet; den ersattes av validerad `saknas` och används inte som slutfacit.
+
+Kumulativ kontrast mot 2.0.0 finns nu i `kontraster3/D7-samlat-mot-2.0.0.json`: 48 sänkta led i två ekvivalenta ideellfall (sex gamla tjänster vardera). T-RED-08/09 saknar 2.0.0-nivå. Patch 2.12.1 ändrar inte dessa utfall.

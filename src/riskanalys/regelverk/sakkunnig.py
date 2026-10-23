@@ -51,9 +51,10 @@ def granskningsobjekt(rb: Regelbas, paket_id: str) -> dict[str, str]:
         for rad in rb.kundmall.rader:
             objekt[rad.id] = _summa(utan_granskningsmetadata(rad.model_dump(mode='json')))
         objekt['KUNDMETOD-C'] = rb.kundmall.c_innehallssumma()
-    from riskanalys.regelverk.metodbeslut import beslutssumma, objektindex
+    from riskanalys.regelverk.metodbeslut import beslutssumma, objektindex, filindex
     index=objektindex(rb) if rb.metodbeslut else {}
-    objekt.update({id:beslutssumma(rb,b,index=index) for id,b in rb.metodbeslut.items()})
+    filer=filindex() if rb.metodbeslut else {}
+    objekt.update({id:beslutssumma(rb,b,index=index,filer=filer) for id,b in rb.metodbeslut.items()})
     return objekt
 
 

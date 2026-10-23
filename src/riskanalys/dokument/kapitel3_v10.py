@@ -56,7 +56,7 @@ def bygg_kapitel3(rb, profil, analys):
     brister = kombinationsbrister(rb, profil)
     for i, g in enumerate(profil.kombinationsgrupper):
         k = (kallkod('profil', f'/kombinationsgrupper/{i}'),)
-        fel = [x for x in brister if x.startswith(g.id + ':')]
+        fel = [x for x in brister if x.startswith((g.id + ':',g.id + '.antal ',g.id + '.bas '))]
         if fel or g.antal.status != 'bekräftad' or g.bas.status != 'bekräftad':
             sam.append(stycke(g.id + ': Okänt; gruppen har inte fullständigt belagt underlag. ' + ' '.join(fel), k))
         else:

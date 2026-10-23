@@ -10,7 +10,7 @@ D1–D9 och D-LAGRE är inbyggda som provisoriska `metodval`, samtliga `ej_grans
 
 ## Reproducerbar evidens
 
-`.superpowers/evidens/2026-10-23-metodbeslut/` innehåller 2.0.0-baslinje och varje stegs regelbas, modellfilmanifest, tolv identiska profilvarianter och fulla tjänste-/scenarioutfall. `kontraster2/` innehåller 40 validerbara profiler, varje stegs jämförelse och två tillåtna kundfördelningar med samma 60 kunder och marginaltal 24/24/24/24 men olika faktiskt överlapp (24 respektive 12 flertjänstkunder). Inga motorvikter ändras ur marginaltalen. Verktyg: `docs/research/verktyg/metodsteg.py` och `metodkontraster.py`.
+`.superpowers/evidens/2026-10-23-metodbeslut/` innehåller 2.0.0-baslinje och varje stegs regelbas, modellfilmanifest, tolv identiska profilvarianter och fulla tjänste-/scenarioutfall. `kontraster3/` innehåller 40 validerbara profiler, varje stegs jämförelse och två tillåtna kundfördelningar med samma 60 kunder och marginaltal 24/24/24/24 men olika faktiskt överlapp (24 respektive 12 flertjänstkunder). Inga motorvikter ändras ur marginaltalen. Verktyg: `docs/research/verktyg/metodsteg.py` och `metodkontraster.py`.
 
 ## Rapport efter D – kontrollpunkt 4
 
@@ -19,3 +19,11 @@ Slutunderlag: `.superpowers/evidens/2026-10-23-rapport-v10-efter-d2/`, aktuell r
 Båda huvudrapporterna är visuellt genomgångna på kontaktark. Inga ord utanför sidgränsen. Fulla originalmotiveringar, 33 högre och fem lägre indikatorer, 15 lagexempel och samtliga Word-stycken/-celler är kontrollerade. A/B1 motsvarar V9 från samma aktuella källor bortsett från formatstämpeln; deras innehåll följer regeländringarna. Datumtyper återställs enligt fältkatalogen vid kontroll från JSON så att bokstavliga datumspann jämförs korrekt. Bilagornas alla sidor är inte visuellt genomgångna i denna kontroll.
 
 Tiorsidorsriktmärket är fortfarande inte uppnått. Ingen text har kapats. Användarens läsning/godkännande enligt kontrollpunkt 4 har begärts före E. Riktade samlade tester pågår; snabb/full återstår. Inget grönt slutbesked ges före faktisk verifiering.
+
+## Kodreview och rättning 2.12.1
+
+Fyra P2 rättade med RED→GREEN: besluten binder konservativt samtliga 244 Python-filer i appen (även transitiva hjälpare), källösa kundgrupper är okända, fria profiltexter bevaras bokstavligt i sammansatta stycken, och samtliga 40 kontraster jämförs också mot ursprungliga 2.0.0. Publik bygg_arb har fått saknad V10-dispatch, med först två röda och sedan två gröna prov. Äldre format behåller sina uttryckliga vägar.
+
+Reviewurval: 26 godkända/26,93 s; inte grön fullsvit. Slutliga PDF:er i `.superpowers/evidens/2026-10-23-rapport-v10-slutkontroll/`. D-val och riskutfall är oförändrade mot 2.12.0. Patchen rättar belägg-/text-/attestbindning.
+
+Kumulativa kontraster mot 2.0.0: 48 sänkta led och 80 borttagna scenarier. De 48 leden är två ekvivalenta ideellprofiler × sex jämförbara äldre tjänster × fyra led. D7:s stegvisa jämförelse innehåller också två nya tjänster T-RED-08/09, alltså 64 led. Dessa två saknar 2.0.0-utfall och får inte beskrivas som sänkta mot en obefintlig nivå. Fulla före-/efterutfall bevaras även för nya tjänster.

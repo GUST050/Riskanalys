@@ -92,3 +92,12 @@ def test_ny_mandatfixtur_skapa_bara_tjanstens_aktuella_hot(regelbas_v1,tmp_path)
     f=bygg_rapportlasprov(regelbas_v1,tmp_path,'med_betalningsmandat')
     for t in f.analys.tjanster:
         assert all(set(s.hot)<=set(regelbas_v1.tjanster[t.tjanst].hot) for s in t.scenarier)
+
+
+@pytest.mark.parametrize('id,fil',[('D4','profil/kombinationer.py'),('D-LAGRE','dokument/faktorstatus_v10.py'),('D8','analys/provning.py')])
+def test_transitiv_hjalpfil_ogiltigforklarar_beslut(regelbas_v1,monkeypatch,id,fil):
+    from riskanalys.regelverk import metodbeslut as m
+    rb=regelbas_v1;fore=granskningsobjekt(rb,'RP-RED-VG')[id];orig=m.for_fil
+    monkeypatch.setattr(m,'for_fil',lambda p:'sha256:'+'0'*64 if p.as_posix().endswith(fil) else orig(p))
+    assert granskningsobjekt(rb,'RP-RED-VG')[id]!=fore
+    assert any(id+':' in x and fil in x for x in validera(rb))

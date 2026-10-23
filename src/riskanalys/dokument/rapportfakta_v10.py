@@ -1,6 +1,6 @@
 """Verksamhetsfakta från uttryckliga källor, med synliga dataluckor."""
 from riskanalys.dokument.rapportdelar_v10 import (
-    avsnitt, tabell, rad, stycke, kallkod, faltref, uppgift, period_kalla, fakta, register, tjanstalias,
+    avsnitt, tabell, rad, stycke, med_falttext, kallkod, faltref, uppgift, period_kalla, fakta, register, tjanstalias,
 )
 
 
@@ -88,7 +88,7 @@ def hot(rb, profil, b, analys):
 
 
 def erfarenhet(rb, profil, analys):
-    s = [stycke(id + ': ' + fakta(rb, profil, id), (faltref(profil, id),))
+    s = [med_falttext(id + ': ', fakta(rb, profil, id), '', (faltref(profil, id),))
          for id in ('P-VERK.antal_rapporter', 'P-VERK.antal_avbojanden', 'P-BESK.erfarenheter')]
     if analys:
         for i, p in enumerate(analys.gemensamma_verksamhetsposter):

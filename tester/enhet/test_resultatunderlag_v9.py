@@ -23,13 +23,17 @@ def test_lagre_tf_hot_forsvinner_inte_bakom_pt(resultatfall):
 def test_gemensam_kedja_har_alla_tjanstemedlemmar(resultatfall):
     row = next(r for r in underlag(resultatfall).matris if r.hot == 'H-01' and r.dimension == 'pt')
     assert [c.tjanst for c in row.celler] == ['T-RED-01','T-RED-02','T-RED-03','T-RED-04']
-    assert all(c.kallor and c.medlemmar for c in row.celler)
+    assert all(c.kallor and c.medlemmar for c in row.celler if c.scenario)
+    assert row.celler[-1].tjanst=='T-RED-04' and row.celler[-1].status=='saknas'
+    assert row.celler[-1].scenario is None
 
 
 def test_samma_hot_med_olika_kontrolleffekt_bevarar_varje_cells_hela_scenario(resultatfall):
     row = next(r for r in underlag(resultatfall).matris if r.hot == 'H-01' and r.dimension == 'pt')
-    assert [c.scenario.kvarstaende for c in row.celler] == ['hög','måttlig','måttlig','hög']
-    for cell, t in zip(row.celler, (t for t in resultatfall.bedomning.tjanster if t.erbjuds), strict=True):
+    assert [c.scenario.kvarstaende if c.scenario else None for c in row.celler] == ['hög','måttlig','måttlig',None]
+    ts={t.tjanst:t for t in resultatfall.bedomning.tjanster}
+    for cell in (c for c in row.celler if c.scenario):
+        t=ts[cell.tjanst]
         assert cell.scenario == next(s for s in t.scenarier if s.hot == 'H-01' and s.dimension == 'pt')
 
 
@@ -45,7 +49,7 @@ def test_lika_niva_med_olika_mekanism_far_inte_samma_forklaring(resultatfall):
     paket = f.analys.model_copy(update={'tjanster':(nytt,*f.analys.tjanster[1:])})
     rows = [r for r in underlag(f, analys=paket).matris if r.hot == 'H-01' and r.dimension == 'pt']
     assert len(rows) == 2
-    assert sorted(sum(c.status=='beraknad' for c in r.celler) for r in rows) == [1,3]
+    assert sorted(sum(c.status=='beraknad' for c in r.celler) for r in rows) == [1,2]
 
 
 def test_matris_skiljer_saknat_ej_relevant_okant_och_tf_utan_efterniva(resultatfall):

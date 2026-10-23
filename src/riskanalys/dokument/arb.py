@@ -42,8 +42,13 @@ def bygg_arb(
 ) -> Dokument:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
-    from riskanalys.dokument.rapportversion import V9
+    from riskanalys.dokument.rapportversion import V9,V10
     from riskanalys.dokument import rapportversion
+    if formatversion == V10 or (formatversion is None and rapportversion.AKTUELL_DOKUMENTVERSION == V10
+                               and regelbas.metod.omfattning):
+        from riskanalys.dokument.arb_v10 import bygg_resultatpaket_v10
+        return bygg_resultatpaket_v10(regelbas,profil,bedomning,utkast,historik,analys=analys,
+                                     gransindex=gransindex,modellrapport=modellrapport).dokument
     if formatversion == V9 or (formatversion is None and rapportversion.AKTUELL_DOKUMENTVERSION == V9
                               and regelbas.metod.omfattning):
         from riskanalys.dokument.arb_v9 import bygg_resultatpaket_v9

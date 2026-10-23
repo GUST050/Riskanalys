@@ -1,3 +1,13 @@
+# Slutverifiering C–D och V10, E inväntar PDF-kontrollen
+
+Regelbas **2.12.1**, tio provisoriska metodbeslut, samtliga `ej_granskad`. Fyra P2 från samlad kodreview är rättade med RED→GREEN; även publik bygg_arb väljer V10. Nybindning omfattar 244 appfiler per beslut. [Samlat granskningsunderlag](superpowers/reviews/2026-10-23-metodbeslut-samlat.md).
+
+**Riktat: 26 godkända/26,93 s** för reviewrättningarna och **96 godkända/185,50 s** för CLI, V8/V9/V10-fastställelse, scenario/reduktion och rapportkontrakt. **Snabb: 140 godkända/60,522 s**, collection/JUnit matchar och snapshot oförändrat. Inga fel eller överhoppade i dessa sista körningar. Tidigare fel är redovisade i arbetsloggen; fullsvit återstår och inget grönt slutbesked ges ännu.
+
+Uppdaterade huvud-PDF:er är fortsatt 20/21 sidor i `.superpowers/evidens/2026-10-23-rapport-v10-slutkontroll/`. Samma D-val och riskutfall, hela original kvar. Användarens PDF-kontroll före E är fortfarande obesvarad. E:s tre expertpaket och guide samt E-delen av samma slutreview återstår. Ingen push/merge.
+
+## Föregående arbetsstatus
+
 # D genomfört som förslag – PDF-slutkontroll och testning
 
 V10-produktanpassningen är sparad som `8abd6d9`. D1–D9 och lägre-risk-beslutet har egna arbetscommits/regelversioner, nu **2.12.0**. Alla förslag är `ej_granskad`. [Samlat D-underlag med sänkningar och beroenden](superpowers/reviews/2026-10-23-metodbeslut-samlat.md).

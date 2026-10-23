@@ -10,8 +10,12 @@ from riskanalys.lagring.kontrollsumma import for_fil
 from docs.research.verktyg.metodsteg import jamfor
 
 
+def jamforelser(fore,efter,baslinje):
+    return jamfor(fore,efter),jamfor(baslinje,efter)
+
+
 def main():
-    rb=ladda_regelbas();rot=Path('.superpowers/evidens/2026-10-23-metodbeslut');ut=rot/'kontraster2';ut.mkdir(exist_ok=False)
+    rb=ladda_regelbas();rot=Path('.superpowers/evidens/2026-10-23-metodbeslut');ut=rot/'kontraster3';ut.mkdir(exist_ok=False)
     fall={}
     for namn,faktorer in [('inga',()),('ideell',('S-ARB-05',)),('pep',('S-KUND-02',)),
                          ('ideell_pep_okant_overlapp',('S-ARB-05','S-KUND-02')),
@@ -42,10 +46,13 @@ def main():
             out[namn]={'profil_summa':for_fil(ut/(namn+'-profil.json')),'utfall':b.model_dump(mode='json')}
         return out
     fore=kor(Regelbas.model_validate_json((rot/'D1/fore/regelbas.json').read_text()))
+    baslinje=kor(Regelbas.model_validate_json((rot/'baslinje-2.0.0/regelbas.json').read_text()))
+    (ut/'baslinje-2.0.0-utfall.json').write_text(json.dumps(baslinje,ensure_ascii=False,indent=2))
     for id in ('D1','D2','D3','D4','D5','D6','D7','D8','D9','D-LAGRE'):
         step=Regelbas.model_validate_json((rot/id/'efter/regelbas.json').read_text());efter=kor(step)
-        diff=jamfor(fore,efter)
+        diff,samlat=jamforelser(fore,efter,baslinje)
         (ut/(id+'-efter.json')).write_text(json.dumps(efter,ensure_ascii=False,indent=2))
+        (ut/(id+'-samlat-mot-2.0.0.json')).write_text(json.dumps(samlat,ensure_ascii=False,indent=2))
         (ut/(id+'-jamforelse.json')).write_text(json.dumps(diff,ensure_ascii=False,indent=2))
         print(id,'sänkta led',sum(len(x['sankta_led']) for x in diff.values()),'borttagna scenarier',sum(len(x['borttagna_scenarier']) for x in diff.values()),flush=True)
         fore=efter

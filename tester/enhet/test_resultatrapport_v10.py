@@ -105,3 +105,38 @@ def test_matrisens_programhanvisning_flyttas_men_fri_text_bevaras():
     ny = _flytta(a, '4.2')
     assert ny.tabeller[0].rader[0].celler[0].text == 'Egen mekanism, se 4.3.4'
     assert ny.stycken[0].text == original
+
+
+@pytest.mark.parametrize('tomt',[False,True])
+def test_publik_byggare_anvander_v10_som_ny_standard(resultatfall,tomt):
+    from riskanalys.dokument.arb import bygg_arb
+    f=resultatfall
+    d=bygg_arb(f.regelbas,f.profil,f.bedomning,{} if tomt else f.resultat,f.historik,analys=f.analys)
+    assert d.formatversion=='D-ARB-resultat-v10'
+    assert 'D-ARB.R3.8' in d.avsnitt_med_id()
+
+
+def test_kombinationsgrupp_utan_kalla_ar_okant(resultatfall):
+    from riskanalys.profil.modeller import Kombinationsgrupp
+    from riskanalys.dokument.kapitel3_v10 import bygg_kapitel3
+    f=resultatfall;u=f.profil.uppgifter['P-KUND.antal_aktiva'].model_copy(update={'kalla':None})
+    g=Kombinationsgrupp(id='G1',tjanst='T-RED-04',population='kunder',avgransning='Syntetiskt urval',
+        beskrivning='Båda faktorerna finns hos samma kund.',sarbarheter=('S-ARB-05','S-KUND-02'),
+        antal=u.model_copy(update={'varde':1}),bas=u)
+    profil=f.profil.model_copy(update={'kombinationsgrupper':(g,)})
+    a=next(a for a in bygg_kapitel3(f.regelbas,profil,f.analys) if a.id=='D-ARB.R3.6')
+    txt=text((a,))
+    assert 'G1: Okänt' in txt and '1 av ' not in txt
+
+
+def test_alla_fria_profiltexter_i_huvudrapport_ar_bokstavliga(resultatfall):
+    from riskanalys.dokument.presentation_v10 import bygg_presentation_v10
+    f=resultatfall;upp=dict(f.profil.uppgifter)
+    for id in ('P-BESK.erfarenheter','P-ORG.namn'):
+        upp[id]=upp[id].model_copy(update={'varde':'Original '+id+' med {roll:FfR} ordagrant.'})
+    profil=f.profil.model_copy(update={'uppgifter':upp})
+    b=bygg_resultatpaket_v10(f.regelbas,profil,f.bedomning,f.resultat,f.historik,analys=f.analys)
+    p=bygg_presentation_v10(b,analys=f.analys,fynd=(),bedomning=f.bedomning,profil=profil)
+    a=p.renderade[0].avsnitt_med_id()
+    assert upp['P-ORG.namn'].varde in a['D-ARB.R0'].stycken[0].text
+    assert upp['P-BESK.erfarenheter'].varde in text((a['D-ARB.R2.1'],))

@@ -1,6 +1,6 @@
 """Ny disposition från fulla original; inga nya AI-svar eller riskberäkningar."""
 import re
-from riskanalys.dokument.rapportdelar_v10 import avsnitt, stycke, kallkod, uppgift, faltref
+from riskanalys.dokument.rapportdelar_v10 import avsnitt, stycke, med_falttext, kallkod, uppgift, faltref
 from riskanalys.dokument.resultatrapport_v9 import bygg_resultatavsnitt as bygg_v9
 from riskanalys.dokument.rapportfakta_v10 import (
     faktaruta, verksamhet, tjanster, hot, erfarenhet, rutiner, uppfoljning, versionslogg,
@@ -38,8 +38,8 @@ def bygg_resultatavsnitt_v10(rb, profil, b, resultat, historik, *, analys, under
     old = bygg_v9(rb, profil, b, resultat, historik, analys=analys, underlag=underlag)
     byid = {a.id: a for a in old}
     summary = byid['D-ARB.R1']
-    summary = summary.model_copy(update={'stycken': (stycke(
-        uppgift(rb, profil, 'P-ORG.namn') + f'. Bedömning per {b.datum}; analysstatus {b.status}. '
+    summary = summary.model_copy(update={'stycken': (med_falttext(
+        '', uppgift(rb, profil, 'P-ORG.namn'), f'. Bedömning per {b.datum}; analysstatus {b.status}. '
         'Leveransstatus framgår av statusraden. Resultatrapport, bilaga A och B1 utgör tillsammans dokumentationen.',
         (faltref(profil, 'P-ORG.namn'), kallkod('bedomning'))), *summary.stycken[1:])})
     risks = byid['D-ARB.R2'].tabeller[0]

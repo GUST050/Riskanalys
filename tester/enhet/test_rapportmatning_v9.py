@@ -38,14 +38,14 @@ def test_tomt_utkast_med_v9_standard_byggs_som_v9_och_aldrig_v6(resultatfall,mon
     assert any('[VERIFIERA]' in s.text for a in d.avsnitt for s in a.stycken)
 
 
-def test_nya_granskningar_valjer_v9_men_historiska_paket_bevaras(resultatfall):
-    from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION,V9
+def test_nya_granskningar_valjer_v10_men_historiska_paket_bevaras(resultatfall):
+    from riskanalys.dokument.rapportversion import AKTUELL_DOKUMENTVERSION,V10
     from riskanalys.dokument.skrivversion import AKTUELL_SKRIVVERSION,V8
     from riskanalys.dokument.arb import bygg_arb
     f=resultatfall;fore=f.dokument.model_dump_json()
-    assert AKTUELL_DOKUMENTVERSION==V9 and AKTUELL_SKRIVVERSION==V8
+    assert AKTUELL_DOKUMENTVERSION==V10 and AKTUELL_SKRIVVERSION==V8
     d=bygg_arb(f.regelbas,f.profil,f.bedomning,f.resultat,f.historik,analys=f.analys)
-    assert d.formatversion==V9
+    assert d.formatversion==V10
     assert f.dokument.model_dump_json()==fore and f.dokument.formatversion==V8
 
 
