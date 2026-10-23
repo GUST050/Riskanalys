@@ -1137,3 +1137,196 @@
     kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
+- id: D9
+  namn: Faktorsummering, trösklar och mättnad
+  grund: metodval
+  valt: Behåll indikatorpåslag och tak med scenarioavgränsad ersättning
+  alternativ:
+  - Behåll indikatorpåslag och tak med scenarioavgränsad ersättning
+  - Inför kalibrerade vikter, områdespoäng eller nya trösklar
+  skal: Effekter summeras med golv låg och tak hög i samma hot och dimension. Ersättning gäller bara när
+    ersättande faktor själv verkar i scenariot. +1, minst-en-/andelströsklar och tak är provisoriska heuristiska
+    metodval, inga sannolikhetsestimat eller antaganden om oberoende. Varje kvarvarande orsak och tillämpat
+    villkor redovisas även efter mättnad. B:s snävare distansvillkor bevaras.
+  osakerhet: Korrelerade indikatorer kan mätta modellen. Katalogområden bevisar inte självständiga orsaker
+    och alternativa vikter saknar kalibreringsunderlag. En kontra flera orsaker kan därför ha samma nivå
+    utan att orsaksbilden är densamma.
+  kallor:
+  - SRC-TS-2026-14
+  kallbelagg:
+  - kalla: SRC-TS-2026-14
+    sida: 7
+    avsnitt: Fysisk PDF-sida
+    citat: i kombination
+    tolkning: Stöder prövning av samverkan men anger inte oberoende, vikt, tröskel eller tak.
+  - kalla: SRC-TS-2026-14
+    sida: 10
+    avsnitt: Fysisk PDF-sida
+    citat: hur stora konsekvenserna skulle bli
+    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt eller kontrollreduktion.
+  objekt:
+    BT-SANN-02-01: sha256:6309d1fcbf0864b3a95faecaacf0c9494bc865c88173d44d912fc30287741fc2
+    BT-SANN-02-02: sha256:6a29582468150012f5935a76749716bf11444475a001478c91f7b6eba455b60a
+    BT-SANN-02-03: sha256:04f14cef29acb70fa49f1e1dc102fd7df50be2f27ae229a0b8c55a8bb6cefe3c
+    BT-SANN-02-04: sha256:80ce309b63cbde6f9ab88a57816b9e6d64f63f45d9aff183e409bea19c500cc9
+    BT-SANN-02-05: sha256:7b2511a81bb9b643e32766a1b66e12f47ea99322d6d32fe5a4ab8d78e0486329
+    BT-SANN-02-06: sha256:3e45eba370bb09206a91701b7d971291b0dcb05bc5c81201b27159ff06551846
+    BT-SANN-02-07: sha256:ec750375b55f3d48633281659e3a67e714438142e3333d069d1259fbda058410
+    BT-SANN-02-08: sha256:d1e2a858e133bcb8558637fdde556ac80968ed7c9345628405a456ff54d286ea
+    BT-SANN-02-09: sha256:3ac1d7f13d9e4482a85045d245f70b379647cdfb7840d7d540e105018893dc4e
+    BT-SARB-01: sha256:fc43c8fac14e5ef1b83cdee530b108029b2565c71d05e83075beafa1b20eaea9
+    P-GEO.andel_agare_utanfor_ees: sha256:634a19e813f8545cca0c92f9f8cfa295f1de7a33e3c4ceea97259cfe52b417f4
+    P-GEO.andel_hogrisktredjeland: sha256:18c64d9aa43c395fabc91e6fc5783023b1e529eeea6fb0d2df89d24c4df2ee9f
+    P-GEO.andel_transaktion_utanfor_ees: sha256:d1f7f5c74c951485545dcfc45875931da5647f206353404641bb89430113d98a
+    P-GEO.andel_utland_agare: sha256:4a27715d546a091bcce4a5cbcea44241e33159636a249fccf45152da813d9234
+    P-GEO.andel_utland_transaktion: sha256:0c49e2fb4f31c5c2861259130a00e70f66c3d4f1008f6e47129a3fffe3c98487
+    P-GEO.andel_utsatt_omrade: sha256:ca6d2bebd5b78f2eb62debdfc57edf19b4aa4ee1a22adac49a15451629885c2f
+    P-GEO.antal_agare_utanfor_ees: sha256:24ee09653ac7fb13a693409c4d047ee2df7d934b5c886f4455d8296131521b4b
+    P-GEO.antal_hemvist_ovriga_ees: sha256:53758621e10c614416108f67f5fe5c16f4c9fc472dad627bde9db87253927c09
+    P-GEO.antal_hemvist_sverige: sha256:a7fa475899f885ec1374005b5d73cd505e3be5675d2f81449dd45b956a58a9c4
+    P-GEO.antal_hemvist_utanfor_ees: sha256:8e5c642b5caef9ee5c2f41fb61923cea80287df8b9dc47634f27ca6f958a1d8a
+    P-GEO.antal_hogrisktredjeland: sha256:e573ad0b3dc454dcf07070471b81cae0dd7f10b50a09526de44b72ef7894567f
+    P-GEO.antal_transaktion_utanfor_ees: sha256:903fe1e089453b45e27a98b1f18e208736ee029dd83d714e5f7e3c688dc3e512
+    P-GEO.antal_utland_agare: sha256:2ae04ef6f7d5e8805e111742355e42234446795d76620f8b8799bb5508655896
+    P-GEO.antal_utland_transaktion: sha256:82ce4b099d6f2badf7177ee9220a3075920ca779034a745901e58b99c169d677
+    P-GEO.antal_utsatt_omrade: sha256:a92c01186632f468dcbe2ffb235d9dc2e5db49ba17b5e6d4a51410b6fb7e672b
+    P-GEO.sanktionsanknytning: sha256:09884de4ca5ea5edea9478cbff1f915d803f53dc6b75667dac4b73adb1ba531d
+    P-KANAL.andel_digitalt_underlag: sha256:dd3d7d6e82bc6df68cd7b60991308ae2627f35ae0e357b71f79652a239d65d4e
+    P-KANAL.andel_hanvisade: sha256:eadb5da361d799605cdaac08fc05cd9f727c277065f18017c2d4763d45ea8c7f
+    P-KANAL.antal_bankdata: sha256:a5adbed6dd5ddcacc60e6eb923859c7bb46e662b185de12d6c8d68e3cf903be9
+    P-KANAL.antal_digitalt_underlag: sha256:c6c52463964b0cd02aff749ee86cc60a68a38d5a1eac0e96382a508bfb691e2d
+    P-KANAL.antal_hanvisade: sha256:98e43d61139133e01c04e584b65f2c679c60f54d7b6a8004f52aae07b52ccdcb
+    P-KANAL.bankdata_andel: sha256:b84bd40656e9fa624aa528177f6d465cb1a291411900cd3c907bd526c957a2b6
+    P-KUND.andel_juridisk: sha256:dd427d3813b334f1b97086a8fda7d69ebf6d0ca77d7e57684519ffa053da064b
+    P-KUND.andel_kontant: sha256:a614593c63c6beb2b37c9c128b267abb8ac2ad3f7a0f0e46b939c32aa3759692
+    P-KUND.andel_nya: sha256:ee6138d7e5b4d568fd2bfc6ddd17dc0953e4d641b899c3a569034a0b3ed1ed6b
+    P-KUND.andel_riskbransch: sha256:3bbf68207be01be4c6a5c69b61fb3f99335193fe43459f4413a7cf5a295cd990
+    P-KUND.andel_utan_mote: sha256:a4eccd6c3aa9daeeb3818fcd43792c85136617e34a789419430344e4ccb8973c
+    P-KUND.antal_aktiva: sha256:0c07b7e3fcc8316372bf84133deb710e5cf17731754fd31f71750eb97ae244df
+    P-KUND.antal_juridisk: sha256:05e450f8ffedcb57b1ac45be3c69fe551265daf3a7866f3f1afeb5813aba4a63
+    P-KUND.antal_kontant: sha256:191dec260974773c741404dd2ba60d8c4e0f8ac4d2eaf04740511e5b09a234d8
+    P-KUND.antal_nominella_agare: sha256:a399c37720cf44bde1617905c6535108b6b60df655e0d98cce08c20c0df7861d
+    P-KUND.antal_nya: sha256:3d1344b8dbcdbc222b92a9b6db86aa9f0652e8a704782a0f3498966aba188f65
+    P-KUND.antal_offentlig: sha256:0e14e475aad0675e0a755f90780ea823d604e4208d0ca2882e09098305dc38e8
+    P-KUND.antal_okand_betalare: sha256:b57511f299dfa50843f1facbaf6137361d9ba263cc429d2c6e04f8416304e397
+    P-KUND.antal_osaker_distansidentitet: sha256:1abb8d8ae4160411c9385f8a88af5059ddd46b9e186cd947bcccf63729816658
+    P-KUND.antal_personlig_formogenhet: sha256:4ad7c5079d4f5dec9f9cc0cc078a2dd48e335cfb21c32389d6031b7c33a1754f
+    P-KUND.antal_reglerad_marknad: sha256:2e36d2a9ca5878aaaf9705008c11161d8c41766aceb49f5a54f1198a34ba3b27
+    P-KUND.antal_riskbransch: sha256:8079cb3810de6a738859305a55fcd2bb48c6a6f433ad5859ffefca49fd748023
+    P-KUND.antal_sanktionshemvist: sha256:bee26fd85239f727da416cc3eb499017d8ecbf21b9568ba80043fe49c66e4f9e
+    P-KUND.antal_terrorhemvist: sha256:528926d569420887d1eb10dda8844e933e3c47b9c32bc76c7bfa0645c62748a8
+    P-KUND.antal_utan_mote: sha256:3db8c30aa6eea8d65c1479f9f312116587528af5cff9e2fd315f90c13cf19e17
+    P-ORG.antal_anstallda: sha256:e93c8b564be8df7f346f537faf07bfcbf7513b135d5bd0eb73307365c77c8d84
+    P-ORG.koncernmoder: sha256:0467736586e4fbb39c58f7b2cfd0ecf96ca75d97b56f4718721c4b9345334912
+    P-ORG.namn: sha256:f18ca4eb461fac30fcbbb3877c482732c74d340985ef2f37dc4a88fc6e3a0aad
+    P-ORG.sarskilda_funktioner: sha256:2e6d435da0383195586ee55814677afb8f6cf450b16377abe76ed4ef3c760b33
+    P-ORG.sateslan: sha256:ba8200756b427c9fc5f4538176c24740d9261c42896d4bdcad9c2abb1bfa3b81
+    P-ORG.utlandsk_filial: sha256:69cee60b952361b02f826c8d30e3715a5502172b3829675a28dc2ff8367d9892
+    P-ORG.verksamhetsstallen: sha256:616fa22ce6229212ba0fd51b97add16f5e7b81554852330a5f38d661005cd349
+    P-RISK.ensam_roller: sha256:ec750d66c82bd74fd5f9e675f9b0006c3e20b5351270f26ae78693ded3097d32
+    P-RISK.extern_kyc: sha256:10228a71ca04babf8f5c83652ba4b7cf664ab3eb4d9ce4e6a5e1b8fa673b1baf
+    P-RISK.hogrisktredjeland: sha256:524ad7b119f766215bd0d53c4b1d5a1ded02be5972481d4c7a36c4834868dadb
+    P-RISK.ideell: sha256:8425831bea67a0a23c7ce86cb86f6a4941ef8f58b9c64bf1f41de1731a9023fc
+    P-RISK.komplex_agare: sha256:f7e7190babeccda71e140795646552e56a2ad6631eba4cfc0232000f34169d9a
+    P-RISK.korruption: sha256:a34a53bb57bad5b7f0395556e2db2ca566354f3728a3a904b39450d484a69ba5
+    P-RISK.kortlivad: sha256:f900cb4939c1102d7666554f688a2cb3d4c0c60eb5497bdbafc32b14e4d9954a
+    P-RISK.kundberoende: sha256:2f2776f4d8205d9343fa9433b94597859f8ebec0f5d991effbbbb6488bd8fe7d
+    P-RISK.nara_relation: sha256:84a3ed9b0d60bd9af7aa9d24e63681958bbb12accb86d5244049f401be81dd65
+    P-RISK.ombud: sha256:f2d29a5a3be68854915ca2d1102168970baa0a714637968420fd5a34743be807
+    P-RISK.overtagen: sha256:ccde05ef9cc02af6232499732a38ab0617b8507469bcc80eab548756c83ea43c
+    P-RISK.pep: sha256:9794548cde08c8de2de04a0b7f70b9bc7e7b5ee0e53021befe49a1b8cd67c076
+    P-RISK.svagt_aml: sha256:9eec14580112ffce450c4e544f35b4a6bed8424f6b2634cf774277203fd637a7
+    P-RISK.utan_mote: sha256:b1b32b189c7ad17d37b00453721daaa57934594693e495f566afdec4774e4a44
+    P-RISK.utan_utbildning: sha256:417f71ae0973b65207c96e094cc81f90cbb323738dfeccc4eff4997b0a3bef37
+    P-RISK.utkontraktering: sha256:7b6225911a76b501408ffcd1e34b26f2cc7146c075dc1f29869eeb9b01157a64
+    P-RISK.utlandsk_agare: sha256:005c8b18ad0af9587dbc608c1d72d34587dbe6ca64c3706bfe2df6a0738ccbad
+    P-RISK.utsatt_omrade: sha256:8da04750d338dbd0d3d803b337c24f8a8564ad538d27ca51d574252024ad7a56
+    S-ARB-01: sha256:d7edd68d39fef8f4861fbce3944b9612a2c437bc619f66f783d99db475c6adf8
+    S-ARB-02: sha256:e4541e1dc464bf8d2c3be92b19e5f9a52fa56646898386b8e7722ac479161548
+    S-ARB-03: sha256:3e5700e502dbb8b0413deb6f26ca38555797c97eb32311c0d5b6a85c62843d95
+    S-ARB-04: sha256:44aa563533a68f3c6312c75f31b3f83ee68c6356b90ed07575cb2acfd5e313b8
+    S-ARB-05: sha256:cfda0eaffe7591cde354813450ca73b7574816f20ddac1c12a76ab269f6fe2f1
+    S-ARB-06: sha256:35452c637734cf6f44779502bf47a21508917aed6aca4225fed85975540d5d57
+    S-ARB-07: sha256:1cd704e3e8d86f45a55d8a3f4b66837fd6dd295d083e7c9597256f7f5fef3026
+    S-ARB-08: sha256:c3d3d77e56fcbb01485859009f49a94ee596699079a053c01ee4eb0b8e9d975c
+    S-ARB-09: sha256:65f935f0011340516389865a6c5eaaabb85c373c930dacf32680ff38d3270cda
+    S-ARB-10: sha256:dcaf17559d72f64e02776cbc734407ec3ad6bbd3b17336dc2f2c25d13c56bff6
+    S-ARB-11: sha256:4224be26325620f50b06c8309d25ff1d456e4c447e221e7ff5b65110a6423692
+    S-ARB-12: sha256:62c4f0b90fb3c0d95390ef21529e4fef47db100ed06a65f3c05520cf6ccc9edc
+    S-ARB-13: sha256:db7e0e8862f9cad6379f740f4b0de8e1cc62702135a881b87f508fa69f426a4a
+    S-ARB-14: sha256:f5a5d9635d2b1e4aa62c7d702e6f69c27d7456ecd3971b98900ebf0b97329036
+    S-ARB-15: sha256:74c66634ffb266cbfe045a870392f02d9932f2694bfaa6b4002d9dfac53255ab
+    S-ARB-16: sha256:8c8dd31d249076d77a4064f512e2958d4d895d7da5662ae9fd8ce9e422f7930d
+    S-ARB-17: sha256:02eb85d84749a5baa4e4223167cb6803d39844f7d8cdc916994f466c29492c50
+    S-ARB-18: sha256:bba894670206c89c758ca18bf144bba6ddb5f63f1db50f884498b536190d344e
+    S-ARB-19: sha256:a623007111d581b218eb66c0c1c152f21f1c7f93bfb0a465171214f7c5c0f81b
+    S-ARB-20: sha256:7c7c3bd4c99eb5ee63f1275bfb3618ed13ecfd4800d5b3612d8da7f6446a0bc7
+    S-ARB-21: sha256:766cdec1ebe9c0d987c5fdd56ac6d810547f27edc9487d3d43f37bebc3908c00
+    S-ARB-22: sha256:6ba0b6ef58fdfb162575c2c0f4280e6ac8b8c828dad4e095b5fddeed5d395c39
+    S-ARB-23: sha256:595cf29ae8dcc911fef14ea83acbdb6c2fb77667afe2761a8d1a724d26ce5e4d
+    S-GEO-01: sha256:7dc5d7bc89f3732cc8ea3a9576fbbb1703347b5b85ab9042cb4d19dc32621738
+    S-KANAL-01: sha256:252138f02d7f1085c1bac32214bfcaed1649c244091cce6af48f63a5ebea6074
+    S-KOMB-01: sha256:644cd2ed4eba883e48918d144bd2709c6c18f734a82d38e59f7d32e210d165bc
+    S-KUND-01: sha256:854cc709af7e1187fe2231268262b5db4751049e709f757a9d120a681d670701
+    S-KUND-02: sha256:c4b7602c5a33c5e8511eec14af025f6ab1ef842e5d6c9c566d1cd85f08e06953
+    S-TJ-01: sha256:1c3b54b7bad2d1e82f253a94aa7cfc23a9f3c3904ae78a507d274b5740670290
+    S-TJ-02: sha256:444a4384d900f7b62e7d0e673b9b54a544bd0526b7767b4c3517ba09886902cf
+    S-TJ-03: sha256:8f52dfacfaf3b5d93cc9800cc16174a569f0543cadc3eb74daa2c64f02aeb5cf
+    S-TJ-04: sha256:e5d191a1141551563b384ad8bd7354bb921d66e7fbeac8c668fa897fa44c5df3
+    S-VERK-01: sha256:f4b3632a70c7c7ffcf4a1a90cc86b13c81822143107238834b4b772a636d6371
+    SRC-TS-2026-14: sha256:e1892a8a6c7774a97ae4afbbdbe1985fe9d93a860a3732ecaae82401db84f657
+    T-BOLAG-01: sha256:11fb063047677db95a768b675183d1e2b03a677093da03995c5f75efba1fe1a2
+    T-BOLAG-02: sha256:4ba3614dc768057f43d4108782a4ca2999439139ec817a20f01f3828ad782f43
+    T-BOLAG-03: sha256:784775c3209ba7e2283261a24adacb4e4dd144a132997eb971d3de426b7fa1b6
+    T-RED-01: sha256:ad80af7353adcccde28f945ce637ec8b736638e7f104dfd7b0be63b46285819d
+    T-RED-02: sha256:164bfb6b97870f6d5d58577856f98c3a0c057da0d04f23cdfc14c6c9e7cc6a3f
+    T-RED-03: sha256:86c6dddc7760df32e0151ef8b3ff20f0e75d835aa75d429a5305661880105e81
+    T-RED-04: sha256:b9c708d67fcd96c9449da7ea4eca2040f51eb802fc2168566ada534274c78594
+    T-RED-05: sha256:562885d1e2c3fd97d8a85a97bb0b52b3fea91b6e7e4132a2df4dfdd8ec7bd957
+    T-RED-06: sha256:989750a047d3aa5dab3321876d430061a15ece9a8b167f4b5612fa0ffd1774f6
+    T-RED-07: sha256:26d6702c069773736563d3ba9192929727a6f024a20e81e9210c6fe890706366
+    T-RED-08: sha256:39c3c768a557b8058d0b1b55251ba64a0712ebce6cc6ee1a7d95c2ccac350e64
+    T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
+    T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
+  modellfiler:
+    src/riskanalys/bedomning/__init__.py: sha256:8727f73160cd23de741df3ff167bc50c13dcf5d1e72c790cce46b18f163cebf0
+    src/riskanalys/bedomning/erfarenheter.py: sha256:668c77694de32b1ee6781660d0649f67c509b6787dda68d7ab03f203b630419c
+    src/riskanalys/bedomning/kundmodell/__init__.py: sha256:4f27e682332da5075ac64780477ca6b60beb61965ed89b8ed19617805b8a0b32
+    src/riskanalys/bedomning/kundmodell/modeller.py: sha256:5fa38bd23497ba8e59024f3a9a493cdc59ba6b259f08b2a4be3b42492683db92
+    src/riskanalys/bedomning/kundmodell/pep.py: sha256:434e5a6c0dfeae9a16085156128771115aefeaa99148089594f4d5321173a860
+    src/riskanalys/bedomning/kundmodell/tabeller.py: sha256:5419e3d842a67ea8637d71f2370edfe02ac46fa805eca6b92e583eb846853692
+    src/riskanalys/bedomning/kundmodell/utvardering.py: sha256:f3f2f898147848c4df8a70ca656ac1de93430152be20c541908abb4f3d9a6e7c
+    src/riskanalys/bedomning/modeller.py: sha256:fced85971084d466cbf164c440db083e3f043fb25dd4fde4694f7d5629e303f1
+    src/riskanalys/bedomning/motor.py: sha256:72e286e8f2e616a3066525c2b22b7c22146da644dabd1cb0c2ef40cd3b53769c
+    src/riskanalys/bedomning/omfattning.py: sha256:0bc2c2d6a068dfbba71eb60f7982e3e7043caf9aa59f561a2d20958f43ea3c5d
+    src/riskanalys/bedomning/sanktioner.py: sha256:8d6f6806f79c99e51b5d97323b72f09c1963f4b40644948b4221e024f0d55e88
+    src/riskanalys/bedomning/scenarier.py: sha256:4a14de8189c670029a1432a690d839fff973567d99fdc17de11e717ec531c4ee
+    src/riskanalys/bedomning/sektorsrisk.py: sha256:b96e516a776c6da99e89f5741283ca0fe1ba623742eb60dd95f9bff1e13768c8
+    src/riskanalys/dokument/kapitel3_v10.py: sha256:6a96c49fcff34539d48e30d324300f1f8ac8581d9a562ddf201c13edbd3d983e
+    src/riskanalys/dokument/metodavsnitt_v10.py: sha256:664db9f53e9baadac7bc13093acf8a558f8db2efb0a01939d7c182359ea418b4
+    src/riskanalys/drift/modellidentitet.py: sha256:dcacd8a3c611f29e6941659a7855014aa3430a0062da54fd122cf9ced365271a
+    src/riskanalys/fel.py: sha256:44058f0e480eb26ffd4f5b26976f942b6c22e3a2eadda8ae8b5b0bc541bb5740
+    src/riskanalys/lagring/__init__.py: sha256:1b8372a54889228e37a993acabf30ed8d8d9578c8f5afa2ec34d1890f1fd934f
+    src/riskanalys/lagring/kontrollsumma.py: sha256:c6b911b14df7c959c0c3a775cd433fc29cf196090852dc1cf13132d300312236
+    src/riskanalys/profil/__init__.py: sha256:f3810d9ff18c39662a4a117f9c1b6dbb0efdc9d9fc503333b1fa32a944fc2aa6
+    src/riskanalys/profil/katalogstatistik.py: sha256:03be61bc38320cd8c12efa7d335ec4ea0dfcdf1f14f503470bcb53014807c574
+    src/riskanalys/profil/modeller.py: sha256:12f9c6c581e7c12f9cd3ee6a688af56ead2dbe9cc2711a97104012aa2124f82f
+    src/riskanalys/profil/omfattning.py: sha256:3f08454b45af81d4b17ad073a3b15fbce7cb5e96bb0414714616f85a95560c76
+    src/riskanalys/regelverk/__init__.py: sha256:6ed4466d57d48e2cdd450d29a35f461c1eb6180bee9de0023227924f3bf26cf7
+    src/riskanalys/regelverk/laddning.py: sha256:16101de1e7d698b0777bbb91059edc5ee87480548489be9d825f0617bb9dece3
+    src/riskanalys/regelverk/metodbeslut.py: sha256:713e2d9023a12b6efb2428c5c72b3a1e8618de5fee654f7925dade3e255c86a6
+    src/riskanalys/regelverk/modeller.py: sha256:f967a3976bae4c59c5ee145c26e8e2d11e54d635d5c89a2d924fb1a284a875ec
+    src/riskanalys/regelverk/sakkunnig.py: sha256:7d96f6e194baae24ef2a201f193b058754c26471ee56a7cad4c5b95165c59af0
+    src/riskanalys/regelverk/tillsyn.py: sha256:b3568eb53ea85f73da0acdf2091d5e5f3dd6cfbe6ef710953f80f5b886c0d339
+    src/riskanalys/regelverk/urval.py: sha256:950aabaee6c327eed859eeabda551cd659189a5c3ed568da499ea5424eb2a9a3
+    src/riskanalys/regelverk/validering.py: sha256:6342933f266c763da7d7a1c96139e3a9e76cfac90ed106a534d7c58540f070a8
+    src/riskanalys/regelverk/validering_m2.py: sha256:716c0bcd65b151ddc6349115a7fde89ae50b14071852d80ae57dc3da1f68cb77
+    src/riskanalys/regelverk/validering_scenario.py: sha256:789cbf2c6c05d73fdd2534654fca7173be39edc20c29bd0f0a3404f02ccbdeb5
+    src/riskanalys/regelverk/villkor.py: sha256:b33cacbd8ad9bda8651ccc022cdc39f61229a30d6b27ecef19ecef82c94c8ab3
+  aterforing: 'Vid avslag: ompröva D9 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
+    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
+    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
+    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
+    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  sakkunnig:
+    status: ej_granskad

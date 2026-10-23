@@ -173,9 +173,13 @@ scenario:
   sarbarhetsniva:
     id: BT-SARB-01
     grund: metodval
-    forklaring: Tjänstens egen grundnivå ändras med summan av tillämpade sårbarheter som möjliggör samma
-      hot och omfattar dimensionen. Golv låg, tak hög; ersättning gäller bara inom scenariot. Grundnivå,
-      effekter och summering är ogranskade metodval.
+    forklaring: Effekter summeras med golv låg och tak hög i samma hot och dimension. Ersättning gäller
+      bara när ersättande faktor själv verkar i scenariot. +1, minst-en-/andelströsklar och tak är provisoriska
+      heuristiska metodval, inga sannolikhetsestimat eller antaganden om oberoende. Varje kvarvarande
+      orsak och tillämpat villkor redovisas även efter mättnad. B:s snävare distansvillkor bevaras. Korrelerade
+      indikatorer kan mätta modellen. Katalogområden bevisar inte självständiga orsaker och alternativa
+      vikter saknar kalibreringsunderlag. En kontra flera orsaker kan därför ha samma nivå utan att orsaksbilden
+      är densamma.
     kallor: *id001
     sakkunnig:
       status: ej_granskad
