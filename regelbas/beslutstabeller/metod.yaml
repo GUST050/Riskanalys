@@ -309,10 +309,13 @@ scenario:
   kvarstaende:
     id: BT-KVAR-03
     grund: metodval
-    forklaring: Ett PT-scenario sänks högst ett steg, som lägst låg, om en kontroll riktar sig mot samma
-      hot i samma tjänst och har belagd utformning, genomförande och verksam effekt för samma period.
-      Annars ingen sänkning. TF sänks inte. Ett steg och valet av minst en kontroll är ogranskade metodval;
-      källan kräver effektprövning, inte ett visst avdrag.
+    forklaring: Motoravdrag kräver belagd utformning, genomförande och verksam effekt samma period samt
+      katalogmål för samma tjänst och hot. Högst ett PT-steg, golv låg, är provisoriskt metodval. Katalogmål
+      bevisar inte lokalt uppdrag, stickprov eller full täckning. Lokal analys prövar observationsunderlag,
+      begränsningar och godtagbarhet; en oprövad sänkning märks och får inte framställas som godkänd.
+      TF får inget avdrag. Ett steg och minst en verksam kontroll är inte myndighetskalibrerade. C-TJ-08/09:s
+      äldre breda PT-mål kräver lokal prövning; de utvidgas inte till nya MOD-hot för att sänka tjänstens
+      max. En kontroll på ett maxscenario täcker inte andra maxscenarier.
     kallor: *id001
     sakkunnig:
       status: ej_granskad

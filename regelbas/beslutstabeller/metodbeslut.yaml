@@ -1026,3 +1026,114 @@
     kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
+- id: D8
+  namn: Kontrollernas mål, täckning och avdrag
+  grund: metodval
+  valt: Behåll högst ett PT-steg per belagt täckt scenario
+  alternativ:
+  - Behåll högst ett PT-steg per belagt täckt scenario
+  - Kalibrera avdrag efter kontrollgrad och scenariotäckning
+  skal: Motoravdrag kräver belagd utformning, genomförande och verksam effekt samma period samt katalogmål
+    för samma tjänst och hot. Högst ett PT-steg, golv låg, är provisoriskt metodval. Katalogmål bevisar
+    inte lokalt uppdrag, stickprov eller full täckning. Lokal analys prövar observationsunderlag, begränsningar
+    och godtagbarhet; en oprövad sänkning märks och får inte framställas som godkänd. TF får inget avdrag.
+  osakerhet: Ett steg och minst en verksam kontroll är inte myndighetskalibrerade. C-TJ-08/09:s äldre
+    breda PT-mål kräver lokal prövning; de utvidgas inte till nya MOD-hot för att sänka tjänstens max.
+    En kontroll på ett maxscenario täcker inte andra maxscenarier.
+  kallor:
+  - SRC-TS-2026-14
+  kallbelagg:
+  - kalla: SRC-TS-2026-14
+    sida: 10
+    avsnitt: Fysisk PDF-sida
+    citat: hur stora konsekvenserna skulle bli
+    tolkning: Kräver analys av sannolikhet och konsekvens; anger ingen matris, faktorvikt eller kontrollreduktion.
+  objekt:
+    BT-KVAR-01: sha256:ef4660589179d4f1e41e8c11bc53612549f2bfd95e4813cad0fb4287da83b293
+    BT-KVAR-02: sha256:7173a9cff673a5071ff13a2432128d0c8cd2f3a4620b7b154e817840f88fc448
+    BT-KVAR-03: sha256:5d6db7847dd23f5b8f532565bae1792bd8aba807d7e250e3738a2bedf095e90d
+    C-07: sha256:79fb89de227524c0b010b63ea73750c648dec355890f838cc732da166349e17d
+    C-SANK: sha256:19dd915bf1f9807b02cccf6c7cbd82364925d80a612b9fc3e899097b653fe9bc
+    C-TJ-01: sha256:41ccbf8682bade94cc75ce347da6e3e49d89be69fe4b2ebd1f77f461ab0fb9e7
+    C-TJ-02: sha256:fe1fd0c30472ed4c0340d837d22ab8a57a330e752a10b3892e8e9d98ddb5aca8
+    C-TJ-03: sha256:46a2888c64a8818d433265a62abc727a6d4ad6a041dc98d983c908f4205b2042
+    C-TJ-04: sha256:d12bd606061dafa83ce465df311ef21bc3440bb73843a58efb7589b45e0c524b
+    C-TJ-05: sha256:dbc6b83b3f5098822e177368268788735082b8a1221379dc2c22d3cdc3b33298
+    C-TJ-06: sha256:bd6993f69fb8a80b536f1dc35e46dd71608f96a3fc25f81e18a6b40325f225cc
+    C-TJ-07: sha256:a4fa4bc163d06ec8b57cd30e9d809265b7b9566756a68cac11a3e0e6885981f7
+    C-TJ-08: sha256:ebbbfea0cea8acfda6c4c9ae07e0b2531dd46a384b16b6e6501e9998b8a4f016
+    C-TJ-09: sha256:0a811aa419c069e93e1de9f939ddfe43dab8d4365b6f4e4e6d3d48788f930874
+    C-TJ-10: sha256:95b9b41e002e3ed5bced5ffbe960d947dc2db222263881cfc1dd4d8d86fd8e8e
+    C-TJ-11: sha256:ec7549bf93685b4e732053378544b33e57ed5e700dd6a816ac0b5e882a7a314f
+    C-TJ-12: sha256:de1d8df40ac4191b981bfa5eee9180643ccef51a66ec9cf0f869d8d1f05460db
+    C-TJ-13: sha256:1a4cefc31168af2af9437230a6583db6a06f2a665939869a74e810204c9a553e
+    KR-C-07-T-RED-01: sha256:c915aa1d358d8cd4f1d2e4ff2f19463fd005dde8825c9cab03f42530e34b10fc
+    KR-C-TJ-01-T-RED-01: sha256:dfd833b405061b60ca697b8752c67007feedcca21ccdabcbdfa8d4f89aa53707
+    KR-C-TJ-02-T-RED-02: sha256:3bc8e91bca1702962a6e94df8ea885113682460213927f6072fa34b4ec089807
+    KR-C-TJ-03-T-RED-03: sha256:e5808a683135c128a567d2f15c2cedf7dacfb992a74089550682b823b7a8187f
+    KR-C-TJ-04-T-RED-04: sha256:b3f47db2e5f5786e0fb9ace6605866cdc3eb6c001c4afc5e8dbe928f683f695d
+    KR-C-TJ-05-T-RED-05: sha256:0c32d1c01ee682b3fbfe59f8120957016f6ceff20937d8df3d0cf1e98dfdbe70
+    KR-C-TJ-06-T-RED-06: sha256:ad006eb0f168d0a381a62a15744204cd2278c8f470d42a948aa87a26b6232e62
+    KR-C-TJ-07-T-RED-07: sha256:4f8463c55b30ea752c5d44b668800a06bd4b72ed0015ade4f243b93a3ac944a3
+    KR-C-TJ-08-T-SKATT-01: sha256:47629974ffd6de14ec73c28da11a6c1cb29f462d6761298bf41bcca4a070c9db
+    KR-C-TJ-09-T-BOLAG-01: sha256:15dfe68e3bebd7364e767e7ddb7ece50d4b64ac1cd48ddcd82f295e6f498eeda
+    KR-C-TJ-10-T-BOLAG-02: sha256:37c0f9d969c62f57b3a737131733d5aed064a8a7e412d7a98f66c442f699c45f
+    KR-C-TJ-11-T-BOLAG-03: sha256:8837d42c431acb510cffb3ed37c46d4cf6186eb01037753837a297be68c81b69
+    KR-C-TJ-12-T-RED-08: sha256:dd6d710af6f97a216a6f8d287738393d52c310823f9841391363a43b31a9e202
+    KR-C-TJ-13-T-RED-09: sha256:11ce1e64b732157c5a36d4e025ed3c5c6e9b15d8483e63cd73024952152fb8a1
+    SRC-TS-2026-14: sha256:e1892a8a6c7774a97ae4afbbdbe1985fe9d93a860a3732ecaae82401db84f657
+    T-BOLAG-01: sha256:11fb063047677db95a768b675183d1e2b03a677093da03995c5f75efba1fe1a2
+    T-BOLAG-02: sha256:4ba3614dc768057f43d4108782a4ca2999439139ec817a20f01f3828ad782f43
+    T-BOLAG-03: sha256:784775c3209ba7e2283261a24adacb4e4dd144a132997eb971d3de426b7fa1b6
+    T-RED-01: sha256:ad80af7353adcccde28f945ce637ec8b736638e7f104dfd7b0be63b46285819d
+    T-RED-02: sha256:164bfb6b97870f6d5d58577856f98c3a0c057da0d04f23cdfc14c6c9e7cc6a3f
+    T-RED-03: sha256:86c6dddc7760df32e0151ef8b3ff20f0e75d835aa75d429a5305661880105e81
+    T-RED-04: sha256:b9c708d67fcd96c9449da7ea4eca2040f51eb802fc2168566ada534274c78594
+    T-RED-05: sha256:562885d1e2c3fd97d8a85a97bb0b52b3fea91b6e7e4132a2df4dfdd8ec7bd957
+    T-RED-06: sha256:989750a047d3aa5dab3321876d430061a15ece9a8b167f4b5612fa0ffd1774f6
+    T-RED-07: sha256:26d6702c069773736563d3ba9192929727a6f024a20e81e9210c6fe890706366
+    T-RED-08: sha256:39c3c768a557b8058d0b1b55251ba64a0712ebce6cc6ee1a7d95c2ccac350e64
+    T-RED-09: sha256:0b078e13c2d2647987ca12a427c4444e41a1ff2c8c28e2a80cda0c5492c77f98
+    T-SKATT-01: sha256:a642f8cdd496758fc5d6fb30d9f5e7e261d6bc68011d40231f7a75743cc3073f
+  modellfiler:
+    src/riskanalys/bedomning/__init__.py: sha256:8727f73160cd23de741df3ff167bc50c13dcf5d1e72c790cce46b18f163cebf0
+    src/riskanalys/bedomning/erfarenheter.py: sha256:668c77694de32b1ee6781660d0649f67c509b6787dda68d7ab03f203b630419c
+    src/riskanalys/bedomning/kundmodell/__init__.py: sha256:4f27e682332da5075ac64780477ca6b60beb61965ed89b8ed19617805b8a0b32
+    src/riskanalys/bedomning/kundmodell/modeller.py: sha256:5fa38bd23497ba8e59024f3a9a493cdc59ba6b259f08b2a4be3b42492683db92
+    src/riskanalys/bedomning/kundmodell/pep.py: sha256:434e5a6c0dfeae9a16085156128771115aefeaa99148089594f4d5321173a860
+    src/riskanalys/bedomning/kundmodell/tabeller.py: sha256:5419e3d842a67ea8637d71f2370edfe02ac46fa805eca6b92e583eb846853692
+    src/riskanalys/bedomning/kundmodell/utvardering.py: sha256:f3f2f898147848c4df8a70ca656ac1de93430152be20c541908abb4f3d9a6e7c
+    src/riskanalys/bedomning/modeller.py: sha256:fced85971084d466cbf164c440db083e3f043fb25dd4fde4694f7d5629e303f1
+    src/riskanalys/bedomning/motor.py: sha256:72e286e8f2e616a3066525c2b22b7c22146da644dabd1cb0c2ef40cd3b53769c
+    src/riskanalys/bedomning/omfattning.py: sha256:0bc2c2d6a068dfbba71eb60f7982e3e7043caf9aa59f561a2d20958f43ea3c5d
+    src/riskanalys/bedomning/sanktioner.py: sha256:8d6f6806f79c99e51b5d97323b72f09c1963f4b40644948b4221e024f0d55e88
+    src/riskanalys/bedomning/scenarier.py: sha256:4a14de8189c670029a1432a690d839fff973567d99fdc17de11e717ec531c4ee
+    src/riskanalys/bedomning/sektorsrisk.py: sha256:b96e516a776c6da99e89f5741283ca0fe1ba623742eb60dd95f9bff1e13768c8
+    src/riskanalys/dokument/kapitel3_v10.py: sha256:6a96c49fcff34539d48e30d324300f1f8ac8581d9a562ddf201c13edbd3d983e
+    src/riskanalys/dokument/metodavsnitt_v10.py: sha256:664db9f53e9baadac7bc13093acf8a558f8db2efb0a01939d7c182359ea418b4
+    src/riskanalys/drift/modellidentitet.py: sha256:dcacd8a3c611f29e6941659a7855014aa3430a0062da54fd122cf9ced365271a
+    src/riskanalys/fel.py: sha256:44058f0e480eb26ffd4f5b26976f942b6c22e3a2eadda8ae8b5b0bc541bb5740
+    src/riskanalys/lagring/__init__.py: sha256:1b8372a54889228e37a993acabf30ed8d8d9578c8f5afa2ec34d1890f1fd934f
+    src/riskanalys/lagring/kontrollsumma.py: sha256:c6b911b14df7c959c0c3a775cd433fc29cf196090852dc1cf13132d300312236
+    src/riskanalys/profil/__init__.py: sha256:f3810d9ff18c39662a4a117f9c1b6dbb0efdc9d9fc503333b1fa32a944fc2aa6
+    src/riskanalys/profil/katalogstatistik.py: sha256:03be61bc38320cd8c12efa7d335ec4ea0dfcdf1f14f503470bcb53014807c574
+    src/riskanalys/profil/modeller.py: sha256:12f9c6c581e7c12f9cd3ee6a688af56ead2dbe9cc2711a97104012aa2124f82f
+    src/riskanalys/profil/omfattning.py: sha256:3f08454b45af81d4b17ad073a3b15fbce7cb5e96bb0414714616f85a95560c76
+    src/riskanalys/regelverk/__init__.py: sha256:6ed4466d57d48e2cdd450d29a35f461c1eb6180bee9de0023227924f3bf26cf7
+    src/riskanalys/regelverk/laddning.py: sha256:16101de1e7d698b0777bbb91059edc5ee87480548489be9d825f0617bb9dece3
+    src/riskanalys/regelverk/metodbeslut.py: sha256:713e2d9023a12b6efb2428c5c72b3a1e8618de5fee654f7925dade3e255c86a6
+    src/riskanalys/regelverk/modeller.py: sha256:f967a3976bae4c59c5ee145c26e8e2d11e54d635d5c89a2d924fb1a284a875ec
+    src/riskanalys/regelverk/sakkunnig.py: sha256:7d96f6e194baae24ef2a201f193b058754c26471ee56a7cad4c5b95165c59af0
+    src/riskanalys/regelverk/tillsyn.py: sha256:b3568eb53ea85f73da0acdf2091d5e5f3dd6cfbe6ef710953f80f5b886c0d339
+    src/riskanalys/regelverk/urval.py: sha256:950aabaee6c327eed859eeabda551cd659189a5c3ed568da499ea5424eb2a9a3
+    src/riskanalys/regelverk/validering.py: sha256:6342933f266c763da7d7a1c96139e3a9e76cfac90ed106a534d7c58540f070a8
+    src/riskanalys/regelverk/validering_m2.py: sha256:716c0bcd65b151ddc6349115a7fde89ae50b14071852d80ae57dc3da1f68cb77
+    src/riskanalys/regelverk/validering_scenario.py: sha256:789cbf2c6c05d73fdd2534654fca7173be39edc20c29bd0f0a3404f02ccbdeb5
+    src/riskanalys/regelverk/villkor.py: sha256:b33cacbd8ad9bda8651ccc022cdc39f61229a30d6b27ecef19ecef82c94c8ab3
+  aterforing: 'Vid avslag: ompröva D8 och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
+    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
+    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
+    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
+    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  sakkunnig:
+    status: ej_granskad
