@@ -1,6 +1,6 @@
 # Samlad slutverifiering av C–E och resultatrapport V10
 
-Arbetsunderlag 2026-10-23. Kodcommit `508f8c6`, regelbas **2.12.2**. Användaren har uttryckligen godkänt båda referens-PDF:erna efter D och gett klartecken till E. Första fullsviten gav 34 fel; en ny fullsvit pågår efter rättningarna. Detta dokument är ännu inte ett grönt slutbesked.
+Slutunderlag 2026-10-23. Regelbas **2.12.2**, kodcommit `508f8c6`, fullkörningens commitstämpel `f25eb21`. **3 557 godkända, 0 fel, 0 överhoppade; ett livetest bortvalt.** Insamling/JUnit matchar, exitkod 0 och alla 851 snapshotresurser är oförändrade. Användaren har uttryckligen godkänt båda referens-PDF:erna efter D och gett klartecken till E. E och den samlade slutreviewen är färdiga.
 
 ## Omfattning och gränser
 
@@ -20,9 +20,9 @@ Historiska V8/V9-vägar och frysta källor ingår i regressionerna. Ett faktiskt
 | Historiska gyllene V7-bytes, preliminärt V10-utbud och uppdaterad trepartsrapport utan AI-anrop | 3 godkända, 0 fel | 23,57 s | `/private/tmp/riskanalys-fullfix-3.log` |
 | Fullständigt syntetiskt webbintag till Word | 1 godkänt, 0 fel | 215,28 s | `/private/tmp/riskanalys-fullfix-webb.log` |
 | Ny snabbprofil efter rättningarna | 140 godkända, 0 fel, 0 överhoppade | 67,213 s | `/private/tmp/riskanalys-cde-snabb-3/resultat.json` |
-| Ny ordinarie fullprofil på 508f8c6, inga livetester | Pågår | Återstår | `/private/tmp/riskanalys-cde-full-2/` |
+| Ny ordinarie fullprofil, commitstämpel f25eb21, inga livetester | 3 557 godkända, 0 fel, 0 överhoppade; ett livetest bortvalt | 3 129,232 s (pytest 3 127,15 s) | `/private/tmp/riskanalys-cde-full-2/resultat.json` |
 
-Snabbprofilens collection och JUnit matchar och dess snapshot förblev oförändrat. Den sparade commitstämpeln där är `dd52d85`: rättningarna fanns då i arbetskopian och sparades därefter som `40d5aad`. Fullprofilen startades efter denna commit. Slutlig collection/JUnit-kontroll och snapshotkontroll ska läsas ur fullprofilens `resultat.json` innan ett grönt slutbesked kan ges.
+Snabbprofilernas collection och JUnit matchar och deras snapshot förblev oförändrade. Snabb2:s commitstämpel är `dd52d85`: rättningarna fanns i arbetskopian och sparades därefter som `40d5aad`. Snabb3 kördes på de slutliga rättningarna, därefter sparade som `508f8c6`. Full2 kördes efter den kodcommiten. Under körningen sparades endast dokumentation som `f25eb21`, som är slutprotokollets commitstämpel. Snapshotet omfattar kod, tester, regelbas, profiler och verktyg och förblev exakt oförändrat. Även en ny jämförelse mot leveransens aktuella filer gav 851/851 identiska resurser. Full2:s `resultat.json` har `verifierad: true`, `collection_matchar: true` och `oforandrat: true`.
 
 Kommandot för fullprofilen:
 
@@ -49,6 +49,6 @@ Användaren godkände underlagen i `.superpowers/evidens/2026-10-23-rapport-v10-
 
 Hela fria motiveringar, 33 högre-risk-/sårbarhetsrader, fem lägre-risk-rader och 15 lagexempel är bevarade. Gemensamma hotkedjor återges en gång. Word-innehåll, källpekare och manifest kontrollerades. Texten på samtliga huvudsidor är identisk med de godkända PDF:erna förutom versionsangivelsen på sida 1 och 20/21; dessa fyra sidor är visuellt omkontrollerade. Huvudrapporterna är visuellt genomgångna; alla bilagesidor har inte granskats visuellt. Riktmärket tio sidor är inte uppnått; innehåll har inte kapats. Tolv fasta profilvarianters scenarioled och tjänsteutfall är identiska mot D-slut. PDF-godkännandet före E är uppfyllt.
 
-## Återstår före slutleverans
+## Slutleverans och kvarvarande expertprövning
 
-Läs nya fullprofilens faktiska slutresultat och kontrollera exakt oförändrat snapshot. E:s guide och tre expertpaket är byggda med 276 obesvarade objekt, 244 bundna appfiler, 40 kontrastprofiler, tolv fasta profilfiler, lästa primärkällor och sex referens-PDF:er per paket. E-delen av samma slutreview är klar utan kvarstående fynd. Därefter färdigställs dokumentation och lokala commits. Verklig sakkunniggranskning och metodkalibrering ingår inte i Codex uppdrag.
+Full2 är grön och det oförändrade snapshotet verifierat. E:s guide och tre expertpaket innehåller 276 obesvarade objekt, 244 bundna appfiler, 40 kontrastprofiler, tolv fasta profilfiler, lästa primärkällor och sex referens-PDF:er per paket. E-delen av samma slutreview är klar utan kvarstående fynd. Leveransarkiv: `../underlag/sakkunnigpaket-2.12.2-2026-10-23.zip` relativt repot, med separat SHA-256-fil och de fullständiga testprotokollen under `verifiering/`. [Alla genomförandebeslut och deras kostnader](2026-10-23-genomforandebeslut.md) är redovisade. Grenen behålls lokalt utan push eller merge. Verklig sakkunniggranskning och metodkalibrering ingår inte i Codex uppdrag.

@@ -122,4 +122,4 @@ Importen validerar aktuell regelbas, paket/version/innehållssumma, rättsligt d
 
 ## 7. Teknisk status
 
-Första samlade fullsviten efter C–D/V10 gav 3 522 godkända och 34 fel på ett oförändrat snapshot. Rättningar och en ny fullsvit redovisas i [slutprovsunderlaget](superpowers/reviews/2026-10-23-regelbas-slutprov.md). Paketets sakstatus är `ej_granskad` oberoende av det tekniska slutresultatet. Ingen push eller merge ingår.
+Slutlig fullsvit gav **3 557 godkända, 0 fel och 0 överhoppade**, med ett livetest bortvalt, matchande insamling/JUnit och 851 oförändrade snapshotresurser. Första körningens 3 522 godkända/34 fel, rättningarna och den gröna slutkörningen redovisas i [slutprovsunderlaget](superpowers/reviews/2026-10-23-regelbas-slutprov.md). Paketets sakstatus är fortfarande `ej_granskad`. Ingen push eller merge ingår.

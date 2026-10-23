@@ -1,10 +1,10 @@
-# E färdigt för granskning – ny fullsvit pågår
+# C–E och V10 färdiga – slutlig fullsvit grön
 
-Regelbas **2.12.2**, kodcommit `508f8c6`. Användaren har godkänt båda referens-PDF:erna efter D och gett klartecken till E. [Guiden](sakkunniggranskning.md) och [tre sakkunnigpaket](superpowers/reviews/2026-10-23-regelbas-steg-e.md) är färdiga: 276 obesvarade objekt, 526 manifestbundna filer, 244 appfiler, tolv fasta profiler, 40 kontrastprofiler och sex referens-PDF:er per region. Samlad C–E-review klar, inga kvarstående E-fynd. Alla regelobjekt fortsatt `ej_granskad`.
+Regelbas **2.12.2**, kodcommit `508f8c6`, fullkörningens commitstämpel `f25eb21`. **3 557 godkända, 0 fel, 0 överhoppade; ett livetest bortvalt.** Fullprofilen tog 3 129,232 s inklusive insamling; JUnit och insamling matchar och samtliga 851 snapshotresurser är oförändrade. Senaste snabbprofil: **140 godkända/67,213 s**, också oförändrat snapshot och matchande insamling/JUnit. Första fullsvitens 34 fel och deras rättningar är bevarade i [slutprovsunderlaget](superpowers/reviews/2026-10-23-regelbas-slutprov.md).
 
-Första fullsviten: **3 522 godkända/34 fel**, collection/JUnit matchar och snapshot oförändrat. Två produktfel och äldre testfixturer/förväntningar rättade; inga produktspärrar lättade. Senaste riktade prov: **68 godkända/42,55 s**, historiska gyllene bytes + V10/export **3 godkända/23,57 s**, komplett webbintag **1 godkänt/215,28 s**. Snabb3: **140 godkända/67,213 s**, collection/JUnit matchar och snapshot oförändrat. **Full2 pågår på exakt 508f8c6; inget grönt slutbesked ännu.** [Slutprovsunderlag](superpowers/reviews/2026-10-23-regelbas-slutprov.md).
+Användaren har godkänt båda referens-PDF:erna efter D. [Guiden](sakkunniggranskning.md), [E:s tre sakkunnigpaket](superpowers/reviews/2026-10-23-regelbas-steg-e.md) och den samlade oberoende C–E-reviewen är färdiga. Paketen har 276 obesvarade objekt, 527 manifestbundna filer, 244 appfiler, tolv fasta profiler, 40 kontrastprofiler och sex referens-PDF:er per region. Alla regelobjekt är fortsatt `ej_granskad`; verklig sakkunnigprövning återstår.
 
-Nya huvud-PDF:er 20/21 sidor, A38/40 och B1195/200. Saktext exakt som godkänd utom versionsangivelse; ändrade sidor omkontrollerade visuellt. Tolv fasta profilvarianters scenarioled oförändrade mot D-slut. Ingen push eller merge.
+Huvud-PDF:er 20/21 sidor, A38/40 och B1195/200. Saktext exakt som godkänd utom versionsangivelse; ändrade sidor omkontrollerade visuellt. Tolv fasta profilvarianters scenarioled är oförändrade mot D-slut. [Alla genomförandebeslut och kostnader](superpowers/reviews/2026-10-23-genomforandebeslut.md) är dokumenterade. Leveransarkiv: `../underlag/sakkunnigpaket-2.12.2-2026-10-23.zip`. Grenen behålls lokalt, ingen push eller merge.
 
 ## Föregående arbetsstatus
 
