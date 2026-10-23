@@ -1,7 +1,12 @@
 - id: L-PTL-04-01
   namn: Offentlig kund eller rättsligt bestämmande offentligt inflytande
-  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
-    nivåeffekt prövas i steg D.
+  beskrivning: 'D-LAGRE: PTL:s omständigheter kan tyda på låg risk men anger inga automatiska avdrag.
+    Nuvarande data räcker inte för att knyta lägre kundrisk till varje tjänsts specifika missbruksscenario
+    eller skilja överlapp från redan tillgodoräknade kontroller. Alla fem indikatorer redovisas separat
+    utan nivåeffekt. EES-hemvist neutraliserar inte riskbransch, kontanter eller andra högre indikatorer.
+    Ett framtida tjänsteavdrag kräver kalibrering, kund-/tjänsterelevans, känd samtidighet och prövning
+    av dubbelräkning. Okända länder eller saknat centralt landunderlag är inte låg risk. Valet att avstå
+    automatisk sänkning är också ett ej granskat metodval.'
   profilfalt:
   - P-KUND.antal_offentlig
   grund: metodval
@@ -19,8 +24,13 @@
     status: ej_granskad
 - id: L-PTL-04-02
   namn: Hemvist inom EES
-  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
-    nivåeffekt prövas i steg D.
+  beskrivning: 'D-LAGRE: PTL:s omständigheter kan tyda på låg risk men anger inga automatiska avdrag.
+    Nuvarande data räcker inte för att knyta lägre kundrisk till varje tjänsts specifika missbruksscenario
+    eller skilja överlapp från redan tillgodoräknade kontroller. Alla fem indikatorer redovisas separat
+    utan nivåeffekt. EES-hemvist neutraliserar inte riskbransch, kontanter eller andra högre indikatorer.
+    Ett framtida tjänsteavdrag kräver kalibrering, kund-/tjänsterelevans, känd samtidighet och prövning
+    av dubbelräkning. Okända länder eller saknat centralt landunderlag är inte låg risk. Valet att avstå
+    automatisk sänkning är också ett ej granskat metodval.'
   profilfalt:
   - P-GEO.antal_hemvist_sverige
   - P-GEO.antal_hemvist_ovriga_ees
@@ -52,8 +62,13 @@
       av det lästa underlaget; central bedömning förblir okänd.
 - id: L-PTL-04-03
   namn: Motsvarande och effektivt tillämpade AML/TF-bestämmelser
-  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
-    nivåeffekt prövas i steg D.
+  beskrivning: 'D-LAGRE: PTL:s omständigheter kan tyda på låg risk men anger inga automatiska avdrag.
+    Nuvarande data räcker inte för att knyta lägre kundrisk till varje tjänsts specifika missbruksscenario
+    eller skilja överlapp från redan tillgodoräknade kontroller. Alla fem indikatorer redovisas separat
+    utan nivåeffekt. EES-hemvist neutraliserar inte riskbransch, kontanter eller andra högre indikatorer.
+    Ett framtida tjänsteavdrag kräver kalibrering, kund-/tjänsterelevans, känd samtidighet och prövning
+    av dubbelräkning. Okända länder eller saknat centralt landunderlag är inte låg risk. Valet att avstå
+    automatisk sänkning är också ett ej granskat metodval.'
   profilfalt:
   - P-GEO.antal_hemvist_sverige
   - P-GEO.antal_hemvist_ovriga_ees
@@ -89,8 +104,13 @@
       av det lästa underlaget; central bedömning förblir okänd.
 - id: L-PTL-04-04
   namn: Låg korruption och annan relevant brottslighet
-  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
-    nivåeffekt prövas i steg D.
+  beskrivning: 'D-LAGRE: PTL:s omständigheter kan tyda på låg risk men anger inga automatiska avdrag.
+    Nuvarande data räcker inte för att knyta lägre kundrisk till varje tjänsts specifika missbruksscenario
+    eller skilja överlapp från redan tillgodoräknade kontroller. Alla fem indikatorer redovisas separat
+    utan nivåeffekt. EES-hemvist neutraliserar inte riskbransch, kontanter eller andra högre indikatorer.
+    Ett framtida tjänsteavdrag kräver kalibrering, kund-/tjänsterelevans, känd samtidighet och prövning
+    av dubbelräkning. Okända länder eller saknat centralt landunderlag är inte låg risk. Valet att avstå
+    automatisk sänkning är också ett ej granskat metodval.'
   profilfalt:
   - P-GEO.antal_hemvist_sverige
   - P-GEO.antal_hemvist_ovriga_ees
@@ -126,8 +146,13 @@
       av det lästa underlaget; central bedömning förblir okänd.
 - id: L-PTL-04-05
   namn: Överlåtbara värdepapper på reglerad eller motsvarande marknad
-  beskrivning: Potentiell indikator enligt PTL 2 kap. 4 §. Endast data; relevans, överlapp och eventuell
-    nivåeffekt prövas i steg D.
+  beskrivning: 'D-LAGRE: PTL:s omständigheter kan tyda på låg risk men anger inga automatiska avdrag.
+    Nuvarande data räcker inte för att knyta lägre kundrisk till varje tjänsts specifika missbruksscenario
+    eller skilja överlapp från redan tillgodoräknade kontroller. Alla fem indikatorer redovisas separat
+    utan nivåeffekt. EES-hemvist neutraliserar inte riskbransch, kontanter eller andra högre indikatorer.
+    Ett framtida tjänsteavdrag kräver kalibrering, kund-/tjänsterelevans, känd samtidighet och prövning
+    av dubbelräkning. Okända länder eller saknat centralt landunderlag är inte låg risk. Valet att avstå
+    automatisk sänkning är också ett ej granskat metodval.'
   profilfalt:
   - P-KUND.antal_reglerad_marknad
   grund: metodval

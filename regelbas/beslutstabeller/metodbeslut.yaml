@@ -1330,3 +1330,79 @@
     kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
   sakkunnig:
     status: ej_granskad
+- id: D-LAGRE
+  namn: Potentiellt lägre risk och nivåeffekt
+  grund: metodval
+  valt: Enbart redovisning, ingen automatisk nivåeffekt
+  alternativ:
+  - Enbart redovisning, ingen automatisk nivåeffekt
+  - Avdrag efter belagd relevans-, överlapps- och kontrollprövning
+  skal: PTL:s omständigheter kan tyda på låg risk men anger inga automatiska avdrag. Nuvarande data räcker
+    inte för att knyta lägre kundrisk till varje tjänsts specifika missbruksscenario eller skilja överlapp
+    från redan tillgodoräknade kontroller. Alla fem indikatorer redovisas separat utan nivåeffekt. EES-hemvist
+    neutraliserar inte riskbransch, kontanter eller andra högre indikatorer.
+  osakerhet: Ett framtida tjänsteavdrag kräver kalibrering, kund-/tjänsterelevans, känd samtidighet och
+    prövning av dubbelräkning. Okända länder eller saknat centralt landunderlag är inte låg risk. Valet
+    att avstå automatisk sänkning är också ett ej granskat metodval.
+  kallor:
+  - SRC-PTL
+  kallbelagg:
+  - kalla: SRC-PTL
+    avsnitt: 2 kap. 4 §; registrerad lydelse 2020-01-01
+    citat: kan tyda på
+    tolkning: Möjlig indikator, inte föreskrivet automatiskt avdrag i tjänstens allmänna riskbedömning.
+  objekt:
+    L-PTL-04-01: sha256:c10a9cd770850cb4f6a0a7410f26bef75cfff1172acd2683cf74f5ac2c0cdc75
+    L-PTL-04-02: sha256:57a89e7286882226e9d10d22ddfd8686d015755b724c8b557a2f7358c5acb48b
+    L-PTL-04-03: sha256:3235f00de6dab2516cb70cb1824155e560f9b58821328a2f2c440086c76965bc
+    L-PTL-04-04: sha256:8362c25dfac470eb0de4cda98dcf02f3cced0f9ccab6ab6551c47b7842504a8c
+    L-PTL-04-05: sha256:1a880b04b4185f2814a42438c798f5c37e1bdf0c7fcbde1e735a274dc9d0d46d
+    P-GEO.antal_hemvist_ovriga_ees: sha256:53758621e10c614416108f67f5fe5c16f4c9fc472dad627bde9db87253927c09
+    P-GEO.antal_hemvist_sverige: sha256:a7fa475899f885ec1374005b5d73cd505e3be5675d2f81449dd45b956a58a9c4
+    P-GEO.antal_hemvist_utanfor_ees: sha256:8e5c642b5caef9ee5c2f41fb61923cea80287df8b9dc47634f27ca6f958a1d8a
+    P-KUND.antal_aktiva: sha256:0c07b7e3fcc8316372bf84133deb710e5cf17731754fd31f71750eb97ae244df
+    P-KUND.antal_offentlig: sha256:0e14e475aad0675e0a755f90780ea823d604e4208d0ca2882e09098305dc38e8
+    P-KUND.antal_reglerad_marknad: sha256:2e36d2a9ca5878aaaf9705008c11161d8c41766aceb49f5a54f1198a34ba3b27
+    SRC-PTL: sha256:ee6e0dc9594804c6f8cabddd622455eb5d5aa2062ac30b0213bb33791009ac34
+  modellfiler:
+    src/riskanalys/bedomning/__init__.py: sha256:8727f73160cd23de741df3ff167bc50c13dcf5d1e72c790cce46b18f163cebf0
+    src/riskanalys/bedomning/erfarenheter.py: sha256:668c77694de32b1ee6781660d0649f67c509b6787dda68d7ab03f203b630419c
+    src/riskanalys/bedomning/kundmodell/__init__.py: sha256:4f27e682332da5075ac64780477ca6b60beb61965ed89b8ed19617805b8a0b32
+    src/riskanalys/bedomning/kundmodell/modeller.py: sha256:5fa38bd23497ba8e59024f3a9a493cdc59ba6b259f08b2a4be3b42492683db92
+    src/riskanalys/bedomning/kundmodell/pep.py: sha256:434e5a6c0dfeae9a16085156128771115aefeaa99148089594f4d5321173a860
+    src/riskanalys/bedomning/kundmodell/tabeller.py: sha256:5419e3d842a67ea8637d71f2370edfe02ac46fa805eca6b92e583eb846853692
+    src/riskanalys/bedomning/kundmodell/utvardering.py: sha256:f3f2f898147848c4df8a70ca656ac1de93430152be20c541908abb4f3d9a6e7c
+    src/riskanalys/bedomning/modeller.py: sha256:fced85971084d466cbf164c440db083e3f043fb25dd4fde4694f7d5629e303f1
+    src/riskanalys/bedomning/motor.py: sha256:72e286e8f2e616a3066525c2b22b7c22146da644dabd1cb0c2ef40cd3b53769c
+    src/riskanalys/bedomning/omfattning.py: sha256:0bc2c2d6a068dfbba71eb60f7982e3e7043caf9aa59f561a2d20958f43ea3c5d
+    src/riskanalys/bedomning/sanktioner.py: sha256:8d6f6806f79c99e51b5d97323b72f09c1963f4b40644948b4221e024f0d55e88
+    src/riskanalys/bedomning/scenarier.py: sha256:4a14de8189c670029a1432a690d839fff973567d99fdc17de11e717ec531c4ee
+    src/riskanalys/bedomning/sektorsrisk.py: sha256:b96e516a776c6da99e89f5741283ca0fe1ba623742eb60dd95f9bff1e13768c8
+    src/riskanalys/dokument/kapitel3_v10.py: sha256:6a96c49fcff34539d48e30d324300f1f8ac8581d9a562ddf201c13edbd3d983e
+    src/riskanalys/dokument/metodavsnitt_v10.py: sha256:664db9f53e9baadac7bc13093acf8a558f8db2efb0a01939d7c182359ea418b4
+    src/riskanalys/drift/modellidentitet.py: sha256:dcacd8a3c611f29e6941659a7855014aa3430a0062da54fd122cf9ced365271a
+    src/riskanalys/fel.py: sha256:44058f0e480eb26ffd4f5b26976f942b6c22e3a2eadda8ae8b5b0bc541bb5740
+    src/riskanalys/lagring/__init__.py: sha256:1b8372a54889228e37a993acabf30ed8d8d9578c8f5afa2ec34d1890f1fd934f
+    src/riskanalys/lagring/kontrollsumma.py: sha256:c6b911b14df7c959c0c3a775cd433fc29cf196090852dc1cf13132d300312236
+    src/riskanalys/profil/__init__.py: sha256:f3810d9ff18c39662a4a117f9c1b6dbb0efdc9d9fc503333b1fa32a944fc2aa6
+    src/riskanalys/profil/katalogstatistik.py: sha256:03be61bc38320cd8c12efa7d335ec4ea0dfcdf1f14f503470bcb53014807c574
+    src/riskanalys/profil/modeller.py: sha256:12f9c6c581e7c12f9cd3ee6a688af56ead2dbe9cc2711a97104012aa2124f82f
+    src/riskanalys/profil/omfattning.py: sha256:3f08454b45af81d4b17ad073a3b15fbce7cb5e96bb0414714616f85a95560c76
+    src/riskanalys/regelverk/__init__.py: sha256:6ed4466d57d48e2cdd450d29a35f461c1eb6180bee9de0023227924f3bf26cf7
+    src/riskanalys/regelverk/laddning.py: sha256:16101de1e7d698b0777bbb91059edc5ee87480548489be9d825f0617bb9dece3
+    src/riskanalys/regelverk/metodbeslut.py: sha256:713e2d9023a12b6efb2428c5c72b3a1e8618de5fee654f7925dade3e255c86a6
+    src/riskanalys/regelverk/modeller.py: sha256:f967a3976bae4c59c5ee145c26e8e2d11e54d635d5c89a2d924fb1a284a875ec
+    src/riskanalys/regelverk/sakkunnig.py: sha256:7d96f6e194baae24ef2a201f193b058754c26471ee56a7cad4c5b95165c59af0
+    src/riskanalys/regelverk/tillsyn.py: sha256:b3568eb53ea85f73da0acdf2091d5e5f3dd6cfbe6ef710953f80f5b886c0d339
+    src/riskanalys/regelverk/urval.py: sha256:950aabaee6c327eed859eeabda551cd659189a5c3ed568da499ea5424eb2a9a3
+    src/riskanalys/regelverk/validering.py: sha256:6342933f266c763da7d7a1c96139e3a9e76cfac90ed106a534d7c58540f070a8
+    src/riskanalys/regelverk/validering_m2.py: sha256:716c0bcd65b151ddc6349115a7fde89ae50b14071852d80ae57dc3da1f68cb77
+    src/riskanalys/regelverk/validering_scenario.py: sha256:789cbf2c6c05d73fdd2534654fca7173be39edc20c29bd0f0a3404f02ccbdeb5
+    src/riskanalys/regelverk/villkor.py: sha256:b33cacbd8ad9bda8651ccc022cdc39f61229a30d6b27ecef19ecef82c94c8ab3
+  aterforing: 'Vid avslag: ompröva D-LAGRE och dess angivna sakobjekt/modellfiler i ny regelversion. Avslaget
+    får inte kringgås med ändrad text. Bind om alla beslut som delar ändrade objekt/filer, fortsätt med
+    ej_granskad och nytt expertbeslut. Räkna om varje scenario i sexfallen och kontraster, revidera berörda
+    modellfacit/valideringsrapporter, bygg nya analyser/skrivunderlag/V10-rapporter/PDF:er och tre expertpaket,
+    kräv ny samlad sakgranskning. Låsta historiska paket ändras inte.'
+  sakkunnig:
+    status: ej_granskad
