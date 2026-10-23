@@ -47,7 +47,7 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
     org=str(namnuppgift.varde) if namnuppgift else '[VERIFIERA]'
     r1=avsnitt('D-ARB.R1','Sammanfattning',(
         stycke(f'{org}. Bedömning per {bedomning.datum}. Status: {bedomning.status}. '
-               'Förhandsvisning av resultatrapport, ej fastställt av byrån. Riskbedömningen omfattar '
+               'Leveransstatus framgår av statusraden. Riskbedömningen omfattar '
                'resultatrapport, bilaga A Analys och bilaga B1 Underlag.',
                (kallkod('profil','/uppgifter/P-ORG.namn'),kallkod('bedomning')),lokal=True),
         stycke(slutsats(bedomning,analys),(kallkod('bedomning'),kallkod('analys'))),
@@ -76,7 +76,7 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
                (kallkod('profil','/uppgifter/P-OMFATTNING.motivering'),) if omf else (kallkod('profil'),),lokal=True),
         stycke('Antaganden, kunskapsluckor och metodkonflikter ska bedömas före fastställelse. '
                'Egna tjänster utan modellstöd får inte utelämnas; ofullständig omfattning kan inte fastställas. '
-               'Denna förhandsvisning utgör inget godkännande.',(kallkod('bedomning'),)),))
+               'Dokumentpresentationen ersätter inte sakgranskning eller fastställelse.',(kallkod('bedomning'),)),))
     gem=[]
     for p in underlag.poster:
         if p.tjanst is not None or p.hantering!='sammanfattas':continue
@@ -113,6 +113,10 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
                 s=c.scenario
                 orsaker=tuple(b.orsak for b in sankningar.get(id,()) if b.scenario==s)
                 txt=celltext(c,orsaker)
+                if c.status=='saknas' and any(r.hot==row.hot and r.dimension==row.dimension and
+                    any(x.tjanst==id and x.scenario for x in r.celler) for r in underlag.matris):
+                    avsid=next(avsid for avsid,t in valda if t.tjanst==id)
+                    txt='Egen mekanism, se R5.'+avsid.removeprefix('D-ARB.6.')
                 cells.append((txt,(id,*(kallkod(r.artefakt,r.pointer) for r in c.kallor),
                     kallkod('analys'),kallkod('profil'),kallkod('regelbas'))))
             rows.append(cells)
@@ -121,7 +125,9 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
     gem.append(stycke('* avgör tjänstens nivå före kontroll; † avgör motorns kvarstående nivå. '
         'En markerad oprövad eller ej godtagen sänkning är inte en belagd kontrollverkan. '
         'Den inneboende scenarionivån gäller tills den lokala prövningen godtar sänkningen; analysgodkännande spärras. '
-        'TF:s kvarstående nivå beräknas inte.',(kallkod('analys'),kallkod('bedomning'))))
+        'TF:s kvarstående nivå beräknas inte. '
+        'Tjänsternas skilda utfall och kontrollbegränsningar framgår av cellerna och R5.',
+        (kallkod('analys'),kallkod('bedomning'))))
     for row in delade:
         used=set();parts=[];refs=[]
         for c in row.celler:
@@ -134,8 +140,7 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
             if v and v not in parts:parts.append(v)
             refs.append(kallkod(r.artefakt,r.pointer))
         values='; '.join(f'Sannolikhet {s}, konsekvens {k}' for s,k in sorted(used))
-        gem.append(stycke(f'{row.id}: '+(' '.join(parts) or '[VERIFIERA] Lokal scenariomekanism saknas.')+' '+values+
-                          '. Tjänsternas skilda utfall och kontrollbegränsningar framgår av cellerna och R5.',
+        gem.append(stycke(f'{row.id}: '+(' '.join(parts) or '[VERIFIERA] Lokal scenariomekanism saknas.')+' '+values+'.',
                           (*refs,kallkod('bedomning','/tjanster')),lokal=True))
     r4=avsnitt('D-ARB.R4','Gemensamma förhållanden och scenarier',gem,tabeller)
     lok=[]
@@ -173,8 +178,10 @@ def bygg_resultatavsnitt(rb,profil,bedomning,resultat,historik,*,analys,underlag
                 controlgrupper.setdefault((v.tackande_kontroller,v.kvarstaende),[]).append(row.id)
         controls=[', '.join(ids)+': '+', '.join(rb.kontroller[id].namn+' ('+id+')' for id in ks)+
                   '; motorns kvarstående nivå '+(niva or 'ej beräknad') for (ks,niva),ids in controlgrupper.items()]
-        s.append(stycke('Kontrollpåverkan: '+('; '.join(controls) or 'ingen bärande reduktion i de avgörande scenarierna')+'. '
-            'Belagd lokal effekt och eventuella invändningar ska prövas separat; se bilaga A, D-ARB.7 och tjänstens kontrollprövning.',
+        avslut=('Ej godtagna sänkningar förklaras nedan; se även bilaga A, D-ARB.7 och tjänstens kontrollprövning.'
+                if sankningar.get(t.tjanst) else
+                'Belagd lokal effekt och eventuella invändningar ska prövas separat; se bilaga A, D-ARB.7 och tjänstens kontrollprövning.')
+        s.append(stycke('Kontrollpåverkan: '+('; '.join(controls) or 'ingen bärande reduktion i de avgörande scenarierna')+'. '+avslut,
             (t.tjanst,kallkod('bedomning',f'/tjanster/{bi}'),kallkod('analys',prefix) if a else kallkod('analys'),
              kallkod('regelbas','/kontroller'))))
         if a:

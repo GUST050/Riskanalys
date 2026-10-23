@@ -1,10 +1,10 @@
 # Kort resultatrapport med fastställda bilagor – designunderlag
 
-**Status:** revision 2 efter Claudes granskning. R0–R2:s offlineimplementation är utförd med användarens tillägg. Obligatorisk PDF-granskning återstår före R3–R7.
+**Status:** revision 2 efter Claudes granskning. R0–R2:s offlineimplementation och användarens uttryckliga PDF-klartecken är klara. R3 är implementerad för granskning; R4–R7 återstår.
 **Datum:** upprättat 2026-10-22, reviderat 2026-10-23.
 **Verifierad planeringsbas:** `4a878b9bb35a2489e902fd341a6391cc4ce4f7fa`, gren `codex/kravstod-tjansteexponering`.
-**Dokumenthistorik:** revision 1 i `6e34cfd`, revision 2 i `f1351b8`. Aktuellt genomförande och verifiering redovisas i [R2-granskningen](../reviews/2026-10-23-resultatrapport-r2.md).
-**Genomförandebeslut 2026-10-23:** användaren har godkänt start av R0–R2 med två ytterligare standardbytesprov. Kontrollpunkten efter R2 kvarstår före R3–R7.
+**Dokumenthistorik:** revision 1 i `6e34cfd`, revision 2 i `f1351b8`. Aktuellt genomförande och verifiering redovisas i [R3-underlaget](../reviews/2026-10-23-resultatrapport-r3.md); R2-granskningen är historik.
+**Genomförandebeslut 2026-10-23:** användaren har godkänt start av R0–R2 med två ytterligare standardbytesprov. Kontrollpunkten efter R2 är nu passerad för PDF-versionerna på `35b5be0`; användaren har uttryckligen beställt R3.
 **Genomförandeplan:** [resultatrapport-plan](../plans/2026-10-22-resultatrapport-plan.md).
 **Utgångspunkt:** Claudes förslag `2026-10-22-forslag-resultatrapport.md`, läst i den andra, oförändrade klonen `/Users/danieltrogen/riskanalys-steg1-3/docs/superpowers/reviews/`. Detta underlag ersätter förslaget för den här ändringen; den andra klonen ändras inte.
 

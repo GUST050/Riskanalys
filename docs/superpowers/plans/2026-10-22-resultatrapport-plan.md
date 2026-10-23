@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.12 via `.venv312/bin/python`, befintlig Pydantic, pytest och python-docx. Inga nya produktberoenden, externa AI-anrop eller ändringar av riskmetoden.
 
-**Spec:** [2026-10-22-resultatrapport-design.md](../specs/2026-10-22-resultatrapport-design.md), revision 2, uppdaterad 2026-10-23 efter Claudes granskning. Även planen är revision 2. R0–R2 är godkända för genomförande och nu implementerade för PDF-granskning. R3–R7 inväntar användarens uttryckliga klartecken efter R2.
+**Spec:** [2026-10-22-resultatrapport-design.md](../specs/2026-10-22-resultatrapport-design.md), revision 2, uppdaterad 2026-10-23 efter Claudes granskning. Även planen är revision 2. R0–R2 är implementerade och PDF-kontrollpunkten är passerad genom användarens uttryckliga klartecken på `35b5be0`. R3 är implementerad för granskning. R4–R7 återstår.
 
 **R2-rättning efter `f653eea`:** användarens tre PDF-fynd rättas före förnyat klartecken. Oprövade/ej godtagna sänkningar ska synas i cellen och förklaras i R5, även om scenariot inte avgör tjänstens nivå. Gamla och nya standardmotiveringar ska spärras i analysgrinden och ge presentationsbrist. Mandatfixturen ska ha egen mekanism, avvikelsekoppling och konsekventa hela motiveringar. R3–R7:s kontrollpunkt består. [Genomförande och verifiering](../reviews/2026-10-23-svar-claude-resultatrapport-r2.md).
 
@@ -116,11 +116,11 @@ Under R0 inventeras alla formatgrenar med `rg`; det är ett skydd mot missade an
 - [x] Skriv och kör RED/GREEN för `test_offline_bygger_bada_fallen_utan_export_faststallelse_eller_ai`, `test_offline_aterger_samtliga_r_stycken_och_matrisvarden` och `test_offline_sparar_kallsummor_och_markerar_forhandsvisning`. Återanvänd rena Word-primitivelement och V8:s läsbara stil som tillgängliga byggdelar utan att anropa produktens V9-renderings-/exportkedja. Matcha alla synliga saktexter/celler mot R-dokumentet.
 - [x] Kör GREEN och befintliga `test_dokumentmodeller.py`, `test_rapportvyer.py`, `test_arb_v8.py`. Kör offlineverktyget, konvertera båda faktiska huvudrapporterna till PDF med Word/LibreOffice och registrera renderare/version och sidantal. Kontrollera varje sida och matrisens läsbarhet. Om PDF saknas eller målet inte nås: redovisa bristen; flytta inte kontrollpunkten till R3/R7 och kapa ingen text.
 - [x] Kör snabbprofil och commit: `feat: bygg resultatrapport med fullständiga analysbilagor`. Standardleveransen är fortfarande V8.
-- [ ] **Stanna alltid här före R3.** Lämna båda PDF-filerna, sid-/ordmätning, spårtäckning, aktuellt commit och PDF-/underlagssummor till användaren för läsning och Claude-granskning. Dokumentera uttryckligt klartecken till dessa versioner i körloggen. Gröna tester, uteblivet svar eller enbart godkänd plan passerar inte kontrollpunkten. Detta är en förhandsgranskning av en isolerad mellanversion, inte produktleverans; full slutgrind kvarstår i R7.
+- [x] **Stanna alltid här före R3.** Lämna båda PDF-filerna, sid-/ordmätning, spårtäckning, aktuellt commit och PDF-/underlagssummor till användaren för läsning och Claude-granskning. Dokumentera uttryckligt klartecken till dessa versioner i körloggen. Gröna tester, uteblivet svar eller enbart godkänd plan passerar inte kontrollpunkten. Detta är en förhandsgranskning av en isolerad mellanversion, inte produktleverans; full slutgrind kvarstår i R7.
 
 ## R3: Fryst presentation, hänvisningar och Word-rendering
 
-**Förutsättning:** R2:s två PDF-förhandsvisningar har fått användarens uttryckliga klartecken. R3–R7 får inte starta tidigare.
+**Förutsättning:** R2:s två PDF-förhandsvisningar har fått användarens uttryckliga klartecken. R3–R7 får inte starta tidigare. Kontrollpunkten är passerad 2026-10-23; användarens aktuella uppdrag omfattar R3.
 
 **Files:** Create `src/riskanalys/dokument/{presentation_v9,leverans_v9,rendering_v9}.py`, `tester/enhet/test_rendering_v9.py`. Modify `dokument/{rendering,wordstil}.py` bara där befintliga rena primitivelement behöver stödja V9; behåll V8-grenarnas policy. Extend `test_rendering_v8.py` om en delad hjälpfunktion ändras.
 
@@ -131,11 +131,11 @@ Under R0 inventeras alla formatgrenar med `rg`; det är ett skydd mot missade an
 - `bygg_presentation_v9(bygge: ResultatbyggeV9, *, analys, fynd, bedomning, profil) -> PresentationV9` byggs först när den slutliga fyndlistan finns.
 - `rendera_rapportvyer_v9(vyer: RapportvyerV9, profil, mapp: Path, *, presentation: PresentationV9, leverans: LeveransV9) -> tuple[Path,Path,Path]` återger enbart den granskade presentationen och fasta leveransvärden.
 
-- [ ] Skriv `test_tre_filer_visar_samma_identitet_och_samtliga_andra_delar`, `test_word_saktext_matchar_presentationskallan`, `test_hanvisning_till_annan_fil_ar_lasbar_utan_bokmarke` och `test_status_utkast_blir_inte_faststalld_i_r1`. Parse faktisk DOCX/XML; kontrollera originalspann och ingen rollplatshållarsubstitution inne i literal fri text.
-- [ ] Skriv `test_a4_och_minsta_textstorlek`, `test_hela_atgards_och_fyndkallan_finns_i_b1` och `test_andrad_presentationsmall_kraver_ny_granskning`. Tabeller ska kunna gå över sidor med återkommande rubrik, inte klippas eller krympas.
-- [ ] Kör RED, implementera V9-renderingen och versionsstyrda hänvisningar. Frys fulla åtgärds-/fyndposter i B1. Låt huvudrapportens maskinfyndlista vara separat från analysgap så att ingen återbyggnadscykel uppstår.
-- [ ] Kör GREEN, berörda V8-renderingsprov och snabbprofil. Rendera de två huvudrapporterna med tillgänglig Word/LibreOffice-miljö och kontrollera alla sidor. Registrera verktyg/version och faktiska sidantal; DOCX har inte tillförlitligt sidantal utan rendering. Jämför saktext, urval och matrisvärden med R2:s godkända förhandsvisningar. Redaktionella innehållsändringar lämnas för förnyad läsning; R2:s klartecken är inte en attest av ännu osedd produktlayout.
-- [ ] Justera endast layout/disposition/gruppering inom designens innehållsregler. Commit: `feat: rendera tre bundna rapportdelar i V9`.
+- [x] Skriv `test_tre_filer_visar_samma_identitet_och_samtliga_andra_delar`, `test_word_saktext_matchar_presentationskallan`, `test_hanvisning_till_annan_fil_ar_lasbar_utan_bokmarke` och `test_status_utkast_blir_inte_faststalld_i_r1`. Parse faktisk DOCX/XML; kontrollera originalspann och ingen rollplatshållarsubstitution inne i literal fri text.
+- [x] Skriv `test_a4_och_minsta_textstorlek`, `test_hela_atgards_och_fyndkallan_finns_i_b1` och `test_andrad_presentationsmall_kraver_ny_granskning`. Tabeller ska kunna gå över sidor med återkommande rubrik, inte klippas eller krympas.
+- [x] Kör RED, implementera V9-renderingen och versionsstyrda hänvisningar. Frys fulla åtgärds-/fyndposter i B1. Låt huvudrapportens maskinfyndlista vara separat från analysgap så att ingen återbyggnadscykel uppstår.
+- [x] Kör GREEN, berörda V8-renderingsprov och snabbprofil. Rendera de två huvudrapporterna med tillgänglig Word/LibreOffice-miljö och kontrollera alla sidor. Registrera verktyg/version och faktiska sidantal; DOCX har inte tillförlitligt sidantal utan rendering. Jämför saktext, urval och matrisvärden med R2:s godkända förhandsvisningar. Redaktionella innehållsändringar lämnas för förnyad läsning; R2:s klartecken är inte en attest av ännu osedd produktlayout.
+- [x] Justera endast layout/disposition/gruppering inom designens innehållsregler. Commit: `feat: rendera tre bundna rapportdelar i V9`.
 
 ## R4: Återbyggnad, kravkarta och oförändrade sakgrindar
 
@@ -224,6 +224,10 @@ Varje Review Focus-rad har ett uttryckligt negativt/positivt prov i ägaruppgift
 
 R1–R2 har fått typer och negativa prov för delning mellan tjänster, varierande kontrollutfall och komplett matristäckning. R5:s långexponering hänvisas till A medan hela PT-/TF-motiveringen stannar i huvudrapporten. Den gamla dokumentversionskonstanten flyttas i stället för att dubbleras. R2 omfattar ett separat offlineverktyg och ett ovillkorligt användarstopp med två PDF-förhandsvisningar före R3–R7. Omfattningen är fortsatt omkring 15 nya produktmoduler plus granskningsverktyget; ingen implementation ingår i denna dokumentrevision.
 
-## Status efter R2 2026-10-23
+## Status efter R3 2026-10-23
 
-Offlineimplementationen R0–R2 är utförd. Båda PDF-förhandsvisningarna är sex sidor. Den sista kontrollpunkten ovan är öppen: användarens PDF-klartecken saknas. [Provutfall, frysta filer och kvarstående steg](../reviews/2026-10-23-resultatrapport-r2.md). R3–R7 har inte påbörjats; V8 är fortsatt standard.
+R2-kontrollpunkten är passerad genom användarens uttryckliga ”gå vidare med r3” efter Claude-granskningen av `35b5be0`. Godkända PDF-summor: `74c98f3f959d13d9dec6cf5cf66a5047e6177b7b2a17fe07b359bf6c1aeb820f` och `e0e7c9f81c1d42564e800d7d1f6f752b782bf25c56ae4df543d7f906c7d30a0f`.
+
+R3 är implementerad: strikt fryst presentation, leveransmall, tre Word-filer, verkliga filhänvisningar och fulla åtgärds-/fyndkällor. Användarens fyra R3-förfiningar är gjorda. En lokal icke nivåavgörande scenariovariant omfattas också av urvalet så att hänvisningen ”Egen mekanism” alltid har sitt innehåll i R5. Ingen risknivå eller vikt ändras.
+
+Båda huvudrapporterna har renderats till PDF med LibreOfficeDev och alla **7 respektive 8 sidor** är visuellt kontrollerade. **78 riktade prov**, inklusive V8-renderingen, samt **140 prov i snabbprofilen** passerar med oförändrat källsnapshot. Ingen färsk fullsvit; R3 är ett arbetssteg för granskning, ingen produktleverans. R4–R7 återstår och V8 är fortsatt standard. [Granskningsunderlag, filer och kontrollsummor](../reviews/2026-10-23-resultatrapport-r3.md).

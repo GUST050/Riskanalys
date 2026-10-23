@@ -43,6 +43,7 @@ def bygg_resultatunderlag(rb, profil, bedomning, resultat, historik, *, analys, 
         ai,a = analyser.get(t.tjanst,(None,None))
         from riskanalys.analys.provning import ej_godtagna_sankningar
         sankningar=ej_godtagna_sankningar(rb,profil,analys,a,t) if a else ()
+        avvikelser={k.lokal_scenario for k in a.scenariokopplingar if k.tillampning=='avviker'} if a else set()
         for si,s in enumerate(t.scenarier):
             refs = (ref('bedomning',f'/tjanster/{bi}/scenarier/{si}'),)
             ursprung = mekanism(analys,a,s.hot)
@@ -61,6 +62,9 @@ def bygg_resultatunderlag(rb, profil, bedomning, resultat, historik, *, analys, 
                 ids.append(lagg(f'{t.tjanst}:{s.hot}:{s.dimension}:ej_godtagen',('avvikelse',),
                     (*refs,ref('analys',f'/tjanster/{ai}'),ref('analys','/belagg'),ref('profil'),ref('regelbas')),
                     tjanst=t.tjanst,hot=(s.hot,),dimension=s.dimension,riskled='kvarstaende'))
+            if not ids and any(lokal.id in avvikelser for lokal,_ in ursprung):
+                ids.append(lagg(f'{t.tjanst}:{s.hot}:{s.dimension}:lokal_variant',('avvikelse',),(*refs,*mrefs),
+                    tjanst=t.tjanst,hot=(s.hot,),dimension=s.dimension))
             grupper[key][t.tjanst] = (s,tuple(ids),refs,mrefs)
         if a is None:
             brister.append(Presentationsbrist(kod='saknad_analys',avsnitt='D-ARB.R5',

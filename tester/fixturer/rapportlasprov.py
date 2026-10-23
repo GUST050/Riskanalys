@@ -125,6 +125,9 @@ def bygg_rapportlasprov(regelbas: Regelbas, rot: Path, fall: str) -> SyntetisktF
                     return {k: mandattext(v) for k, v in varde.items()}
                 return varde
             t = type(t).model_validate(mandattext(t.model_dump(mode='json')))
+            update['tf_motivering']=t.tf_motivering+' Byråns verkställande av löneutbetalningar innebär att '
+            update['tf_motivering']+=('mottagare och ändamål behöver prövas inom det faktiska betalningsmandatet. '
+                'Full bankinsyn visar utbetalningen men styrker inte ensam betalningens ändamål eller senare mottagare.')
             update['block']=tuple(x.model_copy(update={'bekraftad_summa':None}) for x in t.block)
         if t.tjanst == 'T-RED-04' and fall in ('utan_betalningsmandat','med_betalningsmandat','motstridig_analys'):
             text=('Byrån verkställer betalningar från kundens konto enligt separat mandat.'

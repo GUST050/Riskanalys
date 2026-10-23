@@ -7,7 +7,7 @@ from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
 
 def formatera_dokument(word, *, formatversion=None):
     for section in word.sections:
-        if formatversion == "D-ARB-tjanst-v8":
+        if formatversion in ("D-ARB-tjanst-v8","D-ARB-resultat-v9"):
             section.page_width=Mm(210)
             section.page_height=Mm(297)
         section.left_margin=section.right_margin=Mm(18)
@@ -37,7 +37,7 @@ def formatera_tabell(word, table, id, *, formatversion=None):
              'TAB-RISK':(32,17,17,14,20), 'TAB-ATGARDER':(19,34,13,13,21)}.get(id)
             or ((23,9,19,12,8,17,12) if id.endswith('-motorscenarier')
                 else (22,56,22) if id.endswith('-utfall') else (25,39,36) if 'geografi' in id else (1,)*antal))
-    if formatversion == "D-ARB-tjanst-v8":
+    if formatversion in ("D-ARB-tjanst-v8","D-ARB-resultat-v9"):
         vikter = ({'v8-atgardsoversikt': (19, 12, 12, 14, 13, 30),
                    'gemensamma-scenarier': (13, 32, 27, 14, 14),
                    'v8-fria-falt': (31, 12, 23, 34),
@@ -80,5 +80,5 @@ def formatera_tabell(word, table, id, *, formatversion=None):
                 p.paragraph_format.line_spacing=1.02
                 for run in p.runs:
                     run.font.name='Arial'
-                    run.font.size=Pt((8.5 if nr==0 else 9) if id.endswith('-motorscenarier') else 9.5)
+                    run.font.size=Pt((8.5 if nr==0 else 9) if id.endswith('-motorscenarier') and formatversion!='D-ARB-resultat-v9' else 9.5)
                     run.font.color.rgb=RGBColor(0,0,0)

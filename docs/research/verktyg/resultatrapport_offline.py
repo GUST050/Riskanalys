@@ -28,7 +28,7 @@ def rendera_forhandsvisning(dokument,profil,sokvag):
     for sec in word.sections:
         sec.header.paragraphs[0].text='FÖRHANDSVISNING FÖR GRANSKNING – ej fastställt'
     word.add_heading('Allmän riskbedömning Resultatrapport',0)
-    word.add_paragraph('Syntetiskt granskningsunderlag utan giltigt fastställelsepaket.')
+    word.add_paragraph('Syntetiskt granskningsunderlag – ej fastställt. Inget giltigt fastställelsepaket.')
     for a in dokument.avsnitt:
         word.add_heading(a.visningsnummer+' '+a.rubrik,1)
         for n in range(len(a.stycken)+1):

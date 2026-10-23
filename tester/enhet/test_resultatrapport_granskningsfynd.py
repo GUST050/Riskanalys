@@ -84,6 +84,46 @@ def test_mandatfixturen_har_lokala_avvikelser_med_ratt_mekanism(regelbas_v1,tmp_
     assert not any('rimlighetsprövning återstår' in t.pt_motivering for t in f.analys.tjanster)
     assert 'avsaknad av betalningsmandat' not in a.model_dump_json()
     assert 'även utan betalningsmandat' not in a.model_dump_json()
+    assert a.tf_motivering!=f.analys.tjanster[0].tf_motivering
+    assert 'verkställande av löneutbetalningar' in a.tf_motivering
+
+
+def test_egen_mekanism_far_hanvisning_till_r5_i_gemensam_matris(resultatfall):
+    f=resultatfall;a=f.analys.tjanster[0];g=next(g for g in f.analys.gemensamma_scenarier if 'H-01' in g.hot)
+    lokal=g.model_copy(update={'id':'egenmekanism','handelseforlopp':'Annat faktiskt arbetsmoment.'})
+    kop=tuple(k.model_copy(update={'tillampning':'avviker','lokal_scenario':lokal.id}) if k.scenario==g.id else k for k in a.scenariokopplingar)
+    a=a.model_copy(update={'scenarier':(*a.scenarier,lokal),'scenariokopplingar':kop})
+    p=f.analys.model_copy(update={'tjanster':(a,*f.analys.tjanster[1:])})
+    r4=bygg(f,p).dokument.avsnitt_med_id()['D-ARB.R4']
+    assert any(c.text=='Egen mekanism, se R5.1' for t in r4.tabeller for r in t.rader for c in r.celler)
+
+
+def test_icke_avgorande_lokal_variant_forsvinner_inte(resultatfall):
+    f=resultatfall;a=f.analys.tjanster[3];g=next(g for g in f.analys.gemensamma_scenarier if 'H-MOD-01' in g.hot)
+    lokal=g.model_copy(update={'id':'egen-icke-avgorande','handelseforlopp':'Eget arbetsmoment trots att scenariot inte avgör nivån.'})
+    kop=tuple(k.model_copy(update={'tillampning':'avviker','lokal_scenario':lokal.id}) if k.scenario==g.id else k for k in a.scenariokopplingar)
+    a=a.model_copy(update={'scenarier':(*a.scenarier,lokal),'scenariokopplingar':kop})
+    p=f.analys.model_copy(update={'tjanster':(*f.analys.tjanster[:3],a)})
+    b=bygg(f,p);r4=b.dokument.avsnitt_med_id()['D-ARB.R4']
+    row=next(r for t in r4.tabeller for r in t.rader if 'H-MOD-01' in r.celler[0].text)
+    assert row.celler[-1].text=='Egen mekanism, se R5.4'
+    r5=b.dokument.avsnitt_med_id()['D-ARB.R5.4']
+    assert lokal.handelseforlopp in ' '.join(s.text for s in r5.stycken)
+
+
+def test_gemensam_programforklaring_visas_bara_en_gang(resultatfall):
+    r4=bygg(resultatfall).dokument.avsnitt_med_id()['D-ARB.R4']
+    assert sum(s.text.count('Tjänsternas skilda utfall och kontrollbegränsningar framgår av cellerna och R5.') for s in r4.stycken)==1
+
+
+def test_ej_godtagen_sankning_far_ingen_allman_framtidsuppmaning(resultatfall):
+    from riskanalys.analys.provning import ej_godtagna_sankningar
+    f=resultatfall;b=bygg(f)
+    for a in f.analys.tjanster:
+        t=next(t for t in f.bedomning.tjanster if t.tjanst==a.tjanst)
+        if not ej_godtagna_sankningar(f.regelbas,f.profil,f.analys,a,t):continue
+        r5=next(x for x in b.dokument.avsnitt if x.id.startswith('D-ARB.R5.') and a.tjanst in x.stycken[0].referenser)
+        assert not any('ska prövas separat' in s.text for s in r5.stycken)
 
 
 def test_r5_utan_delade_kedjor_har_ingen_tom_upprakning(resultatfall):

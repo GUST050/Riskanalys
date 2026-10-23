@@ -22,6 +22,7 @@ from docx.shared import Pt
 
 from riskanalys.dokument.modeller import Avsnitt, Dokument, Oklarhet, Textstycke
 from riskanalys.dokument.skrivversion import V6, V7, V8
+from riskanalys.dokument.rapportversion import V9
 from riskanalys.granskning.modeller import Fynd
 from riskanalys.profil.modeller import Profil
 
@@ -90,7 +91,7 @@ def avsnittsnummer(avsnitt_id: str) -> str:
 
 def bokstavliga_positioner(avsnitt: Avsnitt) -> tuple[str, ...]:
     """V8:s typade originalplaceringar; ingen sökning efter språk eller klamrar."""
-    if avsnitt.formatversion != V8:
+    if avsnitt.formatversion not in (V8,V9):
         return ()
     poster=[(f'{avsnitt.id}/stycken/{n}',s) for n,s in enumerate(avsnitt.stycken)]
     poster.extend((f'{avsnitt.id}/tabeller/{t.id}/rader/{n}/celler/{m}',c)
@@ -179,6 +180,9 @@ def rendera_docx(
     dokument: Dokument, profil: Profil, statusrad: str, sokvag: Path, bilaga: tuple[str, ...] = (), *, analys=None, fynd: tuple[Fynd, ...] = (), leveransdel=None, presentation=None, leverans=None
 ) -> Path:
     """Skriver dokumentet som Word-fil med statusraden i sidhuvudet, så att den syns på varje sida."""
+    if dokument.formatversion==V9:
+        from riskanalys.fel import RiskanalysFel
+        raise RiskanalysFel('V9 kräver tre frysta rapportdelar. Använd rendera_rapportvyer_v9.')
     word = docx.Document()
     if leverans is not None:
         from riskanalys.dokument.leverans_v8 import kontrollerad_leveransmall

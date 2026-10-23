@@ -1,3 +1,13 @@
+# Resultatrapport R3 – tre frysta Word-delar för granskning 2026-10-23
+
+Användaren har gett uttryckligt klartecken till R3 efter Claude-granskning av R2 på `35b5be0`. R3 är implementerad med strikt fryst presentation, leveransmall, tre Word-filer och läsbara hänvisningar mellan filerna. Användarens fyra R3-förfiningar är gjorda. Riskmodellfiler och regelbas är orörda; inga nya frågor eller AI-anrop tillkommer.
+
+**Verifiering:** 78 riktade prov / 89,60 s och snabbprofilens 140 prov / 49,709 s, Python 3.12.15. Collection/JUnit matchar, inga fel eller överhoppade prov och källsnapshotet är oförändrat. Båda syntetiska huvudrapporterna har **7 respektive 8 sidor**, samtliga visuellt kontrollerade. Alla sex Word-filers synliga text, ordning och källpekare är kontrollerade; bilagorna är inte fullsidigt visuellt granskade.
+
+[Underlag till Claude, huvudrapporter och båda Word-bilagorna för varje fall](superpowers/reviews/2026-10-23-resultatrapport-r3.md). Detta är ett arbetssteg, inte en produktleverans: ingen färsk fullsvit, ingen produktgranskning/export/fastställelse för V9 och ingen push eller merge. **R4–R7 återstår; V8 är fortsatt standard.** Provrapporternas maskinfyndlista är syntetiskt tom; sidmålet måste därför provas igen med R4:s verkliga slutliga fyndlista.
+
+## Föregående status – historik
+
 # Scenarioavvikelse och D9-rad – tekniskt slutverifierade 2026-10-22
 
 Claude-granskningens två fynd är rättade. En inaktuell eller obekräftad scenarioavvikelse kan inte stämplas om av den samlade tjänstegenomgången. Vyn visar behovet av separat omprövning; en aktuell avvikelse bevaras och standardvalet samma kan fortsatt bekräftas samlat. D9 redovisas i en rad per tjänst med alla faktor-/källreferenser kvar.
