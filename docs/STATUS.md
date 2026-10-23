@@ -1,3 +1,13 @@
+# V10 offlineförslag – inväntar PDF-läsning
+
+Användaren valde första alternativet i alla fyra rapportfrågor. V10 är byggt offline med disposition 0–5, 33 indikatorer, fem lägre-risk-rader och 15 lagexempel. Noll nya frågor eller verkliga AI-anrop. Regelbas 2.2.0 och motorn är oförändrade. **V9 är fortfarande produktstandard.**
+
+[PDF-filer och granskningsunderlag](superpowers/reviews/2026-10-23-rapport-v10-offline.md): huvudrapporter **19/20 sidor**, A **37/41**, B1 **195/203**, ofiltrerade maskinfynd **430/440**. Riktmärket tio sidor är inte uppnått; innehållet är bevarat. Bygg-/käll-/Word-kontroll passerar och huvudrapporternas sidlayout är genomgången. Skrivna regressioner, snabbprofil och fullsvit väntar till samlad slutverifiering enligt användarens instruktion. Ingen grön fullsvit påstås.
+
+**Nästa steg:** användaren läser de två huvudrapporterna enligt uppdragets kontrollpunkt 2. Efter PDF-klartecken: produktintegration, D, nya PDF:er och E. Ingen push eller merge.
+
+## Föregående arbetsstatus
+
 # Steg C genomfört – fortsatt rapport- och metodarbete
 
 B sparat lokalt som `902da79`. C föreslår regelbas **2.2.0**: samtliga 26 hot har lästa källcitat, precisa sidor och en uttrycklig notering om att underlag för annan hotnivå saknas. Medel behålls; samtliga 27 erbjudna tjänsteutfall i sex fasta syntetiska fall är identiska med B. Alla objekt är `ej_granskad`.

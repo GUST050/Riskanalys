@@ -2,7 +2,7 @@
 
 Underlag: uppdrag revision 3, exempelrapportens form, B `902da79` och C regelbas 2.2.0. Exemplet är fiktivt; inga siffror, åtgärdskrav, kundriskpoäng eller antaganden därifrån följer med.
 
-Ingen ny rapportkod är byggd. Tabellen nedan täcker hela dispositionen. Varje återgiven uppgift ska dessutom bindas till sin konkreta källpointer och sitt konstruktionsslag i den nya presentationen. Rapporten använder en ny version; historiska V9-paket och V9-utkast behåller sitt format.
+Vid inventeringen var ingen ny rapportkod byggd. Användaren har därefter valt första alternativet för alla fyra uppgifter; V10 har byggts offline för PDF-läsning, se `2026-10-23-rapport-v10-offline.md`. Tabellen nedan täcker hela dispositionen. Varje återgiven uppgift ska dessutom bindas till sin konkreta källpointer och sitt konstruktionsslag i den nya presentationen. Rapporten använder en ny version; historiska V9-paket och V9-utkast behåller sitt format.
 
 ## Mappning av dispositionen
 
@@ -52,3 +52,7 @@ Ingen ny rapportkod är byggd. Tabellen nedan täcker hela dispositionen. Varje 
 | 4 Samverkan | Visa bara belagd modell-/kombinationsgruppssamverkan; annars skriv att underlag saknas och kundöverlapp är okänt. | Utelämna samverkansavsnittet helt när belagt underlag saknas. | 0 i båda alternativen. Inga nya påståenden om samma kunder ur separata antal. |
 
 Alla fyra rekommendationer innebär **0 nya frågor** utöver B:s 56. De kräver användarens val före rapportbygge enligt del 3:s kontrollpunkt 1. Fortsatt C/kartläggning kan ske under tiden. Okända organisations-/registeruppgifter ovan visas som okända; ingen extra kompletteringsintervju smygs in.
+
+## Användarens beslut
+
+2026-10-23: användaren svarade **"1 på alla"** efter uttrycklig kontroll av om första alternativet avsåg alla fyra val. Alla fyra rekommendationer är därmed valda: full områdesmotivering utan nytt nivåord; ingen kundriskklassrad; faktiskt rutindokument/ID och version utan avsnittsnummer; endast belagd modell-/kombinationsgruppssamverkan med okänt kundöverlapp markerat. **0 nya frågor.** Rapportbygget får börja. PDF-kontrollpunkterna kvarstår.

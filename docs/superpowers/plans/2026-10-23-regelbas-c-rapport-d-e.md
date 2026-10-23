@@ -43,15 +43,15 @@
 **Interfaces:** Profil.uppgifter, Bedomning, Analyspaket, regelkataloger, historik, rutinåtgärder; ingen ny datakälla får antas.
 
 - [x] Mappa varje rad i dispositionen till fält/objekt/pointer eller dokumenterad okänd uppgift.
-- [ ] För nivå per område, kundriskklasser, rutinavsnitt och samverkan: två alternativ, rekommendation, frågeantal och konsekvens. Be användaren välja; fortsätt C/annan oberoende kartläggning under väntan.
+- [x] För nivå per område, kundriskklasser, rutinavsnitt och samverkan: två alternativ, rekommendation, frågeantal och konsekvens. Be användaren välja; fortsätt C/annan oberoende kartläggning under väntan.
 - [x] Lås den nya rapportversionens format-/historikgräns i rapportplanen; inga V9-omskrivningar. Se `2026-10-23-rapport-v10.md`; fyra användarval inväntas före kod.
 
 ### Task 3: Del 3 – offline och därefter produktkedja
 
 **Files/interfaces:** Specificeras i rapportplanen före kod. Ny rapportversion ska producera konstruktioner och tre filer ur exakt samma analyskällor som V9; A/B1 behåller disposition.
 
-- [ ] Bygg offline enligt godkända dataalternativ. Alla fem statusar, egna lägre-risk-tabeller, lagens 15 punkter och kapitel 0–5. Inga nya AI-anrop.
-- [ ] Rendera båda verkliga referenspaketen till PDF; kontrollera alla huvudrapportsidor och ingen kapad text. Mät faktisk sidmängd. Lämna konkreta PDF:er vid användarkontrollpunkten.
+- [x] Bygg offline enligt godkända dataalternativ. Alla fem statusar, egna lägre-risk-tabeller, lagens 15 punkter och kapitel 0–5. Inga nya AI-anrop.
+- [x] Rendera båda verkliga referenspaketen till PDF; kontrollera alla huvudrapportsidor och ingen kapad text. Mät faktisk sidmängd. Lämna konkreta PDF:er vid användarkontrollpunkten.
 - [ ] Efter klartecken: integrera export, formatbyte, frysta källor, samlad sakgranskning och fastställelse. Historiska V9-vägar bevaras. Arbetscommit, rapportversion och granskningsunderlag.
 
 ### Task 4: D – ett provisoriskt val per beslut
