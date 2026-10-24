@@ -1,5 +1,5 @@
 name: Verifiera Riskanalys
-# Pull request: kort kontroll. Fullsviten körs manuellt vid kontrollpunkter enligt AGENTS regel 6.
+# Pull request: kort kontroll. Fullsviten körs bara efter uttryckligt manuellt val.
 on:
   pull_request:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
       fullsvit:
         description: Kör hela ordinarie icke-live-sviten
         type: boolean
-        default: true
+        default: false
 permissions:
   contents: read
 env:

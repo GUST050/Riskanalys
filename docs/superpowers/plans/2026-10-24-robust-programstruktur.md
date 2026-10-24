@@ -1,5 +1,7 @@
 # Plan för robust programstruktur och fortsatt utveckling
 
+**Gällande testpolicy, ändrad på användarens begäran 2026-10-24:** Fullsviten körs endast på uttrycklig begäran. Tidigare formuleringar i denna plan om obligatorisk fullsvit eller ny körning inför merge/leverans är ersatta av AGENTS regel 6. Sparade resultat och genomförda steg nedan är historiska bevis. Inga tester körs i denna policyändring.
+
 > **För genomförande:** använd `superpowers:executing-plans`, ett avgränsat steg i taget. Kryssrutorna följer faktiskt utfört arbete. Ingen automatisk delegering eller commit ingår; projektets arbetsregler gäller.
 
 **Datum:** 2026-10-24. **Status:** tekniskt genomförande verifierat på `codex/robust-programstruktur`, bas `416579e`; slutlig fullverifiering och externa acceptanser redovisas i §8.
@@ -226,7 +228,7 @@ Kryssade punkter är utförda lokalt enligt §8. Fullsvitsberoende tekniska slut
 - [x] Generera låsfil i en separat arbetskopia och granska alla beroendeförändringar. Installera med `uv sync --locked --extra dev`; `dev` är idag ett extra. Vid bruk av befintligt mappnamn: `UV_PROJECT_ENVIRONMENT=.venv312`. Prova först i en ny kopia eftersom exakt synk kan ta bort paket.
 - [x] Kontrollera `uv lock --check`, ren återinstallation och föreskrivna prov. Ändra tillfälligt ett beroendekrav i provkopian och visa att `--locked` stoppar en inaktuell låsfil; använd inte `--frozen` för detta färskhetskrav.
 - [x] Låt testbevis omfatta låsfil, Python-/verktygsversion, installerade beroenden och provverktygets relevanta konfiguration. Prova att ändrad låsfil under körning underkänner snapshotkontrollen. Logga inga nycklar eller privata miljövariabler.
-- [x] Förbered CI för avsedd plattform: låskontroll, dokumentkontroll, importkontroll när A5 finns, relevant provurval och bevarade JUnit-/snapshotresultat. Fullprofil följer AGENTS kontrollpunkter; grönt kort urval får inte ersätta en obligatorisk fullkörning. Installation och exekvering av workflow provas innan CI sägs fungera.
+- [x] Förbered CI för avsedd plattform: låskontroll, dokumentkontroll, importkontroll när A5 finns, relevant provurval och bevarade JUnit-/snapshotresultat. Fullprofil körs bara på uttrycklig begäran enligt AGENTS; omfattningen av körda urval redovisas. Installation och exekvering av workflow provas innan CI sägs fungera.
 
 **Klart:** ny lokal installation ger redovisat reproducerbart resultat. Införandet är delad testinfrastruktur och ska få samlad fullverifiering enligt AGENTS. **Återgång:** återgå till föregående miljödefinition och återskapa miljön i en separat mapp; radera inte användarens fungerande miljö.
 
@@ -332,11 +334,13 @@ Kryssade punkter är utförda lokalt enligt §8. Fullsvitsberoende tekniska slut
 
 **Ändra:** resultat i denna plan, ansvarig befintlig produktplan, `docs/STATUS.md`, relevanta områdesguider och vid verkligt genomförande `docs/sakkunniggranskning.md`.
 
-- [x] Kör fullprofil och regelbasvalidering på slutlig oförändrad teknisk kandidat när AGENTS kräver det. Spara miljö, collection/JUnit, snapshot, fel/överhoppningar och återställningsutfall. Dokumentändring ensam utlöser ingen ny fullkörning.
+- [x] Kör regelbasvalidering enligt ändringens påverkan och fullprofil endast på uttrycklig begäran. Spara miljö, collection/JUnit, snapshot, fel/överhoppningar och återställningsutfall. Dokumentändring ensam utlöser ingen ny fullkörning.
 - [ ] Fortsätt läsbarheten i [redaktionella V10-planen](2026-10-24-redaktionell-runda.md). Pröva med avsedda användare hur de hittar riskorsak, osäkerhet, belägg och åtgärd. Redovisa sidantal och förståelse separat; ta inte bort original eller spårbarhet för att nå en sidgräns.
-- [ ] Genomför native Word-kontroll och användaracceptans för slutlig leveransmiljö. Genomför verklig sakkunnigprövning enligt [granskningsguiden](../../sakkunniggranskning.md). Tekniska prov får inte höja sakgranskningsstatus.
+- [x] Genomför avgränsad native Word-kontroll av alla tre delarna i ett separat syntetiskt utkast med aktuell presentationsversion. Utfall och begränsningar finns i §9; detta är inte fullständig sidgranskning eller användaracceptans.
+- [ ] Slutför visuell sidgranskning av den avsedda slutleveransen i mottagarens Word-miljö och dokumentera användaracceptans enligt §9.
+- [ ] Genomför verklig sakkunnigprövning enligt [granskningsguiden](../../sakkunniggranskning.md) av rätt aktuell modellbindning. Tekniska prov får inte höja sakgranskningsstatus.
 - [x] Registrera observerade fel och användarproblem i befintlig plan, prioritera efter påverkan och gör en liten uppgift åt gången. Välj nya abstraheringar först när upprepade konkreta ändringar visar behovet.
-- [x] Vid varje avgränsad uppgift: läs rätt område, ange berört kontrakt, reproducera ändrat beteende, ändra, kör relevanta prov, uppdatera plan/status/guide och bygg kartan. Vid överlämning anges kvarvarande fullkontroll och senaste exakta kandidat.
+- [x] Vid varje avgränsad uppgift: läs rätt område, ange berört kontrakt, reproducera ändrat beteende, ändra, kör relevanta prov, uppdatera plan/status/guide och bygg kartan. Vid överlämning anges körda kontrollers omfattning och senaste kandidat; ny fullsvit kräver uttrycklig begäran.
 
 **Klart:** tekniskt resultat, användarresultat, expertresultat och driftberedskap redovisas var för sig. ”Alla tester gröna” är ingen sammanfattande produktacceptans.
 
@@ -393,7 +397,7 @@ Primärkällorna nedan är kontrollerade i researchen 2026-10-24. Context7 har a
 - Alla fem regressionsrisker ovan har ett ansvarigt steg och konkret kontroll. A4:s exakta ändringstyp kräver fortsatt förberedelse. Fem konkreta sammanslagningar har mottagare och prov: S1–S3 och S5 i S-små, S6 i A7; S4 utgår. Metodbeslutens fillista och kompatibilitet måste hanteras före borttagning.
 - Återgång för refaktorering betyder kodåtergång med bevarade data. Om ny modellidentitet eller nytt format skapats måste även kompatibilitet/attester hanteras uttryckligt; gamla paket skrivs inte tillbaka.
 
-**Nästa arbetsuppgift:** slutför native Word-kontroll efter manuell upplåsning, pröva läsbarhet med avsedda användare och genomför verklig sakkunnigprövning. Driftägaren fastställer backup-/återställningsmål; A6-B är den avgränsade produktluckan. Commit, integration och publicering kräver användarens uppdrag.
+**Nästa arbetsuppgift:** använd §9 för slutleveransens visuella sidgranskning, läsbarhet med avsedda användare och verklig sakkunnigprövning. Den lokala tekniska implementationen är klar och en avgränsad Word-kontroll är genomförd. Driftägaren fastställer backup-/återställningsmål; A6-B är en separat avgränsad produktuppgift. Commit, integration och publicering kräver användarens uppdrag. Ingen ny testsvit startas.
 
 **Historisk kontroll av planeringsleveransen:** egna dokumentändringar är genomlästa mot de aktuella ingångarna, befintliga återställningsproven och testpolicyn. Lokala länkmål kontrolleras, kartan byggs och aktualitetskontrolleras, `git diff --check` körs och 838 program-/regel-/test-/skript-/pyproject-filer jämförs med snapshot före dokumentskrivningen. Utfall förs i statusjournalen. Inga produktändringar, installationer, pytestkörningar, commits eller pushar ingår.
 
@@ -468,3 +472,27 @@ Områdesvarven kördes ett i taget samtidigt som fullsviten, i separata processe
 Råbevis: `/private/tmp/riskanalys-robust-full-20261024-2` och `/private/tmp/riskanalys-robust-{leverantor,analysblock,rapport}-slut-{1,2}`. Beständiga bevis, miljöuppgifter, tidigare underkända körningar och komplett ocommittad patch: `/Users/gt/.local/share/riskanalys/provkorningar/robust-programstruktur-20261024`. Den tekniska A0–A8-kandidaten och F6/F7/F10 är lokalt verifierade. A8:s verkliga användar-/sakkunnig-/native Word-acceptans samt driftägarmål kvarstår; fjärr-CI är endast förberedd. Ingen commit, merge eller push har gjorts.
 
 Fullsvitens egna återställningsmätningar inklusive verifiering: låst V10 1,02 s, arbetsmapp 1,08 s. Små syntetiska lokala fall; inga produktions-RTO eller garanterade driftmål.
+
+
+## 9. Avslut och konkret återstående acceptans, 2026-10-24
+
+**Tekniskt genomförande:** A0–A7 och A8:s automatiserade genomförande är klara. Produktändringarna finns i `2d25550`, CI-ändringen i `a21bf49`, på `codex/robust-programstruktur`. Den senare instruktionen från användaren tar bort obligatorisk ny fullsvit. Inga tester har körts under denna fortsättning; tidigare resultat redovisas i §8. Mänskliga beslut nedan är fortfarande obesvarade och får inte kryssas genom en agentbedömning.
+
+**Word-kontroll som nu är utförd:** de tidigare sparade kontrollkopiorna avser `D-ARB-v10-presentation-1`, det frysta syntetiska återställningspaketet. Alla tre öppnades i Microsoft Word utan reparationsvarning; pagineringen var 17/27/83 sidor. Detta är historisk kompatibilitet, inte kontroll av aktuell presentation. Originalen är oförändrade.
+
+Därefter skapades ett separat **utkast** med `D-ARB-v10-presentation-2` genom befintliga `redaktionspresentation_v10.skapa` och `rendering_v10.rendera_rapportvyer_v10`, med samma frysta syntetiska källor och ordinarie utkaststatus. Ingen ny riskberäkning, AI-körning, attest eller ändring av det fastställda paketet gjordes. Alla tre nya DOCX öppnades i Word i utskriftslayout. Första och sista sidan granskades visuellt; inga avklippta rader eller överlapp observerades där. Faktiska sidantal: **huvudrapport 16, A 30, B1 87**. Tiosidorsriktmärket är inte uppnått; inget innehåll kapades. Detta är ett annat syntetiskt fall än de äldre redaktionella referensernas 19-sidorsrapporter och ingen generell sidantalsjämförelse.
+
+Kontrollkopior och ursprungs-/filhashar ligger i `/Users/gt/.local/share/riskanalys/provkorningar/robust-20261024-native-fortsatt/aktuellt-format/`. Den samlade observationen finns i föräldramappens `wordkontroll.json`. DOCX-hasharna är oförändrade efter Word. Externa fält uppdaterades inte och filerna sparades inte från Word. En separat Word-PDF av den historiska huvudrapporten skapades; senare PDF-exporter avbröts eftersom **Spara** och **Ny mapp** var inaktiva även vid annan lokal destination. Ingen PDF av aktuell presentation och ingen fullständig sidgranskning påstås.
+
+**Context7:** den officiella [python-docx-dokumentationen om renderade sidbrytningar](https://python-docx.readthedocs.io/en/latest/api/text.html#docx.text.pagebreak.RenderedPageBreak), hämtad via Context7 `/websites/python-docx_readthedocs_io_en`, anger att biblioteket saknar renderingsfunktion. Därför kommer sidantalen ovan från Word, inte från DOCX-metadata eller räknade manuella sidbrytningar.
+
+| Återstående moment | Vem genomför det | Konkret underlag och vad som ska antecknas |
+|---|---|---|
+| Visuell slutkontroll | Den som ansvarar för leveransen, i mottagarens Word-miljö | Använd de tre filer som faktiskt ska levereras. Anteckna presentation, filhashar, Word-version, sidantal och granskade sidor. Läs hela huvudrapporten samt bilagornas breda tabeller, källregister och övergångar. Registrera varje avklippning, överlapp och bruten hänvisning med del/sida. Nuvarande stickprov ersätter inte detta. |
+| Läsbarhet | Avsedda användare, med en person som antecknar | Låt läsaren själv hitta varför en tjänst fått sin risknivå, vad som är osäkert, vilket lokalt belägg som stöder en kontroll och vem som ska göra nästa åtgärd. Anteckna valt ställe, läsarens återgivning, behov av hjälp och missförstånd per uppgift. Redovisa faktisk förståelse och sidantal separat; inget svar är registrerat ännu. |
+| Sakkunnigprövning | Verklig sakkunnig enligt granskningsguiden | Använd underlag bundet till den aktuella modellen, med dokumenterad identitet, kompetens, oberoende och beslut per objekt. Äldre expertpaket och dessa syntetiska Word-kopior godkänner inte nuvarande modell. Importera inget antaget godkännande. |
+| Backupmål | Ansvarig driftägare | Besluta kopieringsfrekvens, skyddad plats utanför originalets disk, retention, accepterad dataförlust, återställningstid och ansvarig. Förslaget i A6 är ett obeslutat diskussionsunderlag. |
+
+**A6-B:s avgränsning:** den ursprungliga A6-punkten var att upptäcka och avgränsa en saknad backupregistrering/varning; det är gjort. Att bygga den funktionen är en separat produktändring med de fyra acceptansfallen i A6, inte en okryssad sammanslagning eller refaktorering. Ingen sådan funktion hävdas införd.
+
+Denna fortsättning ändrar dokumentation och bevarar policyändringen från föregående uppdrag. Ingen program-/regel-/testkod ändras, ingen commit/merge/push utförs och ingen mänsklig acceptans registreras.

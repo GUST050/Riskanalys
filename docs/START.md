@@ -7,9 +7,9 @@ tags: [riskanalys, oversikt]
 
 Gemensam ingång för Obsidian, Codex och Claude Code. [[AGENTS.md|Arbetsreglerna]] gäller en gång; [[CLAUDE.md|Claude-ingången]] hänvisar till dem. Programmet ligger i `src/riskanalys/`. Läs relevant kontext stegvis.
 
-## Aktuell struktur efter merge till main, 2026-10-24
+## Aktuell struktur och arbetsgren, 2026-10-24
 
-Valvet följer den aktuella lokala arbetskopian. Senaste produktkod är `8b3c914`, efter YAML-/historikrättningen `11226d9` ovanpå `8ca798d`. Det aktuella dokumentformatet är **V10**, med resultatrapport, analysbilaga A och underlagsbilaga B1 i samma paket. AI-skrivformatet är fortsatt **V8**. Äldre V8- och V9-byggare är också beroenden för V10; versionsnumret i ett filnamn avgör inte om filen fortfarande används.
+Valvet följer den aktuella lokala arbetskopian. Robusthetsändringarna finns i `2d25550` och CI-ändringen i `a21bf49` på `codex/robust-programstruktur`. De är inte mergade till `main`, som ligger på `416579e`. Det aktuella dokumentformatet är **V10**, med resultatrapport, analysbilaga A och underlagsbilaga B1 i samma paket. AI-skrivformatet är fortsatt **V8**. Äldre V8- och V9-byggare är också beroenden för V10; versionsnumret i ett filnamn avgör inte om filen fortfarande används.
 
 Den nya strukturen omfattar gemensam analys i schema 2, uttrycklig tillämpning per tjänst, engångsbekräftelse, tjänsteplaner och provisoriska metodbeslut. V10:s redaktionella presentation har ett fryst flyttregister och kräver uttryckligt byte för äldre utkast. Börja med [[docs/omraden/Programflode.md|programflödet]] eller välj området nedan.
 
@@ -17,7 +17,7 @@ Aktuella styrdokument: [[docs/superpowers/specs/2026-10-22-forenklad-riskbedomni
 
 ## Välj primärt område
 
-För fortsatt struktur- och robusthetsarbete: [samordnad plan A0–A8](superpowers/plans/2026-10-24-robust-programstruktur.md). Börja med att verifiera pågående ändringar, därefter reproducerbar miljö och gemensamt leverantörsval. Planens §8 redovisar införda gemensamma tjänster, typade analyskommandon, låst miljö och aktuell verifiering. Mänskliga/driftmässiga acceptanser är separata.
+För fortsatt struktur- och robusthetsarbete: [samordnad plan A0–A8](superpowers/plans/2026-10-24-robust-programstruktur.md). Den tekniska implementationen är klar. Planens §8 redovisar gemensamma tjänster, typade analyskommandon, låst miljö och sparad verifiering. §9 redovisar utförd avgränsad Word-kontroll och konkreta återstående användar-, sakkunnig- och driftbeslut. Fullsviten startas bara på uttrycklig begäran; inga tester körs i denna fortsättning.
 
 | Uppgiften gäller | Läs denna kontext |
 |---|---|

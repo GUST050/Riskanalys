@@ -27,11 +27,11 @@ Gäller för alla som skriver kod i repot, både människor, Codex och Claude Co
 | Ändring | Kontroll före arbetscommit och överlämning | Fullsvit |
 |---|---|---|
 | Dokumentation och navigering (inga `.py`, regelbas, fixturer, profiler eller testverktyg) | Kartbygge med `--check` och länkar | Nej |
-| Avgränsad ändring inom ett område | Reproducerande prov, områdets prov, berörda konsument-/gränsprov och snabbprofil; mål högst 5 min | Nej, ingår i nästa samlade kontrollpunkt |
-| Delad kritisk logik: riskmotor, regelbas, datamodeller, integritet/tillåtelselistor, attest/fastställelse, lagring, testverktyg/profiler eller okänd påverkan | Som ovan, med bredare konsumenturval | Ja, före merge eller push till `main` |
-| Paket till byrå eller sakkunnig och färdigt större funktionspaket | Som ovan | Ja, på exakt kandidat |
+| Avgränsad ändring inom ett område | Reproducerande prov, områdets prov, berörda konsument-/gränsprov och snabbprofil; mål högst 5 min | Endast på uttrycklig begäran |
+| Delad kritisk logik: riskmotor, regelbas, datamodeller, integritet/tillåtelselistor, attest/fastställelse, lagring, testverktyg/profiler eller okänd påverkan | Som ovan, med bredare konsumenturval | Endast på uttrycklig begäran |
+| Paket till byrå eller sakkunnig och färdigt större funktionspaket | Som ovan | Endast på uttrycklig begäran |
 
-- Fullsviten körs vid samlade kontrollpunkter, gärna i bakgrunden medan oberoende arbete fortsätter. Ett avslutat chattvarv eller en arbetsredovisning är ingen kontrollpunkt. Redovisa riktat urval och fullsvit var för sig, och säg uttryckligen när en fullsvit återstår.
+- Starta fullsviten endast när användaren uttryckligen ber om den. Merge, push, leverans, ändrad CI, dokumentation, commit-ID eller snapshot utlöser inget automatiskt krav på en ny fullsvit. Redovisa vilka ändringar tidigare resultat täcker och vilka kontroller som faktiskt har körts; en ej begärd fullsvit är inget återstående obligatoriskt steg. Användarens uttryckliga instruktion att inte köra tester gäller även riktade prov och snabbprofil.
 - Rapportera vad som ändrats, exakta körda kontroller och kvarstående begränsningar. Testinsamling, historiskt gröna resultat och dagens passerade prov ska hållas isär.
 - Commit/push bara på användarens begäran. Återställ inte andras filer och starta inte nya externa AI-/API-körningar genom ett dokumentations- eller testarbete.
 
@@ -52,7 +52,7 @@ python3.12 -m venv .venv312
 3. **Byrådata aldrig i repot.** Den ligger i `$RISKANALYS_DATA`. Lägg aldrig in riktiga byråuppgifter i tester, bara syntetiska.
 4. **Regelbasen ändras bara med källa.** Varje krav, katalogpost och regel har `kallor` eller `kalla` och en `grund`. Skalor, gränser och poäng märks `metodval`.
 5. **Inga fria uttryck i regelbasen.** Villkor skrivs i det typade formatet (spec 6.3). Ingen `eval`.
-6. **Verifiera efter ändringens påverkan.** Använd Python 3.12 via `.venv312/bin/python`. Skriv reproducerande test först vid beteendeändring. Välj kontroll enligt tabellen i *Verifiera och lämna över*. Saknade, avbrutna eller tidsstoppade prov rapporteras aldrig som godkända. Ett fullsvitsresultat gäller bara det oförändrade snapshot det kördes på; ändrad dokumentation eller nytt commit-ID kräver ingen omkörning.
+6. **Verifiera efter ändringens påverkan.** Använd Python 3.12 via `.venv312/bin/python`. Skriv reproducerande test först vid beteendeändring. Välj kontroll enligt tabellen i *Verifiera och lämna över*. Saknade, avbrutna eller tidsstoppade prov rapporteras aldrig som godkända. Ett fullsvitsresultat beskriver det snapshot det kördes på. Skillnader mot senare snapshot redovisas utan att automatiskt kräva omkörning.
 7. **Inga anrop mot riktiga API:t i automatiska tester.** Använd `Testleverantor`. Livetester markeras `@pytest.mark.live`.
 8. **Ändra aldrig sakkunnigstatus i repots regelbas** till `verifierad` utan en verklig sakkunnig granskning. Tester signerar en kopia.
 

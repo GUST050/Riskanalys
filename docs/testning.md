@@ -2,7 +2,7 @@
 
 Använd `.venv312/bin/python`, inte en miljö med Python 3.14. Alla automatiska prov använder syntetiska uppgifter och testleverantör; det ordinarie liveprovet är bortvalt.
 
-Låst miljö: `uv 0.13.5`, `.python-version` anger `3.12.15`, `requires-python` är avsiktligt `>=3.12,<3.13`. Kör `uv lock --check` och `UV_PROJECT_ENVIRONMENT=.venv312 uv sync --locked --extra dev`. En ren separat installation har provats lokalt; workflowfilen är förberedd för Ubuntu 24.04 men fjärrkörning kräver publicering och har inte påståtts utförd. En pull request kör lås-, import-, regelbas-, kart- och snabbkontroll; fullsviten startas manuellt (`workflow_dispatch`) vid kontrollpunkterna i AGENTS regel 6. Alla actions är låsta till exakt commit-SHA.
+Låst miljö: `uv 0.13.5`, `.python-version` anger `3.12.15`, `requires-python` är avsiktligt `>=3.12,<3.13`. Kör `uv lock --check` och `UV_PROJECT_ENVIRONMENT=.venv312 uv sync --locked --extra dev`. En ren separat installation har provats lokalt; workflowfilen är förberedd för Ubuntu 24.04 men fjärrkörning kräver publicering och har inte påståtts utförd. En pull request kör lås-, import-, regelbas-, kart- och snabbkontroll; fullsviten körs bara på uttrycklig begäran och är avstängd som standard i den manuella körningen (`workflow_dispatch`, välj `fullsvit: true`). Alla actions är låsta till exakt commit-SHA.
 
 ```sh
 .venv312/bin/python scripts/testa.py snabb --ut /private/tmp/riskanalys-snabb-NYTT_ID
@@ -24,17 +24,17 @@ Snabbprofilen omfattar schema, referenser, riktning, V10-presentation, historisk
 | `regelverk` | Metodbeslut, grindar och sektorsrisk med berörda baskontrakt. |
 | `foretagsdata` | Årsredovisning, Bolagsverksbilder och verklig intagsgräns. |
 
-Alla områdesprofiler inkluderar baskontrollen. Exakt urval finns i `tester/testprofiler.json`, inga testpåståenden tas bort från fullsviten. Vid okänd eller delad påverkan krävs bredare urval/full enligt AGENTS; det finns ingen automatisk diffväljare. Kör exempelvis:
+Alla områdesprofiler inkluderar baskontrollen. Exakt urval finns i `tester/testprofiler.json`, inga testpåståenden tas bort från fullsviten. Vid okänd eller delad påverkan väljs bredare riktat urval enligt AGENTS; fullsviten kräver uttrycklig begäran och det finns ingen automatisk diffväljare. Kör exempelvis:
 
 ```bash
 .venv312/bin/python scripts/testa.py analys-block --ut /private/tmp/riskanalys-analysblock-NYTT_ID --budget 300
 ```
 
-`--budget` räknar verktygets monotona tidsintervall inklusive insamling. Vid datorvila kan tiden mellan datorns klockslag bli längre; håll datorn vaken för att mäta ett normalt utvecklingsvarv och blanda inte dessa klockor. Överskridande ger `verifierad=false` och exit 1 även om de körda fallen passerade; verktyget dödar inte ett prov mitt i en skrivning. Resultatet redovisar urval, urvalsorsak, miljö/paket och `inom_budget`. Grönt kort urval ersätter ingen obligatorisk fullkörning.
+`--budget` räknar verktygets monotona tidsintervall inklusive insamling. Vid datorvila kan tiden mellan datorns klockslag bli längre; håll datorn vaken för att mäta ett normalt utvecklingsvarv och blanda inte dessa klockor. Överskridande ger `verifierad=false` och exit 1 även om de körda fallen passerade; verktyget dödar inte ett prov mitt i en skrivning. Resultatet redovisar urval, urvalsorsak, miljö/paket och `inom_budget`. Redovisa det körda urvalets omfattning; fullsviten är frivillig och startas bara på uttrycklig begäran.
 
 Fullprofilen och `.venv312/bin/python -m pytest -q` kör alla ordinarie icke-liveprov, även `fullkedja`. Inga långsamma prov väljs bort från standardkörningen. Fullprofilen jämför collection med JUnit och kräver oförändrat källsnapshot. Snapshotet omfattar alla filer under `src`, `tester`, `regelbas`, `scripts` och `docs/research/verktyg`, även JSON-fixturer, fixture-YAML och textkällor, samt AGENTS, pyproject, uv-låsfil, Pythonpinne, CI-konfiguration och profillista. Collection/JUnit jämförs inklusive varje parametriserat falls multiplicitet. Genererad bytekod (`__pycache__`, `.pyc`, `.pyo`) undantas uttryckligen.
 
-Skriv först ett riktat reproducerande prov och kör RED/GREEN. Kör berört urval och snabbprofil före arbetscommits. Fullsviten körs enligt tabellen i AGENTS *Verifiera och lämna över*: före merge/push till `main` av delad kritisk logik eller okänd påverkan, samt på exakt kandidat för paket till byrå/sakkunnig och färdiga större funktionspaket. Kodrättning efter en fullsvit kräver en ny verifiering; enbart textuppdatering eller nytt commit-ID gör inte den oförändrade koden oprövad.
+Skriv först ett riktat reproducerande prov och kör RED/GREEN vid beteendeändring. Välj berört urval och snabbprofil enligt AGENTS. Fullsviten startas endast på användarens uttryckliga begäran och är inget obligatoriskt villkor för merge, push eller leverans. Ändringar efter en tidigare fullsvit redovisas tillsammans med de riktade kontroller som faktiskt körts; ett ändrat snapshot kräver inte automatiskt en ny fullsvit. En uttrycklig instruktion att inte köra tester gäller även riktade prov och snabbprofil.
 
 Den uppmätta basen är 35 min 52,78 s. Väntat första förbättringssteg är cirka 22–25 minuter, vilket måste mätas. Snabb ≤60 s och analys ≤180 s är mål. Tio minuter för hela sviten kräver ett separat optimeringssteg och utlovas inte här.
 

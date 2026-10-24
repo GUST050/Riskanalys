@@ -62,7 +62,7 @@ Välj riktade prov från produktområdets guide och lägg till konsument-/kedjep
 env -u ANTHROPIC_API_KEY .venv312/bin/python -m pytest --collect-only -q
 ```
 
-AGENTS regel 6 kräver berörda prov och snabbprofil före arbetscommit. Full icke-live-svit krävs vid de kontrollpunkter som tabellen i AGENTS anger, alltid på det exakta snapshotet. Ändrat testverktyg eller ändrade profiler räknas som delad kritisk logik. Testinsamling är inte en passerad körning. Kart- och länkkontroll verifierar denna navigering; den ersätter inte produktens fullsvit.
+AGENTS regel 6 styr valet av berörda prov och snabbprofil. Full icke-live-svit körs bara på användarens uttryckliga begäran; merge, push, leverans eller ändrat snapshot kräver ingen ny fullsvit. En uttrycklig instruktion att inte köra tester gäller även riktade prov och snabbprofil. Ändrat testverktyg eller ändrade profiler räknas som delad kritisk logik och påverkar valet av riktade kontroller. Testinsamling är inte en passerad körning. Kart- och länkkontroll verifierar denna navigering; redovisa produktprovens omfattning separat.
 
 Vid berörd kedja: [[docs/kodkarta/filer/tester/typfall/test_analys_hela_kedjan.py.md|tester/typfall/test_analys_hela_kedjan.py]] · [[docs/kodkarta/filer/tester/m2/test_m2_kedja.py.md|tester/m2/test_m2_kedja.py]].
 

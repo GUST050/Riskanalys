@@ -53,6 +53,10 @@ Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök
 
 `arbetsfloden.py` samordnar aktuella utkast och exportuppdatering från sparat AI-svar. Inaktuell bedömning stoppar uppdatering; ändrad lokal analys kan granskas och exporteras på nytt utan AI. Låsens omfattning och historiska paket bevaras. `dokument/wordstil.py` äger även `anpassa_tabeller`, som fortsatt bara anropas för avsedd V10-presentation. `RedaktionV10` finns i `resultatmodell_v10.py`. Renderingsspärren `_SLUTRENDERING` och semantisk paketverifiering är oförändrade.
 
+## Utförd Word-kontroll och återstående acceptans
+
+En avgränsad Word-kontroll av aktuell presentationsversion är utförd på ett separat syntetiskt utkast: 16/30/87 sidor för huvudrapport/A/B1. Första och sista sidan i varje del granskades; filerna öppnades utan reparationsvarning och behöll sina bytes. Fullständig visuell slutkontroll och mänsklig användaracceptans återstår. [Robusthetsplanens §9](../superpowers/plans/2026-10-24-robust-programstruktur.md#9-avslut-och-konkret-återstående-acceptans-2026-10-24) anger underlag, begränsningar och nästa moment.
+
 ## Verifiering
 
 Börja med följande provurval när det passar ändringen; det ersätter inte bredare verifiering av ändrade kontrakt.

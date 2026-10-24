@@ -1,3 +1,19 @@
+# Robusthetsplanens teknik klar; Word-kontroll genomförd och acceptans konkretiserad, 2026-10-24
+
+Ingen ny testsvit har körts. Produktändringarna är committade i `2d25550` och CI i `a21bf49` på `codex/robust-programstruktur`; policy- och dokumentationsfortsättningen är ocommittad. `main` är inte integrerad. [Planens §9](superpowers/plans/2026-10-24-robust-programstruktur.md#9-avslut-och-konkret-återstående-acceptans-2026-10-24) skiljer klart tekniskt genomförande från återstående mänskliga beslut.
+
+De gamla Word-kopiorna avser presentation 1. Ett separat utkast med aktuell presentation 2 skapades från samma frysta syntetiska källor, utan AI-anrop, ny motorberäkning eller ändrade historiska paket. Alla tre nya filer öppnades i Microsoft Word utan reparationsvarning. Första/sista sidan granskades; sidantal 16/30/87, oförändrade DOCX-hashar efteråt. Ingen fullständig sidgranskning eller användar-/sakkunnigacceptans påstås. PDF-export av aktuell presentation kunde inte slutföras eftersom sparknappen var inaktiv. Underlag och observationer: `/Users/gt/.local/share/riskanalys/provkorningar/robust-20261024-native-fortsatt/`.
+
+Context7 bekräftar python-docx-bibliotekets avsaknad av sidrendering; sidantalen kommer från Word. Planen innehåller nu ett konkret upplägg för slutlig visuell kontroll, användares förståelse, verklig sakkunnigprövning och driftägarens backupbeslut. A6-B är en separat avgränsad produktuppgift. Ingen program-/regel-/testkod, attest eller sakkunnigstatus ändras.
+
+## Föregående arbetsstatus
+
+# Obligatorisk omkörning av fullsviten borttagen, 2026-10-24
+
+På användarens begäran körs inga nya tester. AGENTS regel 6, testguiden, områdesguiden och de två befintliga planerna är samordnade: fullsviten startas endast på uttrycklig begäran och krävs inte automatiskt inför merge, push eller leverans, eller på grund av ändrad CI, dokumentation, commit-ID eller snapshot. Den manuella CI-körningens `fullsvit` är nu avstängd som standard. Tidigare resultat behålls med sin ursprungliga omfattning. Ändringarna görs på `codex/robust-programstruktur`; ingen commit, merge eller push ingår.
+
+## Föregående arbetsstatus
+
 # Robust programstruktur tekniskt verifierad; externa acceptanser återstår, 2026-10-24
 
 Arbetsgren `codex/robust-programstruktur` i `/private/tmp/riskanalys-robust-20261024`, bas `416579e`. Gemensam leverantörsfabrik, utkastflöde och typade analyskommandon är införda. Fem sammanslagningar och tre nya programfiler ger **249 → 247**. Låst miljö, tre importkontrakt och atomisk YAML är införda. [Planens §8](superpowers/plans/2026-10-24-robust-programstruktur.md#8-genomförandelogg-och-verifierad-kandidat-2026-10-24) samlar ansvar, avvikelser och bevis.

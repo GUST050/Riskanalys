@@ -1,5 +1,7 @@
 # Kortare testkörningar – genomförandeplan T
 
+**Gällande testpolicy, ändrad på användarens begäran 2026-10-24:** Fullsviten körs endast på uttrycklig begäran. Tidigare formuleringar i denna plan om obligatorisk fullsvit eller ny körning inför merge/leverans är ersatta av AGENTS regel 6. Sparade resultat och genomförda steg nedan är historiska bevis. Inga tester körs i denna policyändring.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Genomför själv i befintlig isolerad arbetskopia; ingen granskare per deluppgift. Användarens Claude-granskning gäller leveranserna.
 
 **Goal:** Förkorta utvecklingsvarvet och fullsviten utan att förlora kontroller för risk, integritet, atomisk lagring eller fastställelse.
