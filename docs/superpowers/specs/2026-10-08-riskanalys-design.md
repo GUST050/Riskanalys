@@ -61,6 +61,10 @@ Programmet byggs först som en kärna med kommandoradsgränssnitt. Före använd
 
 ## 5 Arkitektur
 
+För den befintliga implementationens filansvar, grupper och importrelationer, se [programkartan med fullständigt filregister](../../PROGRAMKARTA.md), kartlagd 2026-10-23. Den är en läsguide till denna specifikation och inför inga nya designbeslut.
+
+Fortsättningsförslaget 2026-10-24 finns i [planen för robust programstruktur](../plans/2026-10-24-robust-programstruktur.md), med [kod- och källunderlag](../reviews/2026-10-24-programarkitektur.md). Det utvecklar befintlig modulindelning med gemensamma arbetsflöden, typade gränser, reproducerbar miljö och återställningsprov. Planen samordnar införandeordningen; den ersätter inte denna specifikations sakkrav, befintliga produktplaner eller kravet på verklig sakkunnigprövning. De föreslagna gränserna är ännu inte implementerade.
+
 Strukturen bygger på samma lagerprincip som NIST:s OSCAL: katalog, urval, genomförande, granskning och åtgärder. Varje lager hänvisar till föregående lager i stället för att kopiera det.
 
 ```

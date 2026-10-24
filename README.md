@@ -10,6 +10,8 @@ Första målgrupp är redovisnings- och konsultbyråer under Länsstyrelsens til
 
 | Dokument | Innehåll |
 |---|---|
+| [Start och länkad projektöversikt](docs/START.md) | Ingång för Obsidian, Codex och Claude Code; områden, filkort och kommandon |
+| [Programkarta och fullständigt filregister](docs/PROGRAMKARTA.md) | Filansvar, grupper, importkopplingar och flödet från intag till Word och fastställelse; uppdaterad 2026-10-24 |
 | [Designspecifikation](docs/superpowers/specs/2026-10-08-riskanalys-design.md) | Föreslagen struktur, datamodell, riskmetod, AI-lager, granskning och etapper |
 | [Research](docs/research/README.md) | Källmaterial, kravkarta, tillsyn och sanktioner, EU-regelverk, metod, teknik och referensdata |
 | [Tillsynsmaterial och granskningsfall](docs/research/09-tillsynsbeslut-2026.md#bevarat-underlag-och-återanvändbara-granskningsfall) | Bevarade original utanför repot och syntetiska fall med förväntade fynd för bygget och utvärderingen |

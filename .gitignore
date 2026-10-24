@@ -11,6 +11,7 @@ Riskanalys-20261009T160232Z-1-001.zip
 __pycache__/
 *.py[cod]
 .venv/
+.venv312/
 venv/
 .pytest_cache/
 .mypy_cache/
@@ -34,3 +35,7 @@ build/
 
 # System
 .DS_Store
+
+# Lokal Obsidian-layout och återbyggbar filkarta (originalfilerna är källan)
+/.obsidian/
+/docs/kodkarta/

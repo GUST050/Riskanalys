@@ -1,3 +1,67 @@
+# Samlad dokumentation inför push, 2026-10-24
+
+De två kodcommittarna `11226d9` (YAML/historik) och `8b3c914` (aktiveringsprövning) bevaras som separata commits. Regel 6, Obsidiannavigering, testdokumentation och arkitektur-/filplan samlas därefter i en dokumentationscommit, enligt användarens publiceringsuppdrag. `Namnlös.canvas`, genererade filkort, lokal miljö och privata data ingår inte. Arkitekturomläggningen har inte påbörjats.
+
+Oberoende kontroll före push: sparad fullprofil **3 609 godkända, ett bortvalt liveprov, noll failures/errors/skipped**; alla insamlade node-ID matchar JUnit inklusive multiplicitet. **866 av 866 snapshotresurser** är identiska med dagens kod, regeldata, tester och verifieringsverktyg. Snapshotfilens SHA-256: `2be25f0cbd7c716d8568c447d438f9474296a294b6fbbe4b7975b30d021b4b3b`. Fullkörningen tog 2 370,4 s inklusive insamling; den har inte körts om eftersom innehållet är oförändrat. [Kandidatresultat och avgränsningar](testning.md#kandidatkörning-efter-båda-rättningarna).
+
+Färsk regelbasvalidering passerar för 2.12.3, kontrollsumma `sha256:e78772a28de237c79e8b3a37f106461b61409dbadadfcaada20aac83fb75e87a`. Sakkunnigstatus är fortsatt `ej_granskad`. Dokumentations-/kartkontroll görs på den slutliga staged-uppsättningen före commit. Publiceringsutfallet redovisas efter faktisk push; denna post påstår inte att push redan har skett.
+
+## Föregående arbetsstatus
+
+# Konkret filplan tillagd, 2026-10-24
+
+[Robusthetsplanens §3.1–3.5](superpowers/plans/2026-10-24-robust-programstruktur.md) anger nu vilka programfiler som ska behållas, sex sammanslagningar med exakt mottagare/provurval och tre motiverade nya filer. Bokslutsmodell, frågekoppling, B-13-fynd, samlad sakgranskning, V10-källmodell och Word-stil samlas med respektive ansvar. Övriga programfiler behålls, inklusive aktivt använda äldre format och små filer med tydliga gränser. A3 använder nu en enda `arbetsfloden.py` i stället för ett nytt paket.
+
+Villkorat etappmål: **249 − 6 + 3 = 246 programfiler**, inklusive `__init__.py`, exklusive tester och dokumentation. Gamla importvägar tas bort först efter kompatibilitets-/modellkontroll; kvarvarande wrappers räknas som filer. Detta är ett konkret införandeförslag och ingen utförd kodflytt eller uppmätt komplexitetsminskning. Planens A7 och projektguiden är samordnade.
+
+Verifiering av planunderlaget: samtliga 249 källfiler och SHA-256 stämmer med inventeringen; sex käll-/mottagarpar och deras angivna provfiler finns; de tre nya programfilerna är endast föreslagna. Katalogernas antal summerar till 249 respektive 246. Lokala länkmål, kartbygge/`--check` och `git diff --check` passerar. Endast planen, projektguiden och denna statuspost ändras i kompletteringen; inga program-, regel- eller testfiler ändras. Ingen pytestkörning, installation, commit eller push ingår. Slutlig metadata- och bevarandekontroll körs efter denna statusuppdatering.
+
+## Föregående arbetsstatus
+
+# Plan för robust fortsatt utveckling, 2026-10-24
+
+[Plan A0–A8](superpowers/plans/2026-10-24-robust-programstruktur.md) samordnar aktuell verifieringsbaslinje, reproducerbar miljö, gemensamt leverantörsval/utkastflöde, typad analysgräns, importkontroller, återställning och stegvis uppdelning av dokumentansvar. Den bygger på [arkitekturgranskningen](superpowers/reviews/2026-10-24-programarkitektur.md), Context7 och primärkällor. Befintlig testtidsplan äger fortsatt F8 → F6 → F7 → F10; V10/läsbarhet och sakkunnigarbete ligger kvar i sina befintliga planer.
+
+Färsk miljökontroll: `.venv312` fungerar med Python 3.12.15; någon låsfil, `.python-version` eller lokal `.github/workflows` finns inte. Tidigare status om saknad Pythonmiljö gäller inte längre. Pågående prestanda-/lagringsändringar finns kvar och ska verifieras före vidare strukturändring. Ingen ny fullsvit är körd genom planeringen.
+
+Planen är ett genomförandeförslag, inte införd arkitektur eller godkänd produktleverans. START, projektguiden, huvudspec §5, testtidsplanen och researchen länkar samma fortsättningsplan. Dokumentkontroll: 39 lokala länkmål utan saknade mål, 838 skyddade produkt-/regel-/test-/skript-/pyproject-filer byteoförändrade, kartbygge/`--check` och `git diff --check` med exit 0. Metadata kontrolleras även efter denna sluttext. Inga produktändringar, installationer, externa AI-anrop, commits eller pushar ingår.
+
+## Föregående arbetsstatus
+
+# Programstruktur granskad mot primärkällor, 2026-10-24
+
+[Arkitekturunderlaget](superpowers/reviews/2026-10-24-programarkitektur.md) jämför aktuell kod med OpenFisca, Open edX, Sphinx och pretix samt C4, tjänstelager och importkontrakt. Context7 har kontrollerat Import Linter och Sphinx. Rekommendationen är att utveckla befintlig områdesindelning till en modulär monolit med gemensamma arbetsflöden och tydligare gränser för skrivning, rapport och leverans. Förslagen är inte implementerade; denna research ersätter inga befintliga planer.
+
+Färsk statisk inventering: **249 programfiler, 27 188 Pythonrader, median 81 rader**; `dokument/` har 100 filer/11 431 rader. **861 paketöverskridande importuttryck och tio ömsesidiga paketpar** enligt rapportens avgränsade AST-metod. Dessa är inte bevis för cirkulära filimporter, körfel eller testtäckning. [Evidens med källhashar](superpowers/reviews/2026-10-24-programarkitektur-underlag.json).
+
+Verifiering: 844 program-/regel-/test-/skript-/pyproject-filer är byteoförändrade under genomgången; rapportens lokala Markdown-mål och fem nämnda testfiler finns. Kartbygge/`--check` och `git diff --check` passerar. Programkartan länkar underlaget. Inga produkt-/regel-/teständringar, installationer, externa AI-skrivningar, pytest/fullsvit, commits eller pushar ingår. Filflyttar i ett senare införande måste beakta modellidentitet, frysta format och befintliga paket.
+
+## Föregående arbetsstatus
+
+# Research om kortare testvarv, 2026-10-24
+
+[Beslutsunderlaget](superpowers/reviews/2026-10-24-teststrategi-femminuter.md) utreder fem minuters normal återkoppling, ändringsstyrt urval, mer sällan körd fullsvit och senare optimering/parallellisering. Konkreta införandesteg är tillagda i [befintlig testtidsplan](superpowers/plans/2026-10-22-snabbare-verifiering-plan.md#fortsättning-efter-research-2026-10-24-femminutersvarv). [Testguiden](testning.md#research-om-femminutersvarv-2026-10-24) länkar förslaget utan att aktivera det.
+
+Belägg: den sparade fullsviten är 3 594 prov/66 min 13 s; snabbprofilen cirka en minut. De åtta största filgrupperna motsvarar cirka 47,9 procent av JUnit-provtiden och det längsta enskilda provet överstiger fem minuter. Detta är analys av versionshanterade körningsrapporter, inte en ny tidsmätning. Färska statiska kontroller visar befintliga profilurval, markörer, dyra fixturvägar och begränsningar i ett importbaserat urval. Officiell pytest-/xdist-/testmon-dokumentation och Context7 har kontrollerats.
+
+AGENTS regel 6, testkod, produktkod, regelbas, profiler och exekverbara verktyg är oförändrade av researchen. Inga tester har körts med fel Pythonversion; Python 3.12 saknar här den föreskrivna projektmiljön. Ingen plugin har installerats, ingen fullsvit eller automation har startats och inga commits/pushar ingår. Femminutersmålet är föreslaget och behöver verifieras i införandet.
+
+## Föregående arbetsstatus
+
+# Obsidian uppdaterat till main, 2026-10-24
+
+Obsidian-valvet `Riskanalys` använder fortsatt `/Users/gt/Documents/Riskanalys/Riskanalys`, nu på lokal `main` vid `8ca798d`, samma commit som hämtad `origin/main`. Den gamla lokala navigeringen från `codex/m0-m1` är sammanförd med den nya kodbasen. Aktuella Python 3.12-/verifieringsregler i AGENTS och den nya produktstatusen är bevarade. Den ursprungliga lokala ändringsuppsättningen finns kvar i Git-stashen **Obsidian före uppdatering till main 2026-10-24**.
+
+[START](START.md), [programflödet](omraden/Programflode.md), de 14 områdesguiderna och [programkartan](PROGRAMKARTA.md) beskriver nu gemensam analys i schema 2, engångsbekräftelse, tjänsteplaner, metodbeslut och V10. Skrivformat V8 skiljs från dokumentformat V10 och presentation `D-ARB-v10-presentation-2`. Tre obligatoriska leveransdelar och uttryckligt presentationsbyte är synliga. V8/V9-filer som V10 återanvänder finns kvar i läsordningen.
+
+[Filkortsgeneratorn](research/verktyg/bygg_obsidiankarta.py) grupperar de nya presentations-/leveransfilerna och testverktygen i rätt område och hanterar den komprimerade JSON-fixturen med byteantal/hash utan textavkodning. Aktuellt urval: **999 projektfiler**, **249 programfiler**, **27 149 programrader**, **521 Pythonfiler** totalt och **3 597 direkta interna importrelationer**. Inventeringen omfattar även de lokala, ännu ocommittade navigeringsfilerna.
+
+Verifiering av navigeringen: generatorns `--check`, 999 originalreferenser/källhashar, 7 062 wikilänkar och 31 rubriklänkar i 1 031 navigerings-/filkartsanteckningar samt AST-läsning av samtliga 521 Pythonfiler. De 836 versionshanterade program-/regel-/test-/skript-/pyproject-resurserna är byteoförändrade mot den uppdaterade main-basen. Användarens canvas är bevarad. Obsidian CLI har läst det nya V10-filkortet, visat dess bakåtlänkar och öppnat START. Ett reproducerat länkningsfel i tabeller rättades genom att escapera aliasavskiljaren; START registrerar nu även alla områdeslänkar. Dolda Git-filnamn får synliga filkort så att Obsidian indexerar dem. `git diff --check` kontrolleras efter slutlig textuppdatering.
+
+Detta är navigeringsverifiering, ingen ny full pytestkörning eller förnyad produkt-/sakkunnigattest. Inga externa AI-/API-körningar, commits eller pushar ingår. Uppdateringen av lokal main var en fast-forward av redan publicerad historik.
+
+## Föregående arbetsstatus
+
 # Redaktionell V10 färdig – fullsvit verifierat grön
 
 Slutlig produktkod `43abc07`, efter produktkoppling `89864ec` och färsk samlad slutgranskning. **3 594 godkända, 0 fel och 0 överhoppade**, ett livetest bortvalt. Insamling och JUnit matchar, samtliga **863 snapshotresurser är oförändrade**. Fullsviten tog **3 973,446 s (66 min 13 s)**. Berörda slutprov: 51 godkända; snabbprofil: 140 godkända, verifierat oförändrat snapshot, 60,22 s.
@@ -752,3 +816,31 @@ Användarens beställning i [research 11](research/11-kallkontroll-allman-riskbe
 **Kvarstår:** FATF:s TF-original gav HTTP 403 och är därför varken checksumregistrerat eller använt som ny katalogkälla. Original till domarna 12554-25, 842-26 och 1129-26 saknas; ingen ny rättspraxis byggs ur referat. Verklig sakkunniggranskning, tjänstevis kalibrering av de byråövergripande indikatorerna, kontrollernas tillräckliga täckning och M3/M4-prov återstår. Alla nya poster är `ej_granskad`; tekniskt gröna tester är inte juridiskt godkännande.
 
 **För granskning:** ett enbart syntetiskt Word-utkast och provresultat ligger utanför repot i `../underlag/kallkontroll-2026-10-11/`. Nya ogranskade granskningsunderlag för regelbas 1.2.0 är framställda för alla tre länspaket i `../underlag/granskningsunderlag-1.2.0-2026-10-11/`; deras manifest verifierar. Ingen mall är signerad. Inga riktiga byrådata eller riktiga API-anrop användes i testerna.
+
+## Historik: lokal Obsidian-navigering före uppdateringen till main
+
+## Selektiv områdeskontext för utvecklings-AI, 2026-10-23
+
+`AGENTS.md` och den tunna `CLAUDE.md` leder nu till samma uppgiftsval i [START](START.md). De 14 befintliga [områdesguiderna](omraden/Programflode.md) har konkreta startfiler, indata/utdata, kontrakt, villkorad fördjupning, berörda områdesgränser, provurval och länkar till relevanta spec-rubriker. En agent börjar normalt med en guide och 2–4 relevanta kodfiler och utökar efter ändringens följder; detta är inte ett tak för utredningen. Hela statusjournalen, programkartan och valvet ska inte läsas rutinmässigt.
+
+Arbetsgången skiljer avsett beteende, faktisk kod, handskriven kontext och maskinellt kontrollerbar metadata. Uppdatering av ansvar och kontrakt kräver guideändring; kartgeneratorn kan inte sanningsgranska dem. Instruktionerna kräver kontroll av arbetskopian mot Obsidian-valvets sökväg, egna kopior/syntetiska data vid parallellt arbete och kort överlämning i befintlig plan/status. Ingen ny bakgrundstjänst, automatisk chattdelning eller extra global import av områdesguider har införts. Detta är en förbättrad läsordning; någon uppmätt minskning av modellernas faktiska tokenförbrukning eller felfrekvens påstås inte.
+
+Verifiering: 14 unika områdesval, 31 existerande spec-rubriker och 4 300 fungerande wikilänkar i navigering och återbyggd karta. Gemensamma instruktioner, START och en områdesguide omfattar 14,8–16,2 kB text, före relevant kod och spec-/statusavsnitt. Samlad insamling av guidernas konkreta prov-/fixturreferenser gav 1 013 insamlade fall på 0,86 s, exit 0; inga testfall kördes och ingen ny fullsvit påstås. Kartan omfattar nu 755 originalfiler inklusive användarens redan tillagda canvas. Endast 18 befintliga kontext-/instruktionsfiler ändrades i denna uppgift; alla 688 program-/regel-/testfiler, kartgeneratorn, tidigare övriga dokumentationsändringar och canvasen är byteoförändrade. Kartans `--check`, länk-/rubrikkontroll och `git diff --check` passerar. Obsidian CLI läser den uppdaterade områdeskontexten. Inga commits, pushar eller externa AI-/API-anrop.
+
+## Obsidian och gemensam AI-navigering, 2026-10-23
+
+Det befintliga repot `/Users/gt/Documents/Riskanalys/Riskanalys` är öppnat som Obsidian-valvet `Riskanalys`. [Startsidan](START.md) länkar 14 områdesguider, en programflödessida, befintlig spec/status och den daterade programkartan. Startsidan och det fullständiga filregistret är bokmärkta. Grafens första vy är filtrerad till startsidan och områdes-/flödessidorna.
+
+[Generatorn](research/verktyg/bygg_obsidiankarta.py) bygger 754 filkort från dagens ej ignorerade projektfiler, med originalreferens, ansvar, radantal, SHA-256 och statiska interna importer. Programmet omfattar fortfarande 190 filer och 20 540 fysiska rader; kartan har 2 428 importrelationer. `docs/kodkarta/` och `.obsidian/` är lokala och ignorerade. Filkorten är återbyggbar navigering, inte nya programmoduler eller en parallell specifikation. Gemensamma `AGENTS.md` hänvisar båda utvecklingsagenterna till samma ingång; `CLAUDE.md` importerar redan dessa regler.
+
+Verifierat lokalt: Obsidian CLI läser startsidan, länkar, filkortsegenskaper och bakåtlänkar till riskmotorn. En separat kontroll matchar 754 original mot 754 filkort, löser 4 153 wikilänkar i 785 navigerings-/filkartsanteckningar, kontrollerar alla originalreferenser och syntaxläser 363 Pythonfiler. Samtliga 688 ursprungliga program-/regel-/testfiler är byteoförändrade. Ingen full pytestkörning eller extern AI-/API-körning ingår i denna navigeringsändring. Inga commits eller pushar.
+
+## Programkarta och filregister, 2026-10-23
+
+En fullständig [trädvy med varje fils ansvar](PROGRAMKARTA.md#14-fullständigt-filträd-med-varje-fils-ansvar) visar nu samtliga 737 projektfiler, inklusive programkartan. Varje fil får en förklaring, varje mapp ett filantal och Pythonfiler sina fysiska radantal. Trädets filrader har stämts av mot en färsk inventering; detta är dokumentation av befintlig struktur, utan genomförda sammanslagningar eller ändrad programkod.
+
+[Programkartan](PROGRAMKARTA.md) beskriver alla 736 versionshanterade basfiler: 190 programfiler, 314 regelbasfiler, 184 test-/fixturfiler, 42 dokumentations-/verktygsfiler och 6 rotfiler. Den grupperar filansvar, visar huvudflöden och listar direkta statiska importrelationer samt testkopplingar för varje programfil. Den är en läsguide till befintlig spec, inte en ny arkitektur eller genomförandeplan. Aktuell V8, gemensamma hjälpfunktioner i äldre formatfiler och äldre beskrivningar i README skiljs åt.
+
+Verifiering av kartan: 736/736 filposter utan dubbletter, syntaxläsning av 362 Pythonfiler, kontroll av lokala länkar/ankare, oförändrade program-/regel-/testfiler och `git diff --check`. Ingen ny full testsvit eller API-/AI-körning ingår. Inga produktändringar, commits eller pushar; tidigare öppna frågor och verifieringsresultat nedan behåller sin status.
+
+Fördjupad [storleks- och AI-arbetsbedömning](PROGRAMKARTA.md#13-programmets-storlek-och-förenkling-för-ai-arbete): själva programmet har 190 Pythonfiler, 20 540 fysiska rader och 16 835 kodförande rader. Dokument/promptar omfattar 66 filer och 8 147 rader. Mätningen skiljer kod från regeldata, testresurser och dokumentation. Den rekommenderar kort aktuell AI-ingång, tydliga modulkontrakt och riktad minskning av bakåtriktade beroenden, med stegvis uppdelning av dokumentkedjans ansvar. Förslaget är inte genomfört. Färsk testinsamling gav 2 946 av 2 947 fall, ett bortvalt, exit 0; detta är inte en ny godkänd full testkörning.
