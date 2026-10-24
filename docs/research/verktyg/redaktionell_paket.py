@@ -126,6 +126,9 @@ def referenser(fran,ut):
 
 
 def paket(fran,refs,ut,prov):
+    if prov:
+        resultat=las(prov/'resultat.json')
+        assert resultat['profil']=='full' and resultat['verifierad'] and resultat['oforandrat'] and resultat['fel']==0,'Slutprovet är inte verifierat grönt'
     from riskanalys.regelverk.laddning import ladda_regelbas,STANDARD_REGELBAS
     from riskanalys.regelverk.sakkunnig import exportera_sakkunnigunderlag,granskningsobjekt
     from riskanalys.regelverk.metodbeslut import filindex
@@ -193,7 +196,7 @@ def paket(fran,refs,ut,prov):
             skriv_manifest(dest,{'typ':'syntetisk-redaktionell-produktreferens','regelbas':rb.kontrollsumma})
         if prov:
             target=full/'slutprov';target.mkdir()
-            for n in ('resultat.json','snapshot-fore.json','snapshot-efter.json','junit.xml','insamling.json'):
+            for n in ('resultat.json','snapshot.json','junit.xml','collection.log','pytest.log'):
                 if (prov/n).is_file():shutil.copy2(prov/n,target/n)
         mall=las_yaml(full/'granskningsmall.yaml')
         assert set(mall['objekt'])==set(summor)

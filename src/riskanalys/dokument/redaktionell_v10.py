@@ -41,6 +41,26 @@ def synlig_text(x):
 def ravarden(text):
     return [{'varde':m.group(),'position':m.start()} for m in RAW.finditer(text)]
 
+def analysoriginal(x):
+    """Alla fria analysfält enligt schemat; enumvärden och referens-ID är programdata."""
+    from typing import get_args
+    from riskanalys.analys import modeller
+    referenser={'id','tjanst','kontroll','scenario','post','lokal_scenario','lokalt_scenario',
+        'scenariosumma','summa','postsumma','visad_summa','underlagssumma','svarssumma',
+        'profilrevision','bedomningsmanifest','utkastmanifest','regelbas','kallunderlag',
+        'historik','modell','byra','dokument','kontrollsumma'}
+    fria={n for cls in vars(modeller).values() if isinstance(cls,type) and issubclass(cls,modeller.Fryst)
+        for n,f in cls.model_fields.items() if n not in referenser
+        and (f.annotation is str or str in get_args(f.annotation))}
+    def samla(v):
+        if isinstance(v,dict):
+            for n,a in v.items():
+                if n in fria and isinstance(a,str) and a:yield a
+                yield from samla(a)
+        elif isinstance(v,(list,tuple)):
+            for a in v:yield from samla(a)
+    return set(samla(x))
+
 class Lasformat:
     def __init__(self,k,*,regelbas=None,profil=None):
         from riskanalys.regelverk.modeller import Regelbas
@@ -94,7 +114,7 @@ class Lasformat:
             text=re.sub(r'(?<![\w-])'+re.escape(kod)+r'(?![\w-])',lambda m:kalla['titel'],text)
         return self.etikett(id)+': '+text
 
-    def program(self,text):
+    def program(self,text,*,kontext=None):
         text=re.sub(r'P-[A-Z]+\.[\w.-]+',lambda m:self.etikett(m.group()) if m.group() in self.falt else m.group(),text)
         kodord=[x for x in ORD if '_' in x or x in ('bekraftad','bada','BADA','pt','tf','okand','galler','verkstaller','byran','forbereder')]
         text=re.sub(r'\b(?:'+ '|'.join(map(re.escape,sorted(kodord,key=len,reverse=True)))+r')\b',lambda m:self.ord(m.group()),text)
@@ -106,7 +126,7 @@ class Lasformat:
                 text=re.sub(r'(?<![\w-])'+re.escape(id)+r'(?![\w-])(?:\s+'+re.escape(name)+r')?',lambda m:name,text)
             elif id.startswith(('H-','S-','C-')):
                 text=re.sub(r'(?<![\w-])'+re.escape(id)+r'(?![\w-])',
-                    lambda m: id if name in text else name,text)
+                    lambda m: id if name in (kontext if kontext is not None else text) else name,text)
         return text
 
 def stycke(text,refs=()):
@@ -283,21 +303,20 @@ def bygg(k,p,*,regelbas=None,profil=None):
     a['stycken']=[stycke(f.kallregister('P-BEVAKNING.kallor')+f'. Ursprungligt källregister: bilaga B1, {mal}.')]+[stycke(f.fakta(id,period=False)) for id in ('P-BEVAKNING.datum','P-BEVAKNING.ansvarig','P-BEVAKNING.relevans','P-BESK.uppdatering')]+[deepcopy(a['stycken'][-1])]
     # Övriga programvärden översätts utan att originaltexternas innehåll rörs.
     originaltexter={u['varde'] for id,u in f.upp.items() if id in f.falt and f.falt[id]['typ']=='text' and isinstance(u.get('varde'),str)}
-    originaltexter.update(v for a in k['analys']['tjanster'] for v in (a['pt_motivering'],a['tf_motivering']))
-    originaltexter.update(s['handelseforlopp'] for a in k['analys']['tjanster'] for s in a['scenarier'])
+    originaltexter.update(analysoriginal(k['analys']))
     def formattext(text):
         spans=[]
         for v in originaltexter:
             if v and v in text:
-                spans.extend((m.start(),m.end()) for m in re.finditer(re.escape(v),text))
+                spans.extend((m.start(),m.end()) for m in re.finditer(r'(?<![\w-])'+re.escape(v)+r'(?![\w-])',text))
         # Överlappande originalspann förenas, så att inget original formateras.
         merged=[]
         for start,end in sorted(spans):
             if merged and start<=merged[-1][1]:merged[-1]=(merged[-1][0],max(end,merged[-1][1]))
             else:merged.append((start,end))
         chunks=[];pos=0
-        for start,end in merged:chunks.extend([f.program(text[pos:start]),text[start:end]]);pos=end
-        chunks.append(f.program(text[pos:]));return ''.join(chunks)
+        for start,end in merged:chunks.extend([f.program(text[pos:start],kontext=text),text[start:end]]);pos=end
+        chunks.append(f.program(text[pos:],kontext=text));return ''.join(chunks)
     for a in huvud:
         a['rubrik']=formattext(a['rubrik'])
         for s in a['stycken']:s['text']=formattext(s['text'])

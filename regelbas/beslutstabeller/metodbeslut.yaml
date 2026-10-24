@@ -151,7 +151,7 @@
     src/riskanalys/dokument/rapportvyer_v10.py: sha256:57779af121330afe3b2fd8430bc026d1d4a2e8227b810f33671c945225ae2cbf
     src/riskanalys/dokument/rapportvyer_v9.py: sha256:788edfca15d128c3f64aacad22d394793d023b6d0ccf155aa1ade9e32d0a6f00
     src/riskanalys/dokument/redaktion_v7.py: sha256:6afbb383b387356bbec8035b87d57645ada9285e063d8a28e4477e6cb5b36f30
-    src/riskanalys/dokument/redaktionell_v10.py: sha256:18f377f0100c2daab169b1a2513d76dbac2185bd8ad4a717c7457143242c8060
+    src/riskanalys/dokument/redaktionell_v10.py: sha256:b706aba59bb21f3f52e93dbe3c8232654cef998d9fdd91a36a60338bdb262796
     src/riskanalys/dokument/redaktionmodell_v10.py: sha256:15970867131307817aadbf4c549dead7622ccfc7033e5069b9f5c7c011bd2f0d
     src/riskanalys/dokument/redaktionspresentation_v10.py: sha256:88f2325ed6ef8e2a84e34aee844dc858513939db4f7e42b9a433448eff9a14d2
     src/riskanalys/dokument/rendering.py: sha256:7bc661ecf0d293f857ebb3b0752a571b84fe51e96025c1b6467f2af3499c06ec

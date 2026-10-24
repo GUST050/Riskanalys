@@ -151,3 +151,27 @@ def test_redaktionell_version_kraver_egna_samlade_r_attester(grund):
         assert bool(post)==(a.leveransdel=='resultatrapport')
     with pytest.raises(SakgranskningsFel):
         registrera_sakgranskning((),d,f.profil,'D-ARB.R2',True,'FfR','Syntetisk',DAG,presentation=p2)
+
+
+@pytest.mark.parametrize('modul',['docs.research.verktyg.redaktionell_v10','riskanalys.dokument.redaktionell_v10'])
+@pytest.mark.parametrize('falt',['beskrivning','motivering'])
+def test_gemensam_fritext_bevaras_hel_och_rakod_ger_synlig_konflikt(modul,falt):
+    from importlib import import_module
+    m=import_module(modul)
+    d=json.loads(gzip.decompress((Path(__file__).parents[1]/'fixturer/redaktionell_v10_d8a91a1.json.gz').read_bytes()))
+    original='Originalord: underlag_saknas och kan_tala_for_lagre. '
+    original=original+original
+    d['kallor']['analys']['gemensamma_sarbarhetsprovningar'][0][falt]=original
+    r=m.bygg(d['kallor'],d['presentation'])
+    text=m.synlig_text(r['renderade'][0])
+    assert original in text
+    assert r['ravarden'] and not r['flyttfel']
+
+
+@pytest.mark.parametrize('modul',['docs.research.verktyg.redaktionell_v10','riskanalys.dokument.redaktionell_v10'])
+def test_katalogid_bevaras_nar_namnet_ar_skyddad_originaltext(modul):
+    from importlib import import_module
+    m=import_module(modul)
+    d=json.loads(gzip.decompress((Path(__file__).parents[1]/'fixturer/redaktionell_v10_d8a91a1.json.gz').read_bytes()))
+    r=m.bygg(d['kallor'],d['presentation'])
+    assert 'H-03 PT\nOförklarade in- och utflöden' in m.synlig_text(r['renderade'][0])
