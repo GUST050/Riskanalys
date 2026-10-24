@@ -1,20 +1,24 @@
-# Guide för sakkunniggranskning av regelbas 2.12.2
+# Guide för sakkunniggranskning av regelbas 2.12.3
 
 Detta är ett förslag till regelbas för redovisningsverksamhet, med resultatrapport V10. Alla nya och ändrade poster är `ej_granskad`. Teknisk validering eller godkända tester är inte rättsligt godkännande. Granskaren ska kunna ändra eller avslå varje förslag. Fastställelse är spärrad tills regelpaket, genomförande och den enskilda rapportens sakuppgifter har aktuella godkännanden.
 
-Användaren har godkänt båda referens-PDF:erna efter steg D den 23 oktober 2026 och gett klartecken till steg E. Huvudrapporterna omfattar 20 respektive 21 sidor. Riktmärket tio sidor har inte uppnåtts; innehåll har inte kapats.
+Användaren har gett klartecken till produktkopplingen efter den redaktionella offlineförhandsvisningen den 24 oktober 2026. De aktuella syntetiska produktreferensernas huvudrapporter omfattar 19 respektive 19 sidor. Bilaga A/B1 omfattar 44/199 respektive 46/204 sidor. Riktmärket tio sidor har inte uppnåtts; innehåll har inte kapats.
+
+Version 2.12.3 är en separat redovisad teknisk ombindning: endast versionsmetadata och D-beslutens filkontrollsummor har ändrats. Samtliga sakobjekt, metodval, nivåer och statusar är oförändrade. Den konservativa bindningen omfattar nu 249 appfiler. Alla D-beslut kräver fortfarande verklig sakkunnigprövning. Ny presentationsversion är `D-ARB-v10-presentation-2`; gamla paket behåller sin sparade version och frysta verifiering.
 
 ## Börja med rätt paket och läsordning
 
-Det finns separata underlag för `RP-RED-VG`, `RP-RED-SKANE` och `RP-RED-STHLM`, med rättsligt datum 2026-10-23. Varje paket innehåller:
+Det finns separata underlag för `RP-RED-VG`, `RP-RED-SKANE` och `RP-RED-STHLM`, med rättsligt datum 2026-10-24. Varje paket innehåller:
 
 - `granskningsmall.yaml`: obesvarade beslut per granskningsobjekt. Identitet och kompetens är tomma; oberoende är inte intygat.
 - `underlag.json`: hela regelbasens sakuppgifter, källregister och fullständiga rättsliga lydelsetexter. `val` anger paket, datum och innehållssumma.
 - `sakkunniggranskning.md`: denna guide. `objektgenomgang.md` innehåller varje faktiskt granskningsobjekts fullständiga sakunderlag, källor, motiveringar och koppling till referensfallen. Läs dessa data; det krävs ingen kodläsning för sakgranskningen.
 - `metod/`: beslut, alternativa val, sänkningar, exakta beroenden och före-/efterutfall. `referensrapporter/` innehåller de två godkända syntetiska huvud-PDF:erna och deras kontrollunderlag.
-- `genomforande/`: en kopia av de 244 bundna appfilerna med kontrollsummor, för eventuell separat teknisk granskning. Sakgranskningen stöds av förklaringarna och faciten i paketet.
+- `genomforande/`: en kopia av de 249 bundna appfilerna med kontrollsummor, för eventuell separat teknisk granskning. Sakgranskningen stöds av förklaringarna och faciten i paketet.
 - `facit.json` och `facitgranskningsmall.yaml`: separat granskning av tillsynsfacitet. Det frigör inte regelpaketet.
 - `manifest.json`: kontrollsummor för paketets filer. Det bevisar filintegritet enligt programmets befintliga hotmodell, inte granskarens identitet.
+
+Läsversionen innehåller denna guide, objektgenomgången, metodsammanställning med exakta beroenden och före-/efterskillnader, obesvarad beslutsmall och båda referensfallens tre PDF-delar. Gemensamma filer är byteidentiska med fullpaketet. Fullpaketet är den tekniska grunden med regelbas, källoriginal, fulla historiska utfall och genomförandekod. Filantal, byte och fullpaketets manifestbindning finns i `lasversion.json`.
 
 Granska först metodbesluten nedan. Granska därefter hotnivåer, ändrade katalogposter och villkor. Granska sist övriga krav, den regionala paragrafkartan och befintliga metodobjekt. Beslut om D ersätter inte beslut om dess enskilda genomförandeobjekt: båda finns i mallen.
 
@@ -45,7 +49,7 @@ D7 ger i de 40 kontrastprofilerna **64 sänkta led mot föregående steg**: två
 
 De sex fasta fallen med ursprunglig respektive kompletterad profil ger tolv varianter. Deras D1–D2-jämförelser tar bort sammanlagt åtta scenarier; inget kvarvarande numeriskt riskled och ingen tjänsts slutnivå sänks där. Skillnaden mellan dessa fall och ideellkontrasten är en redovisad begränsning i täckningen, inte ett påstående om ofarlighet.
 
-De tolv fasta profilfilerna finns i `metod/fasta-profiler/`. `metod/profilkarta.json` mappar de historiska sökvägarna i utfallsfilerna till paketets lokala filer och verifierade kontrollsummor. `metod/slut-2.12.2/` visar oförändrade tjänste- och scenarioled mot D-slut efter den tekniska rättningen.
+De tolv fasta profilfilerna finns i `metod/fasta-profiler/`. `metod/profilkarta.json` mappar de historiska sökvägarna i utfallsfilerna till paketets lokala filer och verifierade kontrollsummor. `metod/slut-2.12.2/` bevarar den historiska tekniska rättningens utfall. `metod/slut-2.12.3/` innehåller omkörda utfall för samma tolv fasta profiler och 40 kontraster, med identiska sakutfall efter dagens tekniska ombindning. Läsversionens `metod/fore-efter.json` samlar samtliga historiska jämförelser och dagens oförändratbevis.
 
 ### Läs beräkningarna utan kod
 
@@ -85,15 +89,17 @@ Tillsynsfacitet är negativt underlag från avgränsade tillsynsfall och inte et
 |---|---|
 | Faktaruta och 0 | Version, analysdag, status, läsanvisning, sammanfattning och risk per tjänst. Ingen samlad numerisk byrånivå. |
 | 1 | Verksamhet, produkter, tjänster och omfattning från verkliga profilfält. |
-| 2 | Hot och fulla erfarenhetsuppgifter med källor. |
+| 2 | Kort hotbeskrivning med hänvisning till full hottabell och källregister i B1; full erfarenhet i A. |
 | 3 | Alla indikatorer per område, lagens exempel, lägre-risk-tabell och endast belagd samverkan. |
-| 4 | Aktuell bunden metod, scenariomatris, fulla lokala PT/TF-motiveringar, kontroller och avgränsning mot kundrisk. |
+| 4 | Aktuell bunden metod, gemensamma identiska katalogkedjor en gång, fulla lokala PT/TF-motiveringar, kontroller och avgränsning mot kundrisk. Fulla metod- och kontrolltabeller i A. |
 | 5 | Luckor, åtgärder, verkliga rutin-ID/versioner, uppföljning och versionslogg. |
 | Bilaga A och B1 | Befintlig disposition; innehållet följer den aktuella analysen och regelbasen. |
 
 Kapitel 3 skiljer på **finns**, **under tröskeln**, **nej**, **okänt** och **inte tillämplig**. Okänt får aldrig visas som nej. Lägre-risk-indikatorer har kolumnerna ”Kan tala för lägre risk i” och ”Prövning”; de beskrivs inte som hotförstärkare. Underlag saknas för numerisk nivå per område, antal kunder per riskklass och konstruerade rutinavsnitt. Rapporten redovisar dessa begränsningar. Samverkan visas endast där befintliga data ger stöd, exempelvis en belagd kombinationsgrupp; flera aktiva byråfaktorer är inte kundsamförekomst.
 
-Fri text återges hel och gemensamma kedjor en gång. Oprövade eller inte godtagna sänkningar är markerade. V10 kräver samlad sakgranskning av hela huvudrapporten; enskilda R-godkännanden räcker inte och äldre poster utan granskningssätt räknas inte. A och B1 kan granskas var för sig. En formatändring kräver förnyad samlad sakgranskning. Redan fastställda V9-paket verifieras från sina frysta källor; de skrivs inte om. Vanlig uppdatering av ett äldre utkast behåller dess sparade format om användaren inte uttryckligen väljer byte.
+Programetiketter visas på svenska med formaterade tal och perioder. Fritext som innehåller råkoder skrivs aldrig om; en konflikt stoppar den redaktionella presentationen med begripligt fel. Varje flytt har exakt källposition, målposition och innehållssumma i referensfallens flyttregister.
+
+Fri text återges hel och gemensamma kedjor en gång. Oprövade eller inte godtagna sänkningar är markerade. V10 kräver samlad sakgranskning av hela huvudrapporten; enskilda R-godkännanden räcker inte och äldre poster utan granskningssätt räknas inte. A och B1 kan granskas var för sig. En formatändring kräver förnyad samlad sakgranskning. Äldre V10-utkast får ett uttryckligt val ”Byt till läsbar V10”; vanlig uppdatering behåller sparad presentation. Bytet ändrar visad struktur och gamla sakgodkännanden kan inte återanvändas. Redan fastställda V9-paket verifieras från sina frysta källor; de skrivs inte om. Vanlig uppdatering av ett äldre utkast behåller dess sparade format om användaren inte uttryckligen väljer byte.
 
 De båda godkända syntetiska huvudrapporterna finns i paketet. Bilaga A/B1:s innehåll och källbindning har kontrollerats maskinellt, men varje bilagesida har inte granskats visuellt. Rapportgodkännandet här ersätter varken verklig sakkunniggranskning av regelbasen eller senare sakgranskning av en byrås rapport.
 
@@ -122,4 +128,4 @@ Importen validerar aktuell regelbas, paket/version/innehållssumma, rättsligt d
 
 ## 7. Teknisk status
 
-Slutlig fullsvit gav **3 557 godkända, 0 fel och 0 överhoppade**, med ett livetest bortvalt, matchande insamling/JUnit och 851 oförändrade snapshotresurser. Första körningens 3 522 godkända/34 fel, rättningarna och den gröna slutkörningen redovisas i [slutprovsunderlaget](superpowers/reviews/2026-10-23-regelbas-slutprov.md). Paketets sakstatus är fortfarande `ej_granskad`. Ingen push eller merge ingår.
+Den föregående versionens fullsvit gav 3 557 godkända. Den redaktionella versionens nya slutprov redovisas i fullpaketets `slutprov/` när slutkörningen är avslutad. En tidigare körning gäller inte ändrad kod. Paketets sakstatus är fortfarande `ej_granskad`. Ingen push eller merge ingår.

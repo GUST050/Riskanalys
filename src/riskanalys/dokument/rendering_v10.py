@@ -16,15 +16,22 @@ from riskanalys.fel import RiskanalysFel
 def kontrollera_presentation(vyer,profil,presentation):
     from riskanalys.dokument import presentation_v10 as pv,leverans_v10 as lv
     docs=tuple(getattr(vyer,d) for d in DELAR)
-    if (presentation.version!=pv.PRESENTATIONSVERSION or presentation.renderingspolicy!=pv.RENDERINGSPOLICY
-        or presentation.leveransmall!=lv.LEVERANSMALL_V10
+    renderade=pv.renderade_vyer(vyer,profil)
+    from riskanalys.dokument.redaktionspresentation_v10 import VERSION,kontrollera
+    if presentation.version==VERSION:
+        kontrollera(presentation,renderade,profil)
+        renderade=presentation.renderade
+    elif (presentation.version!=pv.PRESENTATIONSVERSION or presentation.renderingspolicy!=pv.RENDERINGSPOLICY
+          or presentation.redaktion is not None):
+        raise RiskanalysFel('Okänd V10-presentation. Granska alla tre delarna på nytt.')
+    if (presentation.leveransmall!=lv.LEVERANSMALL_V10
         or summa([k.model_dump(mode='json') for k in presentation.konstruktioner])!=presentation.konstruktioner_summa
         or any(d.formatversion!=V10 for d in docs)
         or tuple(summa(d.model_dump(mode='json')) for d in docs)!=presentation.vysummor
         or summa(profil.model_dump(mode='json'))!=presentation.profil
         or pv.vystruktur(docs)!=presentation.vystruktur
         or pv.hanvisningar_for(docs)!=presentation.hanvisningar
-        or pv.renderade_vyer(vyer,profil)!=presentation.renderade
+        or renderade!=presentation.renderade
         or pv.listdelar(presentation.atgardskalla,presentation.fyndkalla)!=presentation.delar
         or summa([f.model_dump(mode='json') for f in presentation.fyndkalla])!=presentation.fynd):
         raise RiskanalysFel('V10-presentationen eller dess fasta mall har ändrats. Granska alla tre delarna på nytt.')
@@ -66,7 +73,8 @@ def rendera_rapportvyer_v10(vyer:RapportvyerV10,profil:Profil,mapp:Path,*,
                 for u in a.underrubriker:
                     if u.fore_stycke==n:word.add_heading(u.rubrik,level=2)
                 for t in a.tabeller:
-                    if t.fore_stycke==n:_tabell(word,t,hall_ihop_rader=True,formatversion='D-ARB-resultat-v9')
+                    if t.fore_stycke==n and (t.rader or presentation.redaktion is None):
+                        _tabell(word,t,hall_ihop_rader=True,formatversion='D-ARB-resultat-v9')
                 if n<len(a.stycken):
                     p=word.add_paragraph(a.stycken[n].text)
                     if del_=='analysbilaga' and a.id=='D-ARB.B2':
@@ -77,11 +85,15 @@ def rendera_rapportvyer_v10(vyer:RapportvyerV10,profil:Profil,mapp:Path,*,
                     sista=word.element.body[-2]  # Sista innehållselementet före sectPr.
                     if sista.tag==qn('w:p'):
                         word.paragraphs[-1].paragraph_format.keep_with_next=True
-                    word.add_paragraph(mall.hanvisning.format(fil=filnamn[DELAR.index(h.maldel)],avsnitt=', '.join(h.mal)))
+                    mal=', '.join(h.mal)
+                    if presentation.redaktion and del_=='resultatrapport':mal=mal.replace('D-ARB.','')
+                    word.add_paragraph(mall.hanvisning.format(fil=filnamn[DELAR.index(h.maldel)],avsnitt=mal))
         for p in presentation.delar:
             if p.leveransdel==del_:skriv_presentationsrader(word,p.rader)
         if del_=='resultatrapport':
             from riskanalys.dokument.wordstil_v10 import anpassa_tabeller
             anpassa_tabeller(word)
+            if presentation.redaktion:
+                for para in word.paragraphs[-3:-1]:para.paragraph_format.keep_with_next=True
         path=mapp/fil;path.parent.mkdir(parents=True,exist_ok=True);word.save(str(path));paths.append(path)
     return tuple(paths)

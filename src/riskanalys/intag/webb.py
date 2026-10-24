@@ -524,7 +524,7 @@ class Hantera(BaseHTTPRequestHandler):
 
     def post_uppdaterautkast(self,data):
         s=self.server
-        if set(data)-{'csrf','revision','rapportformat'} or data.get('rapportformat') not in (None,'v8','v9','v10'):
+        if set(data)-{'csrf','revision','rapportformat'} or data.get('rapportformat') not in (None,'v8','v9','v10','v10-redaktionell'):
             raise RiskanalysFel('Uppdateringsformuläret innehåller okända fält.')
         revision=profilrevision(s.tjanst.profil())
         if data.get('revision')!=revision or s.utkastrevision!=revision:

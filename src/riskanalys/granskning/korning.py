@@ -91,9 +91,9 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
     utkast, utkastmapp = godkanda_utkast(byramapp, bedomningsmapp, utkastmapp=utkastmapp)
     historik = las_historik(byramapp)
     from riskanalys.dokument.rapportversion import V8,V9,V10,AKTUELL_DOKUMENTVERSION
-    if rapportformat not in (None,"v8","v9","v10"):
-        raise RiskanalysFel("Välj rapportformat v8, v9 eller v10.")
-    valtformat={"v8":V8,"v9":V9,"v10":V10}.get(rapportformat,AKTUELL_DOKUMENTVERSION)
+    if rapportformat not in (None,"v8","v9","v10","v10-redaktionell"):
+        raise RiskanalysFel("Välj rapportformat v8, v9, v10 eller v10-redaktionell.")
+    valtformat={"v8":V8,"v9":V9,"v10":V10,"v10-redaktionell":V10}.get(rapportformat,AKTUELL_DOKUMENTVERSION)
     bygge=None
     snapshot = None
     rapport = None
@@ -151,7 +151,12 @@ def _kor_granskning_last(byramapp: Path, regelbas: Regelbas, granskningsdatum: d
             from riskanalys.dokument.presentation_v10 import bygg_presentation_v10 as bygg_presentation_v9
             from riskanalys.granskning.dokument_v10 import kravkarta_v10 as kravkarta_v9
         (mapp/f'kravkarta-{version}.json').write_text(json.dumps(kravkarta_v9(regelbas,profil,bedomning,bygge),ensure_ascii=False,indent=2),encoding='utf-8')
-        presentation=bygg_presentation_v9(bygge,analys=snapshot.paket,fynd=fynd,bedomning=bedomning,profil=profil)
+        extra={}
+        if version=='v10':
+            from riskanalys.dokument.presentationsval_v10 import valj as valj_presentation
+            extra={'regelbas':regelbas,'presentationsversion':valj_presentation(byramapp,bedomningsmapp.name,rapportformat)}
+        presentation=bygg_presentation_v9(bygge,analys=snapshot.paket,fynd=fynd,bedomning=bedomning,profil=profil,**extra)
+        if version=='v10':metadata['presentationsversion']=presentation.version
         for namn,obj in (('analysdokument-v8.json',bygge.analysdokument),(f'resultatunderlag-{version}.json',bygge.underlag),
                          (f'resultatbygge-{version}.json',bygge),('presentation.json',presentation)):
             (mapp/namn).write_text(obj.model_dump_json(indent=2),encoding='utf-8')

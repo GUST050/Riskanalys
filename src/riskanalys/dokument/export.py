@@ -142,6 +142,7 @@ def _exportera_bundet_last(byramapp: Path, datum: date, granskningsmapp: Path, *
             'typ': 'export_utkast', 'granskning': granskningsmapp.name,
             'dokumentformat': dokument.formatversion, 'datum': datum.isoformat(),
             'analysbindning': snapshot.registersumma,
+            **({'presentationsversion':presentation.version} if v10 else {}),
         })
         fel = verifiera_manifest(arbetsmapp)
         if fel:

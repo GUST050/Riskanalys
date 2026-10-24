@@ -10,7 +10,7 @@ def rb():
     return ladda_regelbas(STANDARD_REGELBAS)
 
 def test_v1_ar_giltig_och_ogranskad(rb):
-    assert rb.version == "2.12.2"
+    assert rb.version == "2.12.3"
     assert validera(rb) == []
     assert all(k.sakkunnig.status == "ej_granskad" for k in rb.krav.values())
 

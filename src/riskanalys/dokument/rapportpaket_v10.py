@@ -30,7 +30,10 @@ def las_presentation_v10(granskningsmapp:Path,bedomning,profil,*,aktuell=True,re
             or b.underlag.model_dump(mode='json')!=json.loads((g/'resultatunderlag-v10.json').read_text())
             or [t.model_dump(mode='json') for t in b.transformationer]!=json.loads((g/'transformationer-v10.json').read_text())):
             raise ValueError('Fryst presentationskälla avviker')
-        if p!=bygg_presentation_v10(b,analys=snap.paket,fynd=fynd,bedomning=bedomning,profil=profil):
+        from riskanalys.regelverk.modeller import Regelbas
+        sparad=Regelbas.model_validate(kallor['regelbas'])
+        if p!=bygg_presentation_v10(b,analys=snap.paket,fynd=fynd,bedomning=bedomning,profil=profil,
+                                   regelbas=sparad,presentationsversion=p.version):
             raise ValueError('Den frysta presentationen avviker från sina egna källor')
         for post in (*b.underlag.poster,*b.underlag.brister,*b.konstruktioner):
             for r in post.kallor:los_referens(kallor,r)
@@ -46,7 +49,8 @@ def las_presentation_v10(granskningsmapp:Path,bedomning,profil,*,aktuell=True,re
             from riskanalys.granskning.dokument_v10 import kravkarta_v10
             if json.loads((g/'kravkarta-v10.json').read_text())!=kravkarta_v10(rb,profil,bedomning,ny):
                 raise ValueError('Kravkartan avviker från aktuellt underlag')
-            if b!=ny or p!=bygg_presentation_v10(ny,analys=snap.paket,fynd=fynd,bedomning=bedomning,profil=profil):
+            if b!=ny or p!=bygg_presentation_v10(ny,analys=snap.paket,fynd=fynd,bedomning=bedomning,profil=profil,
+                                               regelbas=rb,presentationsversion=p.version):
                 raise ValueError('Ny presentationspolicy eller ändrat innehåll')
         return p
     except (OSError,ValueError,KeyError,TypeError) as exc:

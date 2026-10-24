@@ -1,7 +1,7 @@
 """Fryst presentation efter slutlig fyndlista; inga nya fakta eller riskbeslut."""
 from types import SimpleNamespace
 from typing import Literal
-from pydantic import BaseModel,ConfigDict
+from pydantic import BaseModel,ConfigDict,model_serializer
 from riskanalys.analys.modeller import Rutinatgard,Analyspaket
 from riskanalys.bedomning.modeller import Bedomning
 from riskanalys.profil.modeller import Profil
@@ -14,6 +14,7 @@ from riskanalys.dokument.presentation_v8 import (
 )
 from riskanalys.granskning.modeller import Fynd
 from riskanalys.fel import RiskanalysFel
+from riskanalys.dokument.redaktionmodell_v10 import RedaktionV10
 
 PRESENTATIONSVERSION='D-ARB-v10-presentation-1'
 RENDERINGSPOLICY='V10-lokala-original-1'
@@ -74,6 +75,13 @@ class PresentationV10(Fryst):
     atgardskalla: tuple[AtgardsmedlemV10,...]
     fyndkalla: tuple[Fynd,...]
     delar: tuple[ListdelV10,...]
+    redaktion: RedaktionV10 | None = None
+
+    @model_serializer(mode='wrap')
+    def serialisera(self,handler):
+        data=handler(self)
+        if self.redaktion is None:data.pop('redaktion',None)
+        return data
 
 
 def renderade_vyer(vyer,profil):
@@ -125,7 +133,7 @@ def hanvisningar_for(docs):
     return tuple(hanvisningar)
 
 
-def bygg_presentation_v10(bygge:ResultatbyggeV10,*,analys:Analyspaket|None,
+def _bygg_presentation_1(bygge:ResultatbyggeV10,*,analys:Analyspaket|None,
                          fynd:tuple[Fynd,...],bedomning:Bedomning,profil:Profil) -> PresentationV10:
     from riskanalys.dokument import leverans_v10
     from riskanalys.dokument.rapportvyer_v10 import bygg_rapportvyer_v10
@@ -150,3 +158,13 @@ def bygg_presentation_v10(bygge:ResultatbyggeV10,*,analys:Analyspaket|None,
         literala=tuple(p for d in docs for a in d.avsnitt for p in bokstavliga_positioner(a)),
         renderade=renderade_vyer(vyer,profil),hanvisningar=hanvisningar_for(docs),
         atgardskalla=atgarder,fyndkalla=fynd,delar=listdelar(atgarder,fynd))
+
+
+def bygg_presentation_v10(bygge,*,analys,fynd,bedomning,profil,regelbas=None,presentationsversion=PRESENTATIONSVERSION):
+    from riskanalys.dokument.redaktionspresentation_v10 import VERSION,skapa
+    if presentationsversion not in (PRESENTATIONSVERSION,VERSION):
+        raise RiskanalysFel('Okänd V10-presentation. Välj ett känt format och granska alla tre delarna.')
+    p=_bygg_presentation_1(bygge,analys=analys,fynd=fynd,bedomning=bedomning,profil=profil)
+    if presentationsversion==PRESENTATIONSVERSION:return p
+    if regelbas is None:raise RiskanalysFel('Den redaktionella presentationen kräver sin frysta regelbas.')
+    return skapa(p,regelbas,analys,bedomning,profil)

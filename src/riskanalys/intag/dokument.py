@@ -79,8 +79,8 @@ def uppdatera_export(byramapp: Path, rb, tidigare: Path, *, rapportformat: str |
 
 def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path, *, rapportformat: str | None = None) -> Path:
     """Lokal analys eller utvärdering kan granskas och exporteras från befintlig AI-text."""
-    if rapportformat not in (None,'v8','v9','v10'):
-        raise RiskanalysFel('Välj rapportformat v8, v9 eller v10.')
+    if rapportformat not in (None,'v8','v9','v10','v10-redaktionell'):
+        raise RiskanalysFel('Välj rapportformat v8, v9, v10 eller v10-redaktionell.')
     historik = historikens_kontrollsumma(byramapp)
     if verifiera_manifest(tidigare.parent):
         raise RiskanalysFel('Det tidigare utkastet är ändrat. Skapa ett nytt utkast.')
@@ -97,6 +97,10 @@ def _uppdatera_export_last(byramapp: Path, rb, tidigare: Path, *, rapportformat:
     from riskanalys.granskning.korning import _kor_granskning_last, las_granskning
     sparat=las_granskning(gammal)[0].formatversion
     valt=rapportformat or {'D-ARB-tjanst-v8':'v8','D-ARB-resultat-v9':'v9','D-ARB-resultat-v10':'v10'}.get(sparat)
+    if rapportformat is None and sparat=='D-ARB-resultat-v10':
+        from riskanalys.dokument.presentationsval_v10 import las_version
+        from riskanalys.dokument.redaktionspresentation_v10 import VERSION
+        if las_version(gammal)==VERSION:valt='v10-redaktionell'
     if valt is None:
         raise RiskanalysFel('Det äldre utkastet kräver en uttrycklig ny V8-skrivning före formatbyte.')
     granskning = _kor_granskning_last(byramapp, rb, date.today(), bedomningsmapp=bedomningsmapp,

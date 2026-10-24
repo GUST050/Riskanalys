@@ -174,6 +174,10 @@ def oversikt(s,fel='',profil=None,qs=None):
         if las_manifest(s.utkast.parent).metadata.get('dokumentformat') in ('D-ARB-tjanst-v8','D-ARB-resultat-v9'):
             html+='<p>Du kan skapa resultatrapporten med kapitel 0–5 och två bilagor utan nya AI-anrop. Formatbytet kräver förnyad sakgranskning av alla tre delar. Originalutkastet bevaras.</p>'
             html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('rapportformat','v10')+'<button>Skapa resultatrapport med kapitel 0–5</button></form>'
+        if (las_manifest(s.utkast.parent).metadata.get('dokumentformat')=='D-ARB-resultat-v10' and
+            las_manifest(s.utkast.parent).metadata.get('presentationsversion')!='D-ARB-v10-presentation-2'):
+            html+='<p>Du kan byta till den redaktionella resultatrapporten med läsbar faktatext och detaljer i bilagorna. Originalet bevaras. Bytet kräver ny samlad sakgranskning av resultatrapporten och granskning av båda bilagorna.</p>'
+            html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+dold('rapportformat','v10-redaktionell')+'<button>Byt till redaktionell resultatrapport</button></form>'
         html+='<p>Efter ändringar i lokal analys eller utvärdering kan du granska och uppdatera Word från befintlig AI-text. Ändrade verksamhetsfakta kräver en ny skrivning.</p>'
         html+=f'<form method="post" action="{s.prefix}uppdaterautkast">'+dold('csrf',s.csrf)+dold('revision',profilrevision(p))+'<button>Uppdatera Word-utkast utan nya AI-anrop</button></form>'
     from riskanalys.drift.historik import las_historik

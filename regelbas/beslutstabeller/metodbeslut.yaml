@@ -98,7 +98,7 @@
     src/riskanalys/dokument/delskrivning.py: sha256:a00a5c0be579fa61c594f27aef46be47b5da8208ebe1caa49811ea3225fc02c6
     src/riskanalys/dokument/delvalidering.py: sha256:aaa33309b42c8a6c7dd838116a777197b401bdcff075aa08c923f71238342d92
     src/riskanalys/dokument/exponeringsmetadata_v6.py: sha256:b5621a3437945689770804b4fbd9d81bd05430be199baa953fc42b59807fb7e9
-    src/riskanalys/dokument/export.py: sha256:869f127ff8a1663caff0a819f810e0805f63bec1f99702f3f392169a03d28e87
+    src/riskanalys/dokument/export.py: sha256:540d06cc69c9f4f4a58fdd45e66f5567cfff7a18ba26147d608aacf8453c2930
     src/riskanalys/dokument/faktablad.py: sha256:2bc35a477a0de731ed4b389ca88aa2e36a6915a584ae4023e0bffdc93cf14d74
     src/riskanalys/dokument/faktorstatus_v10.py: sha256:f5431593136ce0a00274b5e71527f435c8b07a63e14c6c503814d332f136d23d
     src/riskanalys/dokument/foljder_v6.py: sha256:704ffb67a30a5a9b66455e513565c1e3a36333a47c7ef6fb4350c4171d2c1941
@@ -130,9 +130,10 @@
     src/riskanalys/dokument/omfattningsutkast.py: sha256:43fc723b4bde02f93e5c072cbcd5b06260611019b6d6edc05d581e30c18225f1
     src/riskanalys/dokument/operationskarta_v8.py: sha256:115895a61e2913e9f89817a28375d92407c633e03797807e8fdf9b87429edcb6
     src/riskanalys/dokument/platshallare.py: sha256:ba5e8c7887f59c1de75a57a3f8e1abede80c9f2e1a1cc96e232779d7a13cc452
-    src/riskanalys/dokument/presentation_v10.py: sha256:81c416841a0147138f3278a2a806edfa19d255b0fa43afa8ec6f3c0c61abe1c3
+    src/riskanalys/dokument/presentation_v10.py: sha256:19632a5a0ba351c3e6f5142f64656232e3f92082a4ab130965eb434492bd953d
     src/riskanalys/dokument/presentation_v8.py: sha256:585599d3e688662c93ee1e9a6acfb15eaa4225e6693397013f951642a7fb3f63
     src/riskanalys/dokument/presentation_v9.py: sha256:4a0ca894def4763e20351c6da5bdbae6c43d08f6b966360f0111866760b8ead5
+    src/riskanalys/dokument/presentationsval_v10.py: sha256:36ee220bb3d9b43cbbe7fe8d4f52083d7690276da358837693497e4dfdfb177f
     src/riskanalys/dokument/profiloriginal_v8.py: sha256:6c436079e5fbad4adc9dfe6ed25635e173030966a59e30356ee82e4f7c137028
     src/riskanalys/dokument/promptar/__init__.py: sha256:a497e57920c020f91b01587ed522aad9fd5803dda372572612a1a77f14597070
     src/riskanalys/dokument/promptar/delar.py: sha256:b7f32ff5d766507468def038771581fce15ae8929aac254637e9006c302ee83b
@@ -142,7 +143,7 @@
     src/riskanalys/dokument/radata_v8.py: sha256:b392f645ec351838badf692e87dda73fdbec2df32587ed501fcfda5d76ee7648
     src/riskanalys/dokument/rapportdelar_v10.py: sha256:92247615027d653a636c034eac19d35477156496542529cbf413a249b5a5b1e4
     src/riskanalys/dokument/rapportfakta_v10.py: sha256:9d21cdd2c81845aebf4360b9971a9b971b1de11972902ffcae8b74d199ceae4e
-    src/riskanalys/dokument/rapportpaket_v10.py: sha256:c00544bcc26d14a9846d9a93750530f0d1fc9a681b80117a1daa3914d3a7e30e
+    src/riskanalys/dokument/rapportpaket_v10.py: sha256:8dbf497f2912a8fc7530ab48a949231650d2e24b1b3dfd08cc2ae30035f08062
     src/riskanalys/dokument/rapportpaket_v8.py: sha256:d61b9692f21f1700b665e0457d7f0c8475b4a37d2eb852e79a3958f150c667b1
     src/riskanalys/dokument/rapportpaket_v9.py: sha256:770776767ec5c4ec1922d14ec08cf78a236645caca1469181bf7e413eefb456d
     src/riskanalys/dokument/rapportversion.py: sha256:e757a169267b9032d2f3dc0afc37cfe4dfd255c66fb998f6527c1e98c5345219
@@ -150,8 +151,11 @@
     src/riskanalys/dokument/rapportvyer_v10.py: sha256:57779af121330afe3b2fd8430bc026d1d4a2e8227b810f33671c945225ae2cbf
     src/riskanalys/dokument/rapportvyer_v9.py: sha256:788edfca15d128c3f64aacad22d394793d023b6d0ccf155aa1ade9e32d0a6f00
     src/riskanalys/dokument/redaktion_v7.py: sha256:6afbb383b387356bbec8035b87d57645ada9285e063d8a28e4477e6cb5b36f30
+    src/riskanalys/dokument/redaktionell_v10.py: sha256:18f377f0100c2daab169b1a2513d76dbac2185bd8ad4a717c7457143242c8060
+    src/riskanalys/dokument/redaktionmodell_v10.py: sha256:15970867131307817aadbf4c549dead7622ccfc7033e5069b9f5c7c011bd2f0d
+    src/riskanalys/dokument/redaktionspresentation_v10.py: sha256:88f2325ed6ef8e2a84e34aee844dc858513939db4f7e42b9a433448eff9a14d2
     src/riskanalys/dokument/rendering.py: sha256:7bc661ecf0d293f857ebb3b0752a571b84fe51e96025c1b6467f2af3499c06ec
-    src/riskanalys/dokument/rendering_v10.py: sha256:a39ee9194768cc211c71523a9fde706e7ed9d1d286517fee1503be2579145ee1
+    src/riskanalys/dokument/rendering_v10.py: sha256:bc75e3dbe229f7ad98e7fb3dfc166bfc472a0763ba938cda435275c09918273e
     src/riskanalys/dokument/rendering_v9.py: sha256:256145c77cadc0c8da3b80e3b075b15c50a1a9f17bd14ffc9129bfe65e76c1ea
     src/riskanalys/dokument/resultatmodell_v10.py: sha256:0053693856f2bc0bca614e02ce289bc554c09f9ab30a2435d7d5f230eccaf996
     src/riskanalys/dokument/resultatmodell_v9.py: sha256:5fd6002d866adbdd46c743b38f557e2bb7440c256d6964fec1b3b04325822bea
@@ -206,7 +210,7 @@
     src/riskanalys/granskning/dokument_v9.py: sha256:89ed285a99daca833f768793f1d5f8a81b90b8b9768350ec61a048fdc61adb34
     src/riskanalys/granskning/fyndgrupper.py: sha256:1785cc7713875fa89d2dcfc3a26184225501beda3195d7c3f046347199b47811
     src/riskanalys/granskning/kontroller.py: sha256:d34b7537742df1e6228a2bab494ac716d5319f399a777414be34ba051e462ea6
-    src/riskanalys/granskning/korning.py: sha256:dac22b974885e312ac047c518080b114542b5589c464ec0b088d9415287494e0
+    src/riskanalys/granskning/korning.py: sha256:ad623b16c5dd4b1cd7b60e9bf0ec50141f797dfbbee0ca30f593df1516ddf1b7
     src/riskanalys/granskning/lasta_v6.py: sha256:d36a8bbf804796fd8d7079f0d44f168d62bb3dcfe6cd80a12a49b7dead6cf384
     src/riskanalys/granskning/lasta_v8.py: sha256:001786ae5726aff4d398808d41c93425014e4d3cc0a22223fe944e9ebeb4a541
     src/riskanalys/granskning/modeller.py: sha256:c24d12c4763ec27a789258c1260425eb60f3b9090ab12c383d71965e78d79d08
@@ -215,7 +219,7 @@
     src/riskanalys/intag/analysformular.py: sha256:3c5a0e574e2f4bbd2469f48a76b052275f43606b3a6af4c4db832dbbc86e978e
     src/riskanalys/intag/analysvy.py: sha256:39bfc602a9efd8ea322a2abab42e37d8c7823e226dbd18ec86381ada4305a95f
     src/riskanalys/intag/bolagsverksvy.py: sha256:674d51b27d397a9c853f3f818747e31e179c4db96b09bcabdf5d700e95bab00e
-    src/riskanalys/intag/dokument.py: sha256:23ac0664287829d5025ec3cf6ed9ca8a51fe757b73eb9e3db872091a448779b6
+    src/riskanalys/intag/dokument.py: sha256:e4aeb22640984f5395a4bff9f5c556b793f77407348237c269032a788760760b
     src/riskanalys/intag/engangsvy.py: sha256:77cb38d202c05c160ac341e004e6dae3753824bdf9cf45418dd1b5dcaef898ef
     src/riskanalys/intag/flervalsvy.py: sha256:1b039991d2fee25e0f930edf6927005ec94dbd2d0eb247634b60467d7a9b925f
     src/riskanalys/intag/fordelning.py: sha256:e37a579041c90fba9e5e3ba5b87b117588a7a707ae28b0712c0b6cb959ef88bd
@@ -240,8 +244,8 @@
     src/riskanalys/intag/underlagsvy.py: sha256:40ad949e8a7f5175a4896fedfde147b51abdd2bd71306ea63273add8c0ede747
     src/riskanalys/intag/utvardering.py: sha256:3f3f44770384464b578e29adef6d457a9d2c5eae62fbfe822b8fd208f8d1c2e9
     src/riskanalys/intag/verksamhetsval.py: sha256:9cc6b5b5f96d6ffd917db5aafa7377083760a9b71217ca28223495fd13adebc0
-    src/riskanalys/intag/vyer.py: sha256:4d32a3264e1bf432d49392b08d5bc2e359d3d092399b01b51b7aaff6eac4f53f
-    src/riskanalys/intag/webb.py: sha256:ee7eb441dc3588f402bf022bbc3f106b0a095cdd17098df7cc8371f5696c4096
+    src/riskanalys/intag/vyer.py: sha256:eace98b75ccd70cd5c488cabb34a0b13b11ede575e92449cd7eb2b1aa697cbae
+    src/riskanalys/intag/webb.py: sha256:2acb16aac61f626cfc0d1fede24325125bb639427eb4804cd67478a2efbfb551
     src/riskanalys/kommandon/__init__.py: sha256:6a0cd8c808a6e44adcb775bfa663957618008db1ea8b4b0d5643338d2aaafb8a
     src/riskanalys/kommandon/analys_kommando.py: sha256:f33facef9ac32d62740f9b714d3f5dde411ca8bf04dc30987008096e0e7100c3
     src/riskanalys/kommandon/bedom_kommando.py: sha256:398c29ac3ef6004fd94d2ba0010078e16327ee06d1c16813b722c72fc5560ed9
@@ -250,7 +254,7 @@
     src/riskanalys/kommandon/exportera_kommando.py: sha256:2e1200144280e7cf430fece6840897f8082ea9c9f410747f3ed092d69d571d3b
     src/riskanalys/kommandon/faststall_kommando.py: sha256:ce85eb1dce2025f3430f6623b7b4575e512a4887196759c68174eabdd70d6a70
     src/riskanalys/kommandon/gemensam_analys.py: sha256:817f3dea65aef991333159a20303c0615ede25221ac4733c05d67672f3b51d21
-    src/riskanalys/kommandon/granska_kommando.py: sha256:d844fc193031e84a9dca298f78d9f6ba024f375282506e5cb63debca8545e51e
+    src/riskanalys/kommandon/granska_kommando.py: sha256:99b8bd511d2174af37f26e33cb079fcc4c41304c849113da40dbaa340a9cf34f
     src/riskanalys/kommandon/intag_kommando.py: sha256:42150424ca566db91f9959a606d1c31afc747bd7d589dc6d85cad0ef89801229
     src/riskanalys/kommandon/profil_kommando.py: sha256:5350efa535e56601f1e2c65ab6c0b80600b5223c32dd781be0ac58713a600085
     src/riskanalys/kommandon/regelbas_kommando.py: sha256:a44bf3bf94d2915245e4d614cb1f8eafaa30a9d0e5f0826333c4b94facee9931
@@ -283,6 +287,7 @@
     src/riskanalys/regelverk/intagskontrakt.py: sha256:724a9c294432283fb080e288f2697b7aa88586d23769972a0288dc7014f19d8d
     src/riskanalys/regelverk/inventering.py: sha256:a225f32423525f9020e5900a5fd294afb1745901230f85803e27cf6ff4016757
     src/riskanalys/regelverk/laddning.py: sha256:16101de1e7d698b0777bbb91059edc5ee87480548489be9d825f0617bb9dece3
+    src/riskanalys/regelverk/lasversion.py: sha256:f5aa7a4c24ed43d466cad23338c068dad2e9374f57ce58e8fd7367b12cfbb6a8
     src/riskanalys/regelverk/metodbeslut.py: sha256:10240d6f451cd791b39e680d078ab52ffbc2958d1f5110c378c32983b4f6f3f4
     src/riskanalys/regelverk/modeller.py: sha256:f967a3976bae4c59c5ee145c26e8e2d11e54d635d5c89a2d924fb1a284a875ec
     src/riskanalys/regelverk/sakkunnig.py: sha256:3479845c24f217cd09e02ba8b95390dc434ba603b457cab6196e57016632d9a4
