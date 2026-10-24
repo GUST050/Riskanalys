@@ -128,4 +128,4 @@ Importen validerar aktuell regelbas, paket/version/innehållssumma, rättsligt d
 
 ## 7. Teknisk status
 
-Den föregående versionens fullsvit gav 3 557 godkända. Den redaktionella versionens nya slutprov redovisas i fullpaketets `slutprov/` när slutkörningen är avslutad. En tidigare körning gäller inte ändrad kod. Paketets sakstatus är fortfarande `ej_granskad`. Ingen push eller merge ingår.
+Slutlig ordinarie fullsvit gav **3 594 godkända, 0 fel och 0 överhoppade**, med ett livetest bortvalt. Insamling och JUnit matchar, exitkod är 0 och samtliga 863 kod-, test-, regelbas-, profil- och verktygsresurser är oförändrade. Kodcommit är `43abc07`; körningen tog 3 973,446 sekunder. Den slutliga snabbprofilen gav 140 godkända med oförändrat snapshot. Riktade slutprov gav 51 godkända. Fullständigt protokoll, källsnapshot och tidsanalys finns i fullpaketets `slutprov/`. Paketets sakstatus är fortfarande `ej_granskad`. Ingen push eller merge ingår.

@@ -49,13 +49,13 @@
 **Files:** sex PDF:er och transformationslistor under `.superpowers/evidens/2026-10-24-redaktionell-offline/`, rapport i `docs/superpowers/reviews/`.
 
 - [x] Rendera faktiska PDF:er. Läs varje huvudsida, stickprova ändrade bilagesidor, mät sidantal och kontrollera synlig text.
-- [ ] Lämna förhandsvisningen för användarens PDF-klartecken. Produktkedja och expertpaket ändras inte före respektive kontrollpunkt.
+- [x] Lämna förhandsvisningen för användarens PDF-klartecken. Produktkedja och expertpaket ändras inte före respektive kontrollpunkt.
 
 ### Task 4: Efter PDF-klartecken
 
-- [ ] Redovisa och lös D-filbindningens konflikt med oförändrad regelbassumma genom ett uttryckligt godkänt upplägg innan produktkod ändras.
-- [ ] Integrera ny presentationsversion med uttryckligt formatbyte och förnyad samlad sakgranskning; bevara historiska verifieringsvägar.
-- [ ] Skapa läsversion per region med identiska gemensamma filer, redovisad storlek/antal och hänvisning till fullständigt underlag. Bygg ZIP en gång på slutet.
-- [ ] Samlad slutreview, riktade prov, snabbprofil och färsk fullsvit på exakt slutligt snapshot. Redovisa var fullsvitens tid ligger genom JUnit-data. Ingen push/merge.
+- [x] Redovisa och lös D-filbindningens konflikt med oförändrad regelbassumma genom ett uttryckligt godkänt upplägg innan produktkod ändras.
+- [x] Integrera ny presentationsversion med uttryckligt formatbyte och förnyad samlad sakgranskning; bevara historiska verifieringsvägar.
+- [x] Skapa läsversion per region med identiska gemensamma filer, redovisad storlek/antal och hänvisning till fullständigt underlag. Bygg ZIP en gång på slutet.
+- [x] Samlad slutreview, riktade prov, snabbprofil och färsk fullsvit på exakt slutligt snapshot. Redovisa var fullsvitens tid ligger genom JUnit-data. Ingen push/merge.
 
 Genomförandeval: befintlig ren featuregren återanvänds. Uppdragets uttryckliga beställning av offlineförhandsvisning är klartecken till detta avgränsade bygge; inga extra allmänna plan-/designgodkännanden införs före PDF-kontrollpunkten.

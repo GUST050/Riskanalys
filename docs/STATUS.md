@@ -1,3 +1,15 @@
+# Redaktionell V10 färdig – fullsvit verifierat grön
+
+Slutlig produktkod `43abc07`, efter produktkoppling `89864ec` och färsk samlad slutgranskning. **3 594 godkända, 0 fel och 0 överhoppade**, ett livetest bortvalt. Insamling och JUnit matchar, samtliga **863 snapshotresurser är oförändrade**. Fullsviten tog **3 973,446 s (66 min 13 s)**. Berörda slutprov: 51 godkända; snabbprofil: 140 godkända, verifierat oförändrat snapshot, 60,22 s.
+
+Ny presentationsversion `D-ARB-v10-presentation-2`, uttryckligt byte för äldre V10, förnyad samlad sakgranskning och fryst historisk verifiering. Regelbas **2.12.3** ändrar endast version och D-filkontrollsummor; sakobjekt, metodval, risknivåer och statusar är oförändrade. Alla D-poster binder 249 appfiler och förblir `ej_granskad`. Samma tolv fasta profiler och 40 kontraster ger identiska sakutfall.
+
+Faktiska PDF-sidor R/A/B1: **19/44/199** och **19/46/204**. Tiosidorsriktmärket är inte nått; samtliga original och 231 flyttdelar per fall är bevarade. Alla 38 slutliga huvudsidor är pixelidentiska med visuellt lästa sidor. Bilagorna är stickprovsgranskade visuellt.
+
+[Slutprov, tidsanalys, teknisk ombindning och genomförandebeslut](superpowers/reviews/2026-10-24-redaktionell-slutprov.md). [Slutliga paket och kontrollsummor](superpowers/reviews/2026-10-24-redaktionell-paketmatning.md): tre fullständiga expertpaket med 571 filer per region och tre läsversioner med 15 filer. De tolv gemensamma filerna är byteidentiska. ZIP-läsversioner cirka 3,3 MB vardera, gemensamt ZIP-fullpaket 203,7 MB. Alla arkiverade filbytes är verifierade. Leveransmapp: `../underlag/sakkunnigpaket-2.12.3-2026-10-24/`. Ingen push eller merge.
+
+## Föregående arbetsstatus
+
 # C–E och V10 färdiga – slutlig fullsvit grön
 
 Regelbas **2.12.2**, kodcommit `508f8c6`, fullkörningens commitstämpel `f25eb21`. **3 557 godkända, 0 fel, 0 överhoppade; ett livetest bortvalt.** Fullprofilen tog 3 129,232 s inklusive insamling; JUnit och insamling matchar och samtliga 851 snapshotresurser är oförändrade. Senaste snabbprofil: **140 godkända/67,213 s**, också oförändrat snapshot och matchande insamling/JUnit. Första fullsvitens 34 fel och deras rättningar är bevarade i [slutprovsunderlaget](superpowers/reviews/2026-10-23-regelbas-slutprov.md).
