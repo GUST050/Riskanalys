@@ -2,7 +2,7 @@
 
 Använd `.venv312/bin/python`, inte en miljö med Python 3.14. Alla automatiska prov använder syntetiska uppgifter och testleverantör; det ordinarie liveprovet är bortvalt.
 
-Låst miljö: `uv 0.13.5`, `.python-version` anger `3.12.15`, `requires-python` är avsiktligt `>=3.12,<3.13`. Kör `uv lock --check` och `UV_PROJECT_ENVIRONMENT=.venv312 uv sync --locked --extra dev`. En ren separat installation har provats lokalt; workflowfilen är förberedd för Ubuntu 24.04 men fjärrkörning kräver publicering och har inte påståtts utförd.
+Låst miljö: `uv 0.13.5`, `.python-version` anger `3.12.15`, `requires-python` är avsiktligt `>=3.12,<3.13`. Kör `uv lock --check` och `UV_PROJECT_ENVIRONMENT=.venv312 uv sync --locked --extra dev`. En ren separat installation har provats lokalt; workflowfilen är förberedd för Ubuntu 24.04 men fjärrkörning kräver publicering och har inte påståtts utförd. En pull request kör lås-, import-, regelbas-, kart- och snabbkontroll; fullsviten startas manuellt (`workflow_dispatch`) vid kontrollpunkterna i AGENTS regel 6. Alla actions är låsta till exakt commit-SHA.
 
 ```sh
 .venv312/bin/python scripts/testa.py snabb --ut /private/tmp/riskanalys-snabb-NYTT_ID

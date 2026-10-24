@@ -1,7 +1,13 @@
 name: Verifiera Riskanalys
+# Pull request: kort kontroll. Fullsviten körs manuellt vid kontrollpunkter enligt AGENTS regel 6.
 on:
   pull_request:
   workflow_dispatch:
+    inputs:
+      fullsvit:
+        description: Kör hela ordinarie icke-live-sviten
+        type: boolean
+        default: true
 permissions:
   contents: read
 env:
@@ -24,11 +30,13 @@ jobs:
       - run: .venv312/bin/python docs/research/verktyg/bygg_obsidiankarta.py
       - run: .venv312/bin/python docs/research/verktyg/bygg_obsidiankarta.py --check
       - run: .venv312/bin/python scripts/testa.py snabb --ut "$RUNNER_TEMP/snabb" --budget 300
-      - run: .venv312/bin/python scripts/testa.py full --ut "$RUNNER_TEMP/full"
-      - uses: actions/upload-artifact@v4
+      - if: github.event_name == 'workflow_dispatch' && inputs.fullsvit
+        run: .venv312/bin/python scripts/testa.py full --ut "$RUNNER_TEMP/full"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
           name: verifieringsbevis
+          if-no-files-found: ignore
           path: |
             ${{ runner.temp }}/snabb
             ${{ runner.temp }}/full
