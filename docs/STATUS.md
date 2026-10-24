@@ -1,3 +1,13 @@
+# Robusthetsplanen granskad och rättad, 2026-10-24
+
+Claude granskade [planen för robust programstruktur](superpowers/plans/2026-10-24-robust-programstruktur.md) mot koden och förde in rättelserna. **S4 utgår:** att flytta `faststallelse/resultatgranskning.py` in i `sakgranskning.py` skulle föra in tre V9-moduler i en fil som `faststall.py`, `grindar.py`, `granskning/dokument_v8.py` och `kommandon/sakgranska_kommando.py` importerar. Etappmålet blir **249 − 5 + 3 = 247** programfiler. S1–S3 och S5 är nu den fristående etappen S-små efter A0; S6 ligger kvar i A7.
+
+Varje S-rad måste ändra det delade ankaret `modellfiler` i `regelbas/beslutstabeller/metodbeslut.yaml`, eftersom metodbesluten binder alla programfiler. Modellidentiteten i `drift/modellidentitet.py` (26 filer) berörs inte av S-raderna. Saknade konsumenter är införda: för S4 `kommandon/sakgranska_kommando.py` och två typfallskedjor, för S6 `docs/research/verktyg/redaktionell_offline.py`. Planens egen git-regel om arbetsgren är ersatt med hänvisning till AGENTS. A0:s utförda punkter är kryssade med kandidatresultatet (snabb 39,4 s, analys 392,0 s, full 3 609/39 min 30 s). Ny A0-punkt: `8b3c914` ändrade modellbindningen eftersom `profil/omfattning.py` ingår i `MODELLFILER`; sparade bedömningar, analyspaket och modellvalideringar med tidigare identitet matchar inte längre och behöver köras om eller valideras på nytt.
+
+Endast plan, projektguide och denna post ändrades. Inga program-, regel- eller testfiler ändrades och ingen pytestkörning ingick.
+
+## Föregående arbetsstatus
+
 # Samlad dokumentation inför push, 2026-10-24
 
 De två kodcommittarna `11226d9` (YAML/historik) och `8b3c914` (aktiveringsprövning) bevaras som separata commits. Regel 6, Obsidiannavigering, testdokumentation och arkitektur-/filplan samlas därefter i en dokumentationscommit, enligt användarens publiceringsuppdrag. `Namnlös.canvas`, genererade filkort, lokal miljö och privata data ingår inte. Arkitekturomläggningen har inte påbörjats.

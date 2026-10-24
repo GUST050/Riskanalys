@@ -19,15 +19,15 @@ Detta är den samordnande planen för programstruktur, miljö och driftsäkerhet
 - Börja med pågående ändringar och verifieringsmiljön, därefter leverantörsval och gemensamma arbetsflöden. Större filflyttar kommer senare, endast med påvisad nytta.
 - Behåll filbaserad lagring tills mätning eller samtidighetskrav visar ett konkret behov av något annat. En databas, mikrotjänster, en meddelandebuss eller ett nytt webbframework ingår inte i den valda inriktningen.
 - Bevara API-beteende, felmeddelanden, källreferenser, originaltext, historiska paket och sakkunnigstatus. Refaktorering och ändrad riskmetod ska vara skilda uppgifter.
-- Förenkla även filstrukturen enligt §3.1–3.5: sex utpekade sammanslagningar, tre motiverade nya programfiler och uttryckligt bevarande av övriga filer. Nya lager/mappar skapas inte rutinmässigt. Filantal och faktisk ändringsspridning redovisas var för sig.
+- Förenkla även filstrukturen enligt §3.1–3.5: fem utpekade sammanslagningar (S4 utgår efter granskning), tre motiverade nya programfiler och uttryckligt bevarande av övriga filer. Nya lager/mappar skapas inte rutinmässigt. Filantal och faktisk ändringsspridning redovisas var för sig.
 - Varje steg får en namngiven genomförare när det startas. Samma delade modeller, lagring eller regelbas ska inte ändras samtidigt av flera aktörer i denna arbetskopia.
-- Commit, push, publicering och externa AI-anrop ingår inte i planuppdraget. Vid senare kodarbete på `main`: skapa arbetsgren före egna ändringar och bevara redan pågående arbete.
+- Commit, push, publicering och externa AI-anrop ingår inte i planuppdraget. Commit, push och grenval följer AGENTS: bara på användarens uttryckliga begäran, med bevarat pågående arbete. Planen inför inga egna git-regler.
 
 Källorna stöder principer och jämförelser, inte att en viss mappstruktur är universellt optimal. Värdet för Riskanalys ska avgöras med kriterierna i §3.
 
 ## 2. Nuläge som styr ordningen
 
-**Uppdatering inför publicering 2026-10-24:** YAML-/historikrättningen är committad i `11226d9` och aktiveringsprövningen i `8b3c914`. Fullsvitens sparade resultat är 3 609 godkända, ett bortvalt liveprov, inga fel eller överhoppningar. En ny kontroll inför push visar exakt match mellan collection/JUnit och samtliga 866 snapshotresurser i arbetskopian. Regelbasen validerar. A0:s krav på verifiering av dessa två kodändringar är därmed uppfyllt; F6/F7/F10 och själva arkitekturomläggningen återstår. Nedanstående tabell beskriver läget vid planens första inventering, före denna fullverifiering. Se [testguidens kandidatresultat](../../testning.md#kandidatkörning-efter-båda-rättningarna).
+**Uppdatering 2026-10-24 (granskning av planen):** A0:s utförda punkter är nu kryssade nedan. **Tidigare uppdatering samma dag:** YAML-/historikrättningen är committad i `11226d9` och aktiveringsprövningen i `8b3c914`. Fullsvitens sparade resultat är 3 609 godkända, ett bortvalt liveprov, inga fel eller överhoppningar. En ny kontroll inför push visar exakt match mellan collection/JUnit och samtliga 866 snapshotresurser i arbetskopian. Regelbasen validerar. A0:s krav på verifiering av dessa två kodändringar är därmed uppfyllt; F6/F7/F10 och själva arkitekturomläggningen återstår. Nedanstående tabell beskriver läget vid planens första inventering, före denna fullverifiering. Se [testguidens kandidatresultat](../../testning.md#kandidatkörning-efter-båda-rättningarna).
 
 Inventeringen omfattar arbetskopian på `main`, HEAD `8ca798d508b96931e48c05ce29f3a0a71b7518f0`, inklusive ocommittade ändringar. [Källhashar och importmetod](../reviews/2026-10-24-programarkitektur-underlag.json) hör till arkitekturgranskningens snapshot; kontrollera dem på nytt före kodarbete.
 
@@ -38,7 +38,7 @@ Inventeringen omfattar arbetskopian på `main`, HEAD `8ca798d508b96931e48c05ce29
 | Profilsparning har redan lås, revisionskontroll, temporär fil, `fsync` och atomiskt byte. Återställningsprov finns i tunn kedja och M2. | Granska täckning och flerstegsfel; inför inte en ny lagringsabstraktion enbart för strukturens skull. |
 | `.venv312` fungerar: Python 3.12.15; installerat pytest 9.1.1 och Pydantic 2.14.1. Ingen `uv.lock`, annan låsfil, `.python-version` eller `.github/workflows` finns lokalt. | Gör miljön reproducerbar. Frånvaro av lokal CI-konfiguration säger inget säkert om externa kontroller eller GitHub-inställningar. |
 | Pågående YAML-/historik-/analysoptimeringar ändrar delad kod och modellbindning. | Slutför deras riktade verifiering före nya strukturändringar. Fullsvit återstår enligt aktuell testguide före nästa berörda integrations-/leveranspunkt. |
-| Testguiden redovisar snabbprofil 140 prov/43,4 s och analys 303 prov/453,7 s efter delar av optimeringen. | Detta är sparade resultat, inte nya körningar här. Analysprofilen visar att 300-sekundersmålet inte är uppnått för alla normalvarv. |
+| Testguidens kandidatkörning efter båda optimeringarna: snabbprofil 140 prov/39,4 s, analys 303 prov/392,0 s, full 3 609 prov/39 min 30 s. | Sparade resultat, inte nya körningar här. Analysprofilen visar att 300-sekundersmålet inte är uppnått för alla normalvarv. |
 | V10 återanvänder V9/V8. Modellidentiteten innehåller explicita filsökvägar/importer. | Filflytt kan ändra identitet även när beteendet är samma. Äldre filnamn betyder inte oanvänd kod. |
 | Senast dokumenterade huvudrapporter har 19 sidor; mänsklig sakkunnigprövning återstår. | Teknisk struktur, läsbarhet och saklig prövning behöver var sin acceptans. |
 
@@ -77,7 +77,7 @@ Följ dessutom antal områden som ändras i tre representativa uppgifter (profil
 
 **Tillägg efter användarens önskemål om färre filer, 2026-10-24.** Alla kodvägar nedan är relativa till `src/riskanalys/`. Inventeringen omfattar exakt **249 `.py`-filer**, inklusive paketens `__init__.py`. Den fullständiga utgångslistan finns under `programfiler` i [inventeringsunderlaget](../reviews/2026-10-24-programarkitektur-underlag.json). Den har kontrollerats mot arbetskopian vid detta tillägg.
 
-**Fullständig beslutsregel:** behåll samtliga befintliga filer på sin nuvarande plats, utom de sex källfiler som uttryckligen ska sammanföras i §3.2. Lägg endast till de tre programfilerna i §3.3 inom denna strukturetapp. Därmed har varje befintlig programfil ett beslut; exemplen i tabellen är läsingångar, inte en lista över de enda filer som ska finnas.
+**Fullständig beslutsregel:** behåll samtliga befintliga filer på sin nuvarande plats, utom de fem källfiler som uttryckligen ska sammanföras i §3.2. Lägg endast till de tre programfilerna i §3.3 inom denna strukturetapp. Därmed har varje befintlig programfil ett beslut; exemplen i tabellen är läsingångar, inte en lista över de enda filer som ska finnas.
 
 | Katalog | Filer nu → mål | Filer och ansvar som ska finnas kvar |
 |---|---:|---|
@@ -86,7 +86,7 @@ Följ dessutom antal områden som ändras i tre representativa uppgifter (profil
 | `bedomning/`, inklusive `kundmodell/` | 14 → 14 | `motor.py`, `scenarier.py`, `korning.py`, `modeller.py`, `sektorsrisk.py` och samtliga övriga filer. Beräkning hålls skild från rapport-/granskningslogik. |
 | `dokument/`, inklusive `promptar/` | 100 → 98 | Skrivning, innehåll, presentation och leverans behåller befintliga ingångar enligt §3.4. `redaktionmodell_v10.py` och `wordstil_v10.py` införlivas enligt S5–S6. |
 | `drift/` | 5 → 5 | `__init__.py`, `historik.py`, `modellidentitet.py`, `modellrapport.py`, `modellrisk.py`. Identitet och belägg har egna ansvar. |
-| `faststallelse/` | 6 → 5 | `__init__.py`, `faststall.py`, `grindar.py`, `modeller.py`, `sakgranskning.py`; den senare får också samlad resultatgranskning. |
+| `faststallelse/` | 6 → 6 | `__init__.py`, `faststall.py`, `grindar.py`, `modeller.py`, `resultatgranskning.py`, `sakgranskning.py`. S4 utgår; se §3.2. |
 | `foretagsdata/` | 9 → 8 | `__init__.py`, `arsredovisning.py`, `bolagsverket.py`, `bolagsverket_svar.py`, `lagring.py`, `modeller.py`, `samlad.py`, `scb.py`. `Bokslut` flyttas till `modeller.py`. |
 | `granskning/` | 15 → 14 | `kontroller.py` får även `sektorsfynd`; `korning.py`, `modeller.py`, analys-/versionskontroller och övriga filer behålls. |
 | `intag/` | 31 → 30 | `webb.py`, `tjanst.py`, `fragor.py`, `svar.py`, `tackning.py`, `kvalitet.py`, formulär-/vyfiler och övriga filer behålls; `komplettering.py` införlivas i `fragor.py`. `dokument.py` behåller webbansvar efter A3. |
@@ -94,20 +94,20 @@ Följ dessutom antal områden som ändras i tre representativa uppgifter (profil
 | `lagring/` | 6 → 6 | `__init__.py`, `datamapp.py`, `kontrollsumma.py`, `korningar.py`, `manifest.py`, `yamlfil.py`. Dessa har skilda kontrakt trots att flera är små. |
 | `profil/` | 12 → 12 | `modeller.py`, `hantering.py`, `lagring.py`, `omfattning.py`, plan-/förändringsfiler och övriga filer behålls. Pågående optimeringar färdigställs före omstrukturering. |
 | `regelverk/` | 17 → 17 | `modeller.py`, `laddning.py`, `villkor.py`, `urval.py`, validerings-/granskningsfiler och övriga filer behålls. Ingen uppdelning av modeller enbart på grund av radantal. |
-| **Totalt** | **249 → 246** | **249 − 6 sammanförda källfiler + 3 nya programfiler.** |
+| **Totalt** | **249 → 247** | **249 − 5 sammanförda källfiler + 3 nya programfiler.** |
 
-**246 är ett villkorat etappmål, inte en prognos om alla framtida funktioner.** Det gäller när samtliga sex sammanslagningar har passerat kontrollerna och gamla importvägar kan tas bort. Om tre nya filer införs innan några gamla kan tas bort blir det tillfälligt 252. Behövs en kompatibilitetsfil ska den räknas med och behovet redovisas; en tunn wrapper är inte en borttagen fil. Testfiler, låsfil, CI och dokumentation ingår inte i dessa programfilstal.
+**247 är ett villkorat etappmål, inte en prognos om alla framtida funktioner.** Det gäller när samtliga fem sammanslagningar har passerat kontrollerna och gamla importvägar kan tas bort. Om tre nya filer införs innan några gamla kan tas bort blir det tillfälligt 252. Behövs en kompatibilitetsfil ska den räknas med och behovet redovisas; en tunn wrapper är inte en borttagen fil. Testfiler, låsfil, CI och dokumentation ingår inte i dessa programfilstal.
 
-### 3.2 Sex sammanslagningar med tydlig mottagare
+### 3.2 Fem sammanslagningar med tydlig mottagare
 
-Detta är föreslagna kodändringar för A7, inte instruktion att radera filer nu. Varje rad är en separat granskningsbar ändring. Radantalen är dagens fysiska rader; summan före importstädning visar omfattningen, inte ett krav på slutlig längd.
+Detta är föreslagna kodändringar, inte instruktion att radera filer nu. S1–S3 och S5 genomförs i den fristående etappen **S-små** (§4), S6 i A7. Varje rad är en separat granskningsbar ändring. Radantalen är dagens fysiska rader; summan före importstädning visar omfattningen, inte ett krav på slutlig längd.
 
 | ID | Källfil → fil som ska finnas kvar | Vad flyttas och varför | Storlek före städning |
 |---|---|---|---:|
 | S1 | `foretagsdata/bokslut.py` → `foretagsdata/modeller.py` | `Bokslut` hör till registerbildens typade data; `Bolagsverksbild` använder redan typen. Behåll klassnamn, validering, Decimal-/periodhantering och serialisering. | 16 + 110 = 126 |
 | S2 | `intag/komplettering.py` → `intag/fragor.py` | `fragefalt(rb, id) -> tuple[str, ...]` kopplar kompletteringsbehov till grundfrågor. Samla frågegenerering och frågekoppling; ändra importen i `intag/vyer.py`. | 17 + 44 = 61 |
 | S3 | `granskning/sektorsrisk.py` → `granskning/kontroller.py` | `sektorsfynd` skapar B-13-fynd och används redan av granskningskontrollerna. Den deterministiska beräkningen i `bedomning/sektorsrisk.py` behålls separat. | 11 + 245 = 256 |
-| S4 | `faststallelse/resultatgranskning.py` → `faststallelse/sakgranskning.py` | `registrera_resultatgranskning` använder redan privata sakgranskningsfunktioner. Samla de båda registreringsvägarna; bevara skilda villkor för samlad R-granskning och enskild A/B1-granskning. | 25 + 176 = 201 |
+| ~~S4~~ | **Utgår i denna etapp.** `faststallelse/resultatgranskning.py` behålls. | Källfilen importerar `resultatmodell_v9`, `rendering_v9` och `rapportvyer_v9`. Flyttade till `sakgranskning.py` skulle dessa V9-beroenden laddas av alla dess konsumenter: `faststall.py`, `grindar.py`, `granskning/dokument_v8.py` och `kommandon/sakgranska_kommando.py`. Det ökar kopplingen, vilket §3.5 inte räknar som förbättring. Kan föreslås på nytt med funktionslokala importer och redovisad importgraf före/efter. | 25 + 176 = 201 |
 | S5 | `dokument/redaktionmodell_v10.py` → `dokument/resultatmodell_v10.py` | Samla V10:s konstruktions- och källmodeller. Flytta `RedaktionV10` utan schema-/fältändring; behåll den som separat klass tillsammans med `KonstruktionV10` och `ResultatbyggeV10`. Ingen flytt av omformningsalgoritmen. | 15 + 21 = 36 |
 | S6 | `dokument/wordstil_v10.py` → `dokument/wordstil.py` | Samla Word-stilfunktionerna. Behåll `anpassa_tabeller` som separat funktion, anropad på samma ställe enbart för avsedd V10-presentation. Ändra inte standardstilen för äldre versioner. | 37 + 84 = 121 |
 
@@ -118,16 +118,18 @@ Detta är föreslagna kodändringar för A7, inte instruktion att radera filer n
 | S1 | Samma `Bokslut`-validering och serialiserade registerbild för schema 1–4. Uppdatera importen även i årsredovisningsläsaren; privata original ska fortsatt bara refereras. | `foretagsdata/test_arsredovisning.py`, `foretagsdata/test_register_bolagsverket.py`, `intag/test_bolagsverket_intag.py`. |
 | S2 | Alias, andelsfält och basfält leder till rätt grundfrågor i samma ordning; ingen dubblett eller rekursionsloop. Befintligt webbprov kontrollerar länkar för kontantantal och antal aktiva. | `intag/test_fragor.py`, `intag/test_webb.py`; lägg saknade direkta fall i `test_fragor.py`. |
 | S3 | B-13 behåller katalogens grund och skiljer saknad lokal motivering från bedömning av motiveringens kvalitet. Flytten får inte flytta riskbeslut till granskningen. | `regelkontrakt/test_sektorsrisk.py`, `intag/test_fragor.py`. |
-| S4 | Exakt alla R-avsnitt attesteras tillsammans; ändrad analys/struktursumma ger inga nya attester. A/B1 kan fortsatt granskas separat. Äldre attester serialiseras oförändrat. | `enhet/test_resultatgranskning_v9.py`, `enhet/test_resultatgranskning_v10.py` samt berörd typfallskedja vid kontrollpunkt. |
+| ~~S4~~ | Gäller bara om S4 föreslås på nytt: exakt alla R-avsnitt attesteras tillsammans; ändrad analys/struktursumma ger inga nya attester; A/B1 kan fortsatt granskas separat; äldre attester serialiseras oförändrat. Direkta konsumenter att uppdatera: `kommandon/sakgranska_kommando.py:92`, `typfall/test_resultatrapport_hela_kedjan.py:25`, `typfall/test_gemensam_analys_hela_kedjan.py:45` och de två resultatgranskningsproven. | `enhet/test_resultatgranskning_v9.py`, `enhet/test_resultatgranskning_v10.py`, `typfall/test_resultatrapport_hela_kedjan.py`, `typfall/test_gemensam_analys_hela_kedjan.py`. |
 | S5 | Samma V10-flyttregister, frysta källor, JSON/schema och identiska original; nya typimporter får inte skapa cirkulär initiering. Uppdatera `presentation_v10.py` och `redaktionspresentation_v10.py`. | `enhet/test_redaktionell_offline.py`, `enhet/test_redaktionell_produkt.py`, `enhet/test_presentation_v10.py`. |
-| S6 | Samma Word-XML, text, marginaler och kolumnbredder för berörda syntetiska fall; oförändrad V8/V9-rendering. Jämför ZIP-innehåll med hantering av dokumentets befintliga tidsmetadata, inte godtycklig tolerans i saktext. | `enhet/test_rendering_v8.py`, `enhet/test_rendering_v9.py`, `enhet/test_redaktionell_produkt.py`; visuell kontroll om renderat utfall avviker. |
+| S6 | Samma Word-XML, text, marginaler och kolumnbredder för berörda syntetiska fall; oförändrad V8/V9-rendering. Jämför ZIP-innehåll med hantering av dokumentets befintliga tidsmetadata, inte godtycklig tolerans i saktext. Direkta konsumenter: `dokument/rendering_v10.py:94` och verktyget `docs/research/verktyg/redaktionell_offline.py:14`, som `enhet/test_redaktionell_offline.py` kör. | `enhet/test_rendering_v8.py`, `enhet/test_rendering_v9.py`, `enhet/test_redaktionell_produkt.py`, `enhet/test_redaktionell_offline.py`; visuell kontroll om renderat utfall avviker. |
 
 **Arbetsgång per S-rad:**
 
 - [ ] Läs källfil, mottagare och alla konsumenter i aktuell arbetskopia. Kontrollera även strängbaserade importvägar, testpatchar, serialiserade typnamn och modellförteckning. Kör det riktade basurvalet före flytten; komplettera saknade beteendefall.
 - [ ] Flytta funktion/klass med samma kontrakt och uppdatera konsumenter. Behåll nödvändiga lokala importer om en top-level-import skulle ge en initieringscykel. Inför inga nya generella hjälplager.
 - [ ] Kör samma prov efter flytt, berörda konsumentprov, snabbprofil och aktuella importkontrakt. Jämför serialisering/historiska artefakter där tabellen kräver det. Fullsvit följer AGENTS för modell-/attest-/formatpåverkan och större färdigt paket.
-- [ ] Ta bort källfilen först när ingen stödd konsument behöver den gamla importvägen. Bevara frysta pakets egna filer. Redovisa och hantera ny modellidentitet; höj ingen sakkunnigstatus.
+- [ ] Ta bort källfilen först när ingen stödd konsument behöver den gamla importvägen. Bevara frysta pakets egna filer. Höj ingen sakkunnigstatus.
+- [ ] Uppdatera metodbeslutens fillista. `regelverk/metodbeslut.py::obligatoriska_filer` binder **alla** `.py`-filer under `src/riskanalys/` via det delade ankaret `modellfiler` i `regelbas/beslutstabeller/metodbeslut.yaml`. Stryk källfilens rad och bind om kontrollsumman för mottagaren och varje ändrad konsument, med samma metod som i `11226d9`/`8b3c914`. Annars faller regelbasvalidering och kedjeprov med "modellfil … saknas eller har ändrats". Kontrollera med `riskanalys regelbas validera` och `beslutsfel` att inga fel återstår.
+- [ ] Skilj detta från modellidentiteten i `drift/modellidentitet.py` (`MODELLFILER`, 26 filer för riskberäkningen). Ingen av S1–S6:s käll- eller mottagarfiler ingår där vid planeringen; kontrollera på nytt före flytt. Den frysta fixturen `redaktionell_v10_d8a91a1.json.gz` innehåller historiska filhashar som inte jämförs mot aktuell kod och ska inte skrivas om.
 - [ ] Uppdatera områdesguide, karta och denna tabells utfall: faktiskt antal borttagna filer, nya beroenden och eventuella kompatibilitetsfiler. Om sammanslagningen ökar koppling eller försämrar begriplighet ska den utgå med motivering och filprognosen justeras.
 
 Riktade prov körs som `.venv312/bin/python -m pytest <tabellens filer med prefix tester/> -q`, därefter relevant snabb-/samlad kontroll enligt §5. Till exempel för S3: `.venv312/bin/python -m pytest tester/regelkontrakt/test_sektorsrisk.py tester/intag/test_fragor.py -q`. Förväntat: samma beteende före/efter, inga förlorade provpåståenden och inga nya otillåtna importvägar.
@@ -160,13 +162,13 @@ Nästa etapp behåller katalogen `dokument/`. AI-skrivning, rapportinnehåll och
 
 För varje genomförd ändring redovisas (1) faktiska programfiler och wrappers, (2) berörda filer/moduler för samma representativa användningsfall, (3) nya eller borttagna beroenden och (4) bevarade beteendeprov. En sammanslagning som bara gör en större fil men ökar kopplingen ska inte räknas som förbättring.
 
-Sex sammanslagningar och tre nya gränsfiler ger bara **tre färre programfiler netto**. Det är en försiktig, konkret första etapp. Större minskningar behöver separat belägg för duplicerad eller oanvänd funktionalitet; inget mål att halvera filantalet är underbyggt. Testfiler och frysta fixturer slås inte ihop eller raderas bara för att programfilerna ändrar namn.
+Fem sammanslagningar och tre nya gränsfiler ger bara **två färre programfiler netto**. Det är en försiktig, konkret första etapp. Större minskningar behöver separat belägg för duplicerad eller oanvänd funktionalitet; inget mål att halvera filantalet är underbyggt. Testfiler och frysta fixturer slås inte ihop eller raderas bara för att programfilerna ändrar namn.
 
-Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att samla sammanhängande ansvar, ha tydliga modulgränser och undvika onödig generalisering [K2, K10, K13]; ingen extern källa föreskriver dessa filnamn eller antalet 246.
+Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att samla sammanhängande ansvar, ha tydliga modulgränser och undvika onödig generalisering [K2, K10, K13]; ingen extern källa föreskriver dessa filnamn eller antalet 247.
 
 ## 4. Genomförandeordning
 
-**Huvudordning:** A0 → A1 → A2 → A3 → A4. A5 växer med varje färdig gräns. A6 startar med inventering efter A1 och ska vara klar före verklig leverans; den behöver inte vänta på A4. A7 kräver stabila kontrakt från A3–A5. A8 samlar teknisk och mänsklig leveranskontroll. Detta är en beroendeordning, ingen tidsuppskattning utan mätunderlag.
+**Huvudordning:** A0 → A1 → A2 → A3 → A4. A5 växer med varje färdig gräns. Etappen **S-små** (S1, S2, S3, S5) beror inte på A3–A5 och kan göras när som helst efter A0, en rad i taget, men inte samtidigt som ett annat steg ändrar samma filer. A6 startar med inventering efter A1 och ska vara klar före verklig leverans; den behöver inte vänta på A4. A7 kräver stabila kontrakt från A3–A5. A8 samlar teknisk och mänsklig leveranskontroll. Detta är en beroendeordning, ingen tidsuppskattning utan mätunderlag.
 
 ### A0. Stäng pågående ändringspaket och frys baslinjen
 
@@ -175,13 +177,24 @@ Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att
 **In → ut:** dagens ändrade kod och sparade prov → identifierad kandidat, verifieringsutfall och kontrollerad prestandabaslinje.
 
 - [ ] Inventera samtliga ändringar och vem/vilken uppgift de hör till. Bevara andra aktörers arbete och befintliga bevis. Spara filhashar och Python-/paketversioner; HEAD ensam beskriver inte en smutsig arbetskopia.
-- [ ] Slutför F8 i befintlig testtidsplan. Prova YAML-inläsningens semantik, profilhistorik och analysens aktivitetsprövning. Kontrollera att ändrade kontrollsummor motsvarar verkliga kodändringar och att status inte höjts till sakkunnigverifierad.
-- [ ] Kör relevanta regressioner och konsumentprov samt snabbprofil. Kör den aktuella analysprofilen och redovisa om den fortfarande överstiger 300 s.
+- [x] Slutför F8 i befintlig testtidsplan (2026-10-24, `11226d9` och `8b3c914`; se testguiden). Prova YAML-inläsningens semantik, profilhistorik och analysens aktivitetsprövning. Kontrollera att ändrade kontrollsummor motsvarar verkliga kodändringar och att status inte höjts till sakkunnigverifierad.
+- [x] Kör relevanta regressioner och konsumentprov samt snabbprofil. Kör den aktuella analysprofilen och redovisa om den fortfarande överstiger 300 s. Utfall 2026-10-24: snabb 140/39,4 s, analys 303/392,0 s, alltså över 300 s.
+- [ ] Redovisa följden för sparade data: `profil/omfattning.py` ingår i `MODELLFILER`, så `8b3c914` ändrade modellbindningen. Bedömningsmanifest, analyspaketens `bindning.modell` och modellvalideringsrapporter som skapats med tidigare identitet matchar inte längre den aktuella (`dokument/analysstatus.py:50`, `drift/modellrapport.py:48`). Beskriv för byrån vilka underlag som behöver köras om eller valideras på nytt; det är avsett skydd, inte ett fel.
 - [ ] Följ F6 → F7 → F10 efter profileringen. Inför explicita områdesprofiler före en automatisk diffväljare. Knyt varje flyttat testpåstående till nytt prov; optimera delad uppbyggnad utan att dela muterbar testdata.
 - [ ] Mät före/efter i separata, jämförbara kopior med samma miljö och belastning. Spara samtliga upprepningar; de tidigare 255/59,9-sekunderskörningarna är inte en kontrollerad effektmätning.
-- [ ] Vid nästa samlade kontrollpunkt: fullprofil på exakt kandidat, insamling/JUnit/snapshot jämförda och regelbas validerad. Markera fel, överhoppade eller ej körda prov uttryckligen.
+- [x] Vid nästa samlade kontrollpunkt (2026-10-24: 3 609 godkända, 39 min 30 s, 866 resurser oförändrade): fullprofil på exakt kandidat, insamling/JUnit/snapshot jämförda och regelbas validerad. Markera fel, överhoppade eller ej körda prov uttryckligen.
 
 **Kontroll:** befintliga `test_yamllasning.py`, `test_aktivitetsprov.py`, `test_inforandeval.py`, profil-/analyslagring och berörda webbprov väljs efter diff. Använd `scripts/testa.py snabb`, `analys` respektive `full` enligt §5. **Klart:** inga oidentifierade ändringar blandas in i nästa steg; aktuell verifieringsstatus är redovisad. A1 får förberedas separat men inte tillskrivas A0:s resultat.
+
+### S-små. Fyra små sammanslagningar utan beroende på A3–A5
+
+**Filer:** S1, S2, S3 och S5 i §3.2, med respektive konsumenter och prov. **Ordning:** S1 → S2 → S3 → S5, en rad per ändring och commit. **Förutsättning:** A0 klar; inget annat steg ändrar samma filer samtidigt. S2 rör `intag/fragor.py` och S3 `granskning/kontroller.py`; samordna med A2–A4 om de är igång.
+
+- [ ] Följ arbetsgången per S-rad i §3.2, inklusive metodbeslutens fillista.
+- [ ] Kör radens riktade prov och snabbprofil. Ändrad regelbasfil räknas som delad kritisk logik enligt AGENTS; samla fullsviten till en kontrollpunkt efter de fyra raderna.
+- [ ] Redovisa faktiskt filantal (målet för etappen är 249 → 245 före A2–A4:s nya filer) och eventuella kvarvarande kompatibilitetsfiler.
+
+**Klart:** fyra källfiler borttagna, oförändrat beteende, inga fel i `beslutsfel`. **Återgång:** varje rad är en egen commit som kan återtas utan datamigrering.
 
 ### A1. Lås miljön och gör verifieringen upprepningsbar
 
@@ -272,18 +285,18 @@ Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att
 
 ### A7. Dela dokumentansvaret när gränserna är bevisade
 
-**Startfiler under `src/riskanalys/`:** `dokument/skrivning.py`, `dokument/leverantor.py`, `dokument/resultatrapport_v10.py`, `dokument/rendering_v10.py`, `dokument/export.py`, `lagring/manifest.py`, `faststallelse/faststall.py`, `drift/modellidentitet.py`. Exakt första sammanslagningslista är S1–S6 i §3.2; hela `dokument/` flyttas inte. Genomför S1–S3 före de känsligare S4–S6. De förra gäller andra områden men följer samma småskaliga förenklingsarbete.
+**Startfiler under `src/riskanalys/`:** `dokument/skrivning.py`, `dokument/leverantor.py`, `dokument/resultatrapport_v10.py`, `dokument/rendering_v10.py`, `dokument/export.py`, `lagring/manifest.py`, `faststallelse/faststall.py`, `drift/modellidentitet.py`. Den enda sammanslagningen i A7 är S6 i §3.2; S1–S3 och S5 genomförs i S-små och S4 utgår. Hela `dokument/` flyttas inte.
 
 **Avsedda kontrakt:** tillåtna faktaunderlag → sparat validerat skrivsvar; frysta sakdata/skrivsvar → kanoniskt `Dokument`; dokument → versionerad presentation; godkänd presentation → tre leveransdelar. Filintegritet och rapportens semantiska verifiering har olika ansvar men ska båda ingå i full paketverifiering.
 
 - [ ] Dokumentera varje gräns i befintliga AI-/rapport-/leveransguider och huvudspec. Första leveransen kan bestå av publika gränssnitt i befintliga paket; fysisk flytt kräver egen nyttobedömning.
-- [ ] Genomför och verifiera S1–S6 var för sig enligt §3.2. Behåll äldre importväg om stödda konsumenter behöver den och räkna kvarvarande filer ärligt. V8/V9 som V10 använder får inte tas bort som ”legacy”. Följ bevarandelistan i §3.4.
+- [ ] Genomför och verifiera S6 enligt §3.2. Behåll äldre importväg om stödda konsumenter behöver den och räkna kvarvarande filer ärligt. V8/V9 som V10 använder får inte tas bort som ”legacy”. Följ bevarandelistan i §3.4.
 - [ ] Om manifestansvaret delas: bevara `verifiera_manifest` som fullständig kontroll eller uppdatera alla konsumenter med likvärdig kontroll. Ett generiskt checksummeprov får inte ersätta semantisk V10-kontroll vid fastställelse.
 - [ ] Bevara `_SLUTRENDERING`-skyddet och dess avsedda åtkomst. Ändra inte spärren för att förenkla importgrafen.
 - [ ] Kartlägg ändring i modellidentitet före flytt. Visa identitet före/efter och hantera nytillkommen identitet som sådan; frysta expertpaket och äldre attester får inte skrivas om eller automatiskt gälla nya filer.
 - [ ] Jämför kanona innehåll, källor, flyttregister, historiska bytes och samtliga tre leveransdelar. Håll innehålls-/layoutändringar utanför ren refaktorering. Kör format-, modellrisk-, fastställelse- och relevanta fullkedjeprov.
 
-**Klart:** varje genomförd sammanslagning har tydligare ansvar och verifierat likvärdigt beteende. Redovisa faktiskt filantal mot det villkorade målet 246 och motivera avvikelser. Upprepa bara om nästa flytt ger konkret minskad ändringsspridning; 100 flyttade filer är inget mål.
+**Klart:** varje genomförd sammanslagning har tydligare ansvar och verifierat likvärdigt beteende. Redovisa faktiskt filantal mot det villkorade målet 247 och motivera avvikelser. Upprepa bara om nästa flytt ger konkret minskad ändringsspridning; 100 flyttade filer är inget mål.
 
 ### A8. Samlad leverans och återkommande arbetssätt
 
@@ -347,9 +360,9 @@ Primärkällorna nedan är kontrollerade i researchen 2026-10-24. Context7 har a
 
 - Nulägesbelägg, föreslagen arkitektur och framtida acceptans är åtskilda. Ingen tidsvinst eller produktberedskap är fastställd genom denna dokumentleverans.
 - A0 samordnar befintliga F-uppgifter utan att kopiera deras implementation. A8 hänvisar till befintligt redaktionellt arbete och sakkunnigguide.
-- Alla fem regressionsrisker ovan har ett ansvarigt steg och konkret kontroll. A4:s exakta ändringstyp kräver fortsatt förberedelse. A7 har nu sex konkreta sammanslagningar med mottagare och prov; kompatibilitet och modellidentitet måste kontrolleras före borttagning.
+- Alla fem regressionsrisker ovan har ett ansvarigt steg och konkret kontroll. A4:s exakta ändringstyp kräver fortsatt förberedelse. Fem konkreta sammanslagningar har mottagare och prov: S1–S3 och S5 i S-små, S6 i A7; S4 utgår. Metodbeslutens fillista och kompatibilitet måste hanteras före borttagning.
 - Återgång för refaktorering betyder kodåtergång med bevarade data. Om ny modellidentitet eller nytt format skapats måste även kompatibilitet/attester hanteras uttryckligt; gamla paket skrivs inte tillbaka.
 
-**Nästa arbetsuppgift:** A0 — verifiera och avsluta de pågående prestanda-/lagringsändringarna och redovisa aktuell kandidat. Därefter A1. Första avgränsade arkitekturändringen är A2, gemensamt typat leverantörsval.
+**Nästa arbetsuppgift:** A0:s kvarvarande punkter (inventering, modellbindningens följd för sparade data, F6 → F7 → F10). Därefter A1. S-små kan göras när A0 är klar. Första avgränsade arkitekturändringen är A2, gemensamt typat leverantörsval.
 
 **Kontroll av dokumentleveransen:** egna dokumentändringar är genomlästa mot de aktuella ingångarna, befintliga återställningsproven och testpolicyn. Lokala länkmål kontrolleras, kartan byggs och aktualitetskontrolleras, `git diff --check` körs och 838 program-/regel-/test-/skript-/pyproject-filer jämförs med snapshot före dokumentskrivningen. Utfall förs i statusjournalen. Inga produktändringar, installationer, pytestkörningar, commits eller pushar ingår.

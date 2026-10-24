@@ -41,7 +41,7 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 [Plan för robust programstruktur](../superpowers/plans/2026-10-24-robust-programstruktur.md) samordnar nästa steg: aktuell verifieringsbaslinje, reproducerbar miljö, tydliga modulkontrakt och återställning. Den är ett införandeförslag; kodens nuvarande ansvar beskrivs fortsatt i områdesguiderna.
 
-Planens §3.1–3.5 anger konkret vilka programfiler som behålls, sex föreslagna sammanslagningar och tre nya filer. Målbilden är villkorat 249 → 246 programfiler efter kompatibilitetskontroll. Den beskriver framtida struktur; filkort och övriga områdesguider visar fortsatt dagens kod.
+Planens §3.1–3.5 anger konkret vilka programfiler som behålls, fem föreslagna sammanslagningar (S4 utgick efter granskning) och tre nya filer. Målbilden är villkorat 249 → 247 programfiler efter kompatibilitetskontroll. S1–S3 och S5 är en fristående etapp; varje borttagen fil kräver ändrad fillista i `metodbeslut.yaml`. Den beskriver framtida struktur; filkort och övriga områdesguider visar fortsatt dagens kod.
 
 - [[docs/omraden/Tester.md|Tester]] när testkommandon eller evidenskrav dokumenteras.
 - [[docs/omraden/CLI.md|CLI]] när lokala verktyg/startinstruktioner ändras.
