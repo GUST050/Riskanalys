@@ -130,8 +130,9 @@ def bygg_underlag(
 , *, gransindex: dict[str, tuple[float, ...]] | None = None, formatversion: str = V6) -> Avsnittsunderlag:
     if gransindex is None:
         gransindex = metodgransindex(regelbas)
-    from riskanalys.profil.omfattning import kompatibilitetsvy, aktivt
+    from riskanalys.profil.omfattning import kompatibilitetsvy, aktivitetsprov
     profil = kompatibilitetsvy(profil, regelbas)
+    aktiv = aktivitetsprov(profil, regelbas)
     lista = regelbas.tillatelselistor[AVSNITTSTYP]
     _kontrollera_lista(regelbas, lista.falt)
     tjanst = regelbas.tjanster[tjanstbedomning.tjanst]
@@ -163,7 +164,7 @@ def bygg_underlag(
                 *((tjanstbedomning.sanktionsrisk.kontroll,) if tjanstbedomning.sanktionsrisk and tjanstbedomning.sanktionsrisk.kontroll else ()))
         ),
         uppgifter=tuple(_verksamhetsuppgift(regelbas, profil, falt_id, gransindex=gransindex)
-            for falt_id in tillatna if aktivt(regelbas.falt[falt_id], profil, regelbas)
+            for falt_id in tillatna if aktiv(regelbas.falt[falt_id])
             and (formatversion not in (V7, V8) or _galler_tjansten(regelbas, profil, falt_id, tjanst.id))),
         regelspar=tjanstbedomning.regelspar + (tjanstbedomning.sanktionsrisk.regelspar if tjanstbedomning.sanktionsrisk else ()),
         undvik=tuple(UnderlagBrist(id=brist_id, namn=regelbas.bristmonster[brist_id].namn) for brist_id in lista.undvik),

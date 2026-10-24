@@ -1,6 +1,7 @@
 """Spårbara andelar härleds ur bekräftade antal/belopp med samma period."""
 
 import math
+from collections.abc import Callable
 
 from riskanalys.profil.modeller import Profil, Uppgift
 from riskanalys.regelverk.modeller import Falt, Regelbas
@@ -12,8 +13,23 @@ def aktivt(falt: Falt, profil: Profil, regelbas: Regelbas) -> bool:
     """Okänd aktivering kräver uppgifter; bara uttryckligen falskt är inaktivt."""
     if falt.kritisk_om is None:
         return True
-    utfall = utvardera(tolka_villkor(falt.kritisk_om, regelbas.faltdefinitioner()), profil.faltvarden())
-    return utfall.sanning is not Sanning.FALSKT
+    return aktivitetsprov(profil, regelbas)(falt)
+
+
+def aktivitetsprov(profil: Profil, regelbas: Regelbas) -> Callable[[Falt], bool]:
+    """Samma prövning som `aktivt` för en oförändrad profilvy; skapa en ny per operation.
+
+    Definitioner och fältvärden byggs en gång i stället för vid varje villkorsstyrt fält.
+    Vyn avgör svaret: skicka samma profil eller kompatibilitetsvy som prövningen avser.
+    """
+    definitioner = regelbas.faltdefinitioner()
+    varden = profil.faltvarden()
+
+    def prova(falt: Falt) -> bool:
+        if falt.kritisk_om is None:
+            return True
+        return utvardera(tolka_villkor(falt.kritisk_om, definitioner), varden).sanning is not Sanning.FALSKT
+    return prova
 
 
 def _par(falt: Falt, profil: Profil) -> tuple[Uppgift, Uppgift] | None:
@@ -36,11 +52,12 @@ def _par(falt: Falt, profil: Profil) -> tuple[Uppgift, Uppgift] | None:
 def harled_andelar(profil: Profil, regelbas: Regelbas, andrade_falt: frozenset[str] = frozenset()) -> Profil:
     """Härled från giltiga baser; bevara äldre belägg och markera inaktuella värden."""
     vy = kompatibilitetsvy(profil, regelbas)
+    aktiv_i_vy = aktivitetsprov(vy, regelbas)
     uppgifter = dict(profil.uppgifter)
     for falt in regelbas.falt.values():
         if not falt.antalfalt or not falt.basfalt:
             continue
-        par = _par(falt, vy) if aktivt(falt, vy, regelbas) else None
+        par = _par(falt, vy) if aktiv_i_vy(falt) else None
         tidigare = uppgifter.get(falt.id, Uppgift())
         manuell = tidigare.status == 'bekräftad' and not tidigare.harledd
         bas_bekraftad = bool(andrade_falt & {falt.antalfalt, falt.basfalt})
@@ -62,13 +79,14 @@ def omfattningsbrister(profil: Profil, regelbas: Regelbas) -> list[str]:
     from riskanalys.profil.katalogstatistik import statistikbrister
     fel: list[str] = statistikbrister(profil)
     vy = kompatibilitetsvy(profil, regelbas)
+    aktiv_i_vy = aktivitetsprov(vy, regelbas)
     for falt in regelbas.falt.values():
         uppgift = profil.uppgifter.get(falt.id, Uppgift())
         if falt.alias_for:
             kanonisk = profil.uppgifter.get(falt.alias_for, Uppgift())
             if uppgift.status == kanonisk.status == 'bekräftad' and uppgift.varde != kanonisk.varde:
                 fel.append(f'{falt.id} och {falt.alias_for} är motstridiga. Bekräfta samma erbjudande.')
-        if not aktivt(falt, vy, regelbas):
+        if not aktiv_i_vy(falt):
             continue
         if falt.periodkrav and uppgift.status == 'bekräftad' and not uppgift.period:
             fel.append(f'{falt.id}: bekräfta statistiken med --period-fran och --period-till.')
@@ -92,10 +110,11 @@ def omfattningsbrister(profil: Profil, regelbas: Regelbas) -> list[str]:
             fel.append(f'{falt.id}: antal och belopp får inte vara negativa.')
     # Tjänstkundantal överlappar; tjänstintäkter ska däremot klassas utan dubbelräkning.
     bas = profil.uppgifter.get('P-VERK.omsattning', Uppgift())
+    aktiv_i_profil = aktivitetsprov(profil, regelbas)  # Originalprofilen, inte kompatibilitetsvyn.
     intakter = [
         profil.uppgifter.get(falt.id, Uppgift()) for falt in regelbas.falt.values()
         if falt.id.startswith('P-TJ.') and falt.id.endswith('_omsattning') and falt.typ != 'andel'
-        and aktivt(falt, profil, regelbas)
+        and aktiv_i_profil(falt)
     ]
     kanda = [u for u in intakter if u.status == 'bekräftad' and type(u.varde) in (int, float)]
     if bas.status == 'bekräftad' and type(bas.varde) in (int, float):

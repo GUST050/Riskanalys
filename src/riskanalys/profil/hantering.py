@@ -180,8 +180,9 @@ def kritiska_falt(regelbas: Regelbas, urval: Urval, profil: Profil | None = None
     """Uppgifter som riskbedömningen bygger på och som måste vara kända före fastställelse."""
     definitioner = regelbas.faltdefinitioner()
     tjanster = [regelbas.tjanster[tjanst_id] for tjanst_id in urval.tjanster]
-    from riskanalys.profil.omfattning import aktivt
-    uttryckliga = {falt.id for falt in regelbas.falt.values() if falt.kritisk and (profil is None or aktivt(falt, profil, regelbas))}
+    from riskanalys.profil.omfattning import aktivitetsprov
+    aktiv = (lambda falt: True) if profil is None else aktivitetsprov(profil, regelbas)
+    uttryckliga = {falt.id for falt in regelbas.falt.values() if falt.kritisk and aktiv(falt)}
     tillamplighet = {
         falt_id for valt in urval.krav for falt_id in falt_i(tolka_villkor(valt.krav.galler_om, definitioner))
     }

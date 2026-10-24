@@ -3,7 +3,7 @@ from riskanalys.fel import RiskanalysFel
 from riskanalys.intag.modeller import Tackning
 from riskanalys.profil.hantering import kontrollera_profil, saknade_kritiska
 from riskanalys.profil.modeller import Profil
-from riskanalys.profil.omfattning import aktivt, kompatibilitetsvy
+from riskanalys.profil.omfattning import aktivitetsprov, kompatibilitetsvy
 from riskanalys.regelverk.intagskontrakt import intagskontraktsfel
 from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.regelverk.tillsyn import rattlig_omfattning, analysstodshinder
@@ -12,7 +12,8 @@ from riskanalys.regelverk.urval import valj
 
 def tackning(rb: Regelbas, profil: Profil) -> Tackning:
     p = kompatibilitetsvy(profil, rb)
-    aktiva = [f for f in rb.falt.values() if f.intag and f.intag.obligatorisk and not f.alias_for and not f.basfalt and aktivt(f,p,rb)]
+    aktiv = aktivitetsprov(p, rb)
+    aktiva = [f for f in rb.falt.values() if f.intag and f.intag.obligatorisk and not f.alias_for and not f.basfalt and aktiv(f)]
     saknade = {f.id for f in aktiva if not p.ar_bekraftad(f.id)}
     from riskanalys.intag.kvalitet import kvalitetsbrister
     hinder = [*intagskontraktsfel(rb), *kvalitetsbrister(rb,p)]
