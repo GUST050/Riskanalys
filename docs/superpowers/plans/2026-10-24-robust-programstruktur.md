@@ -128,8 +128,8 @@ Detta är föreslagna kodändringar, inte instruktion att radera filer nu. S1–
 - [ ] Flytta funktion/klass med samma kontrakt och uppdatera konsumenter. Behåll nödvändiga lokala importer om en top-level-import skulle ge en initieringscykel. Inför inga nya generella hjälplager.
 - [ ] Kör samma prov efter flytt, berörda konsumentprov, snabbprofil och aktuella importkontrakt. Jämför serialisering/historiska artefakter där tabellen kräver det. Fullsvit följer AGENTS för modell-/attest-/formatpåverkan och större färdigt paket.
 - [ ] Ta bort källfilen först när ingen stödd konsument behöver den gamla importvägen. Bevara frysta pakets egna filer. Höj ingen sakkunnigstatus.
-- [ ] Uppdatera metodbeslutens fillista. `regelverk/metodbeslut.py::obligatoriska_filer` binder **alla** `.py`-filer under `src/riskanalys/` via det delade ankaret `modellfiler` i `regelbas/beslutstabeller/metodbeslut.yaml`. Stryk källfilens rad och bind om kontrollsumman för mottagaren och varje ändrad konsument, med samma metod som i `11226d9`/`8b3c914`. Annars faller regelbasvalidering och kedjeprov med "modellfil … saknas eller har ändrats". Kontrollera med `riskanalys regelbas validera` och `beslutsfel` att inga fel återstår.
-- [ ] Skilj detta från modellidentiteten i `drift/modellidentitet.py` (`MODELLFILER`, 26 filer för riskberäkningen). Ingen av S1–S6:s käll- eller mottagarfiler ingår där vid planeringen; kontrollera på nytt före flytt. Den frysta fixturen `redaktionell_v10_d8a91a1.json.gz` innehåller historiska filhashar som inte jämförs mot aktuell kod och ska inte skrivas om.
+- [ ] Gör den gemensamma kontrollen av filbindningar och modellbindning i §4 för raden. För S-rader innebär den att källfilens rad stryks ur `modellfiler`, och att mottagaren och varje ändrad konsument binds om.
+- [ ] Den frysta fixturen `redaktionell_v10_d8a91a1.json.gz` innehåller historiska filhashar som inte jämförs mot aktuell kod och ska inte skrivas om.
 - [ ] Uppdatera områdesguide, karta och denna tabells utfall: faktiskt antal borttagna filer, nya beroenden och eventuella kompatibilitetsfiler. Om sammanslagningen ökar koppling eller försämrar begriplighet ska den utgå med motivering och filprognosen justeras.
 
 Riktade prov körs som `.venv312/bin/python -m pytest <tabellens filer med prefix tester/> -q`, därefter relevant snabb-/samlad kontroll enligt §5. Till exempel för S3: `.venv312/bin/python -m pytest tester/regelkontrakt/test_sektorsrisk.py tester/intag/test_fragor.py -q`. Förväntat: samma beteende före/efter, inga förlorade provpåståenden och inga nya otillåtna importvägar.
@@ -168,6 +168,13 @@ Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att
 
 ## 4. Genomförandeordning
 
+**Gemensam kontroll för varje kodetapp (S-små, A2–A7 och varje annan ändring under `src/riskanalys/`):**
+
+- [ ] **Filbindningar.** `regelverk/metodbeslut.py::obligatoriska_filer` binder **alla** `.py`-filer under `src/riskanalys/` via det delade ankaret `modellfiler` i `regelbas/beslutstabeller/metodbeslut.yaml`. Lägg till nya programfiler, till exempel `konfiguration.py`, `arbetsfloden.py` och `analys/andringar.py`. Stryk borttagna filer, och bind om kontrollsumman för varje ändrad fil med samma metod som i `11226d9`/`8b3c914`. Annars underkänner `beslutsfel` genomförandet, med "saknar obligatoriska modell-/attestfiler" eller "modellfil … saknas eller har ändrats". Kontrollera med `riskanalys regelbas validera` och `beslutsfel`. Höj ingen sakkunnigstatus.
+- [ ] **Modellbindning.** `drift/modellidentitet.py::_bindning` hashar regelbasens kontrollsumma tillsammans med de 26 filerna i `MODELLFILER`. Eftersom `metodbeslut.yaml` ingår i regelbasen ändrar **varje** kodetapp modellbindningen, även när de 26 filerna är orörda. Det gällde redan `11226d9` och `8b3c914`. Redovisa bindningen före och efter.
+- [ ] **Följd för sparade underlag.** Bedömningsmanifest, analyspaketens `bindning.modell` och modellvalideringsrapporter som skapats med tidigare bindning matchar inte längre den aktuella (`dokument/analysstatus.py:50`, `drift/modellrapport.py:48`). Fortsatt arbete kräver ny bedömningskörning och ny modellvalidering, och analysen måste prövas och bindas på nytt. Beskriv detta för byrån vid leverans. Historiska och fastställda paket bevaras oförändrade och verifieras mot sin egen frysta bindning; de skrivs aldrig om.
+- [ ] **Samla kodetapper.** Samla flera små kodetapper till en leveranspunkt där det går, så att byrån inte behöver ompröva underlag efter varje enskild ändring.
+
 **Huvudordning:** A0 → A1 → A2 → A3 → A4. A5 växer med varje färdig gräns. Etappen **S-små** (S1, S2, S3, S5) beror inte på A3–A5 och kan göras när som helst efter A0, en rad i taget, men inte samtidigt som ett annat steg ändrar samma filer. A6 startar med inventering efter A1 och ska vara klar före verklig leverans; den behöver inte vänta på A4. A7 kräver stabila kontrakt från A3–A5. A8 samlar teknisk och mänsklig leveranskontroll. Detta är en beroendeordning, ingen tidsuppskattning utan mätunderlag.
 
 ### A0. Stäng pågående ändringspaket och frys baslinjen
@@ -179,7 +186,7 @@ Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att
 - [ ] Inventera samtliga ändringar och vem/vilken uppgift de hör till. Bevara andra aktörers arbete och befintliga bevis. Spara filhashar och Python-/paketversioner; HEAD ensam beskriver inte en smutsig arbetskopia.
 - [x] Slutför F8 i befintlig testtidsplan (2026-10-24, `11226d9` och `8b3c914`; se testguiden). Prova YAML-inläsningens semantik, profilhistorik och analysens aktivitetsprövning. Kontrollera att ändrade kontrollsummor motsvarar verkliga kodändringar och att status inte höjts till sakkunnigverifierad.
 - [x] Kör relevanta regressioner och konsumentprov samt snabbprofil. Kör den aktuella analysprofilen och redovisa om den fortfarande överstiger 300 s. Utfall 2026-10-24: snabb 140/39,4 s, analys 303/392,0 s, alltså över 300 s.
-- [ ] Redovisa följden för sparade data: `profil/omfattning.py` ingår i `MODELLFILER`, så `8b3c914` ändrade modellbindningen. Bedömningsmanifest, analyspaketens `bindning.modell` och modellvalideringsrapporter som skapats med tidigare identitet matchar inte längre den aktuella (`dokument/analysstatus.py:50`, `drift/modellrapport.py:48`). Beskriv för byrån vilka underlag som behöver köras om eller valideras på nytt; det är avsett skydd, inte ett fel.
+- [ ] Redovisa följden för sparade data enligt den gemensamma kontrollen i §4. Både `11226d9` och `8b3c914` ändrade modellbindningen, eftersom `metodbeslut.yaml` ingår i regelbasens kontrollsumma; `8b3c914` ändrade dessutom `profil/omfattning.py`, som ingår i `MODELLFILER`. Beskriv för byrån vilka underlag som behöver köras om eller valideras på nytt. Det är avsett skydd, inte ett fel.
 - [ ] Följ F6 → F7 → F10 efter profileringen. Inför explicita områdesprofiler före en automatisk diffväljare. Knyt varje flyttat testpåstående till nytt prov; optimera delad uppbyggnad utan att dela muterbar testdata.
 - [ ] Mät före/efter i separata, jämförbara kopior med samma miljö och belastning. Spara samtliga upprepningar; de tidigare 255/59,9-sekunderskörningarna är inte en kontrollerad effektmätning.
 - [x] Vid nästa samlade kontrollpunkt (2026-10-24: 3 609 godkända, 39 min 30 s, 866 resurser oförändrade): fullprofil på exakt kandidat, insamling/JUnit/snapshot jämförda och regelbas validerad. Markera fel, överhoppade eller ej körda prov uttryckligen.
@@ -212,6 +219,8 @@ Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att
 
 ### A2. Flytta leverantörsval ur CLI
 
+**Gemensam kontroll:** filbindningar och modellbindning enligt §4. Den nya programfilen läggs till i `modellfiler`, och ändrade konsumenter binds om.
+
 **Ändra:** `src/riskanalys/kommandon/skriv_kommando.py`, `src/riskanalys/intag/webb.py`. **Ny föreslagen fil:** `src/riskanalys/konfiguration.py`. **Prov:** befintliga `tester/enhet/test_skriv_kommando.py`, `test_leverantor.py`, `tester/intag/test_webb.py`; ny `tester/enhet/test_skrivkonfiguration.py`.
 
 **Föreslaget kontrakt:** fryst `Skrivkonfiguration(leverantor, testsvar, modell, effort)` där `leverantor` är `Literal["claude", "test"]`, `testsvar` är `Path | None`, övriga fält `str`. `skapa_textleverantor(val: Skrivkonfiguration) -> Textleverantor`. Samma befintliga standardkonstanter och `LeverantorFel`; inga nya modellval.
@@ -227,6 +236,8 @@ Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att
 
 ### A3. Gör utkastflödet till en gemensam tjänst
 
+**Gemensam kontroll:** filbindningar och modellbindning enligt §4. Den nya programfilen läggs till i `modellfiler`, och ändrade konsumenter binds om.
+
 **Ändra:** `src/riskanalys/intag/dokument.py` och dess faktiska konsumenter i webb/kommandon. **Nya föreslagna filer:** `src/riskanalys/arbetsfloden.py`, `tester/enhet/test_utkastflode.py`. Återanvänd befintliga bedömnings-, skrivnings-, gransknings- och exporttjänster. En enda arbetsflödesfil ersätter det tidigare föreslagna paketet, enligt §3.3.
 
 **Kontrakt:** bevara `skapa_utkast(byramapp: Path, rb: Regelbas, leverantor: Textleverantor) -> Path` och `uppdatera_export(byramapp: Path, rb: Regelbas, tidigare: Path, *, rapportformat: str | None = None) -> Path`. `Regelbas` finns i `regelverk/modeller.py`; `Textleverantor` i `dokument/leverantor.py`. Behåll gamla importvägar som tunna wrappers under övergången.
@@ -240,6 +251,8 @@ Den specifika filkartan är vår bedömning av aktuell kod. Källstödet är att
 **Klart:** samordningens kontrakt finns på ett ställe och kan provas utan HTTP. Publicerad historik och tidigare fastställda paket är byteoförändrade.
 
 ### A4. Flytta transportparsning ur analystjänsten utan att flytta säkerhetsgränsen
+
+**Gemensam kontroll:** filbindningar och modellbindning enligt §4. Den nya programfilen läggs till i `modellfiler`, och ändrade konsumenter binds om.
 
 **Ändra:** `src/riskanalys/analys/tjanst.py`, `intag/analysformular.py`, `intag/webb.py`, `kommandon/analys_kommando.py`. **Ny föreslagen fil:** `analys/andringar.py`. **Prov:** `tester/enhet/test_analysformular.py`, `test_analys_kommando.py`, `test_analyslagring.py`, `tester/intag/test_granskning_analyslas.py` och berörda analysprov.
 

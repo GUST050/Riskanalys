@@ -1,8 +1,16 @@
+# Rättelse av robusthetsplanen: modellbindning och filbindningar, 2026-10-24
+
+Efter Codex granskning: modellbindningen hashar regelbasens kontrollsumma tillsammans med de 26 filerna i `MODELLFILER`. Eftersom `metodbeslut.yaml` ingår i regelbasen ändrar varje kodändring under `src/riskanalys/` bindningen, även när de 26 filerna är orörda. Det gällde redan `11226d9` och `8b3c914`. Föregående post påstod felaktigt att S-raderna inte berör modellidentiteten och tillskrev bindningsändringen enbart `8b3c914`; båda meningarna är rättade där.
+
+[Planens §4](superpowers/plans/2026-10-24-robust-programstruktur.md#4-genomförandeordning) har nu en gemensam kontroll för varje kodetapp. Den omfattar nya, borttagna och ändrade filer i metodbeslutens `modellfiler`, `beslutsfel`, redovisad bindning före och efter, och följden för sparade bedömningar, analyspaket och modellvalideringar. Historiska och fastställda paket bevaras oförändrade. A2–A4 hänvisar till kontrollen för sina nya programfiler. Endast plan och statusjournal ändrades; ingen testkörning ingick.
+
+## Föregående arbetsstatus
+
 # Robusthetsplanen granskad och rättad, 2026-10-24
 
 Claude granskade [planen för robust programstruktur](superpowers/plans/2026-10-24-robust-programstruktur.md) mot koden och förde in rättelserna. **S4 utgår:** att flytta `faststallelse/resultatgranskning.py` in i `sakgranskning.py` skulle föra in tre V9-moduler i en fil som `faststall.py`, `grindar.py`, `granskning/dokument_v8.py` och `kommandon/sakgranska_kommando.py` importerar. Etappmålet blir **249 − 5 + 3 = 247** programfiler. S1–S3 och S5 är nu den fristående etappen S-små efter A0; S6 ligger kvar i A7.
 
-Varje S-rad måste ändra det delade ankaret `modellfiler` i `regelbas/beslutstabeller/metodbeslut.yaml`, eftersom metodbesluten binder alla programfiler. Modellidentiteten i `drift/modellidentitet.py` (26 filer) berörs inte av S-raderna. Saknade konsumenter är införda: för S4 `kommandon/sakgranska_kommando.py` och två typfallskedjor, för S6 `docs/research/verktyg/redaktionell_offline.py`. Planens egen git-regel om arbetsgren är ersatt med hänvisning till AGENTS. A0:s utförda punkter är kryssade med kandidatresultatet (snabb 39,4 s, analys 392,0 s, full 3 609/39 min 30 s). Ny A0-punkt: `8b3c914` ändrade modellbindningen eftersom `profil/omfattning.py` ingår i `MODELLFILER`; sparade bedömningar, analyspaket och modellvalideringar med tidigare identitet matchar inte längre och behöver köras om eller valideras på nytt.
+Varje S-rad måste ändra det delade ankaret `modellfiler` i `regelbas/beslutstabeller/metodbeslut.yaml`, eftersom metodbesluten binder alla programfiler. S-raderna ändrar inte fillistan i `drift/modellidentitet.py` (26 filer), men de ändrar modellbindningen, eftersom bindningen också hashar regelbasens kontrollsumma och `metodbeslut.yaml` ingår i regelbasen. Saknade konsumenter är införda: för S4 `kommandon/sakgranska_kommando.py` och två typfallskedjor, för S6 `docs/research/verktyg/redaktionell_offline.py`. Planens egen git-regel om arbetsgren är ersatt med hänvisning till AGENTS. A0:s utförda punkter är kryssade med kandidatresultatet (snabb 39,4 s, analys 392,0 s, full 3 609/39 min 30 s). Ny A0-punkt: både `11226d9` och `8b3c914` ändrade modellbindningen via `metodbeslut.yaml`; sparade bedömningar, analyspaket och modellvalideringar med tidigare bindning matchar inte längre och behöver köras om eller valideras på nytt.
 
 Endast plan, projektguide och denna post ändrades. Inga program-, regel- eller testfiler ändrades och ingen pytestkörning ingick.
 
