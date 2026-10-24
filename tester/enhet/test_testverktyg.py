@@ -115,3 +115,50 @@ def test_snapshot_ignorerar_genererad_bytekod(monkeypatch,tmp_path):
     for namn in ('src/__pycache__/a.cpython-312.pyc','tester/__pycache__/b.pyc','scripts/a.pyc'):
         p=tmp_path/namn;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(b'genererat')
     assert fore==testa.snapshot()
+
+
+def test_omradesprofil_kor_explicit_urval_och_redovisar_orsak(monkeypatch, tmp_path):
+    testa, anrop = fake_korning(monkeypatch, tmp_path)
+    profiler = json.loads(testa.PROFILERFIL.read_text())
+    profiler['profil'] = ['tester/test_litet.py']
+    testa.PROFILERFIL.write_text(json.dumps(profiler))
+    assert testa.main(['profil', '--ut', str(tmp_path/'ut')]) == 0
+    assert any('tester/test_litet.py' in cmd for cmd in anrop)
+    r = json.loads((tmp_path/'ut/resultat.json').read_text())
+    assert r['urval'] == ['tester/test_litet.py']
+    assert 'profil' in r['urvalsorsak']
+    assert r['miljo']['paket']['pytest']
+
+
+@pytest.mark.parametrize('resurs', ['uv.lock', '.python-version', '.github/workflows/verifiera.yml'])
+def test_andrad_miljodefinition_under_korning_underkanns(monkeypatch, tmp_path, resurs):
+    testa, _ = fake_korning(monkeypatch, tmp_path)
+    fil = tmp_path/resurs
+    fil.parent.mkdir(parents=True, exist_ok=True)
+    fil.write_text('ursprunglig')
+    orig = testa.subprocess.run
+    def run(cmd, **kwargs):
+        r = orig(cmd, **kwargs)
+        if any(x.startswith('--junitxml=') for x in cmd):
+            fil.write_text('andrad')
+        return r
+    monkeypatch.setattr(testa.subprocess, 'run', run)
+    assert testa.main(['snabb', '--ut', str(tmp_path/'ut')]) == 1
+    assert not json.loads((tmp_path/'ut/resultat.json').read_text())['oforandrat']
+
+
+def test_junit_maste_matcha_insamlingens_multiplicitet(monkeypatch, tmp_path):
+    testa, _ = fake_korning(monkeypatch, tmp_path)
+    orig = testa.subprocess.run
+    def run(cmd, **kwargs):
+        r = orig(cmd, **kwargs)
+        if '--collect-only' in cmd:
+            r.stdout = ('tester/test_litet.py::test_a\n' * 2 + 'tester/test_litet.py::test_b\n')
+        if any(x.startswith('--junitxml=') for x in cmd):
+            xml = Path(next(x.split('=', 1)[1] for x in cmd if x.startswith('--junitxml=')))
+            xml.write_text('<testsuites><testsuite>' + ''.join(
+                f'<testcase classname="tester.test_litet" name="test_{n}"/>' for n in ('a','b','b')) + '</testsuite></testsuites>')
+        return r
+    monkeypatch.setattr(testa.subprocess, 'run', run)
+    assert testa.main(['snabb', '--ut', str(tmp_path/'ut')]) == 1
+    assert not json.loads((tmp_path/'ut/resultat.json').read_text())['collection_matchar']

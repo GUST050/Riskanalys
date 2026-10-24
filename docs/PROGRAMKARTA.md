@@ -5,11 +5,11 @@ tags: [riskanalys, oversikt, arkitektur]
 
 # Riskanalys – programkarta och filansvar
 
-Uppdaterad **2026-10-24** från `main`, bascommit `8ca798d`. Lokala navigeringsändringar ingår i inventeringen. [[docs/START.md|Start]] · [[docs/omraden/Programflode.md|Programflödet]] · [[docs/kodkarta/INDEX.md|Filregister med hash och importer]].
+Uppdaterad **2026-10-24** från arbetsgrenen `codex/robust-programstruktur`, bascommit `416579e`. Ocommittade införandeändringar ingår i inventeringen. [[docs/START.md|Start]] · [[docs/omraden/Programflode.md|Programflödet]] · [[docs/kodkarta/INDEX.md|Filregister med hash och importer]].
 
 ## 1. Omfattning och läsnyckel
 
-Kartan omfattar **1000 ej ignorerade projektfiler**: 249 programfiler, 316 regelbasfiler, 268 test-/fixturfiler och 167 dokumentations-, verktygs- och rotfiler. Programkoden har **27,149 fysiska Pythonrader**. Det är en strukturell inventering, inte ett mått på kvalitet eller testtäckning.
+Kartan omfattar **1010 ej ignorerade projektfiler**: 247 programfiler, 316 regelbasfiler, 275 test-/fixturfiler och 172 dokumentations-, verktygs- och rotfiler. Programkoden har **27,409 fysiska Pythonrader**. Det är en strukturell inventering, inte ett mått på kvalitet eller testtäckning.
 
 Filerna nedan har en rollbeskrivning och ett filkort med original, radantal, SHA-256, publika definitioner och direkta statiska importer. Binära resurser har storlek och hash i stället för radantal. Importer visar möjliga beroenden och utgör ingen fullständig körnings- eller testanalys.
 
@@ -70,9 +70,29 @@ Mapparnas faktiska struktur bevaras. Områdena är läsgrupper, inte nya Pythonp
 | Kontrollerad överföring av äldre analys | [[docs/kodkarta/filer/src/riskanalys/analys/overforing.py.md\|src/riskanalys/analys/overforing.py]] → [[docs/kodkarta/filer/src/riskanalys/intag/overforingsvy.py.md\|src/riskanalys/intag/overforingsvy.py]] |
 | Fryst riskberäkning | [[docs/kodkarta/filer/src/riskanalys/bedomning/korning.py.md\|src/riskanalys/bedomning/korning.py]] → [[docs/kodkarta/filer/src/riskanalys/bedomning/motor.py.md\|src/riskanalys/bedomning/motor.py]] → [[docs/kodkarta/filer/src/riskanalys/bedomning/scenarier.py.md\|src/riskanalys/bedomning/scenarier.py]] |
 | Skrivsvar till full analys och V10 | [[docs/kodkarta/filer/src/riskanalys/dokument/skrivversion.py.md\|src/riskanalys/dokument/skrivversion.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/arb_v8.py.md\|src/riskanalys/dokument/arb_v8.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/arb_v9.py.md\|src/riskanalys/dokument/arb_v9.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/arb_v10.py.md\|src/riskanalys/dokument/arb_v10.py]] |
-| V10:s redaktionella presentation | [[docs/kodkarta/filer/src/riskanalys/dokument/presentationsval_v10.py.md\|src/riskanalys/dokument/presentationsval_v10.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionspresentation_v10.py.md\|src/riskanalys/dokument/redaktionspresentation_v10.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionell_v10.py.md\|src/riskanalys/dokument/redaktionell_v10.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionmodell_v10.py.md\|src/riskanalys/dokument/redaktionmodell_v10.py]] |
+| V10:s redaktionella presentation | [[docs/kodkarta/filer/src/riskanalys/dokument/presentationsval_v10.py.md\|src/riskanalys/dokument/presentationsval_v10.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionspresentation_v10.py.md\|src/riskanalys/dokument/redaktionspresentation_v10.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionell_v10.py.md\|src/riskanalys/dokument/redaktionell_v10.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/resultatmodell_v10.py.md\|src/riskanalys/dokument/resultatmodell_v10.py]] |
 | Granskning, leverans och fastställelse | [[docs/kodkarta/filer/src/riskanalys/granskning/dokument_v10.py.md\|src/riskanalys/granskning/dokument_v10.py]] → [[docs/kodkarta/filer/src/riskanalys/dokument/rapportpaket_v10.py.md\|src/riskanalys/dokument/rapportpaket_v10.py]] → [[docs/kodkarta/filer/src/riskanalys/faststallelse/resultatgranskning.py.md\|src/riskanalys/faststallelse/resultatgranskning.py]] → [[docs/kodkarta/filer/src/riskanalys/faststallelse/grindar.py.md\|src/riskanalys/faststallelse/grindar.py]] |
 | Metodförslag och expertunderlag | [[docs/kodkarta/filer/src/riskanalys/regelverk/metodbeslut.py.md\|src/riskanalys/regelverk/metodbeslut.py]] → [[docs/kodkarta/filer/src/riskanalys/regelverk/sakkunnig.py.md\|src/riskanalys/regelverk/sakkunnig.py]] → [[docs/kodkarta/filer/src/riskanalys/regelverk/lasversion.py.md\|src/riskanalys/regelverk/lasversion.py]] |
+
+
+De gemensamma ingångarna har nu följande beroenderiktning:
+
+```mermaid
+flowchart LR
+    CLI[CLI] --> Konf[konfiguration.py]
+    Webb[Webb] --> Konf
+    Konf --> Lev[Textleverantör]
+    Webb --> Flode[arbetsfloden.py]
+    Flode --> Kedja[Bedömning · sparat skrivsvar · granskning · export]
+    CLI --> Adapter[intag/analysformular.py]
+    Webb --> Adapter
+    Adapter --> Kommando[analys/andringar.py]
+    Kommando --> Tjanst[Analystjanst]
+    Tjanst --> Las[Revision och domänkontroll under lås]
+    Las --> Register[Privat analysregister]
+```
+
+CLI:s separata bedömning, skrivning och export förblir separata operationer. Importkontrakten förbjuder webb → kommandon och analystjänst → formuläradapter, även indirekt. Kommandopilen beskriver dataflöde; analystjänsten importerar kommandotyperna och omprövar innehållet under låset.
 
 ## 5. Var uppgifter och resultat lagras
 
@@ -95,12 +115,11 @@ V10 byggs via V9 och den fulla V8-analysen. Äldre formatfiler innehåller fortf
 
 ## 7. Samtliga programfiler
 
-Varje rad länkar till aktuellt filkort. Där finns fulla direkta interna importrelationer, definitioner, källhash och originallänk.
-
-| Fil / filkort | Ansvar |
+| Fil | Ansvar |
 |---|---|
 | [[docs/kodkarta/filer/src/riskanalys/__init__.py.md\|src/riskanalys/__init__.py]] | Riskanalys – verksamhetsanpassad dokumentation enligt penningtvättsregelverket. |
 | [[docs/kodkarta/filer/src/riskanalys/analys/__init__.py.md\|src/riskanalys/analys/__init__.py]] | Privata lokala analyser, skilda från AI-underlag och riskberäkning. |
+| [[docs/kodkarta/filer/src/riskanalys/analys/andringar.py.md\|src/riskanalys/analys/andringar.py]] | Blockavgränsade kommandon, radidentitet och referenskontroll för låst tillämpning. |
 | [[docs/kodkarta/filer/src/riskanalys/analys/engangssvar.py.md\|src/riskanalys/analys/engangssvar.py]] | Samlad bekräftelse av visat underlag; inga fakta eller beslut härleds. |
 | [[docs/kodkarta/filer/src/riskanalys/analys/exponering.py.md\|src/riskanalys/analys/exponering.py]] | Gemensam innehållsdefinition för automatiskt förifylld exponering. |
 | [[docs/kodkarta/filer/src/riskanalys/analys/gemensam.py.md\|src/riskanalys/analys/gemensam.py]] | Rena läsvyer och innehållssummor; inga svar eller bekräftelser skrivs här. |
@@ -115,6 +134,7 @@ Varje rad länkar till aktuellt filkort. Där finns fulla direkta interna import
 | [[docs/kodkarta/filer/src/riskanalys/analys/riktning.py.md\|src/riskanalys/analys/riktning.py]] | Härledda upplysningar och brister per hot och dimension, ingen alternativ motor. |
 | [[docs/kodkarta/filer/src/riskanalys/analys/tjanst.py.md\|src/riskanalys/analys/tjanst.py]] | Gemensamma lokala analysoperationer för CLI och loopbackformuläret. |
 | [[docs/kodkarta/filer/src/riskanalys/analys/utkast.py.md\|src/riskanalys/analys/utkast.py]] | Förifyll redigerbara ogranskade svar från bekräftad profil och motor. |
+| [[docs/kodkarta/filer/src/riskanalys/arbetsfloden.py.md\|src/riskanalys/arbetsfloden.py]] | Skapa, uppdatera, kontrollera och läsa utkast genom samma tjänster och aktualitetsvillkor. |
 | [[docs/kodkarta/filer/src/riskanalys/bedomning/__init__.py.md\|src/riskanalys/bedomning/__init__.py]] | Riskbedömning: deterministisk motor och körningar. |
 | [[docs/kodkarta/filer/src/riskanalys/bedomning/erfarenheter.py.md\|src/riskanalys/bedomning/erfarenheter.py]] | PTL 2:1/LSF 2:2: beakta rapportering utan att härleda en riskpoäng ur antal. |
 | [[docs/kodkarta/filer/src/riskanalys/bedomning/korning.py.md\|src/riskanalys/bedomning/korning.py]] | Läser profil och exakt samma originalbytes i ett snapshot, beräknar resultatet och sparar profilkopia, modellbindning och manifest. |
@@ -203,12 +223,11 @@ Varje rad länkar till aktuellt filkort. Där finns fulla direkta interna import
 | [[docs/kodkarta/filer/src/riskanalys/dokument/rapportvyer_v9.py.md\|src/riskanalys/dokument/rapportvyer_v9.py]] | Tre disjunkta V9-vyer; sammanfattningens källöverlappp är explicit spårad. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/redaktion_v7.py.md\|src/riskanalys/dokument/redaktion_v7.py]] | V7:s korta automatiska upprepningar; författad analys och historiska format lämnas kvar. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionell_v10.py.md\|src/riskanalys/dokument/redaktionell_v10.py]] | Redaktionell presentation av frysta fakta; inga riskbeslut eller AI-anrop. |
-| [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionmodell_v10.py.md\|src/riskanalys/dokument/redaktionmodell_v10.py]] | Frysta källor och exakt flyttregister för V10:s andra presentation. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionspresentation_v10.py.md\|src/riskanalys/dokument/redaktionspresentation_v10.py]] | Återbygg den nya presentationen och bind alla källor utan att ändra analysen. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/rendering.py.md\|src/riskanalys/dokument/rendering.py]] | Gemensamma Word-hjälpare och routing för aktuella och äldre rapportformat. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/rendering_v10.py.md\|src/riskanalys/dokument/rendering_v10.py]] | Word från tre frysta V10-vyer; inga anrop till export, motor eller AI. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/rendering_v9.py.md\|src/riskanalys/dokument/rendering_v9.py]] | Word från tre frysta V9-vyer; inga anrop till export, motor eller AI. |
-| [[docs/kodkarta/filer/src/riskanalys/dokument/resultatmodell_v10.py.md\|src/riskanalys/dokument/resultatmodell_v10.py]] | Källbunden V10-konstruktion; generiska frysta källtyper återanvänds. |
+| [[docs/kodkarta/filer/src/riskanalys/dokument/resultatmodell_v10.py.md\|src/riskanalys/dokument/resultatmodell_v10.py]] | Konstruktion, resultatbygge och RedaktionV10 med frysta källor och flyttregister. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/resultatmodell_v9.py.md\|src/riskanalys/dokument/resultatmodell_v9.py]] | Frysta källor och urvalsbeslut för V9; inga alternativa riskberäkningar. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/resultatrapport_v10.py.md\|src/riskanalys/dokument/resultatrapport_v10.py]] | Ny disposition från fulla original; inga nya AI-svar eller riskberäkningar. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/resultatrapport_v9.py.md\|src/riskanalys/dokument/resultatrapport_v9.py]] | Kort resultatrapport ur sparade sakuppgifter; varken fri sammanfattning eller AI. |
@@ -228,8 +247,7 @@ Varje rad länkar till aktuellt filkort. Där finns fulla direkta interna import
 | [[docs/kodkarta/filer/src/riskanalys/dokument/ursprung_v8.py.md\|src/riskanalys/dokument/ursprung_v8.py]] | Reproducerbar innehållskarta: placeringsidentitet, mall och faktiska ingångar. Kartan är härledd ur samma frysta ingångar som byggaren. En giltig pointer är teknisk spårning, inte en automatisk sakattest för den formulerade slutsatsen. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/utfall_v6.py.md\|src/riskanalys/dokument/utfall_v6.py]] | Lokala utfall för sårbarheter vars exakta underlag inte lämnar byrån. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/validering.py.md\|src/riskanalys/dokument/validering.py]] | Maskinell validering av AI-utkast (spec 8.4). |
-| [[docs/kodkarta/filer/src/riskanalys/dokument/wordstil.py.md\|src/riskanalys/dokument/wordstil.py]] | Läsbar v5-typografi och kolumnbredder; påverkar inte bedömningar eller text. |
-| [[docs/kodkarta/filer/src/riskanalys/dokument/wordstil_v10.py.md\|src/riskanalys/dokument/wordstil_v10.py]] | Kolumnbredder för den nya dispositionen; samma minsta textstorlek som V9. |
+| [[docs/kodkarta/filer/src/riskanalys/dokument/wordstil.py.md\|src/riskanalys/dokument/wordstil.py]] | Gemensam Word-stil och separat V10-tabellanpassning vid samma avsedda anropspunkt. |
 | [[docs/kodkarta/filer/src/riskanalys/drift/__init__.py.md\|src/riskanalys/drift/__init__.py]] | Minsta drift: versionshistorik och nästa genomgång. |
 | [[docs/kodkarta/filer/src/riskanalys/drift/historik.py.md\|src/riskanalys/drift/historik.py]] | Versionshistorik och nästa genomgång (spec 13.1). |
 | [[docs/kodkarta/filer/src/riskanalys/drift/modellidentitet.py.md\|src/riskanalys/drift/modellidentitet.py]] | Smal, innehållsbunden identitet för den granskade riskberäkningen. |
@@ -244,11 +262,10 @@ Varje rad länkar till aktuellt filkort. Där finns fulla direkta interna import
 | [[docs/kodkarta/filer/src/riskanalys/fel.py.md\|src/riskanalys/fel.py]] | Gemensam basklass för fel som visas för användaren. |
 | [[docs/kodkarta/filer/src/riskanalys/foretagsdata/__init__.py.md\|src/riskanalys/foretagsdata/__init__.py]] | Lokala registerförslag; ingenting här bekräftar riskprofilen. |
 | [[docs/kodkarta/filer/src/riskanalys/foretagsdata/arsredovisning.py.md\|src/riskanalys/foretagsdata/arsredovisning.py]] | Avgränsad iXBRL-läsare. |
-| [[docs/kodkarta/filer/src/riskanalys/foretagsdata/bokslut.py.md\|src/riskanalys/foretagsdata/bokslut.py]] | Tillåtna bokslutsfakta, med period och spårbarhet till privat original. |
 | [[docs/kodkarta/filer/src/riskanalys/foretagsdata/bolagsverket.py.md\|src/riskanalys/foretagsdata/bolagsverket.py]] | Bolagsverket HVD v1: lokalt uppslag, OAuth-token endast i minnet. |
 | [[docs/kodkarta/filer/src/riskanalys/foretagsdata/bolagsverket_svar.py.md\|src/riskanalys/foretagsdata/bolagsverket_svar.py]] | Lokal projektion av HVD v1. |
 | [[docs/kodkarta/filer/src/riskanalys/foretagsdata/lagring.py.md\|src/riskanalys/foretagsdata/lagring.py]] | Privata registerbilder och atomisk aktuell pekare utanför Git. |
-| [[docs/kodkarta/filer/src/riskanalys/foretagsdata/modeller.py.md\|src/riskanalys/foretagsdata/modeller.py]] | Minimal, oföränderlig registerbild. |
+| [[docs/kodkarta/filer/src/riskanalys/foretagsdata/modeller.py.md\|src/riskanalys/foretagsdata/modeller.py]] | Bokslut, Bolagsverksbild och registerbild med frysta period-/originalreferenser. |
 | [[docs/kodkarta/filer/src/riskanalys/foretagsdata/samlad.py.md\|src/riskanalys/foretagsdata/samlad.py]] | Komplettera SCB-bilden utan att göra registerhämtning till bekräftelse. |
 | [[docs/kodkarta/filer/src/riskanalys/foretagsdata/scb.py.md\|src/riskanalys/foretagsdata/scb.py]] | SCB AFR v1. |
 | [[docs/kodkarta/filer/src/riskanalys/granskning/__init__.py.md\|src/riskanalys/granskning/__init__.py]] | Maskinell granskning: täckning, spårbarhet och bristmönster. |
@@ -260,24 +277,22 @@ Varje rad länkar till aktuellt filkort. Där finns fulla direkta interna import
 | [[docs/kodkarta/filer/src/riskanalys/granskning/dokument_v8.py.md\|src/riskanalys/granskning/dokument_v8.py]] | V8 återbyggs från exakt fryst lokal analys och validerade skrivresultat. |
 | [[docs/kodkarta/filer/src/riskanalys/granskning/dokument_v9.py.md\|src/riskanalys/granskning/dokument_v9.py]] | V9 prövas mot full V8-analys och en återbyggd spårbar presentation. |
 | [[docs/kodkarta/filer/src/riskanalys/granskning/fyndgrupper.py.md\|src/riskanalys/granskning/fyndgrupper.py]] | Ren exakt visningsgruppering; inga fyndbeslut ändras. |
-| [[docs/kodkarta/filer/src/riskanalys/granskning/kontroller.py.md\|src/riskanalys/granskning/kontroller.py]] | Maskinell granskning av dokumentet: täckning, spårbarhet och bristmönster (spec 9). |
+| [[docs/kodkarta/filer/src/riskanalys/granskning/kontroller.py.md\|src/riskanalys/granskning/kontroller.py]] | Maskinell täckning, spårbarhet och bristmönster inklusive B-13 sektorsfynd. |
 | [[docs/kodkarta/filer/src/riskanalys/granskning/korning.py.md\|src/riskanalys/granskning/korning.py]] | Granskningskörning: bygger dokumentet, granskar det och sparar resultatet med manifest. |
 | [[docs/kodkarta/filer/src/riskanalys/granskning/lasta_v6.py.md\|src/riskanalys/granskning/lasta_v6.py]] | B-09, B-10 och B-15 i v6: belägg och programmets låsta stycken i varje tjänstavsnitt (spec 8.4.6 punkt 2). |
 | [[docs/kodkarta/filer/src/riskanalys/granskning/lasta_v8.py.md\|src/riskanalys/granskning/lasta_v8.py]] | V8:s kravtäckning för geografiskt underlag och egen rapportering (B-09, B-10, B-15). Byråövergripande underlag står en gång i avsnittet Gemensamt faktaunderlag och tjänstens egen prövning i tjänsteavsnittet. Båda kontrolleras mot ett återbyggt dokument; ett gemensamt stycke ersätter aldrig tjänstens eget. Äldre v6/v7-kontroller och bytekontrakt ändras inte. |
 | [[docs/kodkarta/filer/src/riskanalys/granskning/modeller.py.md\|src/riskanalys/granskning/modeller.py]] | Fynd från granskningen (spec 9 och 10). |
-| [[docs/kodkarta/filer/src/riskanalys/granskning/sektorsrisk.py.md\|src/riskanalys/granskning/sektorsrisk.py]] | B-13 hittar avsaknad av belagd lokal motivering, inte dess juridiska kvalitet. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/__init__.py.md\|src/riskanalys/intag/__init__.py]] | Lokalt regelstyrt intag för verksamhetsanpassad riskbedömning. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/analysformular.py.md\|src/riskanalys/intag/analysformular.py]] | Strikt, sidoeffektsfri adapter från guidade fält till analysmodeller. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/analysvy.py.md\|src/riskanalys/intag/analysvy.py]] | Guidad lokal analys i vanliga HTML-formulär utan egna lagringsvägar. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/bolagsverksvy.py.md\|src/riskanalys/intag/bolagsverksvy.py]] | Källor och bokslutsbakgrund, utan att bakgrund blir bekräftade svar. |
-| [[docs/kodkarta/filer/src/riskanalys/intag/dokument.py.md\|src/riskanalys/intag/dokument.py]] | Hela befintliga dokumentkedjan, utan att attestera eller fastställa något. |
+| [[docs/kodkarta/filer/src/riskanalys/intag/dokument.py.md\|src/riskanalys/intag/dokument.py]] | Webbens rapportdelsval och omfattningsknapp; kompatibla importalias till arbetsfloden. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/engangsvy.py.md\|src/riskanalys/intag/engangsvy.py]] | Engångsunderlag och en genomgång per tjänst; lokal redigering är separat. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/flervalsvy.py.md\|src/riskanalys/intag/flervalsvy.py]] | Flervalsfält i webbintaget: en kryssruta per alternativ, tillbaka som kommaseparerad svarstext. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/fordelning.py.md\|src/riskanalys/intag/fordelning.py]] | Frivillig tjänstefördelning stannar lokalt och ändrar inga motorvillkor. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/fragor.py.md\|src/riskanalys/intag/fragor.py]] | Aktiveringsfrågor går före följdfrågor; alias och andelar frågas aldrig två gånger. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/gemensamformular.py.md\|src/riskanalys/intag/gemensamformular.py]] | Strikt adapter för schema 2. Endast typade modeller och visade referenser. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/gemensamvy.py.md\|src/riskanalys/intag/gemensamvy.py]] | Tre arbetsvyer för gemensam analys, tillämpning och separat sakgranskning. |
-| [[docs/kodkarta/filer/src/riskanalys/intag/komplettering.py.md\|src/riskanalys/intag/komplettering.py]] | Koppla även beräknade/äldre AI-referenser till intagets grundfrågor. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/kvalitet.py.md\|src/riskanalys/intag/kvalitet.py]] | Samma sakliga begränsningar gäller formulär, CLI och handredigerade profiler. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/modeller.py.md\|src/riskanalys/intag/modeller.py]] | Pydantic-modellerna IntagSvar, Intagsfraga och Tackning: formatet för inkommande svar, aktiva frågor och intagets fullständighet. |
 | [[docs/kodkarta/filer/src/riskanalys/intag/overforingsvy.py.md\|src/riskanalys/intag/overforingsvy.py]] | Läsbar jämförelse och separat, uttrycklig överföringshandling. |
@@ -312,12 +327,13 @@ Varje rad länkar till aktuellt filkort. Där finns fulla direkta interna import
 | [[docs/kodkarta/filer/src/riskanalys/kommandon/sakgranska_kommando.py.md\|src/riskanalys/kommandon/sakgranska_kommando.py]] | riskanalys sakgranska |
 | [[docs/kodkarta/filer/src/riskanalys/kommandon/sakkunnig_kommando.py.md\|src/riskanalys/kommandon/sakkunnig_kommando.py]] | CLI för sakkunnigunderlag och separat import av regelpaket/facit. |
 | [[docs/kodkarta/filer/src/riskanalys/kommandon/skriv_kommando.py.md\|src/riskanalys/kommandon/skriv_kommando.py]] | riskanalys skriv |
+| [[docs/kodkarta/filer/src/riskanalys/konfiguration.py.md\|src/riskanalys/konfiguration.py]] | Fryst skrivkonfiguration och gemensam textleverantörsfabrik för CLI och webb. |
 | [[docs/kodkarta/filer/src/riskanalys/lagring/__init__.py.md\|src/riskanalys/lagring/__init__.py]] | Lagring av byrådata, manifest och kontrollsummor. |
 | [[docs/kodkarta/filer/src/riskanalys/lagring/datamapp.py.md\|src/riskanalys/lagring/datamapp.py]] | Datamappen där byråernas uppgifter lagras. |
 | [[docs/kodkarta/filer/src/riskanalys/lagring/kontrollsumma.py.md\|src/riskanalys/lagring/kontrollsumma.py]] | SHA-256-kontrollsummor för filer och text. |
 | [[docs/kodkarta/filer/src/riskanalys/lagring/korningar.py.md\|src/riskanalys/lagring/korningar.py]] | Tidsstämplade körningsmappar. |
 | [[docs/kodkarta/filer/src/riskanalys/lagring/manifest.py.md\|src/riskanalys/lagring/manifest.py]] | Manifest med kontrollsummor för alla filer i en mapp (spec 5.3). Kontrollsummorna visar att sparade filer är oförändrade. De återskapar inga förlorade filer. |
-| [[docs/kodkarta/filer/src/riskanalys/lagring/yamlfil.py.md\|src/riskanalys/lagring/yamlfil.py]] | Läs och skriv YAML med svenska tecken. |
+| [[docs/kodkarta/filer/src/riskanalys/lagring/yamlfil.py.md\|src/riskanalys/lagring/yamlfil.py]] | Säker YAML-läsning och privat atomisk skrivning med tydligt fel efter publicering. |
 | [[docs/kodkarta/filer/src/riskanalys/nyckelfil.py.md\|src/riskanalys/nyckelfil.py]] | Lokala API-nycklar i en fil utanför repot. |
 | [[docs/kodkarta/filer/src/riskanalys/profil/__init__.py.md\|src/riskanalys/profil/__init__.py]] | Byråprofilen: uppgifter om byrån med status och källa. |
 | [[docs/kodkarta/filer/src/riskanalys/profil/forandringar.py.md\|src/riskanalys/profil/forandringar.py]] | Gemensam transaktionsgräns för CLI/webb: förändringslås → profil-CAS → historiklås. Rättelsens revisionsbundna avsikt journalförs före profilens atomiska namnbyte. Vid avbruten profilsparning visar historiken därför ett försök, aldrig ett oregistrerat undantag från införandespärren. Eftervärdet i profilen visar om rättelsen genomfördes. |
@@ -349,11 +365,10 @@ Varje rad länkar till aktuellt filkort. Där finns fulla direkta interna import
 | [[docs/kodkarta/filer/src/riskanalys/regelverk/validering_scenario.py.md\|src/riskanalys/regelverk/validering_scenario.py]] | Kontrollerar scenariometodens katalogkopplingar (spec 2026-10-18, Datamodell och Preciseringar). |
 | [[docs/kodkarta/filer/src/riskanalys/regelverk/villkor.py.md\|src/riskanalys/regelverk/villkor.py]] | Typat villkorsformat för regelbasen (spec 6.3). |
 
+
 ## 8. Samtliga regelbasfiler
 
-Källor och typade kataloger är regelunderlag; en karta eller ett passerat test gör inte ett objekt sakkunniggranskat.
-
-| Fil / filkort | Ansvar |
+| Fil | Ansvar |
 |---|---|
 | [[docs/kodkarta/filer/regelbas/beslutstabeller/kundmodell.yaml.md\|regelbas/beslutstabeller/kundmodell.yaml]] | Gemensam kundmodellmetadata, metodförslag och åtgärdsdefinitioner. |
 | [[docs/kodkarta/filer/regelbas/beslutstabeller/kundmodell/a-sanktioner.yaml.md\|regelbas/beslutstabeller/kundmodell/a-sanktioner.yaml]] | Kundmodellens A-spår för sanktioner. 3 toppnivåposter. |
@@ -672,19 +687,20 @@ Källor och typade kataloger är regelunderlag; en karta eller ett passerat test
 | [[docs/kodkarta/filer/regelbas/utkast/amlr/paket.yaml.md\|regelbas/utkast/amlr/paket.yaml]] | Separat framtidsutkast med status och tillämpningsdatum; laddas inte som operativ regelbas. |
 | [[docs/kodkarta/filer/regelbas/version.yaml.md\|regelbas/version.yaml]] | Versionsnummer för regelbasen. |
 
+
 ## 9. Samtliga test- och fixturfiler
 
-Testfiler och syntetiska/frysta underlag visas var för sig. Komprimerad fixtur inventeras utan uppackning eller ändring.
-
-| Fil / filkort | Ansvar |
+| Fil | Ansvar |
 |---|---|
 | [[docs/kodkarta/filer/tester/conftest.py.md\|tester/conftest.py]] | Gemensamma fixturer. |
 | [[docs/kodkarta/filer/tester/enhet/conftest.py.md\|tester/enhet/conftest.py]] | M1:s CLI-regressioner använder en explicit fryst v0-bas. |
 | [[docs/kodkarta/filer/tester/enhet/test_aischema.py.md\|tester/enhet/test_aischema.py]] | Testar AI-svarets JSON-schema, obligatoriska fält, tolkning och tillåtna referenser. |
+| [[docs/kodkarta/filer/tester/enhet/test_aktivitetsprov.py.md\|tester/enhet/test_aktivitetsprov.py]] | Aktivering prövas som förut, men definitioner och värden byggs en gång per profilvy. |
 | [[docs/kodkarta/filer/tester/enhet/test_aldre_skrivvag.py.md\|tester/enhet/test_aldre_skrivvag.py]] | Den äldre skrivvägen utan faktablad skyddar inte AI-begäran och är stängd för riktiga AI-anrop (spec 8.4.10). |
 | [[docs/kodkarta/filer/tester/enhet/test_analys_kommando.py.md\|tester/enhet/test_analys_kommando.py]] | CLI avvisar farliga flaggkombinationer innan filer eller tjänster används. |
 | [[docs/kodkarta/filer/tester/enhet/test_analys_overforing_lagring.py.md\|tester/enhet/test_analys_overforing_lagring.py]] | Pythonmodul; se definitioner och importer på filkortet. |
 | [[docs/kodkarta/filer/tester/enhet/test_analys_overforing_v2.py.md\|tester/enhet/test_analys_overforing_v2.py]] | Pythonmodul; se definitioner och importer på filkortet. |
+| [[docs/kodkarta/filer/tester/enhet/test_analysandringar.py.md\|tester/enhet/test_analysandringar.py]] | Blockkommandon får bara ändra det namngivna blocket under revisionsskydd. |
 | [[docs/kodkarta/filer/tester/enhet/test_analysformular.py.md\|tester/enhet/test_analysformular.py]] | Typade HTML-adaptrar får ändra svar, aldrig skapa en attest. |
 | [[docs/kodkarta/filer/tester/enhet/test_analysgrind.py.md\|tester/enhet/test_analysgrind.py]] | AB5 binder dokumentet och publiceringen till exakt fryst lokal evidens. |
 | [[docs/kodkarta/filer/tester/enhet/test_analysguide.py.md\|tester/enhet/test_analysguide.py]] | Guiden får inte gömma obligatoriska bedömningar eller kalla utkast attesterade. |
@@ -752,6 +768,7 @@ Testfiler och syntetiska/frysta underlag visas var för sig. Komprimerad fixtur 
 | [[docs/kodkarta/filer/tester/enhet/test_matning.py.md\|tester/enhet/test_matning.py]] | Testar anropsförsök, felklasser och redovisning av token inklusive cache. |
 | [[docs/kodkarta/filer/tester/enhet/test_metodkontraster.py.md\|tester/enhet/test_metodkontraster.py]] | De faktiska sänkningarna måste följas även från ursprungsbaslinjen. |
 | [[docs/kodkarta/filer/tester/enhet/test_modellrisk.py.md\|tester/enhet/test_modellrisk.py]] | AB7:s underlag är syntetiska; grön teknik är aldrig sakkunnigattest. |
+| [[docs/kodkarta/filer/tester/enhet/test_modulgranser.py.md\|tester/enhet/test_modulgranser.py]] | Importkontrakten ska fånga verkliga direkta och transitiva förbjudna vägar. |
 | [[docs/kodkarta/filer/tester/enhet/test_nivamotivering_v6.py.md\|tester/enhet/test_nivamotivering_v6.py]] | Risknivå och motivering: programmets beräkning i ord och byråns egen bedömning, skilda åt i varje tjänst. |
 | [[docs/kodkarta/filer/tester/enhet/test_nyckelfil.py.md\|tester/enhet/test_nyckelfil.py]] | Lokala API-nycklar i en fil utanför repot. |
 | [[docs/kodkarta/filer/tester/enhet/test_omfattning.py.md\|tester/enhet/test_omfattning.py]] | Testar perioder, härledda andelar och hantering av ogiltiga basuppgifter. |
@@ -796,6 +813,7 @@ Testfiler och syntetiska/frysta underlag visas var för sig. Komprimerad fixtur 
 | [[docs/kodkarta/filer/tester/enhet/test_skriv_kommando.py.md\|tester/enhet/test_skriv_kommando.py]] | Testar CLI-skrivning, leverantörsval, underkända svar och bevarade avbrutna försök. |
 | [[docs/kodkarta/filer/tester/enhet/test_skrivformat_v7.py.md\|tester/enhet/test_skrivformat_v7.py]] | V7:s sammanhängande analys och externa integritetsgräns. |
 | [[docs/kodkarta/filer/tester/enhet/test_skrivformat_v8.py.md\|tester/enhet/test_skrivformat_v8.py]] | V8:s explicita provväg och begränsade språkregressioner, inte semantisk attest. |
+| [[docs/kodkarta/filer/tester/enhet/test_skrivkonfiguration.py.md\|tester/enhet/test_skrivkonfiguration.py]] | Samma leverantörsval och fel för samtliga ingångar, utan nätverk. |
 | [[docs/kodkarta/filer/tester/enhet/test_skrivning.py.md\|tester/enhet/test_skrivning.py]] | Testar skrivförsök, validering, återkoppling och högsta antal omförsök. |
 | [[docs/kodkarta/filer/tester/enhet/test_testverktyg.py.md\|tester/enhet/test_testverktyg.py]] | Körprofilen får aldrig göra ett tomt/felaktigt urval grönt. |
 | [[docs/kodkarta/filer/tester/enhet/test_tillampningsbyte.py.md\|tester/enhet/test_tillampningsbyte.py]] | Pythonmodul; se definitioner och importer på filkortet. |
@@ -805,8 +823,10 @@ Testfiler och syntetiska/frysta underlag visas var för sig. Komprimerad fixtur 
 | [[docs/kodkarta/filer/tester/enhet/test_underlag.py.md\|tester/enhet/test_underlag.py]] | Testar tjänstens tillåtna AI-underlag, personuppgiftsskydd och smågruppsskydd. |
 | [[docs/kodkarta/filer/tester/enhet/test_utfall_v6.py.md\|tester/enhet/test_utfall_v6.py]] | Lokala utfall redovisar skyddade värden utan att ändra villkor eller AI-underlag. |
 | [[docs/kodkarta/filer/tester/enhet/test_utfallsforklaring.py.md\|tester/enhet/test_utfallsforklaring.py]] | Sparade motorutfall förklaras utan ny bedömning. |
+| [[docs/kodkarta/filer/tester/enhet/test_utkastflode.py.md\|tester/enhet/test_utkastflode.py]] | Gemensamt utkastflöde bevarar aktualitet och återanvänder sparade AI-svar. |
 | [[docs/kodkarta/filer/tester/enhet/test_validering_utkast.py.md\|tester/enhet/test_validering_utkast.py]] | Testar maskinell validering av utkastets avsnitt, innehåll och referenser. |
 | [[docs/kodkarta/filer/tester/enhet/test_verksamhetsval_v7.py.md\|tester/enhet/test_verksamhetsval_v7.py]] | Versionerad faktavy och hela skyddade begäranden för äldre format. |
+| [[docs/kodkarta/filer/tester/enhet/test_yamllasning.py.md\|tester/enhet/test_yamllasning.py]] | Läsning av YAML: samma säkra tolkning, men med libyaml när den finns. |
 | [[docs/kodkarta/filer/tester/fixturer/analys_hela_kedjan.py.md\|tester/fixturer/analys_hela_kedjan.py]] | AB6:s syntetiska byrådata; inga riktiga kunder, attester eller API-anrop. Basfallet har tolv scenarier. Utlandsvarianten har tjugo eftersom varje relevant delat scenario får en egen lokal tillämpning för bokföringen. |
 | [[docs/kodkarta/filer/tester/fixturer/arb_kedja.py.md\|tester/fixturer/arb_kedja.py]] | Syntetisk motor- och D-ARB-kedja för regelkontrakten. Endast syntetiska uppgifter och Testleverantor; inga riktiga byrådata och inga API-anrop. Nya dokument byggs via bygg_arb i D-ARB-tjanst-v6 med de två AI-delarna hot och sårbarheter. Historisk v5 byggs bara uttryckligen, för att verifieringen av äldre paket ska fortsätta vara prövad. |
 | [[docs/kodkarta/filer/tester/fixturer/cli_process.py.md\|tester/fixturer/cli_process.py]] | CLI-gränsen utan ny Pythonprocess; isolerad miljö och fångad utdata. |
@@ -939,6 +959,7 @@ Testfiler och syntetiska/frysta underlag visas var för sig. Komprimerad fixtur 
 | [[docs/kodkarta/filer/tester/testprofiler.json.md\|tester/testprofiler.json]] | Strukturerat underlag eller fixtur för testprofiler. |
 | [[docs/kodkarta/filer/tester/typfall/conftest.py.md\|tester/typfall/conftest.py]] | M1:s CLI-regressioner använder en explicit fryst v0-bas. |
 | [[docs/kodkarta/filer/tester/typfall/test_analys_hela_kedjan.py.md\|tester/typfall/test_analys_hela_kedjan.py]] | AB6: syntetiska privata analyser påverkar aldrig AI-begäran. |
+| [[docs/kodkarta/filer/tester/typfall/test_aterstallning_v10.py.md\|tester/typfall/test_aterstallning_v10.py]] | Fristående V10 och hela arbetsmappen återställs i nya syntetiska datamappar. |
 | [[docs/kodkarta/filer/tester/typfall/test_engangssvar_arbetsflode.py.md\|tester/typfall/test_engangssvar_arbetsflode.py]] | Verklig schema-2-start; frysta rapportfall hålls åtskilda från komplett attestprov. |
 | [[docs/kodkarta/filer/tester/typfall/test_gemensam_analys_ai_grans.py.md\|tester/typfall/test_gemensam_analys_ai_grans.py]] | Hela privata schema-2-paketet får inte påverka begäranden, inte ens omförsök. |
 | [[docs/kodkarta/filer/tester/typfall/test_gemensam_analys_hela_kedjan.py.md\|tester/typfall/test_gemensam_analys_hela_kedjan.py]] | Riktig schema2-kedja med enbart syntetiska sak-/modellattester i tempkopia. |
@@ -947,17 +968,17 @@ Testfiler och syntetiska/frysta underlag visas var för sig. Komprimerad fixtur 
 | [[docs/kodkarta/filer/tester/typfall/test_resultatrapport_hela_kedjan.py.md\|tester/typfall/test_resultatrapport_hela_kedjan.py]] | Få riktiga V9-kedjor; negativa mutationer görs på kopior av granskade källor. |
 | [[docs/kodkarta/filer/tester/typfall/test_tunn_kedja.py.md\|tester/typfall/test_tunn_kedja.py]] | Typfall för M1: hela kedjan via kommandoraden med syntetiska uppgifter (spec 15). |
 
+
 ## 10. Samtliga dokumentations-, verktygs- och rotfiler
 
-Dokumentationens status och körbevis skiljs från själva produktkoden. Kartläggningen startar inga externa AI-/API-anrop.
-
-| Fil / filkort | Ansvar |
+| Fil | Ansvar |
 |---|---|
 | [[docs/kodkarta/filer/fil-.gitattributes.md\|.gitattributes]] | Git-attribut för filhantering och radslut. |
+| [[docs/kodkarta/filer/.github/workflows/verifiera.yml.md\|.github/workflows/verifiera.yml]] | Förberedd CI med lås-, dokument-, import-, regelbas-, snabb- och fullkontroll. |
 | [[docs/kodkarta/filer/fil-.gitignore.md\|.gitignore]] | Anger filer och lokala arbets-/datamappar som Git ska ignorera. |
+| [[docs/kodkarta/filer/fil-.python-version.md\|.python-version]] | Exakt stödd Pythonpatchversion: 3.12.15. |
 | [[docs/kodkarta/filer/AGENTS.md.md\|AGENTS.md]] | Gemensamma arbetsregler, selektiv Obsidian-navigering och aktuell Python 3.12-/verifieringspolicy. |
 | [[docs/kodkarta/filer/CLAUDE.md.md\|CLAUDE.md]] | Hänvisar Claude Code till projektets gemensamma instruktioner. |
-| [[docs/kodkarta/filer/Namnlös.canvas.md\|Namnlös.canvas]] | Användarens lokala Obsidian-canvas. |
 | [[docs/kodkarta/filer/README.md.md\|README.md]] | Introduktion, användarflöden och kommandon. |
 | [[docs/kodkarta/filer/docs/PROGRAMKARTA.md.md\|docs/PROGRAMKARTA.md]] | Aktuell programöversikt, gruppansvar och fullständigt annoterat filträd. |
 | [[docs/kodkarta/filer/docs/START.md.md\|docs/START.md]] | Gemensam start med aktuell main-struktur, V10 och selektiva områdesguider. |
@@ -1044,6 +1065,7 @@ Dokumentationens status och körbevis skiljs från själva produktkoden. Kartlä
 | [[docs/kodkarta/filer/docs/superpowers/plans/2026-10-23-regelbas-c-rapport-d-e.md.md\|docs/superpowers/plans/2026-10-23-regelbas-c-rapport-d-e.md]] | Dokumentation: Regelbas C, rapportdisposition, D och E Implementation Plan. |
 | [[docs/kodkarta/filer/docs/superpowers/plans/2026-10-23-regelbas-steg-b.md.md\|docs/superpowers/plans/2026-10-23-regelbas-steg-b.md]] | Dokumentation: Regelbasens steg B Implementation Plan. |
 | [[docs/kodkarta/filer/docs/superpowers/plans/2026-10-24-redaktionell-runda.md.md\|docs/superpowers/plans/2026-10-24-redaktionell-runda.md]] | Dokumentation: Redaktionell runda för V10 Implementation Plan. |
+| [[docs/kodkarta/filer/docs/superpowers/plans/2026-10-24-robust-programstruktur.md.md\|docs/superpowers/plans/2026-10-24-robust-programstruktur.md]] | Projektfil: 2026-10-24-robust-programstruktur.md. |
 | [[docs/kodkarta/filer/docs/superpowers/plans/verktyg/README.md.md\|docs/superpowers/plans/verktyg/README.md]] | Genomförandeplan och arbetsjournal: Provkörning av en implementeringsplan. |
 | [[docs/kodkarta/filer/docs/superpowers/plans/verktyg/provkor_plan.py.md\|docs/superpowers/plans/verktyg/provkor_plan.py]] | Bygger projektet ur en implementeringsplan, steg för steg, i en tom mapp. |
 | [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-21-beslutsformular-jamforelsepar.md.md\|docs/superpowers/reviews/2026-10-21-beslutsformular-jamforelsepar.md]] | Dokumentation: Beslutsformulär: vilka skillnader ska påverka bedömningen?. |
@@ -1096,6 +1118,8 @@ Dokumentationens status och körbevis skiljs från själva produktkoden. Kartlä
 | [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-23-steg-d-forberedelse.md.md\|docs/superpowers/reviews/2026-10-23-steg-d-forberedelse.md]] | Dokumentation: Steg D – förberedelse och beroenden. |
 | [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-23-svar-claude-resultatrapport-r2.md.md\|docs/superpowers/reviews/2026-10-23-svar-claude-resultatrapport-r2.md]] | Dokumentation: Rättning efter granskning av R2 på f653eea. |
 | [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-23-svar-r4-r7-granskning.md.md\|docs/superpowers/reviews/2026-10-23-svar-r4-r7-granskning.md]] | Dokumentation: Svar på granskningen av R4–R7 – del 1. |
+| [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-24-programarkitektur-underlag.json.md\|docs/superpowers/reviews/2026-10-24-programarkitektur-underlag.json]] | Projektfil: 2026-10-24-programarkitektur-underlag.json. |
+| [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-24-programarkitektur.md.md\|docs/superpowers/reviews/2026-10-24-programarkitektur.md]] | Projektfil: 2026-10-24-programarkitektur.md. |
 | [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-24-redaktionell-arbetslogg.md.md\|docs/superpowers/reviews/2026-10-24-redaktionell-arbetslogg.md]] | Dokumentation: SDD ledger — plan: docs/superpowers/plans/2026-10-24-redaktionell-runda.md. |
 | [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-24-redaktionell-offline.md.md\|docs/superpowers/reviews/2026-10-24-redaktionell-offline.md]] | Dokumentation: Redaktionell offlineförhandsvisning – kontrollpunkt 1. |
 | [[docs/kodkarta/filer/docs/superpowers/reviews/2026-10-24-redaktionell-paketmatning.md.md\|docs/superpowers/reviews/2026-10-24-redaktionell-paketmatning.md]] | Dokumentation: Slutlig paketering 2.12.3. |
@@ -1120,6 +1144,8 @@ Dokumentationens status och körbevis skiljs från själva produktkoden. Kartlä
 | [[docs/kodkarta/filer/pyproject.toml.md\|pyproject.toml]] | Paketering, Pythonkrav, beroenden, CLI-ingång och pytest-inställningar. |
 | [[docs/kodkarta/filer/scripts/testa.py.md\|scripts/testa.py]] | Explicita pytestprofiler med collection, JUnit och oförändrat källsnapshot. |
 | [[docs/kodkarta/filer/scripts/testtid.py.md\|scripts/testtid.py]] | Summera befintlig JUnit; startar aldrig en ny testkörning. |
+| [[docs/kodkarta/filer/uv.lock.md\|uv.lock]] | Låsta kör- och utvecklingsberoenden för den stödda Pythonmiljön. |
+
 
 ## 11. Hitta rätt när du vill ändra något
 
@@ -1137,34 +1163,35 @@ Generatorn kräver bara standardbiblioteket. Uppdatera ansvarstext, områdesguid
 
 ## 13. Programmets storlek och förenkling för AI-arbete
 
-[Arkitekturgenomgång 2026-10-24](superpowers/reviews/2026-10-24-programarkitektur.md) jämför aktuell kod med OpenFisca, Open edX, Sphinx och pretix samt dokumentation via Context7. Den föreslår gemensamma arbetsflöden, tydligare Python-gränssnitt och skilda ansvar för skrivning, rapport och leverans. Förslagen är inte genomförda. Rapportens färska mätning och källhashar omfattar även aktuella lokala kodändringar och ersätter inte denna kartas daterade inventering.
+[Robusthetsplanen](superpowers/plans/2026-10-24-robust-programstruktur.md) genomförs på arbetsgrenen. Fem sammanslagningar och tre nya programfiler ger **249 → 247** filer. Webbens beroende på kommandopaketet och analystjänstens beroende på formuläradaptern har tagits bort. Tre importkontrakt prövar avsedda gränser, även transitivt. Filerna har tydligare ansvar; filantal eller radantal är inga fristående kvalitetsmått.
 
-- `analys/`: 15 filer, 2,498 fysiska Pythonrader.
+- `analys/`: 16 filer, 2,663 fysiska Pythonrader.
 - `bedomning/`: 14 filer, 947 fysiska Pythonrader.
-- `dokument/`: 100 filer, 11,430 fysiska Pythonrader.
-- `faststallelse/`: 6 filer, 831 fysiska Pythonrader.
-- `foretagsdata/`: 9 filer, 779 fysiska Pythonrader.
-- `granskning/`: 15 filer, 1,115 fysiska Pythonrader.
-- `intag/`: 31 filer, 3,425 fysiska Pythonrader.
-- `kommandon/`: 15 filer, 1,068 fysiska Pythonrader.
-- `lagring/`: 6 filer, 331 fysiska Pythonrader.
-- `profil/`: 12 filer, 1,224 fysiska Pythonrader.
-- `regelverk/`: 17 filer, 2,834 fysiska Pythonrader.
+- `dokument/`: 98 filer, 11,427 fysiska Pythonrader.
 - `drift/`: 5 filer, 548 fysiska Pythonrader.
+- `faststallelse/`: 6 filer, 831 fysiska Pythonrader.
+- `foretagsdata/`: 8 filer, 777 fysiska Pythonrader.
+- `granskning/`: 14 filer, 1,113 fysiska Pythonrader.
+- `intag/`: 30 filer, 3,319 fysiska Pythonrader.
+- `kommandon/`: 15 filer, 1,065 fysiska Pythonrader.
+- `lagring/`: 6 filer, 364 fysiska Pythonrader.
+- `profil/`: 12 filer, 1,249 fysiska Pythonrader.
+- `regelverk/`: 17 filer, 2,834 fysiska Pythonrader.
 
-Storlek är ett läshjälpmedel och ett underlag för avgränsning, inte ett automatiskt skäl att slå ihop filer. Dokumentkedjan återanvänder flera versionsgenerationer, och aktuella schema-2-operationer påverkar analys, webb, CLI, rapport och granskning. Följ de faktiska importerna och kontrakten vid ändring.
-
-Behåll selektiv startkontext, gemensamma arbetsregler och ansvar per område. Kartans områden förenklar läsningen utan att flytta produktmoduler. Ingen uppmätt tokenbesparing, kvalitetsvinst, ny fullsvit eller arkitekturomläggning påstås för navigeringsuppdateringen.
+Nya gemensamma rotmoduler är `konfiguration.py` och `arbetsfloden.py`. Storlek hjälper kontexturvalet; använd områdesguider och faktiska kontrakt vid ändring. Mätbara test-, återställnings- och leveransutfall står i planens genomförandelogg och testguiden. Ingen generell tokenbesparing eller mänsklig produktacceptans härleds ur inventeringen.
 
 ## 14. Fullständigt filträd med varje fils ansvar
 
-Detta träd visar exakt samma Git-urval som filkorten, inklusive nya ej ignorerade navigeringsfiler. Mappar visar rekursiva filantal och Pythonrader; varje fil har en rollbeskrivning. Ingen programkod har flyttats.
+Detta träd visar exakt samma Git-urval som filkorten, inklusive nya ej ignorerade navigeringsfiler. Mappar visar rekursiva filantal och Pythonrader; varje fil har en rollbeskrivning. Trädet följer den aktuella införandekandidatens filflyttar.
 
 ```text
 <!-- filtrad-start -->
-Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och dokumentation.
-├── docs/ [158 filer; 2,389 Pythonrader] — Gemensam projektdokumentation och navigering.
-│   ├── omraden/ [15 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+Riskanalys/ [1010 projektfiler] — Program, regeldata, tester och dokumentation.
+├── .github/ [1 filer] — Filer med gemensamt område eller ansvar.
+│   └── workflows/ [1 filer] — Filer med gemensamt område eller ansvar.
+│       └── verifiera.yml — Förberedd CI med lås-, dokument-, import-, regelbas-, snabb- och fullkontroll.
+├── docs/ [161 filer; 2,393 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   ├── omraden/ [15 filer] — Filer med gemensamt område eller ansvar.
 │   │   ├── AI-skrivning.md — Dokumentation: AI-skrivning.
 │   │   ├── CLI.md — Dokumentation: Kommandorad och start.
 │   │   ├── Drift-och-lagring.md — Dokumentation: Drift och lagring.
@@ -1180,13 +1207,13 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── Riskmotor.md — Dokumentation: Deterministisk riskmotor.
 │   │   ├── Tester.md — Dokumentation: Tester och syntetiska underlag.
 │   │   └── Word-och-leverans.md — Dokumentation: Word och leverans.
-│   ├── research/ [41 filer; 2,150 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   ├── typfall/ [1 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── research/ [41 filer; 2,154 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   │   ├── typfall/ [1 filer] — Filer med gemensamt område eller ansvar.
 │   │   │   └── tillsyn-2026.json — Syntetiska tillsynsfall med förväntade fynd för maskinell utvärdering.
-│   │   ├── verktyg/ [21 filer; 2,150 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   ├── verktyg/ [21 filer; 2,154 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   │   ├── README.md — Dokumentation: Researchverktyg.
 │   │   │   ├── analyslagen.py [41 rader] — Gemensamma, uttryckliga lägen för syntetiska jämförelser.
-│   │   │   ├── bygg_obsidiankarta.py [205 rader] — Bygger och kontrollerar filkort, områdesindex, källhashar och statiska importer; stöder binära fixturer.
+│   │   │   ├── bygg_obsidiankarta.py [209 rader] — Bygger och kontrollerar filkort, områdesindex, källhashar och statiska importer; stöder binära fixturer.
 │   │   │   ├── enskilda_faktorer.py [39 rader] — Vad gör varje enskild riskfaktor i en byrå utan andra faktorer? Nuvarande metod och TF-alternativ. Endast syntetiska profiler (tester/fixturer/faktorer.py). Inga regelbasfiler ändras; TF-alternativet sätts bara i minnet för denna körning.
 │   │   │   ├── extrahera_text.py [201 rader] — Forskningsverktyg som extraherar text ur PDF, MHTML, Word, Excel och Pages till en vald utmatningsmapp.
 │   │   │   ├── forenklad_slutprov.py [52 rader] — Syntetisk V8-export med frysta fakta och skrivsvar, utan nätverk eller verkliga attester.
@@ -1224,9 +1251,9 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── kallmanifest-2026-10-11.json — Kontrollsummor och metadata för researchens källinsamling.
 │   │   ├── kallor.md — Dokumentation: Källförteckning.
 │   │   └── scb-afr-v1-kontrakt.json — Sparad API-kontraktsbild för integrationens implementation och syntetiska kontraktsprov.
-│   ├── superpowers/ [96 filer; 239 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   ├── plans/ [26 filer; 156 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   │   ├── verktyg/ [2 filer; 156 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── superpowers/ [99 filer; 239 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   │   ├── plans/ [27 filer; 156 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   │   │   ├── verktyg/ [2 filer; 156 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   │   │   ├── README.md — Genomförandeplan och arbetsjournal: Provkörning av en implementeringsplan.
 │   │   │   │   └── provkor_plan.py [156 rader] — Bygger projektet ur en implementeringsplan, steg för steg, i en tom mapp.
 │   │   │   ├── 2026-10-08-m0-m1-grund-och-tunn-kedja.md — Genomförandeplan och arbetsjournal: M0 och M1: grund och tunn kedja – implementeringsplan.
@@ -1252,9 +1279,10 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   │   ├── 2026-10-23-rapport-v10.md — Dokumentation: Rapportdisposition V10 Implementation Plan.
 │   │   │   ├── 2026-10-23-regelbas-c-rapport-d-e.md — Dokumentation: Regelbas C, rapportdisposition, D och E Implementation Plan.
 │   │   │   ├── 2026-10-23-regelbas-steg-b.md — Dokumentation: Regelbasens steg B Implementation Plan.
-│   │   │   └── 2026-10-24-redaktionell-runda.md — Dokumentation: Redaktionell runda för V10 Implementation Plan.
-│   │   ├── reviews/ [64 filer; 83 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   │   ├── kravstod-2026-10-21/ [8 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   │   ├── 2026-10-24-redaktionell-runda.md — Dokumentation: Redaktionell runda för V10 Implementation Plan.
+│   │   │   └── 2026-10-24-robust-programstruktur.md — Projektfil: 2026-10-24-robust-programstruktur.md.
+│   │   ├── reviews/ [66 filer; 83 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   │   │   ├── kravstod-2026-10-21/ [8 filer] — Filer med gemensamt område eller ansvar.
 │   │   │   │   ├── baslinje.log — Sparad verifieringslogg; historiskt körbevis, ingen ny testkörning.
 │   │   │   │   ├── genomforandejournal.md — Dokumentation: SDD ledger — plan: docs/superpowers/plans/2026-10-21-kravstod-och-tjansteexponering-plan.md.
 │   │   │   │   ├── granskningsrattningar.log — Sparad verifieringslogg; historiskt körbevis, ingen ny testkörning.
@@ -1263,7 +1291,7 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   │   │   ├── rapport-efter-mandat.log — Sparad verifieringslogg; historiskt körbevis, ingen ny testkörning.
 │   │   │   │   ├── rapport-fore-fyra.log — Sparad verifieringslogg; historiskt körbevis, ingen ny testkörning.
 │   │   │   │   └── rapport-fore-mandat.log — Sparad verifieringslogg; historiskt körbevis, ingen ny testkörning.
-│   │   │   ├── kravstod-granskning-2026-10-22/ [1 filer; 83 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   │   ├── kravstod-granskning-2026-10-22/ [1 filer; 83 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   │   │   └── test_planens_livslopp.py [83 rader] — Regressionstest för planens livslopp efter införande (granskning av a7f9377). Placera filen i tester/enhet/ på codex/kravstod-tjansteexponering. Testerna beskriver beteende, inte implementation: en plan som införts med en giltig, bunden utvärdering ska därefter vara genomförd historik och får inte spärra fastställelsen när bedömningsdatum eller byråns fakta ändras. Planer som ännu inte är genomförda ska fortsatt spärra. `forandringshinder(rb, profil, profil, historik, datum)` är samma anrop som `faststallelse/grindar.py:_drift` gör före fastställelse.
 │   │   │   ├── 2026-10-21-beslutsformular-jamforelsepar.md — Dokumentation: Beslutsformulär: vilka skillnader ska påverka bedömningen?.
 │   │   │   ├── 2026-10-21-beslutsunderlag-steg0.md — Dokumentation: Beslutsunderlag för steg 0: D3, D5, D6, D8 och D9.
@@ -1315,12 +1343,14 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   │   ├── 2026-10-23-steg-d-forberedelse.md — Dokumentation: Steg D – förberedelse och beroenden.
 │   │   │   ├── 2026-10-23-svar-claude-resultatrapport-r2.md — Dokumentation: Rättning efter granskning av R2 på f653eea.
 │   │   │   ├── 2026-10-23-svar-r4-r7-granskning.md — Dokumentation: Svar på granskningen av R4–R7 – del 1.
+│   │   │   ├── 2026-10-24-programarkitektur-underlag.json — Projektfil: 2026-10-24-programarkitektur-underlag.json.
+│   │   │   ├── 2026-10-24-programarkitektur.md — Projektfil: 2026-10-24-programarkitektur.md.
 │   │   │   ├── 2026-10-24-redaktionell-arbetslogg.md — Dokumentation: SDD ledger — plan: docs/superpowers/plans/2026-10-24-redaktionell-runda.md.
 │   │   │   ├── 2026-10-24-redaktionell-offline.md — Dokumentation: Redaktionell offlineförhandsvisning – kontrollpunkt 1.
 │   │   │   ├── 2026-10-24-redaktionell-paketmatning.md — Dokumentation: Slutlig paketering 2.12.3.
 │   │   │   ├── 2026-10-24-redaktionell-slutprov.md — Dokumentation: Redaktionell V10 – produktkoppling och slutprov.
 │   │   │   └── 2026-10-24-teststrategi-femminuter.md — Dokumentation: Research: högst fem minuters normal teståterkoppling.
-│   │   └── specs/ [6 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   └── specs/ [6 filer] — Filer med gemensamt område eller ansvar.
 │   │       ├── 2026-10-08-riskanalys-design.md — Befintlig designspecifikation: Riskanalys – designspecifikation.
 │   │       ├── 2026-10-18-scenariomotor-design.md — Befintlig designspecifikation: Scenariomotor: hot och sårbarheter som blir risker.
 │   │       ├── 2026-10-21-kravstod-och-tjansteexponering-design.md — Dokumentation: Kravstöd och tjänsteexponering i Riskanalys.
@@ -1333,9 +1363,9 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   ├── kravstod.md — Dokumentation: Resultatrapport, analysbilaga och underlag.
 │   ├── sakkunniggranskning.md — Dokumentation: Guide för sakkunniggranskning av regelbas 2.12.3.
 │   └── testning.md — Dokumentation: Testning med Python 3.12.
-├── regelbas/ [316 filer] — Källbundna regeldata och metodförslag.
-│   ├── beslutstabeller/ [11 filer] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   ├── kundmodell/ [5 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+├── regelbas/ [316 filer] — Filer med gemensamt område eller ansvar.
+│   ├── beslutstabeller/ [11 filer] — Filer med gemensamt område eller ansvar.
+│   │   ├── kundmodell/ [5 filer] — Filer med gemensamt område eller ansvar.
 │   │   │   ├── a-sanktioner.yaml — Kundmodellens A-spår för sanktioner. 3 toppnivåposter.
 │   │   │   ├── a-stopp.yaml — Kundmodellens A-spår för stoppvillkor. 8 toppnivåposter.
 │   │   │   ├── b-atgarder.yaml — Kundmodellens B-spår för kundkännedomsåtgärder. 4 toppnivåposter.
@@ -1347,13 +1377,13 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── sanktionsrisk.yaml — Separat sanktionsriskmetod och dess beslutsrader.
 │   │   ├── skalmappning.yaml — Metod för att översätta sektorsreferensens skala till jämförelsen med lokal nivå.
 │   │   └── tillamplighet.yaml — Villkor för rättslig tillämplighet. 6 toppnivåposter.
-│   ├── inventering/ [5 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── inventering/ [5 filer] — Filer med gemensamt område eller ansvar.
 │   │   ├── 01fs.yaml — Oberoende paragrafinventarium för 01FS; används för att finna luckor i paketens paragrafkartor.
 │   │   ├── 12fs.yaml — Oberoende paragrafinventarium för 12FS; används för att finna luckor i paketens paragrafkartor.
 │   │   ├── 14fs.yaml — Oberoende paragrafinventarium för 14FS; används för att finna luckor i paketens paragrafkartor.
 │   │   ├── ptf.yaml — Oberoende paragrafinventarium för PTF; används för att finna luckor i paketens paragrafkartor.
 │   │   └── ptl.yaml — Oberoende paragrafinventarium för PTL; används för att finna luckor i paketens paragrafkartor.
-│   ├── kalltexter/ [8 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── kalltexter/ [8 filer] — Filer med gemensamt område eller ansvar.
 │   │   ├── 01fs-2024-20-stockholm.txt — Bevarat källutdrag/register för Stockholms föreskrifter 01FS 2024:20.
 │   │   ├── 12fs-2024-8-skane.txt — Bevarat källutdrag/register för Skånes föreskrifter 12FS 2024:8.
 │   │   ├── 14fs-2024-11-vastra-gotaland.txt — Bevarat källutdrag/register för Västra Götalands föreskrifter 14FS 2024:11.
@@ -1362,19 +1392,19 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── ptf-datumregister.txt — Bevarat källutdrag/register för förordningens lydelsedatum.
 │   │   ├── ptl-2017-630-rkrattsbaser.txt — Bevarat källutdrag/register för penningtvättslagen 2017:630.
 │   │   └── ptl-datumregister.txt — Bevarat källutdrag/register för lagens lydelsedatum.
-│   ├── kataloger/ [6 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── kataloger/ [6 filer] — Filer med gemensamt område eller ansvar.
 │   │   ├── bristmonster.yaml — Bristmönster som den maskinella granskningen använder. 29 toppnivåposter.
 │   │   ├── hot.yaml — Hot, dimensioner, hotnivåer och källbundna motiv. 21 toppnivåposter.
 │   │   ├── kontroller.yaml — Kontroller, beläggsfaser, räckvidd och mål mot tjänst/hot. 13 toppnivåposter.
 │   │   ├── lagre_risk.yaml — Källbundna indikatorer för lägre risk, med synliga begränsningar.
 │   │   ├── sarbarheter.yaml — Sårbarheters villkor, effekter, ersättningsregler och hotkopplingar. 28 toppnivåposter.
 │   │   └── tjanster.yaml — Tjänster med grundnivåer och kopplingar till hot, sårbarheter, kontroller och profilfält. 11 toppnivåposter.
-│   ├── krav/ [4 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── krav/ [4 filer] — Filer med gemensamt område eller ansvar.
 │   │   ├── allman_riskbedomning.yaml — Krav på den allmänna riskbedömningen. 6 toppnivåposter.
 │   │   ├── foreskrifter.yaml — Krav från tillsynsmyndigheternas föreskrifter. 29 toppnivåposter.
 │   │   ├── lag.yaml — Lagkrav med källor, villkor och täckningsmål. 69 toppnivåposter.
 │   │   └── registrering.yaml — Krav om registrering. 3 toppnivåposter.
-│   ├── lydelsetexter/ [265 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── lydelsetexter/ [265 filer] — Filer med gemensamt område eller ansvar.
 │   │   ├── LYD-01FS-20-1-1-2024-07-01.txt — Paragraftext för SRC-01FS-2024-20, 1 kap. 1 §; registrerad ikraft 2024-07-01.
 │   │   ├── LYD-01FS-20-1-2-2024-07-01.txt — Paragraftext för SRC-01FS-2024-20, 1 kap. 2 §; registrerad ikraft 2024-07-01.
 │   │   ├── LYD-01FS-20-2-1-2024-07-01.txt — Paragraftext för SRC-01FS-2024-20, 2 kap. 1 §; registrerad ikraft 2024-07-01.
@@ -1640,15 +1670,15 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── LYD-PTL-7a-8-2019-11-01.txt — Paragraftext för SRC-PTL, 7 a kap. 8 §; registrerad ikraft 2019-11-01.
 │   │   ├── LYD-PTL-7a-9-2019-11-01.txt — Paragraftext för SRC-PTL, 7 a kap. 9 §; registrerad ikraft 2019-11-01.
 │   │   └── LYD-PTL-8-1-2025-07-01.txt — Paragraftext för SRC-PTL, 8 kap. 1 §; registrerad ikraft 2025-07-01.
-│   ├── referensdata/ [2 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── referensdata/ [2 filer] — Filer med gemensamt område eller ansvar.
 │   │   ├── facit.json — Syntetiska tillsynsfall och förväntade utfall; separat gransknings- och utvärderingsunderlag.
 │   │   └── sektorsrisk.yaml — Sektorns riskreferens med ursprunglig skala och källor. 4 toppnivåposter.
-│   ├── regelpaket/ [3 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── regelpaket/ [3 filer] — Filer med gemensamt område eller ansvar.
 │   │   ├── redovisning-skane.yaml — Regelpaket RP-RED-SKANE: Bokföring, skatterådgivning och bolagstjänster: RP-RED-SKANE.
 │   │   ├── redovisning-stockholm.yaml — Regelpaket RP-RED-STHLM: Bokföring, skatterådgivning och bolagstjänster: RP-RED-STHLM.
 │   │   └── redovisning-vg.yaml — Regelpaket RP-RED-VG: Bokföring, skatterådgivning och bolagstjänster: RP-RED-VG.
-│   ├── utkast/ [5 filer] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   └── amlr/ [5 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── utkast/ [5 filer] — Filer med gemensamt område eller ansvar.
+│   │   └── amlr/ [5 filer] — Filer med gemensamt område eller ansvar.
 │   │       ├── README.md — Dokumentation: AMLR-utkast.
 │   │       ├── kallor.yaml — Källor enbart för AMLR-utkastet. 3 toppnivåposter.
 │   │       ├── kravkarta.yaml — Preliminär kravkarta för AMLR-utkastet. 96 toppnivåposter.
@@ -1661,29 +1691,30 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   ├── mal.yaml — Typade mål för krav- och dokumenttäckning. 34 toppnivåposter.
 │   ├── tillatelselistor.yaml — Anger vilka strukturerade uppgifter som får användas i AI-underlag. 1 toppnivåposter.
 │   └── version.yaml — Versionsnummer för regelbasen.
-├── scripts/ [2 filer; 99 Pythonrader] — Testprofiler och tidsanalys.
-│   ├── testa.py [70 rader] — Explicita pytestprofiler med collection, JUnit och oförändrat källsnapshot.
+├── scripts/ [2 filer; 110 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   ├── testa.py [81 rader] — Explicita pytestprofiler med collection, JUnit och oförändrat källsnapshot.
 │   └── testtid.py [29 rader] — Summera befintlig JUnit; startar aldrig en ny testkörning.
-├── src/ [249 filer; 27,149 Pythonrader] — Programkod.
-│   └── riskanalys/ [249 filer; 27,149 Pythonrader] — Programmets Pythonpaket.
-│       ├── analys/ [15 filer; 2,498 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+├── src/ [247 filer; 27,409 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   └── riskanalys/ [247 filer; 27,409 Pythonrader] — Filer med gemensamt område eller ansvar.
+│       ├── analys/ [16 filer; 2,663 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Privata lokala analyser, skilda från AI-underlag och riskberäkning.
+│       │   ├── andringar.py [173 rader] — Blockavgränsade kommandon, radidentitet och referenskontroll för låst tillämpning.
 │       │   ├── engangssvar.py [138 rader] — Samlad bekräftelse av visat underlag; inga fakta eller beslut härleds.
 │       │   ├── exponering.py [21 rader] — Gemensam innehållsdefinition för automatiskt förifylld exponering.
 │       │   ├── gemensam.py [97 rader] — Rena läsvyer och innehållssummor; inga svar eller bekräftelser skrivs här.
 │       │   ├── gemensamma_operationer.py [129 rader] — Typade gemensamma handlingar. Varje skrivning går genom analysens lås och CAS.
 │       │   ├── guide.py [80 rader] — Gemensam läsmodell för de sexton lokala guidestegen.
-│       │   ├── lagring.py [373 rader] — Privat analysregister: CAS, atomiska kopior och gemensam låsordning.
+│       │   ├── lagring.py [374 rader] — Privat analysregister: CAS, atomiska kopior och gemensam låsordning.
 │       │   ├── modeller.py [410 rader] — Typade privata analysobjekt för schema 1/2, gemensamma poster, tjänstetillämpningar, täckningsprövning och beslut.
 │       │   ├── overforing.py [64 rader] — Uttryckligt schema-2-förslag. Gamla svar bevaras; inga attester överförs.
 │       │   ├── provning.py [504 rader] — Rena innehållsprövningar; kontrollerar inte levande filer eller modellkod.
 │       │   ├── provning_v2.py [124 rader] — Schema 2: gemensamt underlag, aktuell tillämpning och uttrycklig risktäckning.
 │       │   ├── referens.py [32 rader] — Kontrafaktisk referens, samma scenarioregler med antagandet ytterligare +1. Ändrar aldrig motorutfall eller kontrollantaganden. +1 är ingen beslutad vikt för den egna sårbarheten; giltig täckning kräver en separat sakprövning.
 │       │   ├── riktning.py [97 rader] — Härledda upplysningar och brister per hot och dimension, ingen alternativ motor.
-│       │   ├── tjanst.py [368 rader] — Gemensamma lokala analysoperationer för CLI och loopbackformuläret.
+│       │   ├── tjanst.py [359 rader] — Gemensamma lokala analysoperationer för CLI och loopbackformuläret.
 │       │   └── utkast.py [60 rader] — Förifyll redigerbara ogranskade svar från bekräftad profil och motor.
-│       ├── bedomning/ [14 filer; 947 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
-│       │   ├── kundmodell/ [5 filer; 165 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       ├── bedomning/ [14 filer; 947 Pythonrader] — Filer med gemensamt område eller ansvar.
+│       │   ├── kundmodell/ [5 filer; 165 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   │   ├── __init__.py [1 rader] — Generiska kundmallar för sakkunniggranskning, utan verkliga kundärenden.
 │       │   │   ├── modeller.py [15 rader] — Frysta mallar och utfall.
 │       │   │   ├── pep.py [36 rader] — PEP-period räknas i kalendermånader; härledda indata kan inte förfalskas.
@@ -1698,8 +1729,8 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │       │   ├── sanktioner.py [40 rader] — Separat föreslagen riskdimension; aldrig kopierad från terrorfinansiering.
 │       │   ├── scenarier.py [221 rader] — Beräknar PT-/TF-scenarier per tjänst och hot, med möjliggörande sårbarheter.
 │       │   └── sektorsrisk.py [35 rader] — NRA:s originalskala bevaras; jämförbarhet är ett eget metodval.
-│       ├── dokument/ [100 filer; 11,430 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
-│       │   ├── promptar/ [4 filer; 265 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       ├── dokument/ [98 filer; 11,427 Pythonrader] — Filer med gemensamt område eller ansvar.
+│       │   ├── promptar/ [4 filer; 265 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   │   ├── __init__.py [21 rader] — Promptarnas delar och deras kontrollsummor.
 │       │   │   ├── delar.py [156 rader] — En modul per analysdel: mål, krav med skäl och fällor med skäl (spec 8.4.4).
 │       │   │   ├── meddelande.py [23 rader] — Användarmeddelandet i fast ordning: faktablad först, uppgiften sist (spec 8.4.2).
@@ -1773,12 +1804,11 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │       │   ├── rapportvyer_v9.py [36 rader] — Tre disjunkta V9-vyer; sammanfattningens källöverlappp är explicit spårad.
 │       │   ├── redaktion_v7.py [61 rader] — V7:s korta automatiska upprepningar; författad analys och historiska format lämnas kvar.
 │       │   ├── redaktionell_v10.py [333 rader] — Redaktionell presentation av frysta fakta; inga riskbeslut eller AI-anrop.
-│       │   ├── redaktionmodell_v10.py [15 rader] — Frysta källor och exakt flyttregister för V10:s andra presentation.
 │       │   ├── redaktionspresentation_v10.py [45 rader] — Återbygg den nya presentationen och bind alla källor utan att ändra analysen.
 │       │   ├── rendering.py [522 rader] — Gemensamma Word-hjälpare och routing för aktuella och äldre rapportformat.
 │       │   ├── rendering_v10.py [99 rader] — Word från tre frysta V10-vyer; inga anrop till export, motor eller AI.
 │       │   ├── rendering_v9.py [81 rader] — Word från tre frysta V9-vyer; inga anrop till export, motor eller AI.
-│       │   ├── resultatmodell_v10.py [21 rader] — Källbunden V10-konstruktion; generiska frysta källtyper återanvänds.
+│       │   ├── resultatmodell_v10.py [35 rader] — Konstruktion, resultatbygge och RedaktionV10 med frysta källor och flyttregister.
 │       │   ├── resultatmodell_v9.py [136 rader] — Frysta källor och urvalsbeslut för V9; inga alternativa riskberäkningar.
 │       │   ├── resultatrapport_v10.py [97 rader] — Ny disposition från fulla original; inga nya AI-svar eller riskberäkningar.
 │       │   ├── resultatrapport_v9.py [248 rader] — Kort resultatrapport ur sparade sakuppgifter; varken fri sammanfattning eller AI.
@@ -1793,37 +1823,35 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │       │   ├── tjanstavsnitt_v6.py [75 rader] — V6-tjänsteavsnitt samt hjälparen lokaltext, som också används av senare dokumentbyggare.
 │       │   ├── tjanstavsnitt_v7.py [91 rader] — V7-tjänsteavsnitt samt kategoriöversikt och reservkatalog för B1, som även V8 återanvänder.
 │       │   ├── tjanstavsnitt_v8.py [145 rader] — Sex lokala analysfrågor, med skyddad AI-text och fulltextfallback för fria svar.
-│       │   ├── underlag.py [310 rader] — Väljer tillåtna fält och katalogposter till skrivunderlaget.
+│       │   ├── underlag.py [311 rader] — Väljer tillåtna fält och katalogposter till skrivunderlaget.
 │       │   ├── uppfoljning.py [117 rader] — Lokal omfattning, utförd bevakning och uppföljning med tydliga belägg.
 │       │   ├── ursprung_v8.py [162 rader] — Reproducerbar innehållskarta: placeringsidentitet, mall och faktiska ingångar. Kartan är härledd ur samma frysta ingångar som byggaren. En giltig pointer är teknisk spårning, inte en automatisk sakattest för den formulerade slutsatsen.
 │       │   ├── utfall_v6.py [141 rader] — Lokala utfall för sårbarheter vars exakta underlag inte lämnar byrån.
 │       │   ├── validering.py [232 rader] — Maskinell validering av AI-utkast (spec 8.4).
-│       │   ├── wordstil.py [84 rader] — Läsbar v5-typografi och kolumnbredder; påverkar inte bedömningar eller text.
-│       │   └── wordstil_v10.py [37 rader] — Kolumnbredder för den nya dispositionen; samma minsta textstorlek som V9.
-│       ├── drift/ [5 filer; 548 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       │   └── wordstil.py [118 rader] — Gemensam Word-stil och separat V10-tabellanpassning vid samma avsedda anropspunkt.
+│       ├── drift/ [5 filer; 548 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Minsta drift: versionshistorik och nästa genomgång.
 │       │   ├── historik.py [155 rader] — Versionshistorik och nästa genomgång (spec 13.1).
 │       │   ├── modellidentitet.py [149 rader] — Smal, innehållsbunden identitet för den granskade riskberäkningen.
 │       │   ├── modellrapport.py [108 rader] — Projektets frysta rapportpaket; export skapar aldrig sakkunnigattest.
 │       │   └── modellrisk.py [135 rader] — Privat modellriskunderlag och fullständighetsgrind, utan automatisk attest.
-│       ├── faststallelse/ [6 filer; 831 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       ├── faststallelse/ [6 filer; 831 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Fastställelse: sakgranskning, grindar, låsning och verifiering.
 │       │   ├── faststall.py [350 rader] — Fastställelse: kontroll av kedjan och grindarna, låst paket och verifiering (spec 5.3 och 10). Publiceringen är ett enda namnbyte. Allt, också versionshistoriken med det nya beslutet, skrivs i en arbetsmapp som byter namn till v{n} när den är klar. Efter namnbytet skrivs ingenting mer, så en fastställelse är antingen helt gjord eller inte gjord alls. Därför läses fastställelserna ur de låsta paketen och inte ur byråns historikfil.
 │       │   ├── grindar.py [236 rader] — Villkor för fastställelse (spec 10). Varje hinder är en mening som säger vad som saknas.
 │       │   ├── modeller.py [43 rader] — Sakgranskning och beslut om fastställelse (spec 10).
 │       │   ├── resultatgranskning.py [25 rader] — En explicit handling ger vanliga attestposter för exakt alla visade R-avsnitt.
 │       │   └── sakgranskning.py [176 rader] — Sakgranskning per avsnitt (spec 10). En sakgranskning gäller exakt den text som granskaren såg: avsnittet med namnen insatta, så som exporten skriver ut det. Ändras texten eller ett namn som sätts in i den slutar sakgranskningen att gälla.
-│       ├── foretagsdata/ [9 filer; 779 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       ├── foretagsdata/ [8 filer; 777 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Lokala registerförslag; ingenting här bekräftar riskprofilen.
 │       │   ├── arsredovisning.py [172 rader] — Avgränsad iXBRL-läsare.
-│       │   ├── bokslut.py [16 rader] — Tillåtna bokslutsfakta, med period och spårbarhet till privat original.
 │       │   ├── bolagsverket.py [139 rader] — Bolagsverket HVD v1: lokalt uppslag, OAuth-token endast i minnet.
 │       │   ├── bolagsverket_svar.py [79 rader] — Lokal projektion av HVD v1.
 │       │   ├── lagring.py [77 rader] — Privata registerbilder och atomisk aktuell pekare utanför Git.
-│       │   ├── modeller.py [110 rader] — Minimal, oföränderlig registerbild.
+│       │   ├── modeller.py [124 rader] — Bokslut, Bolagsverksbild och registerbild med frysta period-/originalreferenser.
 │       │   ├── samlad.py [75 rader] — Komplettera SCB-bilden utan att göra registerhämtning till bekräftelse.
 │       │   └── scb.py [110 rader] — SCB AFR v1.
-│       ├── granskning/ [15 filer; 1,115 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       ├── granskning/ [14 filer; 1,113 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Maskinell granskning: täckning, spårbarhet och bristmönster.
 │       │   ├── analys.py [109 rader] — B-09/B-10/B-15 kontrollerar belägg och lokal analys, inte juridisk fullständighet.
 │       │   ├── analysunderlag.py [94 rader] — Fryst lokal analys och verifierade belägg för dokumentets återbyggnad.
@@ -1833,26 +1861,24 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │       │   ├── dokument_v8.py [51 rader] — V8 återbyggs från exakt fryst lokal analys och validerade skrivresultat.
 │       │   ├── dokument_v9.py [58 rader] — V9 prövas mot full V8-analys och en återbyggd spårbar presentation.
 │       │   ├── fyndgrupper.py [21 rader] — Ren exakt visningsgruppering; inga fyndbeslut ändras.
-│       │   ├── kontroller.py [245 rader] — Maskinell granskning av dokumentet: täckning, spårbarhet och bristmönster (spec 9).
+│       │   ├── kontroller.py [254 rader] — Maskinell täckning, spårbarhet och bristmönster inklusive B-13 sektorsfynd.
 │       │   ├── korning.py [216 rader] — Granskningskörning: bygger dokumentet, granskar det och sparar resultatet med manifest.
 │       │   ├── lasta_v6.py [76 rader] — B-09, B-10 och B-15 i v6: belägg och programmets låsta stycken i varje tjänstavsnitt (spec 8.4.6 punkt 2).
 │       │   ├── lasta_v8.py [45 rader] — V8:s kravtäckning för geografiskt underlag och egen rapportering (B-09, B-10, B-15). Byråövergripande underlag står en gång i avsnittet Gemensamt faktaunderlag och tjänstens egen prövning i tjänsteavsnittet. Båda kontrolleras mot ett återbyggt dokument; ett gemensamt stycke ersätter aldrig tjänstens eget. Äldre v6/v7-kontroller och bytekontrakt ändras inte.
-│       │   ├── modeller.py [23 rader] — Fynd från granskningen (spec 9 och 10).
-│       │   └── sektorsrisk.py [11 rader] — B-13 hittar avsaknad av belagd lokal motivering, inte dess juridiska kvalitet.
-│       ├── intag/ [31 filer; 3,425 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       │   └── modeller.py [23 rader] — Fynd från granskningen (spec 9 och 10).
+│       ├── intag/ [30 filer; 3,319 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Lokalt regelstyrt intag för verksamhetsanpassad riskbedömning.
-│       │   ├── analysformular.py [273 rader] — Strikt, sidoeffektsfri adapter från guidade fält till analysmodeller.
+│       │   ├── analysformular.py [274 rader] — Strikt, sidoeffektsfri adapter från guidade fält till analysmodeller.
 │       │   ├── analysvy.py [436 rader] — Guidad lokal analys i vanliga HTML-formulär utan egna lagringsvägar.
 │       │   ├── bolagsverksvy.py [46 rader] — Källor och bokslutsbakgrund, utan att bakgrund blir bekräftade svar.
-│       │   ├── dokument.py [156 rader] — Hela befintliga dokumentkedjan, utan att attestera eller fastställa något.
+│       │   ├── dokument.py [40 rader] — Webbens rapportdelsval och omfattningsknapp; kompatibla importalias till arbetsfloden.
 │       │   ├── engangsvy.py [115 rader] — Engångsunderlag och en genomgång per tjänst; lokal redigering är separat.
 │       │   ├── flervalsvy.py [40 rader] — Flervalsfält i webbintaget: en kryssruta per alternativ, tillbaka som kommaseparerad svarstext.
 │       │   ├── fordelning.py [138 rader] — Frivillig tjänstefördelning stannar lokalt och ändrar inga motorvillkor.
-│       │   ├── fragor.py [43 rader] — Aktiveringsfrågor går före följdfrågor; alias och andelar frågas aldrig två gånger.
+│       │   ├── fragor.py [60 rader] — Aktiveringsfrågor går före följdfrågor; alias och andelar frågas aldrig två gånger.
 │       │   ├── gemensamformular.py [114 rader] — Strikt adapter för schema 2. Endast typade modeller och visade referenser.
 │       │   ├── gemensamvy.py [129 rader] — Tre arbetsvyer för gemensam analys, tillämpning och separat sakgranskning.
-│       │   ├── komplettering.py [17 rader] — Koppla även beräknade/äldre AI-referenser till intagets grundfrågor.
-│       │   ├── kvalitet.py [26 rader] — Samma sakliga begränsningar gäller formulär, CLI och handredigerade profiler.
+│       │   ├── kvalitet.py [27 rader] — Samma sakliga begränsningar gäller formulär, CLI och handredigerade profiler.
 │       │   ├── modeller.py [40 rader] — Pydantic-modellerna IntagSvar, Intagsfraga och Tackning: formatet för inkommande svar, aktiva frågor och intagets fullständighet.
 │       │   ├── overforingsvy.py [15 rader] — Läsbar jämförelse och separat, uttrycklig överföringshandling.
 │       │   ├── planeringsvy.py [168 rader] — Lokala planer, förändringsutvärderingar, rättelser och kombinationsgrupper.
@@ -1862,7 +1888,7 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │       │   ├── samlade.py [114 rader] — Gruppera jämförbara intagsfrågor; spara genom ordinarie svarshantering.
 │       │   ├── samladvy.py [94 rader] — Flera närliggande svar med gemensamt underlag och uttrycklig bekräftelse.
 │       │   ├── svar.py [83 rader] — Bekräfta ett svar och ompröva tidigare belägg vid faktiska ändringar.
-│       │   ├── tackning.py [34 rader] — Underlaget kontrolleras separat från juridiska attester och dokumentgranskning.
+│       │   ├── tackning.py [35 rader] — Underlaget kontrolleras separat från juridiska attester och dokumentgranskning.
 │       │   ├── tjanst.py [88 rader] — En byrås intag, med explicit grunddata och skydd mot gamla formulär.
 │       │   ├── tjanstvy.py [57 rader] — Byrån bekräftar hela tjänsteförteckningen, aldrig härledd från SNI.
 │       │   ├── underlag.py [92 rader] — Synliga underlagsval, avgränsade till samma slags fakta och statistikperiod.
@@ -1870,10 +1896,10 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │       │   ├── utvardering.py [33 rader] — Registrera bara en uttryckligen bekräftad, faktiskt genomförd utvärdering.
 │       │   ├── verksamhetsval.py [23 rader] — Fasta fakta om uppdragets faktiska mandat, aldrig härledda ur fritext.
 │       │   ├── vyer.py [205 rader] — HTML utan externa resurser. Allt dynamiskt innehåll escapes.
-│       │   └── webb.py [550 rader] — Ett privat formulär på loopback; ingen publik webbserver eller filrouter.
-│       ├── kommandon/ [15 filer; 1,068 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       │   └── webb.py [557 rader] — Ett privat formulär på loopback; ingen publik webbserver eller filrouter.
+│       ├── kommandon/ [15 filer; 1,065 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [37 rader] — Underkommandon.
-│       │   ├── analys_kommando.py [147 rader] — riskanalys analys: lokala frågor, utkast och uttrycklig tjänsteattest.
+│       │   ├── analys_kommando.py [150 rader] — riskanalys analys: lokala frågor, utkast och uttrycklig tjänsteattest.
 │       │   ├── bedom_kommando.py [49 rader] — riskanalys bedom
 │       │   ├── bolagsverket_kommando.py [20 rader] — Lokalt registeruppslag.
 │       │   ├── drift_kommando.py [73 rader] — riskanalys utvardera
@@ -1882,32 +1908,32 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │       │   ├── gemensam_analys.py [51 rader] — Typade filadaptrar för gemensamma analysoperationer, aldrig import av attester.
 │       │   ├── granska_kommando.py [35 rader] — riskanalys granska
 │       │   ├── intag_kommando.py [31 rader] — Starta eller återuppta en byrås lokala intervju.
-│       │   ├── profil_kommando.py [169 rader] — riskanalys ny, bekrafta och profil
+│       │   ├── profil_kommando.py [170 rader] — riskanalys ny, bekrafta och profil
 │       │   ├── regelbas_kommando.py [61 rader] — riskanalys regelbas validera
 │       │   ├── sakgranska_kommando.py [180 rader] — riskanalys sakgranska
 │       │   ├── sakkunnig_kommando.py [56 rader] — CLI för sakkunnigunderlag och separat import av regelpaket/facit.
-│       │   └── skriv_kommando.py [68 rader] — riskanalys skriv
-│       ├── lagring/ [6 filer; 331 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       │   └── skriv_kommando.py [61 rader] — riskanalys skriv
+│       ├── lagring/ [6 filer; 364 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Lagring av byrådata, manifest och kontrollsummor.
 │       │   ├── datamapp.py [64 rader] — Datamappen där byråernas uppgifter lagras.
 │       │   ├── kontrollsumma.py [22 rader] — SHA-256-kontrollsummor för filer och text.
 │       │   ├── korningar.py [49 rader] — Tidsstämplade körningsmappar.
 │       │   ├── manifest.py [155 rader] — Manifest med kontrollsummor för alla filer i en mapp (spec 5.3). Kontrollsummorna visar att sparade filer är oförändrade. De återskapar inga förlorade filer.
-│       │   └── yamlfil.py [40 rader] — Läs och skriv YAML med svenska tecken.
-│       ├── profil/ [12 filer; 1,224 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       │   └── yamlfil.py [73 rader] — Säker YAML-läsning och privat atomisk skrivning med tydligt fel efter publicering.
+│       ├── profil/ [12 filer; 1,249 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Byråprofilen: uppgifter om byrån med status och källa.
-│       │   ├── forandringar.py [143 rader] — Gemensam transaktionsgräns för CLI/webb: förändringslås → profil-CAS → historiklås. Rättelsens revisionsbundna avsikt journalförs före profilens atomiska namnbyte. Vid avbruten profilsparning visar historiken därför ett försök, aldrig ett oregistrerat undantag från införandespärren. Eftervärdet i profilen visar om rättelsen genomfördes.
-│       │   ├── hantering.py [368 rader] — Skapa och ändra byråprofilen (spec 6.2 och 14).
+│       │   ├── forandringar.py [147 rader] — Gemensam transaktionsgräns för CLI/webb: förändringslås → profil-CAS → historiklås. Rättelsens revisionsbundna avsikt journalförs före profilens atomiska namnbyte. Vid avbruten profilsparning visar historiken därför ett försök, aldrig ett oregistrerat undantag från införandespärren. Eftervärdet i profilen visar om rättelsen genomfördes.
+│       │   ├── hantering.py [369 rader] — Skapa och ändra byråprofilen (spec 6.2 och 14).
 │       │   ├── katalogstatistik.py [29 rader] — Population och period för steg B:s räknade kundegenskaper.
 │       │   ├── kombinationer.py [36 rader] — Deklarerade grupper är lokala belägg. De ändrar inga motorvikter eller trösklar.
-│       │   ├── lagring.py [86 rader] — Läs och spara byråprofilen i byråns datamapp.
+│       │   ├── lagring.py [87 rader] — Läs och spara byråprofilen i byråns datamapp.
 │       │   ├── modeller.py [166 rader] — Profilfakta, status och belägg samt tjänsteplaner, förändringsutvärderingar och införandeval.
-│       │   ├── omfattning.py [119 rader] — Spårbara andelar härleds ur bekräftade antal/belopp med samma period.
+│       │   ├── omfattning.py [138 rader] — Spårbara andelar härleds ur bekräftade antal/belopp med samma period.
 │       │   ├── planering.py [124 rader] — Ren prövning av registrerade förändringar. Ingen beräkning av planens risk. Plansumma v1: sorterad JSON av regelbasens kontrollsumma, byråidentitet, planen och aktuella icke-personliga sakuppgifter i mål-P-TJ, P-GEO, P-KUND, P-KANAL och P-RISK samt tjänstens kombinationsgrupper. Hela måltjänstens erbjudandeuppgift undantas. Erbjudandets automatiska inaktualisering av följdsvar normaliseras till inaktuell=True i båda lägena; värden, källor, status, datum och belägg bevaras. Historik ingår inte. Detta påverkar inte profilrevision eller analysbindning.
 │       │   ├── planlivslopp.py [71 rader] — Uttryckligt planavslut som sparas atomiskt tillsammans med profilen. Genomförande är en historisk registrering, aldrig en slutsats av dagens erbjudandeflagga eller av avsett datum. Den bevarar planinnehåll och den utvärdering som gällde vid genomförandet; nutida byråfakta ingår inte i kontrollen.
 │       │   ├── planval.py [52 rader] — Skrivfritt införandeval; samma regler gäller för webb, CLI och profilsparning.
 │       │   └── text.py [29 rader] — XML 1.0:s teckenkrav kontrolleras före lagring och kostsam skrivning.
-│       ├── regelverk/ [17 filer; 2,834 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│       ├── regelverk/ [17 filer; 2,834 Pythonrader] — Filer med gemensamt område eller ansvar.
 │       │   ├── __init__.py [1 rader] — Regelbasen: källor, krav, kataloger, villkor och urval.
 │       │   ├── amlr.py [38 rader] — Framtida EU-utkast är aldrig en operativ regelbas.
 │       │   ├── facit.py [81 rader] — Separat versionsbunden granskning av syntetiska tillsynsfall.
@@ -1926,17 +1952,21 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │       │   ├── validering_scenario.py [148 rader] — Kontrollerar scenariometodens katalogkopplingar (spec 2026-10-18, Datamodell och Preciseringar).
 │       │   └── villkor.py [240 rader] — Typat villkorsformat för regelbasen (spec 6.3).
 │       ├── __init__.py [3 rader] — Riskanalys – verksamhetsanpassad dokumentation enligt penningtvättsregelverket.
+│       ├── arbetsfloden.py [125 rader] — Skapa, uppdatera, kontrollera och läsa utkast genom samma tjänster och aktualitetsvillkor.
 │       ├── cli.py [53 rader] — Programmets CLI-ingång.
 │       ├── fel.py [5 rader] — Gemensam basklass för fel som visas för användaren.
+│       ├── konfiguration.py [28 rader] — Fryst skrivkonfiguration och gemensam textleverantörsfabrik för CLI och webb.
 │       └── nyckelfil.py [58 rader] — Lokala API-nycklar i en fil utanför repot.
-├── tester/ [268 filer; 33,346 Pythonrader] — Syntetiska prov och frysta underlag.
-│   ├── enhet/ [128 filer; 17,588 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+├── tester/ [275 filer; 33,970 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   ├── enhet/ [134 filer; 18,110 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   ├── conftest.py [23 rader] — M1:s CLI-regressioner använder en explicit fryst v0-bas.
 │   │   ├── test_aischema.py [53 rader] — Testar AI-svarets JSON-schema, obligatoriska fält, tolkning och tillåtna referenser.
+│   │   ├── test_aktivitetsprov.py [114 rader] — Aktivering prövas som förut, men definitioner och värden byggs en gång per profilvy.
 │   │   ├── test_aldre_skrivvag.py [68 rader] — Den äldre skrivvägen utan faktablad skyddar inte AI-begäran och är stängd för riktiga AI-anrop (spec 8.4.10).
 │   │   ├── test_analys_kommando.py [43 rader] — CLI avvisar farliga flaggkombinationer innan filer eller tjänster används.
 │   │   ├── test_analys_overforing_lagring.py [40 rader] — Pythonmodul; se definitioner och importer på filkortet.
 │   │   ├── test_analys_overforing_v2.py [86 rader] — Pythonmodul; se definitioner och importer på filkortet.
+│   │   ├── test_analysandringar.py [147 rader] — Blockkommandon får bara ändra det namngivna blocket under revisionsskydd.
 │   │   ├── test_analysformular.py [213 rader] — Typade HTML-adaptrar får ändra svar, aldrig skapa en attest.
 │   │   ├── test_analysgrind.py [808 rader] — AB5 binder dokumentet och publiceringen till exakt fryst lokal evidens.
 │   │   ├── test_analysguide.py [54 rader] — Guiden får inte gömma obligatoriska bedömningar eller kalla utkast attesterade.
@@ -1983,7 +2013,7 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── test_h6_fixturlangd.py [36 rader] — Testar att syntetiska skrivsvar uppfyller respektive formats längdkontrakt.
 │   │   ├── test_historik.py [103 rader] — Testar versionshistorik, kalendermånader och nästa genomgång efter faktisk utvärdering.
 │   │   ├── test_hotkopplingar_v2.py [46 rader] — Pythonmodul; se definitioner och importer på filkortet.
-│   │   ├── test_inforandeval.py [114 rader] — Valet är en del av erbjudandetransaktionen, aldrig en implicit katalogordning.
+│   │   ├── test_inforandeval.py [140 rader] — Valet är en del av erbjudandetransaktionen, aldrig en implicit katalogordning.
 │   │   ├── test_kallhanvisningar.py [244 rader] — Källnumrering utgår från refererat innehåll, aldrig bilagans inventarium.
 │   │   ├── test_kedjecache.py [55 rader] — Pythonmodul; se definitioner och importer på filkortet.
 │   │   ├── test_kombinationsgrupper.py [41 rader] — Pythonmodul; se definitioner och importer på filkortet.
@@ -2004,6 +2034,7 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── test_matning.py [40 rader] — Testar anropsförsök, felklasser och redovisning av token inklusive cache.
 │   │   ├── test_metodkontraster.py [10 rader] — De faktiska sänkningarna måste följas även från ursprungsbaslinjen.
 │   │   ├── test_modellrisk.py [311 rader] — AB7:s underlag är syntetiska; grön teknik är aldrig sakkunnigattest.
+│   │   ├── test_modulgranser.py [36 rader] — Importkontrakten ska fånga verkliga direkta och transitiva förbjudna vägar.
 │   │   ├── test_nivamotivering_v6.py [241 rader] — Risknivå och motivering: programmets beräkning i ord och byråns egen bedömning, skilda åt i varje tjänst.
 │   │   ├── test_nyckelfil.py [82 rader] — Lokala API-nycklar i en fil utanför repot.
 │   │   ├── test_omfattning.py [97 rader] — Testar perioder, härledda andelar och hantering av ogiltiga basuppgifter.
@@ -2048,8 +2079,9 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── test_skriv_kommando.py [76 rader] — Testar CLI-skrivning, leverantörsval, underkända svar och bevarade avbrutna försök.
 │   │   ├── test_skrivformat_v7.py [435 rader] — V7:s sammanhängande analys och externa integritetsgräns.
 │   │   ├── test_skrivformat_v8.py [250 rader] — V8:s explicita provväg och begränsade språkregressioner, inte semantisk attest.
+│   │   ├── test_skrivkonfiguration.py [40 rader] — Samma leverantörsval och fel för samtliga ingångar, utan nätverk.
 │   │   ├── test_skrivning.py [88 rader] — Testar skrivförsök, validering, återkoppling och högsta antal omförsök.
-│   │   ├── test_testverktyg.py [117 rader] — Körprofilen får aldrig göra ett tomt/felaktigt urval grönt.
+│   │   ├── test_testverktyg.py [164 rader] — Körprofilen får aldrig göra ett tomt/felaktigt urval grönt.
 │   │   ├── test_tillampningsbyte.py [17 rader] — Pythonmodul; se definitioner och importer på filkortet.
 │   │   ├── test_tjanstegenomgang.py [246 rader] — Pythonmodul; se definitioner och importer på filkortet.
 │   │   ├── test_tjansteplanering.py [91 rader] — Förändringsutvärdering är en lokal sakprövning, inte ett motorbeslut.
@@ -2057,25 +2089,27 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── test_underlag.py [159 rader] — Testar tjänstens tillåtna AI-underlag, personuppgiftsskydd och smågruppsskydd.
 │   │   ├── test_utfall_v6.py [231 rader] — Lokala utfall redovisar skyddade värden utan att ändra villkor eller AI-underlag.
 │   │   ├── test_utfallsforklaring.py [55 rader] — Sparade motorutfall förklaras utan ny bedömning.
+│   │   ├── test_utkastflode.py [37 rader] — Gemensamt utkastflöde bevarar aktualitet och återanvänder sparade AI-svar.
 │   │   ├── test_validering_utkast.py [234 rader] — Testar maskinell validering av utkastets avsnitt, innehåll och referenser.
-│   │   └── test_verksamhetsval_v7.py [167 rader] — Versionerad faktavy och hela skyddade begäranden för äldre format.
-│   ├── fixturer/ [36 filer; 1,687 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   ├── regelbas_v0/ [16 filer] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   │   ├── beslutstabeller/ [1 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   ├── test_verksamhetsval_v7.py [167 rader] — Versionerad faktavy och hela skyddade begäranden för äldre format.
+│   │   └── test_yamllasning.py [75 rader] — Läsning av YAML: samma säkra tolkning, men med libyaml när den finns.
+│   ├── fixturer/ [36 filer; 1,687 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   │   ├── regelbas_v0/ [16 filer] — Filer med gemensamt område eller ansvar.
+│   │   │   ├── beslutstabeller/ [1 filer] — Filer med gemensamt område eller ansvar.
 │   │   │   │   └── metod.yaml — Fryst v0-testdata: riskmatris och metodregler; bevarar historiska M1-kontrakt.
-│   │   │   ├── kataloger/ [5 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   │   ├── kataloger/ [5 filer] — Filer med gemensamt område eller ansvar.
 │   │   │   │   ├── bristmonster.yaml — Fryst v0-testdata: granskningsmönster; bevarar historiska M1-kontrakt.
 │   │   │   │   ├── hot.yaml — Fryst v0-testdata: hot; bevarar historiska M1-kontrakt.
 │   │   │   │   ├── kontroller.yaml — Fryst v0-testdata: kontroller; bevarar historiska M1-kontrakt.
 │   │   │   │   ├── sarbarheter.yaml — Fryst v0-testdata: sårbarheter; bevarar historiska M1-kontrakt.
 │   │   │   │   └── tjanster.yaml — Fryst v0-testdata: tjänster; bevarar historiska M1-kontrakt.
-│   │   │   ├── krav/ [1 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   │   ├── krav/ [1 filer] — Filer med gemensamt område eller ansvar.
 │   │   │   │   └── allman_riskbedomning.yaml — Fryst v0-testdata: krav på allmän riskbedömning; bevarar historiska M1-kontrakt.
-│   │   │   ├── lydelsetexter/ [3 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   │   ├── lydelsetexter/ [3 filer] — Filer med gemensamt område eller ansvar.
 │   │   │   │   ├── LYD-LSF-2-1-2024-07-01.txt — Fryst v0-testdata: syntetisk paragraftext LYD-LSF-2-1-2024-07-01; bevarar historiska M1-kontrakt.
 │   │   │   │   ├── LYD-LSF-2-2-2024-07-01.txt — Fryst v0-testdata: syntetisk paragraftext LYD-LSF-2-2-2024-07-01; bevarar historiska M1-kontrakt.
 │   │   │   │   └── LYD-LSF-2-3-2024-07-01.txt — Fryst v0-testdata: syntetisk paragraftext LYD-LSF-2-3-2024-07-01; bevarar historiska M1-kontrakt.
-│   │   │   ├── regelpaket/ [1 filer] — Relaterade projektfiler; se filernas ansvar nedan.
+│   │   │   ├── regelpaket/ [1 filer] — Filer med gemensamt område eller ansvar.
 │   │   │   │   └── redovisning-vg.yaml — Fryst v0-testdata: Västra Götalands regelpaket; bevarar historiska M1-kontrakt.
 │   │   │   ├── falt.yaml — Fryst v0-testdata: profilfält; bevarar historiska M1-kontrakt.
 │   │   │   ├── kallor.yaml — Fryst v0-testdata: källor; bevarar historiska M1-kontrakt.
@@ -2102,14 +2136,14 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── resultatrapport.py [22 rader] — Delat syntetiskt underlag till rena V9-prov; inga riktiga AI-anrop.
 │   │   ├── skrivsvar_v7.py [59 rader] — Syntetiska V7-svar; äldre testsvar och deras ordalydelse lämnas orörda.
 │   │   └── v6_analys.py [97 rader] — Syntetisk aktuell M2-analys med verkliga privata kopior och separata attester.
-│   ├── foretagsdata/ [4 filer; 512 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── foretagsdata/ [4 filer; 512 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   ├── test_arsredovisning.py [74 rader] — Syntetisk iXBRL: fel skala, identitet eller kontext får inte bli profilsvar.
 │   │   ├── test_bolagsverket.py [211 rader] — Syntetiskt HVD-kontrakt.
 │   │   ├── test_register_bolagsverket.py [71 rader] — Samlad registerbild bevarar SCB-källor och gamla checksummor.
 │   │   └── test_scb.py [156 rader] — Testar SCB-identitet, organisationsnummer och begränsad projektion av registeruppgifter.
-│   ├── intag/ [44 filer; 6,354 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
-│   │   ├── conftest.py [51 rader] — Intagsfixturer med fryst klocka, regelbas samt tom och färdig syntetisk profil.
-│   │   ├── test_analys.py [447 rader] — Lokala analysformulär genom riktig loopback-HTTP, endast syntetiska underlag.
+│   ├── intag/ [44 filer; 6,357 Pythonrader] — Filer med gemensamt område eller ansvar.
+│   │   ├── conftest.py [52 rader] — Intagsfixturer med fryst klocka, regelbas samt tom och färdig syntetisk profil.
+│   │   ├── test_analys.py [448 rader] — Lokala analysformulär genom riktig loopback-HTTP, endast syntetiska underlag.
 │   │   ├── test_analys_overforing_v2.py [61 rader] — Pythonmodul; se definitioner och importer på filkortet.
 │   │   ├── test_bolagsverket_intag.py [125 rader] — Hela HTTP-flödet med syntetiska myndighetssvar och verklig lagring.
 │   │   ├── test_delskrivning.py [184 rader] — Testar delanrop, skyddat underlag, omförsök och mallreserv.
@@ -2133,7 +2167,7 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── test_nivatext.py [19 rader] — Testar att risknivåmeningar motsvarar motorns sparade utfall.
 │   │   ├── test_omfattningsutkast.py [40 rader] — Avgränsad, verklig Word-export med syntetisk kataloglucka.
 │   │   ├── test_paketval_webb.py [24 rader] — Riktiga korta HTTP-gränsprov och frågekontrakt för alla länsvarianter.
-│   │   ├── test_rapportflode_v8.py [292 rader] — H7.8: verkligt standardintag, öppna brister och båda Word-delarnas innehåll.
+│   │   ├── test_rapportflode_v8.py [293 rader] — H7.8: verkligt standardintag, öppna brister och båda Word-delarnas innehåll.
 │   │   ├── test_register.py [104 rader] — Testar privata registerbilder, revisionsbunden bekräftelse och bevarade tidigare profilsvar.
 │   │   ├── test_registerwebb.py [104 rader] — Testar registerhämtning, importmärkning, HTML-escaping och bekräftelse genom HTTP.
 │   │   ├── test_resultatrapport_v10.py [78 rader] — R6: samma skydd och aktualitet för alla tre nedladdningarna.
@@ -2152,9 +2186,9 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── test_v6_aldre_utkast.py [102 rader] — V6-byggaren avvisar utkast från en äldre skrivare tidigt, med ett fel som användaren kan åtgärda.
 │   │   ├── test_verksamhetsval.py [82 rader] — Frivilliga strukturerade fakta, utan inferens från privata beskrivningar.
 │   │   └── test_webb.py [253 rader] — Testar loopbackformulärets HTTP-flöde, escaping, återupptagning och revisionsskydd.
-│   ├── live/ [1 filer; 19 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── live/ [1 filer; 19 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   └── test_delcache.py [19 rader] — Testar cacheträff i ett andra verkligt AI-delanrop; bortvalt livetest i standardkörningen.
-│   ├── m2/ [10 filer; 906 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── m2/ [10 filer; 906 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   ├── test_amlr_utkast.py [31 rader] — Testar att framtidsutkast hålls utanför operativ regelbas och skyddas av eget manifest.
 │   │   ├── test_beroenden.py [21 rader] — Testar att trasiga M2-referenser rapporteras som valideringsfel.
 │   │   ├── test_datumgrind.py [49 rader] — Testar omprövning när krav, lydelser eller kundtabeller passerar en datumgräns.
@@ -2165,7 +2199,7 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── test_m2_kedja.py [116 rader] — Testar syntetisk M2-kedja genom CLI med sakkunnigkopia, återställning och negativa fall.
 │   │   ├── test_proveniens_fel.py [40 rader] — Testar UTC-sortering, programproveniens och begripliga manifest-/YAML-fel.
 │   │   └── test_sakkunnigpaket.py [201 rader] — Testar syntetisk sakkunnigimport, innehållsbindning och avvisning av ändrat/ofullständigt beslut.
-│   ├── regelkontrakt/ [34 filer; 4,530 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── regelkontrakt/ [34 filer; 4,530 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   ├── test_arb_erfarenhet_motivering.py [184 rader] — H1/H2: syntetiskt underlag genom motor, AI-gräns och dokumentgranskning.
 │   │   ├── test_arb_tabeller.py [200 rader] — H6: presentation får inte byta riskutfall eller dölja underlagsbrister.
 │   │   ├── test_arb_utvidgning.py [346 rader] — H3/H4/M1–M4 och H5 med endast syntetiska uppgifter. Nya dokument byggs i D-ARB-tjanst-v6. Prov som bara gäller motorn bygger inget dokument. Historisk v5-verifiering prövas uttryckligen med bygg_arb_v5.
@@ -2200,12 +2234,13 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   │   ├── test_urval.py [128 rader] — Testar datumstyrt urval av krav och gamla/nya paragraflydelser.
 │   │   ├── test_validering_regelbas.py [242 rader] — Testar regelbasens referenser, datum, typer och felmeddelanden.
 │   │   └── test_villkor.py [207 rader] — Testar typade villkor, jämförelser, kombinatorer och kända/okända värden.
-│   ├── typfall/ [9 filer; 1,217 Pythonrader] — Relaterade projektfiler; se filernas ansvar nedan.
+│   ├── typfall/ [10 filer; 1,316 Pythonrader] — Filer med gemensamt område eller ansvar.
 │   │   ├── conftest.py [11 rader] — M1:s CLI-regressioner använder en explicit fryst v0-bas.
 │   │   ├── test_analys_hela_kedjan.py [271 rader] — AB6: syntetiska privata analyser påverkar aldrig AI-begäran.
+│   │   ├── test_aterstallning_v10.py [96 rader] — Fristående V10 och hela arbetsmappen återställs i nya syntetiska datamappar.
 │   │   ├── test_engangssvar_arbetsflode.py [105 rader] — Verklig schema-2-start; frysta rapportfall hålls åtskilda från komplett attestprov.
 │   │   ├── test_gemensam_analys_ai_grans.py [40 rader] — Hela privata schema-2-paketet får inte påverka begäranden, inte ens omförsök.
-│   │   ├── test_gemensam_analys_hela_kedjan.py [207 rader] — Riktig schema2-kedja med enbart syntetiska sak-/modellattester i tempkopia.
+│   │   ├── test_gemensam_analys_hela_kedjan.py [210 rader] — Riktig schema2-kedja med enbart syntetiska sak-/modellattester i tempkopia.
 │   │   ├── test_kravstod_hela_kedjan.py [63 rader] — Underlag → rapport/bindning, med uttryckligt oförändrad numerisk metod.
 │   │   ├── test_rapportlasprov.py [271 rader] — H7.1: kontraster i faktaunderlag; inga verkliga byråuppgifter eller AI-anrop.
 │   │   ├── test_resultatrapport_hela_kedjan.py [59 rader] — Få riktiga V9-kedjor; negativa mutationer görs på kopior av granskade källor.
@@ -2214,11 +2249,12 @@ Riskanalys/ [1000 projektfiler] — Befintligt program, regeldata, tester och do
 │   └── testprofiler.json — Strukturerat underlag eller fixtur för testprofiler.
 ├── .gitattributes — Git-attribut för filhantering och radslut.
 ├── .gitignore — Anger filer och lokala arbets-/datamappar som Git ska ignorera.
+├── .python-version — Exakt stödd Pythonpatchversion: 3.12.15.
 ├── AGENTS.md — Gemensamma arbetsregler, selektiv Obsidian-navigering och aktuell Python 3.12-/verifieringspolicy.
 ├── CLAUDE.md — Hänvisar Claude Code till projektets gemensamma instruktioner.
-├── Namnlös.canvas — Användarens lokala Obsidian-canvas.
 ├── README.md — Introduktion, användarflöden och kommandon.
-└── pyproject.toml — Paketering, Pythonkrav, beroenden, CLI-ingång och pytest-inställningar.
+├── pyproject.toml — Paketering, Pythonkrav, beroenden, CLI-ingång och pytest-inställningar.
+└── uv.lock — Låsta kör- och utvecklingsberoenden för den stödda Pythonmiljön.
 <!-- filtrad-slut -->
 ```
 

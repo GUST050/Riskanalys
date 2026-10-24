@@ -46,6 +46,7 @@ def bekrafta_innehall(at,*,egen=False,samlat=False):
     from riskanalys.analys.provning import registersumma,scenariosumma,blocksumma
     from riskanalys.analys.gemensam import tackningssumma
     from riskanalys.bedomning.korning import las_bedomning
+    from riskanalys.intag.analysformular import las_blockandring,las_scenariokommando
     logg=[]
     def paket():return las_analys(at.mapp)
     def kor(namn,fn,*args):
@@ -72,7 +73,8 @@ def bekrafta_innehall(at,*,egen=False,samlat=False):
             p=paket();s=next(s for s in p.gemensamma_scenarier if s.id==kop.scenario)
             data={'tillampning':kop.tillampning,'lokal_scenario':kop.lokal_scenario or '',
                   'motivering':kop.motivering or 'Syntetiskt uttryckligt tjänsteval','visad_summa':scenariosumma(s),'forfattare':'Syntetisk prövare'}
-            kor('scenarioval',at.spara_scenarioval,a.tjanst,s.id,data,registersumma(p))
+            kor('scenarioval',at.spara_scenarioval,
+                las_scenariokommando(p,a.tjanst,s.id,data,revision=registersumma(p)))
     if egen:
         p=paket();a=p.tjanster[0];scenarier={s.id:s for s in (*p.gemensamma_scenarier,*a.scenarier)}
         s=next(s for s in scenarier.values() if 'H-03' in s.hot and s.relevans=='relevant')
@@ -97,5 +99,6 @@ def bekrafta_innehall(at,*,egen=False,samlat=False):
         for b in a.block:
             if b.aktivering!='aktiv':continue
             p=paket();data={'operation':'bekrafta','forfattare':'Syntetisk prövare','visad_summa':blocksumma(p,a.tjanst,b.nummer)}
-            kor('blockbekraftelse',at.spara_block,a.tjanst,b.nummer,data,registersumma(p))
+            kor('blockbekraftelse',at.spara_block,
+                las_blockandring(p,a.tjanst,b.nummer,data,revision=registersumma(p),rb=at.rb))
     return logg

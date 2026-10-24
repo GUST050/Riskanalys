@@ -17,7 +17,7 @@ Aktuella styrdokument: [[docs/superpowers/specs/2026-10-22-forenklad-riskbedomni
 
 ## Välj primärt område
 
-För fortsatt struktur- och robusthetsarbete: [samordnad plan A0–A8](superpowers/plans/2026-10-24-robust-programstruktur.md). Börja med att verifiera pågående ändringar, därefter reproducerbar miljö och gemensamt leverantörsval. Planen skiljer föreslagna gränser från införd funktion och samordnar befintligt testtids-/V10-arbete.
+För fortsatt struktur- och robusthetsarbete: [samordnad plan A0–A8](superpowers/plans/2026-10-24-robust-programstruktur.md). Börja med att verifiera pågående ändringar, därefter reproducerbar miljö och gemensamt leverantörsval. Planens §8 redovisar införda gemensamma tjänster, typade analyskommandon, låst miljö och aktuell verifiering. Mänskliga/driftmässiga acceptanser är separata.
 
 | Uppgiften gäller | Läs denna kontext |
 |---|---|

@@ -9,6 +9,7 @@ from pydantic import BaseModel, ValidationError
 from riskanalys.analys import modeller as m
 from riskanalys.analys.provning import ALLTID, BLOCKFALT
 from riskanalys.fel import RiskanalysFel
+from riskanalys.analys.andringar import hamta_tjanst, hamta_scenario, _referenser, Blockandring, Scenarioval, Scenarioandring, Modellriskandring, Modellfelandring, radidentitet
 
 RADER = {
     'delanalyser': m.Delanalys, 'leverantorer': m.Leverantorsprovning,
@@ -21,18 +22,13 @@ METADATA = frozenset({'csrf', 'revision', 'tjanst', 'nummer', 'operation',
 
 
 @dataclass(frozen=True)
-class Blockandring:
+class Formularblock:
     tjanst: m.Tjansteanalys
     operation: str
     forfattare: str
     visad_summa: str
 
 
-def hamta_tjanst(paket, tjanst):
-    a = next((a for a in paket.tjanster if a.tjanst == tjanst), None)
-    if a is None:
-        raise RiskanalysFel('Välj en tjänst ur analysöversikten.')
-    return a
 
 
 def grundtyp(annotation):
@@ -81,7 +77,7 @@ def _objekt(modell, tidigare, prefix, data, tillatna):
     return modell.model_validate(raw)
 
 
-def las_blockformular(paket, tjanst, nummer, data, *, rb=None) -> Blockandring:
+def las_blockformular(paket, tjanst, nummer, data, *, rb=None) -> Formularblock:
     """Bygg kandidat. Kärntjänsten äger identitet, CAS och bekräftelse/attest."""
     if nummer not in BLOCKFALT:
         raise RiskanalysFel('Välj ett av guidens sexton block.')
@@ -141,58 +137,11 @@ def las_blockformular(paket, tjanst, nummer, data, *, rb=None) -> Blockandring:
         visad = blocksumma(paket, tjanst, nummer)
         if data.get('visad_summa') != visad:
             raise RiskanalysFel('Blocket har ändrats. Läs om sidan före bekräftelse.')
-    return Blockandring(kandidat, operation, data.get('forfattare', '').strip(), data.get('visad_summa', ''))
+    return Formularblock(kandidat, operation, data.get('forfattare', '').strip(), data.get('visad_summa', ''))
 
 
-def _referenser(paket, a, nummer, rb):
-    """Kontrollera bara blockets referenser; gamla ofullständiga utkast får finnas."""
-    belagg = {b.id for b in paket.belagg}
-    scenarier = {s.id for s in a.scenarier} | {k.scenario for k in a.scenariokopplingar}
-    delanalyser = {d.id for d in a.delanalyser}
-    katalog = rb.tjanster.get(a.tjanst) if rb is not None else None
-    if rb is not None and katalog is None:
-        raise RiskanalysFel('Välj en tjänst ur den aktuella källkatalogen.')
-    if rb is not None and paket.schemaversion == 2:
-        from riskanalys.analys.engangssvar import visade_scenarioval
-        # Ett visat standardförslag kan hänvisas till i utkast före genomgången.
-        # Ingen koppling eller bekräftelse skapas av formulärsparningen.
-        scenarier.update(k.scenario for k in visade_scenarioval(rb, paket, a.tjanst))
-
-    def kontrollera(data):
-        if isinstance(data, dict):
-            for namn, v in data.items():
-                tillatna = None
-                if namn.endswith('belagg'):
-                    tillatna = belagg
-                elif namn in ('scenarier', 'scenario') and isinstance(v, (str, tuple, list)) and not any(isinstance(x, dict) for x in v):
-                    tillatna = scenarier
-                elif namn == 'delanalyser' and isinstance(v, (tuple, list)) and not any(isinstance(x, dict) for x in v):
-                    tillatna = delanalyser
-                elif rb is not None and namn in ('hot', 'sarbarheter', 'kontroll', 'rackvidd'):
-                    tillatna = {
-                        'hot': set(katalog.hot), 'sarbarheter': set(rb.sarbarheter),
-                        'kontroll': set(katalog.kontroller),
-                        'rackvidd': {r.id for k in katalog.kontroller for r in rb.kontroller[k].rackvidd if r.tjanst == a.tjanst},
-                    }[namn]
-                if tillatna is not None:
-                    refs = (v,) if isinstance(v, str) else v or ()
-                    if any(id not in tillatna for id in refs):
-                        raise RiskanalysFel('Välj registrerade belägg och referenser som hör till tjänstens analys.')
-                else:
-                    kontrollera(v)
-        elif isinstance(data, (tuple, list)):
-            for v in data:
-                kontrollera(v)
-
-    raw = a.model_dump(mode='json')
-    kontrollera({k: raw[k] for k in BLOCKFALT[nummer] if k != 'scenariokopplingar'})
 
 
-def hamta_scenario(paket, scenario):
-    s = next((s for s in paket.gemensamma_scenarier if s.id == scenario), None)
-    if s is None:
-        raise RiskanalysFel('Välj ett registrerat gemensamt scenario.')
-    return s
 
 
 def las_scenarioval(paket, tjanst, scenario, data) -> m.Scenariokoppling:
@@ -271,3 +220,55 @@ def _blockfalt(a, nummer):
                 yield from faltlista(typ, namn + '.')
             else:
                 yield namn, typ, field.annotation
+
+
+
+def las_blockandring(paket, tjanst, nummer, data, *, revision, rb=None) -> Blockandring:
+    r = las_blockformular(paket,tjanst,nummer,data,rb=rb)
+    a = hamta_tjanst(paket,tjanst)
+    varden = tuple((f,getattr(r.tjanst,f)) for f in BLOCKFALT[nummer] if f!='scenariokopplingar')
+    nya, bort = [], []
+    for f in RADER.keys() & set(BLOCKFALT[nummer]):
+        fore = {radidentitet(f,x) for x in getattr(a,f)}
+        efter = {radidentitet(f,x) for x in getattr(r.tjanst,f)}
+        nya.extend((f,id) for id in sorted(efter-fore))
+        bort.extend((f,id) for id in sorted(fore-efter))
+    return Blockandring(tjanst,nummer,revision,r.operation,r.forfattare,r.visad_summa,
+        next(b for b in r.tjanst.block if b.nummer==nummer),varden,tuple(nya),tuple(bort))
+
+
+def las_scenariokommando(paket,tjanst,scenario,data,*,revision):
+    return Scenarioval(tjanst,scenario,revision,data.get('forfattare',''),las_scenarioval(paket,tjanst,scenario,data))
+
+
+def las_gemensamandring(paket,scenario,data,*,revision,rb):
+    tidigare = hamta_scenario(paket,scenario)
+    val = referensval(paket,m.Tjansteanalys(tjanst=''),rb)
+    val['hot'] = tuple((id,rb.hot[id].namn) for id in tidigare.hot)
+    data = normalisera_urval(data,faltlista(m.Scenarioanalys),val)
+    tillatna = {'csrf','revision','scenario','visad_summa','forfattare','hot','rubrik','handelseforlopp','relevans','motivering','belagg'}
+    if set(data)-tillatna:
+        raise RiskanalysFel('Välj bara fält i det gemensamma scenarioformuläret.')
+    varden = tuple((k,tuple(x.strip() for x in v.split(',') if x.strip()) if k in ('hot','belagg') else v)
+        for k,v in data.items() if k in ('hot','rubrik','handelseforlopp','relevans','motivering','belagg'))
+    return Scenarioandring(scenario,revision,data.get('forfattare',''),data.get('visad_summa',''),varden)
+
+
+def las_modellfelandring(paket,data):
+    if paket is None or paket.modellrisk is None:raise RiskanalysFel('Registrera paketets lokala modellriskunderlag före feluppföljning.')
+    val = {'belagg':tuple((b.id,b.id) for b in paket.belagg if b.dokument)}
+    data = normalisera_urval(data,[('belagg',tuple[str,...],tuple[str,...])],val)
+    tillatna = {'csrf','revision','id','datum','beskrivning','allvar','status','atgard_och_omprovning','belagg'}
+    if set(data)-tillatna:raise RiskanalysFel('Välj bara de visade lokala modellfälten.')
+    return Modellfelandring(id=data.get('id',''),datum=date.fromisoformat(data.get('datum','')),
+        beskrivning=data.get('beskrivning',''),allvar=data.get('allvar',''),status=data.get('status',''),
+        atgard_och_omprovning=data.get('atgard_och_omprovning',''),belagg=tuple(x.strip() for x in data.get('belagg','').split(',') if x.strip()))
+
+
+def las_modellriskandring(data):
+    tillatna = {'csrf','revision','rutinbelagg','modellansvarig','utvarderad','nasta_genomgang','feluppfoljning','godkand','beslutad_av','beslutsdatum'}
+    if set(data)-tillatna or data.get('godkand') not in ('ja','nej'):
+        raise RiskanalysFel('Pröva modellens lokala användning och välj uttryckligen ja eller nej.')
+    return Modellriskandring(data.get('rutinbelagg',''),data.get('modellansvarig',''),
+        date.fromisoformat(data.get('utvarderad','')),date.fromisoformat(data.get('nasta_genomgang','')),
+        data.get('feluppfoljning',''),data['godkand']=='ja',data.get('beslutad_av',''),date.fromisoformat(data.get('beslutsdatum','')))

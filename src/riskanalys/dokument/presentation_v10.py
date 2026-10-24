@@ -14,7 +14,7 @@ from riskanalys.dokument.presentation_v8 import (
 )
 from riskanalys.granskning.modeller import Fynd
 from riskanalys.fel import RiskanalysFel
-from riskanalys.dokument.redaktionmodell_v10 import RedaktionV10
+from riskanalys.dokument.resultatmodell_v10 import RedaktionV10
 
 PRESENTATIONSVERSION='D-ARB-v10-presentation-1'
 RENDERINGSPOLICY='V10-lokala-original-1'

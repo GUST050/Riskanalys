@@ -3,8 +3,22 @@ from datetime import date, datetime
 import hashlib
 from zoneinfo import ZoneInfo
 from typing import Literal
-from riskanalys.foretagsdata.bokslut import Bokslut
+from decimal import Decimal
+from riskanalys.profil.modeller import Period
 from pydantic import BaseModel, ConfigDict, Field, model_serializer, model_validator
+
+
+class Bokslut(BaseModel):
+    """Bokslutsfakta med period och spårbarhet till privat original."""
+    model_config = ConfigDict(extra='forbid', frozen=True)
+    period: Period
+    omsattning: Decimal = Field(ge=0, le=10**15, allow_inf_nan=False)
+    medelantal: Decimal | None = Field(default=None, ge=0, le=10**7, allow_inf_nan=False)
+    dokument_id: str = Field(min_length=1, max_length=500)
+    sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
+    fil: str = Field(max_length=500)
+    kontext: str = Field(max_length=500)
+    taxonomi: str
 
 
 class Bolagsverksbild(BaseModel):

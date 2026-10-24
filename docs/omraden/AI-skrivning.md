@@ -51,6 +51,11 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
 
+
+### Gemensamt leverantörsval
+
+`src/riskanalys/konfiguration.py` äger fryst `Skrivkonfiguration` och `skapa_textleverantor`. CLI och webb mappar sina val dit; webb importerar inte kommandopaketet. Befintliga modell-/effortstandarder, testfilfel och nyckelkrav bevaras. Skrivning, sparat svar och tillåtelselista ägs fortsatt av dokumentpaketet.
+
 ## Verifiering
 
 Börja med följande provurval när det passar ändringen; det ersätter inte bredare verifiering av ändrade kontrakt.

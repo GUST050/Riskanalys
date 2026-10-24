@@ -26,7 +26,7 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 - Indata: validerade artefakter och metadata. Utdata: sparade, kontrollerbara körningar och bindningar.
 - Kontrollsummor visar integritet men återskapar inga förlorade filer. Behåll privata datamappar, atomisk publicering och tydliga återställningsfel.
-- Modellbindning omfattar riskberäkningens identitet; presentationsändringar ska inte vidga den av misstag.
+- Skilj modellfilförteckningen från den fulla modellbindningen: regelbasens metodbeslut binder även presentationskod.
 - Profil-/analys-/driftlås är kedjekontrakt. Förändra inte låsordning eller aktuella pekare utan att läsa alla berörda skrivare.
 
 ## Nya ingångar efter merge till main
@@ -51,6 +51,13 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 - [[docs/omraden/Word-och-leverans.md|Word-och-leverans]] när manifest eller atomisk leverans ändras.
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
+
+
+### Bindning och återställning
+
+Metodbeslutens fillista omfattar alla programfiler. Modellbindningen kombinerar de 26 explicit utpekade modellfilerna med hela regelbasens kontrollsumma. Därför ändras bindningen också när andra programfilers hashar uppdateras i `metodbeslut.yaml`. Sparade underlag som ska användas vidare måste prövas på nytt; historiska paket verifieras oförändrade mot sina frysta data.
+
+Generisk `spara_yaml` skriver privat temporär fil, flush/fsync, atomiskt namnbyte och katalogsynk. Fel efter namnbyte anger att filen har sparats. Profil och analys behåller sina egna CAS-/historikvägar och låsordningen profil → analys → drift. För backup av hela arbetsmappen krävs skrivstopp också för övriga skrivare. [Driftrutin](../../README.md#säkerhetskopiering-och-återställning) och V10-/arbetsmappens återställningsprov kompletterar manifestkontrollen. Automatisk backupregistrering/varning är en dokumenterad produktlucka, A6-B.
 
 ## Verifiering
 

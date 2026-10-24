@@ -2,6 +2,8 @@
 
 Använd `.venv312/bin/python`, inte en miljö med Python 3.14. Alla automatiska prov använder syntetiska uppgifter och testleverantör; det ordinarie liveprovet är bortvalt.
 
+Låst miljö: `uv 0.13.5`, `.python-version` anger `3.12.15`, `requires-python` är avsiktligt `>=3.12,<3.13`. Kör `uv lock --check` och `UV_PROJECT_ENVIRONMENT=.venv312 uv sync --locked --extra dev`. En ren separat installation har provats lokalt; workflowfilen är förberedd för Ubuntu 24.04 men fjärrkörning kräver publicering och har inte påståtts utförd.
+
 ```sh
 .venv312/bin/python scripts/testa.py snabb --ut /private/tmp/riskanalys-snabb-NYTT_ID
 .venv312/bin/python scripts/testa.py analys --ut /private/tmp/riskanalys-analys-NYTT_ID
@@ -10,9 +12,27 @@ Använd `.venv312/bin/python`, inte en miljö med Python 3.14. Alla automatiska 
 
 Välj en ny utdatamapp varje gång. Verktyget sparar insamlade prov, rålogg, JUnit, källsnapshot och resultat med tid, urval och commit. Tomma, trasiga eller ändrade urval ger inte verifierat grönt. Resultatets `commit` är HEAD vid körningen; vid ocommittade arbetsändringar är det `snapshot.json` som binder den faktiskt provade koden. Kontrollera snapshotet igen efter leveranscommit.
 
-Snabbprofilen är en tydligt avgränsad kontroll av schema, referenser, riktning och integritets-/riskgrindar. Analysprofilen lägger till berörda webb-, CLI-, import- och lagringsprov. Profilernas exakta innehåll finns i `tester/testprofiler.json`. Båda utesluter `fullkedja`; de ersätter inte fullsviten vid de kontrollpunkter som AGENTS regel 6 anger.
+Snabbprofilen omfattar schema, referenser, riktning, V10-presentation, historisk serialisering, importkontrakt och integritets-/riskgrindar. För avgränsad ändring väljs en explicit områdesprofil. `analys` är fortfarande det breda tidigare urvalet och kan överstiga 300 sekunder; det ska inte beskrivas som ett verifierat femminutersvarv.
 
-Fullprofilen och `.venv312/bin/python -m pytest -q` kör alla ordinarie icke-liveprov, även `fullkedja`. Inga långsamma prov väljs bort från standardkörningen. Fullprofilen jämför collection med JUnit och kräver oförändrat källsnapshot. Snapshotet omfattar alla filer under `src`, `tester`, `regelbas`, `scripts` och `docs/research/verktyg`, även JSON-fixturer, fixture-YAML och textkällor, samt AGENTS/projektkonfiguration/profillista. Genererad bytekod (`__pycache__`, `.pyc`, `.pyo`) undantas uttryckligen.
+| Profil | Ändringsklass och konsumenter |
+|---|---|
+| `profil` | Profil och införandeval, aktiveringsprövning samt webbens tjänsteval. |
+| `leverantor` | Gemensam fabrik, CLI, sparade svar och utkastets uppdatering utan nya AI-anrop. |
+| `analys-block` | Formulär, typade blockkommandon, CLI, revisions-/processlås och två riktiga HTTP-bekräftelsegränser. |
+| `rapport` | Kanoniskt V10-innehåll, samlad granskning, presentation, rendering och tre exportdelar. |
+| `lagring` | Manifest, privata sökvägar, analyslagring och atomisk YAML med fel före/efter namnbyte. |
+| `regelverk` | Metodbeslut, grindar och sektorsrisk med berörda baskontrakt. |
+| `foretagsdata` | Årsredovisning, Bolagsverksbilder och verklig intagsgräns. |
+
+Alla områdesprofiler inkluderar baskontrollen. Exakt urval finns i `tester/testprofiler.json`, inga testpåståenden tas bort från fullsviten. Vid okänd eller delad påverkan krävs bredare urval/full enligt AGENTS; det finns ingen automatisk diffväljare. Kör exempelvis:
+
+```bash
+.venv312/bin/python scripts/testa.py analys-block --ut /private/tmp/riskanalys-analysblock-NYTT_ID --budget 300
+```
+
+`--budget` räknar verktygets monotona tidsintervall inklusive insamling. Vid datorvila kan tiden mellan datorns klockslag bli längre; håll datorn vaken för att mäta ett normalt utvecklingsvarv och blanda inte dessa klockor. Överskridande ger `verifierad=false` och exit 1 även om de körda fallen passerade; verktyget dödar inte ett prov mitt i en skrivning. Resultatet redovisar urval, urvalsorsak, miljö/paket och `inom_budget`. Grönt kort urval ersätter ingen obligatorisk fullkörning.
+
+Fullprofilen och `.venv312/bin/python -m pytest -q` kör alla ordinarie icke-liveprov, även `fullkedja`. Inga långsamma prov väljs bort från standardkörningen. Fullprofilen jämför collection med JUnit och kräver oförändrat källsnapshot. Snapshotet omfattar alla filer under `src`, `tester`, `regelbas`, `scripts` och `docs/research/verktyg`, även JSON-fixturer, fixture-YAML och textkällor, samt AGENTS, pyproject, uv-låsfil, Pythonpinne, CI-konfiguration och profillista. Collection/JUnit jämförs inklusive varje parametriserat falls multiplicitet. Genererad bytekod (`__pycache__`, `.pyc`, `.pyo`) undantas uttryckligen.
 
 Skriv först ett riktat reproducerande prov och kör RED/GREEN. Kör berört urval och snabbprofil före arbetscommits. Fullsviten körs enligt tabellen i AGENTS *Verifiera och lämna över*: före merge/push till `main` av delad kritisk logik eller okänd påverkan, samt på exakt kandidat för paket till byrå/sakkunnig och färdiga större funktionspaket. Kodrättning efter en fullsvit kräver en ny verifiering; enbart textuppdatering eller nytt commit-ID gör inte den oförändrade koden oprövad.
 
@@ -79,3 +99,31 @@ HEAD `8ca798d` med ocommittade ändringar; snapshot `2be25f0cbd7c716d8568c447d43
 | Full | 3 609 (ett liveprov bortvalt) | 2 370,4 s, 39 min 30 s |
 
 Senaste sparade fullsvit var 3 594 prov på 66 min 13 s (`43abc07`), möjligen på en annan dator; jämförelsen är därför ungefärlig. Analysprofilen överskrider fortfarande femminutersmålet; nästa steg är områdesprofiler (F6). Dyraste filgrupper nu: gemensam analys 188 s, rapportflöde V8 140 s, intag/analys 135 s, analysgrind 114 s.
+
+
+## Robusthetsplanens tekniska genomförande, 2026-10-24
+
+Arbetsgren `codex/robust-programstruktur`, bas `416579e`. [Planens §8](superpowers/plans/2026-10-24-robust-programstruktur.md#8-genomförandelogg-och-verifierad-kandidat-2026-10-24) samlar det aktuella kandidatresultatet. Nya gränser är gemensam leverantörsfabrik, gemensamt utkastflöde och typade analysändringar med ny kontroll under lås. Fem sammanslagningar och tre nya programfiler ger 247 programfiler.
+
+Riktade bevis: 42/42 på slutliga regressioner med verklig återställning av V10 och hela arbetsmappen, CLI-bekräftelse av kontrollrader samt aktuella webb-/utkastgränser. Sex förbjudna direkta/transitiva importinjektioner underkänns; ordinarie tre kontrakt passerar. V10-presentationens fyra mutationsprov faller med `DID NOT RAISE` när dess integritetskontroll avsiktligt stängs av i en separat process. Ingen sådan mutation finns i kandidaten.
+
+Alla 400 tidigare assert-uttryck i de tolv ändrade befintliga testfilerna finns kvar, inklusive multiplicitet i AST-jämförelse. Detta visar bevarade påståenden, inte ensamt likvärdig funktion; de körda konsumentproven och fullsviten behövs också. Fullprofilen behåller samtliga ordinarie icke-livefall.
+
+Den frysta tekniska kandidatens miljö, insamling, JUnit och snapshot sparas i verifieringsmapparna. Native Word-kontrollen är ofullständig efter UI-timeouter; det redovisas separat från automatisk DOCX-/manifestkontroll. Verklig sakkunnigprövning och användaracceptans är inte utförda genom dessa tekniska prov.
+
+
+**Slutlig teknisk kontroll på rättad kandidat:** **3 659 godkända, ett liveprov bortvalt, noll fel/skips; 2527,79 s (42 min 08 s) rapporterad monoton mättid inklusive insamling**. Exakt collection/JUnit inklusive multiplicitet och 872 av 872 snapshotresurser oförändrade. Alla 400 tidigare assert-uttryck i tolv ändrade befintliga testfiler är bevarade. Den första underkända fullkontrollen sparas separat och används aldrig som godkänt bevis.
+
+**Nya områdesrepetitioner på samma slutliga snapshot:**
+
+| Profil | Prov per varv | Första | Andra | Utfall |
+|---|---:|---:|---:|---|
+| Leverantör/utkast | 200 | 84,06 s | 86,17 s | verifierade, inom 300 s |
+| Analysblock/lagring/HTTP | 294 | 106,66 s | 106,71 s | verifierade, inom 300 s |
+| Rapport/V10/export | 236 | 242,30 s | 252,73 s | verifierade, inom 300 s |
+
+Områdesvarven kördes ett i taget samtidigt som fullsviten, i separata processer och syntetiska datamappar. Tiderna inkluderar denna bakgrundsbelastning; ingen kausal hastighetsvinst påstås. Alla sex har exakt collection/JUnit, oförändrat snapshot och noll fel/skips.
+
+Råbevis: `/private/tmp/riskanalys-robust-full-20261024-2` och `/private/tmp/riskanalys-robust-{leverantor,analysblock,rapport}-slut-{1,2}`. Beständiga bevis, miljöuppgifter, tidigare underkända körningar och komplett ocommittad patch: `/Users/gt/.local/share/riskanalys/provkorningar/robust-programstruktur-20261024`. Den tekniska A0–A8-kandidaten och F6/F7/F10 är lokalt verifierade. A8:s verkliga användar-/sakkunnig-/native Word-acceptans samt driftägarmål kvarstår; fjärr-CI är endast förberedd. Ingen commit, merge eller push har gjorts.
+
+Fullsvitens egna återställningsmätningar inklusive verifiering: låst V10 1,02 s, arbetsmapp 1,08 s. Små syntetiska lokala fall; inga produktions-RTO eller garanterade driftmål.

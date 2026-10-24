@@ -41,6 +41,8 @@ WORD_PREFIXES = ('leverans_', 'presentation_', 'rapportpaket_', 'rapportvyer_', 
 
 def owner(path: str) -> str:
     if path.startswith(('tester/', 'scripts/test')): return 'Tester'
+    if path=='src/riskanalys/konfiguration.py': return 'AI-skrivning'
+    if path=='src/riskanalys/arbetsfloden.py': return 'Word-och-leverans'
     if path.startswith(('regelbas/', 'src/riskanalys/regelverk/')): return 'Regelverk'
     for folder, area in [('intag','Intag'), ('profil','Profil'), ('foretagsdata','Foretagsdata'), ('bedomning','Riskmotor'), ('analys','Lokal-analys'), ('granskning','Granskning'), ('faststallelse','Granskning'), ('drift','Drift-och-lagring'), ('lagring','Drift-och-lagring'), ('kommandon','CLI')]:
         if path.startswith('src/riskanalys/'+folder+'/'): return area
@@ -52,7 +54,9 @@ def owner(path: str) -> str:
 
 def inventory() -> list[str]:
     raw = subprocess.check_output(['git','ls-files','-c','-o','--exclude-standard','-z'], cwd=ROOT).decode()
-    files = sorted(set(raw.split('\0'))-{''})
+    # Git-indexet innehåller även filer som tagits bort i arbetskopian.
+    deleted = subprocess.check_output(['git','ls-files','-d','-z'],cwd=ROOT).decode().split('\0')
+    files = sorted(set(raw.split('\0'))-{''}-set(deleted))
     for p in files:
         if p.startswith(('.obsidian/', OUT+'/')) or Path(p).name.startswith('.env'):
             raise ValueError('Privat eller genererad fil hamnade i Git-urvalet: '+p)

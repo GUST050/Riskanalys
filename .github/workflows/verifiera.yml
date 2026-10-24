@@ -1,0 +1,34 @@
+name: Verifiera Riskanalys
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+env:
+  UV_PROJECT_ENVIRONMENT: .venv312
+  ANTHROPIC_API_KEY: ''
+jobs:
+  verifiera:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: '0.13.5'
+      - run: uv python install
+      - run: uv lock --check
+      - run: uv sync --locked --extra dev
+      - run: .venv312/bin/lint-imports
+      - run: .venv312/bin/riskanalys regelbas validera
+      - run: .venv312/bin/python docs/research/verktyg/bygg_obsidiankarta.py
+      - run: .venv312/bin/python docs/research/verktyg/bygg_obsidiankarta.py --check
+      - run: .venv312/bin/python scripts/testa.py snabb --ut "$RUNNER_TEMP/snabb" --budget 300
+      - run: .venv312/bin/python scripts/testa.py full --ut "$RUNNER_TEMP/full"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verifieringsbevis
+          path: |
+            ${{ runner.temp }}/snabb
+            ${{ runner.temp }}/full

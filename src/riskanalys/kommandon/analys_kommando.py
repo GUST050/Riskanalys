@@ -108,13 +108,16 @@ def kor(args):
             raw = las_yaml(args.modellrisk)
             if not isinstance(raw, dict):
                 raise RiskanalysFel('Modellriskfilen ska innehålla de lokala användningsfälten.')
-            t.spara_modellrisk({k: str(v) for k, v in raw.items()}, args.revision)
+            from riskanalys.intag.analysformular import las_modellriskandring
+            t.spara_modellrisk(las_modellriskandring({k:str(v) for k,v in raw.items()}), args.revision)
         elif args.godkann or args.underkann:
             t.beslut(args.tjanst, args.godkann, args.namn, args.roll, dag, args.kommentar, args.revision)
         elif args.bekrafta_block:
-            t.spara_block(args.tjanst, args.bekrafta_block, {'operation':'bekrafta', 'forfattare':args.forfattare, 'visad_summa':args.visad_summa}, args.revision)
+            from riskanalys.intag.analysformular import las_blockandring
+            t.spara_block(las_blockandring(t.status().paket,args.tjanst,args.bekrafta_block,{'operation':'bekrafta','forfattare':args.forfattare,'visad_summa':args.visad_summa},revision=args.revision,rb=t.rb))
         elif args.scenarioval:
-            t.spara_scenarioval(args.tjanst, args.scenarioval, {'forfattare':args.forfattare, 'visad_summa':args.visad_summa, 'tillampning':args.tillampning or '', 'lokal_scenario':args.lokal_scenario, 'motivering':args.motivering}, args.revision)
+            from riskanalys.intag.analysformular import las_scenariokommando
+            t.spara_scenarioval(las_scenariokommando(t.status().paket,args.tjanst,args.scenarioval,{'forfattare':args.forfattare,'visad_summa':args.visad_summa,'tillampning':args.tillampning or '','lokal_scenario':args.lokal_scenario,'motivering':args.motivering},revision=args.revision))
         status = t.status(dag)
     except (ValidationError, ValueError) as exc:
         raise RiskanalysFel('Kontrollera analysens statusvärden, referenser, identitet och datum.') from exc

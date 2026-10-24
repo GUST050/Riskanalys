@@ -11,7 +11,7 @@ def rendera(r,p,ut):
     from riskanalys.dokument.wordstil import formatera_dokument
     from riskanalys.dokument.rendering import _tabell,_falt
     from riskanalys.dokument.presentation_v8 import skriv_presentationsrader,Presentationsrad
-    from riskanalys.dokument.wordstil_v10 import anpassa_tabeller
+    from riskanalys.dokument.wordstil import anpassa_tabeller
     namn=('allman-riskbedomning-UTKAST','analysbilaga-UTKAST','underlagsbilaga-UTKAST')
     for i,d in enumerate(r['renderade']):
         word=Document();formatera_dokument(word,formatversion='D-ARB-resultat-v9')

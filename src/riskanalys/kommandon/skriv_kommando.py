@@ -1,13 +1,12 @@
 """riskanalys skriv"""
 
 import argparse
-import os
 from pathlib import Path
 from typing import Any
 
 from riskanalys.dokument.delskrivning import Tjanstresultat, EFFORTSTEG
-from riskanalys.dokument.claude import STANDARDEFFORT, STANDARDMODELL, ClaudeLeverantor
-from riskanalys.dokument.leverantor import LeverantorFel, Textleverantor, ladda_testleverantor
+from riskanalys.konfiguration import Skrivkonfiguration, skapa_textleverantor, STANDARDEFFORT, STANDARDMODELL
+from riskanalys.dokument.leverantor import Textleverantor
 from riskanalys.dokument.skrivning import kor_skrivning, las_skrivresultat
 from riskanalys.kommandon import ladda_giltig_regelbas, regelbasargument
 from riskanalys.lagring.datamapp import befintlig_byramapp
@@ -25,15 +24,9 @@ def lagg_till(underparsers: Any) -> None:
 
 
 def valj_leverantor(args: argparse.Namespace) -> Textleverantor:
-    if args.leverantor == "test":
-        if args.testsvar is None:
-            raise LeverantorFel("Ange en fil med förberedda svar med --testsvar.")
-        return ladda_testleverantor(args.testsvar)
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise LeverantorFel(
-            "Sätt miljövariabeln ANTHROPIC_API_KEY för att använda Claude, eller använd --leverantor test."
-        )
-    return ClaudeLeverantor(modell=args.modell, effort=args.effort)
+    return skapa_textleverantor(Skrivkonfiguration(
+        leverantor=args.leverantor, testsvar=getattr(args, 'testsvar', None),
+        modell=args.modell, effort=args.effort))
 
 
 def kor_skriv(args: argparse.Namespace) -> int:

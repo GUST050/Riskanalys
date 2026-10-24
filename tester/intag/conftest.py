@@ -31,8 +31,9 @@ def intagsklocka(monkeypatch):
             tid = start + timedelta(microseconds=next(steg))
             return tid.astimezone(tz) if tz else tid.astimezone().replace(tzinfo=None)
 
-    for namn in ('kvalitet', 'svar', 'tjanst', 'utvardering', 'webb', 'vyer', 'registervy', 'tjanstvy', 'dokument'):
+    for namn in ('kvalitet', 'svar', 'tjanst', 'utvardering', 'webb', 'vyer', 'registervy', 'tjanstvy'):
         monkeypatch.setattr(import_module('riskanalys.intag.' + namn), 'date', Testdatum)
+    monkeypatch.setattr(import_module('riskanalys.arbetsfloden'), 'date', Testdatum)
     for namn in ('profil_kommando', 'drift_kommando'):
         monkeypatch.setattr(import_module('riskanalys.kommandon.' + namn), 'date', Testdatum)
     monkeypatch.setattr(import_module('riskanalys.foretagsdata.scb'), 'datetime', Testtid)

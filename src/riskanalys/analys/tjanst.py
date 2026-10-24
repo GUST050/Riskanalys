@@ -1,5 +1,5 @@
 """Gemensamma lokala analysoperationer för CLI och loopbackformuläret."""
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date
 from pathlib import Path
 
@@ -15,6 +15,8 @@ from riskanalys.lagring.korningar import senaste_korning
 from riskanalys.lagring.manifest import las_manifest
 from riskanalys.profil.lagring import las_profil
 from riskanalys.regelverk.modeller import hot_dimensioner
+
+from riskanalys.analys.andringar import Blockandring, Scenarioval, Scenarioandring, Modellriskandring, Modellfelandring, hamta_tjanst, hamta_scenario, tillampa_block
 
 RAPPORTID = ('modell:projektrapport', 'modell:valideringsrapport', 'modell:modellfiler')
 
@@ -167,37 +169,37 @@ class Analystjanst(GemensammaOperationer):
             raise RiskanalysFel('Ange författarens namn eller lokala person-ID (högst 200 tecken).')
         return namn
 
-    def spara_block(self, tjanst, nummer, data, revision):
-        from riskanalys.intag.analysformular import las_blockformular
+    def spara_block(self, andring: Blockandring):
         with l.analyslas(self.mapp):
-            paket, _, _, _ = self._last(revision)
+            paket, _, _, _ = self._last(andring.revision)
             if paket is None:
                 raise RiskanalysFel('Starta ett analysutkast först.')
-            andring = las_blockformular(paket, tjanst, nummer, data, rb=self.rb)
-            a = andring.tjanst.model_copy(update={'forfattare': self._forfattare(andring.forfattare)})
-            nytt = paket.model_copy(update={'tjanster': tuple(a if t.tjanst == tjanst else t for t in paket.tjanster)})
-            if andring.operation == 'bekrafta':
-                summa = p.blocksumma(nytt, tjanst, nummer)
-                a = a.model_copy(update={'block': tuple(b.model_copy(update={'bekraftad_summa': summa}) if b.nummer == nummer else b for b in a.block)})
-                nytt = nytt.model_copy(update={'tjanster': tuple(a if t.tjanst == tjanst else t for t in nytt.tjanster)})
-            return self._spara(nytt, forvantad_summa=revision)
+            andring = replace(andring, forfattare=self._forfattare(andring.forfattare))
+            nytt = tillampa_block(paket,andring,rb=self.rb)
+            return self._spara(nytt,forvantad_summa=andring.revision)
 
-    def spara_scenarioval(self, tjanst, scenario, data, revision):
-        from riskanalys.intag.analysformular import hamta_tjanst, las_scenarioval
+    def spara_scenarioval(self, andring: Scenarioval):
         with l.analyslas(self.mapp):
-            paket, _, _, _ = self._last(revision)
+            paket, _, _, _ = self._last(andring.revision)
             if paket is None:
                 raise RiskanalysFel('Starta ett analysutkast först.')
-            val = las_scenarioval(paket, tjanst, scenario, data)
-            a = hamta_tjanst(paket, tjanst)
-            katalog = self.rb.tjanster[tjanst]
-            gem = next(s for s in paket.gemensamma_scenarier if s.id == scenario)
-            if not set(gem.hot) <= set(katalog.hot):
+            a = hamta_tjanst(paket,andring.tjanst)
+            gem = hamta_scenario(paket,andring.scenario)
+            val = m.Scenariokoppling.model_validate(andring.val.model_dump(mode='json'))
+            if val.scenario!=gem.id or val.scenariosumma!=p.scenariosumma(gem):
+                raise RiskanalysFel('Det gemensamma scenariot har ändrats. Läs om jämförelsen.')
+            if val.tillampning=='avviker' and (val.lokal_scenario not in {s.id for s in a.scenarier} or not val.motivering):
+                raise RiskanalysFel('Välj en lokal scenarioanalys för denna tjänst och motivera avvikelsen.')
+            if val.tillampning=='samma' and val.lokal_scenario:
+                raise RiskanalysFel('En lokal avvikelse kräver valet avviker.')
+            if val.tillampning not in ('samma','avviker'):
+                raise RiskanalysFel('Välj uttryckligen samma eller avviker efter genomgången.')
+            if not set(gem.hot)<=set(self.rb.tjanster[andring.tjanst].hot):
                 raise RiskanalysFel('Det gemensamma scenariot hör inte till tjänstens kataloghot.')
-            kopplingar = tuple(k for k in a.scenariokopplingar if k.scenario != scenario) + (val.model_copy(update={'bekraftad': True}),)
-            a = a.model_copy(update={'scenariokopplingar': kopplingar, 'forfattare': self._forfattare(data.get('forfattare', ''))})
-            nytt = paket.model_copy(update={'tjanster': tuple(a if t.tjanst == tjanst else t for t in paket.tjanster)})
-            return self._spara(nytt, forvantad_summa=revision)
+            kopplingar = tuple(k for k in a.scenariokopplingar if k.scenario!=gem.id)+(val.model_copy(update={'bekraftad':True}),)
+            a = a.model_copy(update={'scenariokopplingar':kopplingar,'forfattare':self._forfattare(andring.forfattare)})
+            nytt = paket.model_copy(update={'tjanster':tuple(a if t.tjanst==andring.tjanst else t for t in paket.tjanster)})
+            return self._spara(nytt,forvantad_summa=andring.revision)
 
     def beslut(self, tjanst, godkand, namn, roll, datum, kommentar, revision):
         with l.analyslas(self.mapp):
@@ -288,47 +290,42 @@ class Analystjanst(GemensammaOperationer):
             nytt = paket.model_copy(update={'belagg': tuple(b for b in paket.belagg if b.id not in RAPPORTID) + poster, 'modellrisk': underlag})
             return self._spara(nytt, forvantad_summa=revision)
 
-    def spara_modellrisk(self, data, revision):
-        tillatna = {'csrf', 'revision', 'rutinbelagg', 'modellansvarig', 'utvarderad', 'nasta_genomgang', 'feluppfoljning', 'godkand', 'beslutad_av', 'beslutsdatum'}
-        if set(data) - tillatna or data.get('godkand') not in ('ja', 'nej'):
-            raise RiskanalysFel('Pröva modellens lokala användning och välj uttryckligen ja eller nej.')
+    def spara_modellrisk(self, andring: Modellriskandring, revision):
         with l.analyslas(self.mapp):
             paket, _, _, _ = self._last(revision)
             belagg = {b.id: b for b in paket.belagg} if paket else {}
-            ids = (*RAPPORTID, data.get('rutinbelagg', ''))
+            ids = (*RAPPORTID, andring.rutinbelagg)
             if not paket or any(id not in belagg or not belagg[id].dokument for id in ids):
                 raise RiskanalysFel('Importera projektets rapportpaket en gång samt registrera byråns modellriskrutin som privat dokumentbelägg.')
             def ref(id):
                 b = belagg[id]
                 return Modellbelagg(fil=b.dokument, kontrollsumma=b.kontrollsumma)
-            u = Modellriskunderlag(modellansvarig=data.get('modellansvarig', ''), modellbindning=paket.bindning.modell,
+            u = Modellriskunderlag(modellansvarig=andring.modellansvarig, modellbindning=paket.bindning.modell,
                 rutin=ref(ids[3]), projektrapport=ref(ids[0]), valideringsrapport=ref(ids[1]), modellfiler=ref(ids[2]),
-                utvarderad=date.fromisoformat(data.get('utvarderad', '')), nasta_genomgang=date.fromisoformat(data.get('nasta_genomgang', '')),
-                feluppfoljning=data.get('feluppfoljning', ''), fel=paket.modellrisk.fel if paket.modellrisk else (), godkand=data['godkand'] == 'ja',
-                beslutad_av=data.get('beslutad_av', ''), beslutsdatum=date.fromisoformat(data.get('beslutsdatum', '')))
+                utvarderad=andring.utvarderad, nasta_genomgang=andring.nasta_genomgang,
+                feluppfoljning=andring.feluppfoljning, fel=paket.modellrisk.fel if paket.modellrisk else (), godkand=andring.godkand,
+                beslutad_av=andring.beslutad_av, beslutsdatum=andring.beslutsdatum)
             return self._spara(paket.model_copy(update={'modellrisk': u}), forvantad_summa=revision)
 
 
-    def spara_gemensamt(self, scenario, data, revision):
-        from riskanalys.intag.analysformular import hamta_scenario, normalisera_urval, referensval, faltlista
-        tillatna = {'csrf', 'revision', 'scenario', 'visad_summa', 'forfattare', 'hot', 'rubrik', 'handelseforlopp', 'relevans', 'motivering', 'belagg'}
-        namn = self._forfattare(data.get('forfattare', ''))
+    def spara_gemensamt(self, andring: Scenarioandring):
+        scenario, revision = andring.scenario, andring.revision
+        tillatna = {'hot','rubrik','handelseforlopp','relevans','motivering','belagg'}
+        data = dict(andring.varden)
+        if len(data)!=len(andring.varden) or set(data)-tillatna:
+            raise RiskanalysFel('Ändringen innehåller okända scenariofält.')
+        namn = self._forfattare(andring.forfattare)
         with l.analyslas(self.mapp):
             paket, _, _, _ = self._last(revision)
             if paket is None:
                 raise RiskanalysFel('Starta analysen först.')
             tidigare = hamta_scenario(paket, scenario)
-            val = referensval(paket, m.Tjansteanalys(tjanst=''), self.rb)
-            val['hot'] = tuple((id, self.rb.hot[id].namn) for id in tidigare.hot)
-            data = normalisera_urval(data, faltlista(m.Scenarioanalys), val)
-            if set(data) - tillatna:
-                raise RiskanalysFel('Välj bara fält i det gemensamma scenarioformuläret.')
-            if data.get('visad_summa') != p.scenariosumma(tidigare):
+            if andring.visad_summa != p.scenariosumma(tidigare):
                 raise RiskanalysFel('Scenariot har ändrats. Läs om sidan före nästa svar.')
             raw = tidigare.model_dump(mode='json')
             for key in ('hot', 'rubrik', 'handelseforlopp', 'relevans', 'motivering', 'belagg'):
                 if key in data:
-                    raw[key] = tuple(x.strip() for x in data[key].split(',') if x.strip()) if key in ('hot', 'belagg') else data[key]
+                    raw[key] = data[key]
             a = m.Scenarioanalys.model_validate(raw)
             if (len(a.hot) != len(set(a.hot)) or len(a.belagg) != len(set(a.belagg))
                     or set(a.hot) - set(self.rb.hot) or set(a.belagg) - {b.id for b in paket.belagg}):
@@ -343,25 +340,19 @@ class Analystjanst(GemensammaOperationer):
             nytt = paket.model_copy(update={'gemensamma_scenarier': tuple(a if s.id == scenario else s for s in paket.gemensamma_scenarier), 'tjanster': tuple(tjanster)})
             return self._spara(nytt, forvantad_summa=revision)
 
-    def spara_modellfel(self, data, revision):
+    def spara_modellfel(self, andring: Modellfelandring, revision):
         from riskanalys.drift.modellrisk import Modellfel
-        from riskanalys.intag.analysformular import normalisera_urval
-        tillatna = {'csrf', 'revision', 'id', 'datum', 'beskrivning', 'allvar', 'status', 'atgard_och_omprovning', 'belagg'}
         with l.analyslas(self.mapp):
             paket, _, _, _ = self._last(revision)
             if paket is None or paket.modellrisk is None:
                 raise RiskanalysFel('Registrera paketets lokala modellriskunderlag före feluppföljning.')
-            val = {'belagg': tuple((b.id, b.id) for b in paket.belagg if b.dokument)}
-            data = normalisera_urval(data, [('belagg', tuple[str, ...], tuple[str, ...])], val)
-            if set(data) - tillatna:
-                raise RiskanalysFel('Välj bara de visade lokala modellfälten.')
-            ids = tuple(x.strip() for x in data.get('belagg', '').split(',') if x.strip())
+            ids = andring.belagg
             b = {b.id: b for b in paket.belagg if b.dokument}
             if len(ids) != len(set(ids)) or set(ids) - set(b):
                 raise RiskanalysFel('Välj registrerade privata dokumentbelägg för rättning och omprövning.')
-            fel = Modellfel(id=data.get('id', ''), datum=date.fromisoformat(data.get('datum', '')),
-                beskrivning=data.get('beskrivning', ''), allvar=data.get('allvar', ''), status=data.get('status', ''),
-                atgard_och_omprovning=data.get('atgard_och_omprovning', ''),
+            fel = Modellfel(id=andring.id, datum=andring.datum,
+                beskrivning=andring.beskrivning, allvar=andring.allvar, status=andring.status,
+                atgard_och_omprovning=andring.atgard_och_omprovning,
                 belagg=tuple(Modellbelagg(fil=b[id].dokument, kontrollsumma=b[id].kontrollsumma) for id in ids))
             poster = tuple(f for f in paket.modellrisk.fel if f.id != fel.id) + (fel,)
             u = paket.modellrisk.model_copy(update={'fel': poster, 'godkand': False})

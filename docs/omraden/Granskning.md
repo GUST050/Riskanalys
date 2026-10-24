@@ -53,6 +53,11 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
 
+
+### Samlad granskningslogik
+
+`sektorsfynd` för B-13 ligger i `granskning/kontroller.py`, medan deterministisk sektorsrisk ligger kvar i `bedomning/sektorsrisk.py`. `faststallelse/resultatgranskning.py` behålls för att undvika att sprida V9-beroenden. Sakgranskningar skrivs med atomisk YAML; detta ersätter inte kontrollen av aktuell innehålls-/analysbindning.
+
 ## Verifiering
 
 Börja med följande provurval när det passar ändringen; det ersätter inte bredare verifiering av ändrade kontrakt.

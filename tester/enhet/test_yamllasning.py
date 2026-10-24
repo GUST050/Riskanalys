@@ -32,3 +32,44 @@ def test_anvander_libyaml_nar_den_finns():
 def test_ogiltig_eller_osaker_yaml_avvisas(text):
     with pytest.raises(yaml.YAMLError):
         yamlfil.las_yaml_text(text)
+
+
+def test_avbrott_fore_namnbyte_bevarar_gammal_yaml(tmp_path, monkeypatch):
+    import os
+    from riskanalys.fel import RiskanalysFel
+    fil = tmp_path/'svar.yaml'
+    yamlfil.spara_yaml(fil, {'text':'ursprunglig'})
+    fore = fil.read_bytes()
+    def avbrott(fd):
+        raise OSError('syntetiskt diskfel')
+    monkeypatch.setattr(os,'fsync',avbrott)
+    with pytest.raises(RiskanalysFel,match='sparas'):
+        yamlfil.spara_yaml(fil,{'text':'ändrad'})
+    assert fil.read_bytes() == fore
+    assert not list(tmp_path.glob('*.tmp'))
+
+
+def test_fel_efter_namnbyte_redovisar_att_filen_ar_sparad(tmp_path, monkeypatch):
+    import os
+    from riskanalys.fel import RiskanalysFel
+    fil=tmp_path/'svar.yaml'
+    yamlfil.spara_yaml(fil,{'text':'ursprunglig'})
+    original=os.fsync
+    n=0
+    def avbrott(fd):
+        nonlocal n
+        n+=1
+        if n==2:raise OSError('syntetiskt fel efter replace')
+        return original(fd)
+    monkeypatch.setattr(os,'fsync',avbrott)
+    with pytest.raises(RiskanalysFel,match='har sparats'):
+        yamlfil.spara_yaml(fil,{'text':'ändrad'})
+    assert yamlfil.las_yaml(fil)=={'text':'ändrad'}
+
+
+def test_atomisk_yaml_bevarar_bytes_och_privata_behorigheter(tmp_path):
+    data={'text':'Åsa & Örjan','datum':date(2026,10,24)}
+    fil=tmp_path/'svar.yaml'
+    yamlfil.spara_yaml(fil,data)
+    assert fil.read_text()==yaml.safe_dump(data,allow_unicode=True,sort_keys=False)
+    assert fil.stat().st_mode & 0o777 == 0o600

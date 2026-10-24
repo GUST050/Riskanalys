@@ -91,7 +91,7 @@ def rendera_rapportvyer_v10(vyer:RapportvyerV10,profil:Profil,mapp:Path,*,
         for p in presentation.delar:
             if p.leveransdel==del_:skriv_presentationsrader(word,p.rader)
         if del_=='resultatrapport':
-            from riskanalys.dokument.wordstil_v10 import anpassa_tabeller
+            from riskanalys.dokument.wordstil import anpassa_tabeller
             anpassa_tabeller(word)
             if presentation.redaktion:
                 for para in word.paragraphs[-3:-1]:para.paragraph_format.keep_with_next=True

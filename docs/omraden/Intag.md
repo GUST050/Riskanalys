@@ -53,6 +53,11 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
 
+
+### Transport och arbetsflöden
+
+Webbens leverantörsval kommer från `konfiguration.py`. Skapa/uppdatera/kontrollera/läsa utkast finns i `arbetsfloden.py`; `intag/dokument.py` behåller `omfattningsknapp`, `rapportdel` och kompatibla importalias. Analysformuläret ger ett blockavgränsat kommando med revision. Tjänsten läser om aktuellt paket och prövar identitet, referenser och visad summa under låset innan sparning. CSRF/HTTP-fält stannar i adaptern. `fragefalt` finns tillsammans med `fragor` i `intag/fragor.py`.
+
 ## Verifiering
 
 Börja med följande provurval när det passar ändringen; det ersätter inte bredare verifiering av ändrade kontrakt.

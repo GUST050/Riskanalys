@@ -243,7 +243,7 @@ def test_v8_bada_downloads_och_uppdatering_utan_ai(regelbas_v1,tmp_path,monkeypa
         spara_analys(f.byramapp,nytt,forvantad_summa=registersumma(a))
         assert anrop(s,'word')[0]==400 and anrop(s,'underlag')[0]==400
         def ingen_ai(*a,**k):pytest.fail('Uppdatering får inte anropa AI')
-        monkeypatch.setattr('riskanalys.intag.dokument.kor_skrivning',ingen_ai)
+        monkeypatch.setattr('riskanalys.arbetsfloden.kor_skrivning',ingen_ai)
         assert anrop(s,'uppdaterautkast',{'csrf':s.csrf,'revision':s.utkastrevision})[0]==200
         assert anrop(s,'word')[0]==200 and anrop(s,'underlag')[0]==200
         # Även huvudnedladdningen måste kontrollera den andra delen.

@@ -119,7 +119,7 @@ def test_intaget_kraver_fakta_men_inte_att_anvandaren_skriver_riskanalysen(rb_in
 
 def test_gammal_sektorsmotivering_kan_inte_godtas_efter_andrade_fakta(rb_intag,klar):
     from riskanalys.bedomning.korning import bedom
-    from riskanalys.granskning.sektorsrisk import sektorsfynd
+    from riskanalys.granskning.kontroller import sektorsfynd
     from riskanalys.profil.hantering import visa_varde
     p=besvara(rb_intag,klar,svar('P-BESK.geografi','Nya syntetiska faktiska geografiska förhållanden'))
     for q in fragor(rb_intag,p):

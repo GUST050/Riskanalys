@@ -195,7 +195,7 @@ def oversikt(s,fel='',profil=None,qs=None):
     if s.kompletteringar:
         html+='<ul>'
         for avsnitt,o in s.kompletteringar:
-            from riskanalys.intag.komplettering import fragefalt
+            from riskanalys.intag.fragor import fragefalt
             ids=fragefalt(s.tjanst.rb,o.saknad_uppgift)
             link='; '.join(f'<a href="{s.prefix}?{urlencode({"falt":id})}">{e(s.tjanst.rb.falt[id].fraga)}</a>' for id in ids) if ids else 'Frågan behöver hanteras i sakgranskningen.'
             html+=f'<li>{e(o.fraga)} ({e(avsnitt)}). {link} Kör skrivkedjan igen efter rättning.</li>'

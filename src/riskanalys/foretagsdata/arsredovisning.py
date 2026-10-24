@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 import zipfile
 import zlib
 from riskanalys.fel import RiskanalysFel
-from riskanalys.foretagsdata.bokslut import Bokslut
+from riskanalys.foretagsdata.modeller import Bokslut
 from riskanalys.profil.modeller import Period
 
 MAX_ZIP = 20 * 1024 * 1024

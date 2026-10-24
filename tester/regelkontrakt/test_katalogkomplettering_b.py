@@ -178,7 +178,7 @@ def test_nya_tjanster_skrivs_genom_riktig_dokumentvag_utan_nya_ai_falt(regelbas_
 @pytest.mark.parametrize('falt', ('P-VERK.trust', 'P-VERK.nominell_aktieagare'))
 def test_utanfor_analysstod_tillater_intagets_utkast_men_bevarar_stopp(regelbas_v1, falt, monkeypatch, tmp_path):
     from riskanalys.intag.tackning import tackning
-    from riskanalys.intag import dokument
+    from riskanalys import arbetsfloden as dokument
     p=andrat(syntetisk_profil(regelbas_v1),falt,varde=True)
     t=tackning(regelbas_v1,p)
     assert t.utkastklart and not t.komplett

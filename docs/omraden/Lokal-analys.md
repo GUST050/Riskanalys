@@ -50,6 +50,13 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
 
+
+### Typade ändringar
+
+`analys/andringar.py` äger `Blockandring`, `Scenarioval`, `Scenarioandring`, modellriskkommandon och transportoberoende kontrollhjälpare. Ett blockkommando innehåller tjänst, blocknummer, förväntad revision, operation, författare, visad summa, blockmetadata och endast blockets typade värden. Rad-ID bevaras; kontrollrader använder `(scenario, kontroll)` och redigering deklareras som borttagning/tillägg.
+
+`Analystjanst` tar analyslåset och jämför revision och bindning på nytt. Den kontrollerar tillåtna blockfält, unika registrerade referenser och bekräftelsens aktuella summa. Ett komplett `Tjansteanalys`-objekt får inte ersätta blockkommandot. Formulärparsning och transportmetadata stannar i `intag/analysformular.py`. Importkontraktet förbjuder även indirekt beroende från tjänsten tillbaka till adaptern.
+
 ## Verifiering
 
 Börja med följande provurval när det passar ändringen; det ersätter inte bredare verifiering av ändrade kontrakt.

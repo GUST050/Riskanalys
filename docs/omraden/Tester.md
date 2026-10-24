@@ -47,6 +47,11 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
 
+
+### Låst miljö och områdesprofiler
+
+`uv.lock`/`.python-version` och CI-konfigurationen binds in i testverktygets snapshot. `scripts/testa.py` läser explicita profiler ur JSON och redovisar urvalsorsak, paketversioner, tidsbudget och multiplicitet i collection/JUnit. Områdesprofiler och kommandon finns i [testguiden](../testning.md). Nya gränsprov: `test_skrivkonfiguration`, `test_utkastflode`, `test_analysandringar`, `test_modulgranser` samt `typfall/test_aterstallning_v10`. Fullprofilen är fortsatt hela ordinarie icke-live-sviten.
+
 ## Verifiering
 
 Använd projektets Python 3.12-miljö enligt [[docs/testning.md|testguiden]]. Kartgeneratorn använder enbart standardbiblioteket och kan köras direkt med `python3.12`.

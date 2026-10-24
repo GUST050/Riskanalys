@@ -134,7 +134,9 @@ def test_publika_engangshandlingar_bevarar_tackning_och_analysgrind(engangsbas,t
             assert not a.scenariokopplingar
             for nummer,data in ((10,{'kontroller.0.scenario':a.kontroller[0].scenario}),
                                 (16,{'rutinatgarder.0.scenarier':','.join(a.rutinatgarder[0].scenarier)})):
-                at.spara_block(a.tjanst,nummer,{'operation':'spara','forfattare':'Syntetisk',**data},p.registersumma(l.las_analys(f.byramapp)))
+                from riskanalys.intag.analysformular import las_blockandring
+                q=l.las_analys(f.byramapp)
+                at.spara_block(las_blockandring(q,a.tjanst,nummer,{'operation':'spara','forfattare':'Syntetisk',**data},revision=p.registersumma(q),rb=at.rb))
             sparat=l.las_analys(f.byramapp)
             assert not next(x for x in sparat.tjanster if x.tjanst==a.tjanst).scenariokopplingar
             assert not sparat.beslut
@@ -193,7 +195,8 @@ def test_andrat_gemensamt_scenario_kraver_ny_separat_avvikelseprovning(engangsba
  nytt=paket();ids=tuple(a.tjanst for a in nytt.tjanster);id=ids[0]
  at.bekrafta_byraunderlag(ids,visade_celler(nytt,ids),p.registersumma(nytt),'Syntetisk')
  at.bekrafta_tjansteunderlag(id,p.registersumma(paket()),'Syntetisk')
- at.spara_gemensamt(s.id,{'forfattare':'Syntetisk','visad_summa':p.scenariosumma(s),'handelseforlopp':s.handelseforlopp+' Nytt dokumenterat flöde.'},p.registersumma(paket()))
+ from riskanalys.intag.analysformular import las_gemensamandring,las_scenariokommando
+ at.spara_gemensamt(las_gemensamandring(paket(),s.id,{'forfattare':'Syntetisk','visad_summa':p.scenariosumma(s),'handelseforlopp':s.handelseforlopp+' Nytt dokumenterat flöde.'},revision=p.registersumma(paket()),rb=at.rb))
  fore=(f.byramapp/l.ANALYSFIL).read_bytes();q=paket();a=q.tjanster[0]
  with pytest.raises(RiskanalysFel,match='Det gemensamma scenariot har ändrats sedan avvikelsen; pröva avvikelsen på nytt'):
   at.bekrafta_tjansteunderlag(id,p.registersumma(q),'Syntetisk')
@@ -201,7 +204,7 @@ def test_andrat_gemensamt_scenario_kraver_ny_separat_avvikelseprovning(engangsba
  # Explicit separat val mot den nya scenariotexten, inte en samlad omstämpling.
  ny=next(x for x in q.gemensamma_scenarier if x.id==s.id)
  kop=next(x for x in a.scenariokopplingar if x.scenario==s.id)
- at.spara_scenarioval(id,s.id,{'tillampning':'avviker','lokal_scenario':kop.lokal_scenario,'motivering':kop.motivering+' Ny jämförelse utförd.','visad_summa':p.scenariosumma(ny),'forfattare':'Syntetisk prövare'},p.registersumma(q))
+ at.spara_scenarioval(las_scenariokommando(q,id,s.id,{'tillampning':'avviker','lokal_scenario':kop.lokal_scenario,'motivering':kop.motivering+' Ny jämförelse utförd.','visad_summa':p.scenariosumma(ny),'forfattare':'Syntetisk prövare'},revision=p.registersumma(q)))
  at.bekrafta_tjansteunderlag(id,p.registersumma(paket()),'Syntetisk')
  q=paket();assert not q.beslut
  assert all(b.bekraftad_summa==p.blocksumma(q,id,b.nummer) for b in q.tjanster[0].block)

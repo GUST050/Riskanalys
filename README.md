@@ -36,14 +36,18 @@ Byråprofil ──────────────────────�
 
 ## Kom igång
 
-Kräver Python 3.12 eller senare på macOS/Linux (lagringen använder fillås med `fcntl`). Byråns uppgifter sparas i `$RISKANALYS_DATA` (standard `~/RiskanalysData`), aldrig i repot.
+Kräver **Python 3.12.15** och **uv 0.13.5** på macOS/Linux (fillås med `fcntl`). Python 3.13+, Windows och fjärrkörd CI är inte verifierade genom den lokala kontrollen. Byråns uppgifter sparas i `$RISKANALYS_DATA` (standard `~/RiskanalysData`), aldrig i repot.
 
 ```bash
-python3 -m venv .venv
-.venv/bin/pip install -e ".[dev]"
-.venv/bin/pytest
-.venv/bin/riskanalys regelbas validera
+uv python install
+uv lock --check
+UV_PROJECT_ENVIRONMENT=.venv312 uv sync --locked --extra dev
+.venv312/bin/lint-imports
+.venv312/bin/python scripts/testa.py snabb --ut /private/tmp/riskanalys-snabb-NYTT_ID --budget 300
+.venv312/bin/riskanalys regelbas validera
 ```
+
+Installera den angivna uv-versionen från det officiella paketet `uv==0.13.5` om verktyget saknas. Prova exakt synk i en ny miljö först; `uv sync` kan ta bort paket som inte tillhör den valda miljödefinitionen. Full verifiering och områdesprofiler beskrivs i [testguiden](docs/testning.md).
 
 ### API-nycklar
 
@@ -165,3 +169,17 @@ Med `BOLAGSVERKET_CLIENT_ID` och `BOLAGSVERKET_CLIENT_SECRET` i den privata nyck
 Årsredovisningsläsaren stöder iXBRL med `gen-base/2021-10-31`, odimensionerad bolagskontext och SEK. Den kontrollerar identitet, period, skala/precision och motstridiga dubbletter. Andra taxonomier, koncernkontexter, enbart avrundade belopp eller flera dokument för senaste period ger inget automatiskt beloppsförslag. Grundförslagen kan ändå användas och begränsningen visas. Medelantal anställda visas som stöd; dagens antal inklusive ägare besvaras fortfarande manuellt.
 
 Originalpaketet sparas privat i `$RISKANALYS_DATA/<byra>/register/original/<sha256>.zip`. Registerschema 4 binder Bolagsverksfakta och bokslut till samma juridiska person; äldre SCB-bilders format och kontrollsummor bevaras. Källan följer respektive fält och får inte återanvändas som belägg för andra verksamhetsfakta. Hämtning bekräftar ingenting och gör inga AI-anrop.
+
+
+### Säkerhetskopiering och återställning
+
+Två separata fall behöver skyddas: låsta versioner i `faststallda/vN` och hela den pågående privata arbetsmappen med profil, analys/belägg, register, skrivsvar, historik och attester. Stoppa alla skrivande CLI-/webboperationer före en arbetsmappskopia. Kopiera inte bara rapportfilerna. De interna låsen för profil → analys → drift skyddar dessa register; de utgör ingen generell backuptransaktion för alla filer.
+
+Kopiera till en separat, åtkomstskyddad lagringsplats utanför originalets disk och verifiera att kopian går att läsa. Återställ till en **ny datamapp**, behåll den skadade ursprungskopian och kör `riskanalys verifiera <byra> <version>` med `RISKANALYS_DATA` riktad mot den återställda mappen. Ett låst V10-paket innehåller sin frysta regelbas och tre rapportdelar; verifieringen ska inte köra AI eller bygga om Word. Ett checksummefel kräver återställning av hela den berörda versionen från en känd giltig kopia.
+
+För pågående arbete ska också profil-/analysrevision, privat beläggsinnehåll, historik och sakgranskningar jämföras med den konsistenta kopian. Äldre underlag som används med ny kod måste prövas mot aktuell modellbindning; historiska låsta paket verifieras mot sina egna frysta underlag. Ingen sakkunnigstatus följer automatiskt med en ny bindning.
+
+Driftägaren behöver fastställa backupfrekvens, maximal tolererad dataförlust, återställningstid, skyddad lagringsplats och retention. Tekniskt prov: `tester/typfall/test_aterstallning_v10.py`. **Känd produktlucka:** registrering av backup och automatisk varning när sådan saknas är ännu inte implementerad; se A6-B i [robusthetsplanen](docs/superpowers/plans/2026-10-24-robust-programstruktur.md). En passerad manifestkontroll ersätter inte detta krav.
+
+
+Ett preliminärt driftförslag är arbetsmappskopia varje arbetsdag, extra kopia efter fastställelse, högst en arbetsdags förlorat pågående arbete och återställning inom fyra arbetstimmar. Preliminär rotation: 30 dagliga och 12 månadskopior, med separat beslutad bevarandepolicy för låsta paket. Prova återställning månadsvis och efter systembyte. Detta är lokala förslag för driftägarens beslut. [Google SRE:s återställningsprinciper](https://sre.google/sre-book/data-integrity/) stödjer att välja återställningstid och accepterad dataförlust uttryckligt; de anger inte dessa projektspecifika tal.

@@ -29,8 +29,9 @@ def intagsklocka(monkeypatch):
         @classmethod
         def today(cls):
             return date(2026, 10, 19)
-    for namn in ('kvalitet', 'dokument'):
+    for namn in ('kvalitet',):
         monkeypatch.setattr(import_module('riskanalys.intag.' + namn), 'date', Provdatum)
+    monkeypatch.setattr(import_module('riskanalys.arbetsfloden'), 'date', Provdatum)
 
 
 def wordtexter(path):

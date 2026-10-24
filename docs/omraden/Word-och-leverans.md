@@ -36,7 +36,7 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 |---|---|
 | [[docs/kodkarta/filer/src/riskanalys/dokument/presentationsval_v10.py.md\|src/riskanalys/dokument/presentationsval_v10.py]] | Uttryckligt presentationsbyte för äldre V10-utkast. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionell_v10.py.md\|src/riskanalys/dokument/redaktionell_v10.py]] | Redaktionell omformning med bevarade original och källor. |
-| [[docs/kodkarta/filer/src/riskanalys/dokument/redaktionmodell_v10.py.md\|src/riskanalys/dokument/redaktionmodell_v10.py]] | Exakt flyttregister och scenariogrupper. |
+| [[docs/kodkarta/filer/src/riskanalys/dokument/resultatmodell_v10.py.md\|src/riskanalys/dokument/resultatmodell_v10.py]] | Exakt flyttregister och scenariogrupper. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/leverans_v10.py.md\|src/riskanalys/dokument/leverans_v10.py]] | Fasta mallar och begränsade leveransvärden. |
 | [[docs/kodkarta/filer/src/riskanalys/dokument/export.py.md\|src/riskanalys/dokument/export.py]] | Atomisk export och kontroll mot aktuell analys. |
 
@@ -47,6 +47,11 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 - [[docs/omraden/Drift-och-lagring.md|Drift-och-lagring]] när manifest/låsning/publicering ändras.
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
+
+
+### Gemensamt flöde och stil
+
+`arbetsfloden.py` samordnar aktuella utkast och exportuppdatering från sparat AI-svar. Inaktuell bedömning stoppar uppdatering; ändrad lokal analys kan granskas och exporteras på nytt utan AI. Låsens omfattning och historiska paket bevaras. `dokument/wordstil.py` äger även `anpassa_tabeller`, som fortsatt bara anropas för avsedd V10-presentation. `RedaktionV10` finns i `resultatmodell_v10.py`. Renderingsspärren `_SLUTRENDERING` och semantisk paketverifiering är oförändrade.
 
 ## Verifiering
 

@@ -1,6 +1,8 @@
 """Läs och skriv YAML med svenska tecken."""
 
 from pathlib import Path
+import os
+import tempfile
 from pydantic import ValidationError
 from typing import Any
 
@@ -18,8 +20,31 @@ def las_yaml_text(text: str | bytes) -> Any:
 
 
 def spara_yaml(sokvag: Path, data: Any) -> None:
-    sokvag.parent.mkdir(parents=True, exist_ok=True)
-    sokvag.write_text(yaml.safe_dump(data, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    """Publicera fullständiga YAML-bytes; skilj skrivfel från synkfel efter namnbyte."""
+    temp = None
+    publicerad = False
+    try:
+        sokvag.parent.mkdir(parents=True, exist_ok=True)
+        fd, temp = tempfile.mkstemp(prefix='.' + sokvag.name + '-', suffix='.tmp', dir=sokvag.parent)
+        with os.fdopen(fd, 'w', encoding='utf-8') as fil:
+            yaml.safe_dump(data, fil, allow_unicode=True, sort_keys=False)
+            fil.flush()
+            os.fsync(fil.fileno())
+        os.replace(temp, sokvag)
+        publicerad = True
+        temp = None
+        fd = os.open(sokvag.parent, os.O_RDONLY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+    except OSError as exc:
+        if publicerad:
+            raise RiskanalysFel('Filen har sparats, men katalogens disksynk misslyckades. Läs om den sparade filen innan du försöker igen.') from exc
+        raise RiskanalysFel('Filen kunde inte sparas. Tidigare fil är oförändrad. Kontrollera ledigt utrymme och skrivbehörighet.') from exc
+    finally:
+        if temp is not None and os.path.exists(temp):
+            os.unlink(temp)
 
 
 def las_yaml(sokvag: Path) -> Any:

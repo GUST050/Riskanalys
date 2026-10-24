@@ -47,7 +47,7 @@ def test_signerad_mappning_jamfor_inneboende_inte_kvarstaende(regelbas_v1):
 
 
 def test_b13_behaller_katalogens_rattsliga_grund(regelbas_v1):
-    from riskanalys.granskning.sektorsrisk import sektorsfynd
+    from riskanalys.granskning.kontroller import sektorsfynd
     p,b=fall(regelbas_v1)
     fynd=sektorsfynd(regelbas_v1,b,p)
     assert fynd and fynd[0]['grund']=='tillsynspraxis'

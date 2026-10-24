@@ -208,7 +208,7 @@ def test_spara_granska_och_beslut_anropar_inga_leverantorer(analysmiljo, monkeyp
     from riskanalys.intag import webb
     def otillatet(*a, **kw):
         pytest.fail('Analysoperation försökte välja AI/API-leverantör')
-    monkeypatch.setattr(webb, 'valj_leverantor', otillatet)
+    monkeypatch.setattr(webb, 'skapa_textleverantor', otillatet)
     monkeypatch.setattr(webb, 'skapa_utkast', otillatet)
     monkeypatch.setattr(skriv_kommando, 'valj_leverantor', otillatet)
     s, t = analysmiljo
@@ -371,7 +371,8 @@ def test_import_andrat_pt_bevarar_bara_oforandrat_bekraftat_tf(analysmiljo, tmp_
     s, t = analysmiljo
     start(s); at = Analystjanst(t.mapp, t.rb); p = las_analys(t.mapp); tid = p.tjanster[0].tjanst
     for n in (13, 14):
-        at.spara_block(tid, n, {'operation':'bekrafta', 'forfattare':'Ada', 'visad_summa':blocksumma(p, tid, n)}, registersumma(p))
+        from riskanalys.intag.analysformular import las_blockandring
+        at.spara_block(las_blockandring(p,tid,n,{'operation':'bekrafta','forfattare':'Ada','visad_summa':blocksumma(p,tid,n)},revision=registersumma(p),rb=at.rb))
         p = las_analys(t.mapp)
     a = p.tjanster[0].model_copy(update={'pt_motivering': 'Ändrad PT-prövning'})
     fil = tmp_path / 'andrat-pt.json'

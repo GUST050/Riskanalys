@@ -1,5 +1,4 @@
 """Ett privat formulär på loopback; ingen publik webbserver eller filrouter."""
-import argparse
 import json
 import secrets
 from datetime import date
@@ -10,10 +9,9 @@ from riskanalys.fel import RiskanalysFel
 from riskanalys.intag import vyer
 from riskanalys.intag.modeller import IntagSvar
 from riskanalys.intag.tjanst import profilrevision
-from riskanalys.intag.dokument import skapa_utkast, las_utkast, uppdatera_export
+from riskanalys.arbetsfloden import skapa_utkast, las_utkast, uppdatera_export
 from riskanalys.profil.modeller import Period
-from riskanalys.kommandon.skriv_kommando import valj_leverantor
-from riskanalys.dokument.claude import STANDARDMODELL, STANDARDEFFORT
+from riskanalys.konfiguration import Skrivkonfiguration, skapa_textleverantor
 
 
 class Intagsserver(HTTPServer):
@@ -347,13 +345,19 @@ class Hantera(BaseHTTPRequestHandler):
     def post_analysblock(self,data):
         try:nummer=int(data.get('nummer',''))
         except ValueError:raise RiskanalysFel('Välj ett av guidens sexton block.') from None
-        self.analystjanst().spara_block(data.get('tjanst',''),nummer,data,data.get('revision',''))
+        from riskanalys.intag.analysformular import las_blockandring
+        t=self.analystjanst()
+        t.spara_block(las_blockandring(t.status().paket,data.get('tjanst',''),nummer,data,revision=data.get('revision',''),rb=self.server.tjanst.rb))
 
     def post_analysscenario(self,data):
-        self.analystjanst().spara_scenarioval(data.get('tjanst',''),data.get('scenario',''),data,data.get('revision',''))
+        from riskanalys.intag.analysformular import las_scenariokommando
+        t=self.analystjanst()
+        t.spara_scenarioval(las_scenariokommando(t.status().paket,data.get('tjanst',''),data.get('scenario',''),data,revision=data.get('revision','')))
 
     def post_analysgemensamt(self,data):
-        self.analystjanst().spara_gemensamt(data.get('scenario',''),data,data.get('revision',''))
+        from riskanalys.intag.analysformular import las_gemensamandring
+        t=self.analystjanst()
+        t.spara_gemensamt(las_gemensamandring(t.status().paket,data.get('scenario',''),data,revision=data.get('revision',''),rb=self.server.tjanst.rb))
 
     def post_analysbeslut(self,data):
         if set(data)-{'csrf','revision','tjanst','beslut','namn','roll','datum','kommentar'} or data.get('beslut') not in ('godkann','underkann'):
@@ -361,10 +365,13 @@ class Hantera(BaseHTTPRequestHandler):
         self.analystjanst().beslut(data.get('tjanst',''),data['beslut']=='godkann',data.get('namn',''),data.get('roll',''),formulardatum(data,'datum'),data.get('kommentar',''),data.get('revision',''))
 
     def post_analysmodellfel(self,data):
-        self.analystjanst().spara_modellfel(data,data.get('revision',''))
+        from riskanalys.intag.analysformular import las_modellfelandring
+        t=self.analystjanst()
+        t.spara_modellfel(las_modellfelandring(t.status().paket,data),data.get('revision',''))
 
     def post_analysmodellrisk(self,data):
-        self.analystjanst().spara_modellrisk(data,data.get('revision',''))
+        from riskanalys.intag.analysformular import las_modellriskandring
+        self.analystjanst().spara_modellrisk(las_modellriskandring(data),data.get('revision',''))
 
     def kontrollera_hamtningsdatum(self):
         if self.server.tjanst.finns() and self.server.tjanst.profil().byra.datum < date.today():
@@ -512,7 +519,7 @@ class Hantera(BaseHTTPRequestHandler):
         revision=profilrevision(s.tjanst.profil())
         if data.get('revision')!=revision:raise RiskanalysFel('Profilen har ändrats i en annan flik. Läs om sidan.')
         s.forbruka_skrivtoken(revision,data.get('skrivtoken',''))
-        provider=s.leverantor or valj_leverantor(argparse.Namespace(leverantor='claude',modell=STANDARDMODELL,effort=STANDARDEFFORT))
+        provider=s.leverantor or skapa_textleverantor(Skrivkonfiguration())
         fil=skapa_utkast(s.tjanst.mapp,s.tjanst.rb,provider)
         if profilrevision(s.tjanst.profil())!=revision:raise RiskanalysFel('Profilen har ändrats under skrivningen. Skapa ett nytt utkast.')
         s.utkast=fil;s.utkastrevision=revision

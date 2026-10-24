@@ -16,7 +16,7 @@ from riskanalys.profil.modeller import Profil
 from riskanalys.regelverk.modeller import Regelbas
 from riskanalys.regelverk.urval import Urval
 
-from riskanalys.granskning.sektorsrisk import sektorsfynd
+from riskanalys.bedomning.sektorsrisk import sektorsavvikelser
 from riskanalys.granskning.analys import analysfynd
 
 RISKAVSNITT = "D-ARB.6."
@@ -243,3 +243,12 @@ def _b16(regelbas: Regelbas, historik: Historik) -> list[dict[str, Any]]:
             "Registrera utvärderingen med 'riskanalys utvardera'.",
         )
     ]
+
+
+def sektorsfynd(regelbas, bedomning, profil):
+    avsnitt={t.tjanst:id for id,t in tjanster_med_avsnitt(bedomning)}
+    post=regelbas.bristmonster['B-13']
+    return [dict(typ="bristmonster",regel="B-13",allvar=post.allvar,grund=post.grund,avsnitt=avsnitt[a.tjanst],
+        beskrivning=f"{a.tjanst}: {a.orsak} Belagd motivering mot {a.referens} saknas.",
+        atgard="Bekräfta tjänstens sektorsmotivering med källa, datum och ansvarig. Kvaliteten prövas i sakgranskningen.")
+        for a in sektorsavvikelser(regelbas,bedomning,profil) if not a.motiverad]

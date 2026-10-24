@@ -103,10 +103,42 @@ Alla fem Review Focus-rader har namngivna kontroller i T1–T3. T4 verifierar b�
 **Berörda kontrakt:** risk och PT/TF, analys-/attestbindning, revisionsskydd/atomisk lagring, historiska bytes, faktisk CLI/HTTP/DOCX-gräns samt verifieringsverktygets fullständiga insamling/JUnit/snapshot. Produktens regler ändras inte genom urvalet.
 
 - [x] F5 (2026-10-24, förenklad efter granskning av Claude och Codex): regel 6 hänvisar nu till en tabell i AGENTS *Verifiera och lämna över* med fyra nivåer: dokumentation, avgränsad ändring, delad kritisk logik och paket/större funktionspaket. `docs/testning.md` och `docs/omraden/Tester.md` är samordnade. Ursprunglig uppgift: fastställ policytexten i researchens avsnitt 5; samordna AGENTS regel 6, `docs/testning.md` och relevanta områdesguider. Avgränsa arbetsredovisning från release och definiera när fullsvit måste blockera integration.
-- [ ] F6 (förenklad 2026-10-24): inför i stället områdesprofiler i `tester/testprofiler.json` och ett läge i `scripts/testa.py` som kör dem. Varje områdesprofil innehåller områdets egna prov och berörda konsument-/gränsprov, till exempel riskmotor, analys och export vid profiländring. Utför F8 (profilering) före F6. Den automatiska diffväljaren nedan skjuts upp tills områdesprofilerna visat sig otillräckliga. Ursprunglig uppgift: utöka befintlig `scripts/testa.py` med explicit ändringsurval, områdes-/databeroenden och redovisad urvalsorsak. Hantera relevant bas, staged/unstaged, nya filer, deletions, namnbyten och ändrade testhjälpare. Okänd påverkan ska bredda kontrollen, inte ge tomt grönt. Testmon/importgraf får bara vara kompletterande signaler.
-- [ ] F7: uppdatera de snabba kontrakten för aktuell V10-standard och mät samma representativa ändringsklasser två gånger. Kräv att relevanta avsiktliga fel fångas och att normalvarvet inklusive collection är högst 300 s. Budgetstopp är ofullständigt, aldrig godkänt.
+- [x] F6 (införd och lokalt verifierad 2026-10-24; se genomförandeutfallet nedan): inför i stället områdesprofiler i `tester/testprofiler.json` och ett läge i `scripts/testa.py` som kör dem. Varje områdesprofil innehåller områdets egna prov och berörda konsument-/gränsprov, till exempel riskmotor, analys och export vid profiländring. Utför F8 (profilering) före F6. Den automatiska diffväljaren nedan skjuts upp tills områdesprofilerna visat sig otillräckliga. Ursprunglig uppgift: utöka befintlig `scripts/testa.py` med explicit ändringsurval, områdes-/databeroenden och redovisad urvalsorsak. Hantera relevant bas, staged/unstaged, nya filer, deletions, namnbyten och ändrade testhjälpare. Okänd påverkan ska bredda kontrollen, inte ge tomt grönt. Testmon/importgraf får bara vara kompletterande signaler.
+- [x] F7 (lokalt verifierad 2026-10-24; två repetitioner per ändringsklass): uppdatera de snabba kontrakten för aktuell V10-standard och mät samma representativa ändringsklasser två gånger. Kräv att relevanta avsiktliga fel fångas och att normalvarvet inklusive collection är högst 300 s. Budgetstopp är ofullständigt, aldrig godkänt.
 - [x] F8 (2026-10-24: båda flödena profilerade; YAML-/historikläsning och aktiveringsprövning rättade; fullsvit 3 609/39 min 30 s grön på kandidaten, se `docs/testning.md`): profilera webbens kompletta formulärresa och gemensam analys till fastställelse. Mät setup/call/teardown, kompletta rapportbyggen, renderingar och processer. Bevara varje unikt gammalt påstående i en uppdaterad täckningsmatris när överlappande förberedelser flyttas till små prov.
 - [ ] F9: utvärdera separat 2/4 workers och `loadfile`/`worksteal`, om mätningen motiverar det. Bevisa isolering, samma parametriserade testmängd utan luckor/dubbletter, oförändrat snapshot och upprepad väggtidsvinst. Ingen global `-n auto` införs på antagande.
-- [ ] F10: gör en komplett samlad kontroll av den nya infrastrukturen. Redovisa separat kort återkoppling, bred kontroll och fullsvit. Behåll vanlig pytest/fullprofil som fullständigt ordinarie urval. Ingen automatisering, schemaläggning, commit eller push ingår utan ett sådant uppdrag.
+- [x] F10 (lokal samlad kontroll verifierad 2026-10-24): gör en komplett samlad kontroll av den nya infrastrukturen. Redovisa separat kort återkoppling, bred kontroll och fullsvit. Behåll vanlig pytest/fullprofil som fullständigt ordinarie urval. Ingen automatisering, schemaläggning, commit eller push ingår utan ett sådant uppdrag.
 
 Femminutersmålet för normalvarvet och en snabbare fullsvit är två separata acceptanser. Den längsta historiska enskilda testtiden överstiger fem minuter; enbart parallell schemaläggning kan inte uppfylla ett oförändrat fullsvitsmål. Aktiva regler är oförändrade tills förslaget införs.
+
+
+## Genomförande av F6/F7/F10, 2026-10-24
+
+Genomfört tillsammans med [robusthetsplanens A0–A8](2026-10-24-robust-programstruktur.md#8-genomförandelogg-och-verifierad-kandidat-2026-10-24) på `codex/robust-programstruktur`, bas `416579e`. F6 har sju explicita områdesprofiler, var och en med hela snabbprofilens baskontroll, egna konsumenter och sparad urvalsorsak. Automatisk diffväljare är fortsatt uppskjuten. F7 skyddar nu aktuell V10, kontrollraders sammansatta identitet, referensunikhet och samtidig analysändring. Sex avsiktliga direkta/transitiva importfel samt fyra mutationsfall för V10-presentation fångas. Alla 400 tidigare assert-uttryck i tolv ändrade befintliga testfiler är bevarade, inga unika gamla påståenden har flyttats bort.
+
+| Representativ ändringsklass | Prov | Första varvet | Andra varvet | Utfall |
+|---|---:|---:|---:|---|
+| Leverantör/utkast | 197 | 79,97 s | 79,51 s | verifierade, inom 300 s |
+| Analysblock/lagring/HTTP | 291 | 97,19 s | 96,79 s | verifierade, inom 300 s |
+| Rapport/V10/export | 233 | 213,45 s | 214,02 s | verifierade, inom 300 s |
+
+Alla sex har matchande collection/JUnit inklusive multiplicitet, oförändrat snapshot och noll fel/skips. Det tidigare breda `analys` är kvar; 303 prov tog 414,37 respektive 454,77 s på originalet under varierande belastning. Ingen generell prestandavinst härleds ur jämförelsen. En separat parad kontroll med samma 36 oförändrade formulärfall och samma miljö är sparad, men två korta par räcker inte för generella prestandapåståenden. F9-parallellisering ingår inte: den sekventiella processen behålls.
+
+F10:s första fullprofil underkändes med ett failure och åtta setupfel. Indirekta gamla fixturanrop och bevarande av oförändrade äldre referenser är rättade; 85 riktade prov är gröna. Ny fullprofil på fryst rättad kandidat är nu verifierad i `/private/tmp/riskanalys-robust-full-20261024-2`, liksom de sex nya områdesvarven som kördes parallellt med den. Vanlig pytest och fullprofil samlar nu 3 659 ordinarie fall, med ett liveprov bortvalt. Tabellen ovan gäller de första områdesvarven före rättningen; slutliga utfall redovisas nedan. Inga commits eller pushar ingår.
+
+
+**Slutlig teknisk kontroll på rättad kandidat:** **3 659 godkända, ett liveprov bortvalt, noll fel/skips; 2527,79 s (42 min 08 s) rapporterad monoton mättid inklusive insamling**. Exakt collection/JUnit inklusive multiplicitet och 872 av 872 snapshotresurser oförändrade. Alla 400 tidigare assert-uttryck i tolv ändrade befintliga testfiler är bevarade. Den första underkända fullkontrollen sparas separat och används aldrig som godkänt bevis.
+
+**Nya områdesrepetitioner på samma slutliga snapshot:**
+
+| Profil | Prov per varv | Första | Andra | Utfall |
+|---|---:|---:|---:|---|
+| Leverantör/utkast | 200 | 84,06 s | 86,17 s | verifierade, inom 300 s |
+| Analysblock/lagring/HTTP | 294 | 106,66 s | 106,71 s | verifierade, inom 300 s |
+| Rapport/V10/export | 236 | 242,30 s | 252,73 s | verifierade, inom 300 s |
+
+Områdesvarven kördes ett i taget samtidigt som fullsviten, i separata processer och syntetiska datamappar. Tiderna inkluderar denna bakgrundsbelastning; ingen kausal hastighetsvinst påstås. Alla sex har exakt collection/JUnit, oförändrat snapshot och noll fel/skips.
+
+Råbevis: `/private/tmp/riskanalys-robust-full-20261024-2` och `/private/tmp/riskanalys-robust-{leverantor,analysblock,rapport}-slut-{1,2}`. Beständiga bevis, miljöuppgifter, tidigare underkända körningar och komplett ocommittad patch: `/Users/gt/.local/share/riskanalys/provkorningar/robust-programstruktur-20261024`. Den tekniska A0–A8-kandidaten och F6/F7/F10 är lokalt verifierade. A8:s verkliga användar-/sakkunnig-/native Word-acceptans samt driftägarmål kvarstår; fjärr-CI är endast förberedd. Ingen commit, merge eller push har gjorts.
+
+Fullsvitens egna återställningsmätningar inklusive verifiering: låst V10 1,02 s, arbetsmapp 1,08 s. Små syntetiska lokala fall; inga produktions-RTO eller garanterade driftmål.

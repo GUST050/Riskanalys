@@ -29,7 +29,7 @@ def test_1_cli_avvisar_xml_ogiltigt_underlag(klar, rb_intag):
 
 
 def test_1_handediterad_profil_stoppas_fore_ai(webb, klar, monkeypatch):
-    from riskanalys.intag import dokument
+    from riskanalys import arbetsfloden as dokument
     s,t=webb
     u=klar.uppgifter['P-TJ.red01_arbetssatt'].model_copy(update={'varde':'Rad\x0bTvå'})
     p=klar.model_copy(update={'uppgifter':{**klar.uppgifter,'P-TJ.red01_arbetssatt':u}})

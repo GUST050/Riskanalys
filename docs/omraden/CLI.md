@@ -52,6 +52,11 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
 
+
+### Delade ingångar
+
+`skriv_kommando.valj_leverantor` är en tunn kompatibel mappning till `konfiguration.skapa_textleverantor`. Analyskommandot bygger samma typade block-/scenariokommandon som webb och lämnar revision och visad summa för ny kontroll under tjänstens lås. CLI:s separata bedömning, skrivning, granskning och export fortsätter vara separata operationer; ingen lågkommandooperation startar hela utkastkedjan.
+
 ## Verifiering
 
 Börja med följande provurval när det passar ändringen; det ersätter inte bredare verifiering av ändrade kontrakt.

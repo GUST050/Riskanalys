@@ -43,6 +43,11 @@ Läs uppgiftens ingång och relevanta typer först; tabellen är en läsordning,
 
 Kontrollera direkta importer och bakåtlänkar för den ändrade filen, och sök även funktions-/fältnamn i koden. Statiska importer visar varken alla runtimekopplingar eller faktisk testtäckning.
 
+
+### Registerbildens bokslutsmodell
+
+`Bokslut` finns i `foretagsdata/modeller.py` tillsammans med `Bolagsverksbild`. Decimal-, period-, originalreferens- och serialiseringskontrakten är bevarade. Årsredovisningsläsaren importerar samma modell; privata original kopieras inte till repot.
+
 ## Verifiering
 
 Börja med följande provurval när det passar ändringen; det ersätter inte bredare verifiering av ändrade kontrakt.

@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "riskanalys"
 version = "0.1.0"
 description = "Verksamhetsanpassad dokumentation enligt penningtvättsregelverket"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.13"
 dependencies = [
   "pydantic>=2.14,<3",
   "pyyaml>=6.0.3,<7",
@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=9.1,<10", "httpx2>=2.13,<3"]
+dev = ["pytest>=9.1,<10", "httpx2>=2.13,<3", "import-linter>=2.5,<3"]
 
 [project.scripts]
 riskanalys = "riskanalys.cli:main"
@@ -30,3 +30,31 @@ markers = [
   "live: anropar riktiga Claude-API:t, kostar pengar och körs bara med RISKANALYS_LIVE=1",
   "fullkedja: komplett CLI/HTTP/export/fastställelse; ingår i fullprofil och vanlig pytest",
 ]
+
+[tool.uv]
+required-version = "==0.13.5"
+
+[tool.importlinter]
+root_package = "riskanalys"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Webb använder tjänster, aldrig kommandopaketet"
+type = "forbidden"
+source_modules = ["riskanalys.intag.webb"]
+forbidden_modules = ["riskanalys.kommandon"]
+unmatched_ignore_imports_alerting = "error"
+
+[[tool.importlinter.contracts]]
+name = "Analystjänsten är oberoende av formuläradaptern"
+type = "forbidden"
+source_modules = ["riskanalys.analys.tjanst"]
+forbidden_modules = ["riskanalys.intag.analysformular"]
+unmatched_ignore_imports_alerting = "error"
+
+[[tool.importlinter.contracts]]
+name = "Riskberäkningen är oberoende av konkret AI och Word"
+type = "forbidden"
+source_modules = ["riskanalys.bedomning.motor"]
+forbidden_modules = ["anthropic", "docx", "riskanalys.kommandon", "riskanalys.intag.webb"]
+unmatched_ignore_imports_alerting = "error"

@@ -1,6 +1,6 @@
 """Återbygg den nya presentationen och bind alla källor utan att ändra analysen."""
 from riskanalys.dokument.modeller import Dokument
-from riskanalys.dokument.redaktionmodell_v10 import RedaktionV10
+from riskanalys.dokument.resultatmodell_v10 import RedaktionV10
 from riskanalys.dokument.resultatmodell_v9 import summa
 from riskanalys.fel import RiskanalysFel
 
