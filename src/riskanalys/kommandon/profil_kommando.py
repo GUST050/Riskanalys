@@ -136,12 +136,13 @@ def kor_lokalt_underlag(args):
     from pathlib import Path
     import yaml
     from riskanalys.intag.tjanst import Intagstjanst
+    from riskanalys.lagring.yamlfil import las_yaml_text
     from riskanalys.profil.modeller import Tjansteplan, Kombinationsgrupp
     t = Intagstjanst(args.byra,ladda_giltig_regelbas(args.regelbas))
     revision = profilrevision(t.profil())
     modell = Tjansteplan if args.underlagsmodell == 'Tjansteplan' else Kombinationsgrupp
     try:
-        post = modell.model_validate(yaml.safe_load(Path(args.fil).read_text(encoding='utf-8')))
+        post = modell.model_validate(las_yaml_text(Path(args.fil).read_text(encoding='utf-8')))
     except (OSError, ValueError, yaml.YAMLError):
         raise ProfilFel('Underlaget kan inte läsas. Kontrollera YAML-filens fält, typer och belägg.') from None
     if modell is Tjansteplan:

@@ -8,6 +8,14 @@ import yaml
 
 from riskanalys.fel import RiskanalysFel
 
+# libyaml ger samma säkra tolkning som ren Python men flera gånger snabbare. Skrivningen
+# behåller ren Python så att sparade bytes och deras hashar inte ändras.
+YAMLLASARE = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+
+
+def las_yaml_text(text: str | bytes) -> Any:
+    return yaml.load(text, Loader=YAMLLASARE)
+
 
 def spara_yaml(sokvag: Path, data: Any) -> None:
     sokvag.parent.mkdir(parents=True, exist_ok=True)
@@ -16,7 +24,7 @@ def spara_yaml(sokvag: Path, data: Any) -> None:
 
 def las_yaml(sokvag: Path) -> Any:
     try:
-        return yaml.safe_load(las_text(sokvag))
+        return las_yaml_text(las_text(sokvag))
     except FileNotFoundError as undantag:
         raise RiskanalysFel(f"Filen {sokvag} saknas.") from undantag
     except yaml.YAMLError as undantag:

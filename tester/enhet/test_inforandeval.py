@@ -112,3 +112,29 @@ def test_inaktuell_utvardering_och_andrad_kandidat_sparar_inget(rb, tmp_path):
     with pytest.raises(RiskanalysFel, match='ändrats'):
         f.spara_andring(tmp_path, rb, ja(p), profilrevision(p), planval=val)
     assert las_profil(tmp_path) == nytt
+
+
+def test_historiken_tolkas_en_gang_per_kontroll_med_flera_nya_tjanster(rb, tmp_path, monkeypatch):
+    # Varje sparat svar lägger ett profilsnapshot i historiken. Att läsa om alla per tjänst
+    # gjorde varje sidvisning långsammare ju fler svar byrån hade lämnat.
+    from pathlib import Path
+    nej = profil().model_copy(update={'uppgifter': {'P-TJ.red02_erbjuds': upp(False)}})
+    spara_profil(tmp_path, nej)
+    p = nej
+    for i in range(3):
+        p = p.model_copy(update={'uppgifter': {'P-ORG.namn': upp(f'Syntetisk byrå {i}')}})
+        spara_profil(tmp_path, p)
+    assert len(list((tmp_path/'profil'/'historik').glob('*.yaml'))) == 3
+    lasta = []
+    for metod in ('read_text', 'read_bytes'):
+        original = getattr(Path, metod)
+        def raknad(self, *a, _o=original, **k):
+            if 'historik' in self.parts:
+                lasta.append(self.name)
+            return _o(self, *a, **k)
+        monkeypatch.setattr(Path, metod, raknad)
+    efter = p.model_copy(update={'uppgifter': {**p.uppgifter, 'P-TJ.red01_erbjuds': upp(True),
+                                               'P-TJ.red02_erbjuds': upp(True)}})
+    behov = f.inforandebehov_for_andring(tmp_path, rb, efter, profilrevision(p))
+    assert [b.tjanst for b in behov] == ['T-RED-02']
+    assert len(lasta) == len(set(lasta)) <= 3

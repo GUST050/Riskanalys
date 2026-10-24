@@ -17,6 +17,7 @@ from riskanalys.analys.provning import (analysbrister, registersumma, registrera
                                       summa, svarssumma, underlagssumma)
 from riskanalys.fel import RiskanalysFel
 from riskanalys.lagring.kontrollsumma import for_bytes, for_fil
+from riskanalys.lagring.yamlfil import las_yaml_text
 
 ANALYSFIL = Path('analys/analys.yaml')
 
@@ -100,7 +101,7 @@ def las_analys(byramapp: Path) -> Analyspaket | None:
     try:
         with _mapphandtag(byramapp/'analys') as fd:
             data=_lasfil(fd,'analys.yaml')
-        return Analyspaket.model_validate(yaml.safe_load(data))
+        return Analyspaket.model_validate(las_yaml_text(data))
     except FileNotFoundError:
         return None
     except (OSError,ValueError,ValidationError,yaml.YAMLError) as exc:

@@ -11,6 +11,7 @@ import yaml
 from pydantic import ValidationError
 
 from riskanalys.fel import RiskanalysFel
+from riskanalys.lagring.yamlfil import las_yaml_text
 from riskanalys.profil.modeller import Profil
 
 PROFILFIL = Path("profil") / "profil.yaml"
@@ -71,7 +72,7 @@ def las_profilsnapshot(byramapp: Path) -> tuple[Profil, bytes]:
         raise RiskanalysFel(f"Profilen saknas i {byramapp}. Skapa byrån med 'riskanalys ny'.")
     try:
         innehall = sokvag.read_bytes()
-        data = yaml.safe_load(innehall.decode('utf-8'))
+        data = las_yaml_text(innehall.decode('utf-8'))
     except (OSError, UnicodeDecodeError) as fel:
         raise RiskanalysFel(f"Filen {sokvag} kan inte läsas som UTF-8. Rätta filen eller återställ från säkerhetskopian.") from fel
     except yaml.YAMLError as fel:

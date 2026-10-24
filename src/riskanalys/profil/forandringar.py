@@ -10,6 +10,7 @@ import fcntl
 import os
 from riskanalys.fel import RiskanalysFel
 from riskanalys.drift.historik import Handelse, las_historik, registrera_handelse
+from riskanalys.lagring.yamlfil import las_yaml_text
 from riskanalys.profil.lagring import las_profil, profilrevision, spara_profil
 from riskanalys.profil.modeller import Profil
 from riskanalys.profil.planering import forandringshinder, planbrister
@@ -37,19 +38,22 @@ def _tidigare_nej(mapp, rb, fore, efter):
     """Ett mellanliggande okänt svar gör inte ett tidigare nej till första kartläggning."""
     from riskanalys.profil.omfattning import kompatibilitetsvy
     upp = dict(kompatibilitetsvy(fore,rb).uppgifter)
-    for t in rb.tjanster.values():
-        f = t.erbjuds_falt
-        a, b = upp.get(f), efter.uppgifter.get(f)
-        if not (b and b.status == 'bekräftad' and b.varde is True) or a and a.status == 'bekräftad' and a.varde in (True, False):
-            continue
-        import yaml
-        for fil in (mapp/'profil'/'historik').glob('*.yaml'):
-            gammal = Profil.model_validate(yaml.safe_load(fil.read_text()))
-            u = kompatibilitetsvy(gammal,rb).uppgifter.get(f)
-            if u and u.status == 'bekräftad' and u.varde is False:
-                upp[f] = u
-                break
+    sokta = [f for f in (t.erbjuds_falt for t in rb.tjanster.values()) if _blir_ja_utan_tidigare_svar(upp.get(f), efter.uppgifter.get(f))]
+    if not sokta:
+        return fore.model_copy(update={'uppgifter':upp})
+    # Historiken växer med varje sparat svar; tolka varje snapshot en gång per kontroll.
+    historik = [kompatibilitetsvy(Profil.model_validate(las_yaml_text(fil.read_text())), rb).uppgifter
+                for fil in (mapp/'profil'/'historik').glob('*.yaml')]
+    for f in sokta:
+        nej = next((u for g in historik if (u := g.get(f)) and u.status == 'bekräftad' and u.varde is False), None)
+        if nej:
+            upp[f] = nej
     return fore.model_copy(update={'uppgifter':upp})
+
+
+def _blir_ja_utan_tidigare_svar(fore, efter):
+    return bool(efter and efter.status == 'bekräftad' and efter.varde is True) and not (
+        fore and fore.status == 'bekräftad' and fore.varde in (True, False))
 
 
 def inforandebehov_for_andring(mapp, rb, efter, revision):

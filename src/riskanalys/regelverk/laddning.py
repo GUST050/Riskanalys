@@ -9,7 +9,7 @@ import yaml
 from pydantic import BaseModel, ValidationError
 
 from riskanalys.fel import RiskanalysFel
-from riskanalys.lagring.yamlfil import las_text
+from riskanalys.lagring.yamlfil import las_text, las_yaml_text
 from riskanalys.lagring.kontrollsumma import for_fil, for_text
 from riskanalys.regelverk.modeller import (
     Bristmonster,
@@ -189,7 +189,7 @@ def _lydelsetexter(rot: Path, lydelser: Iterable[Lydelse]) -> list[str]:
 
 def _las_yaml(sokvag: Path, fel: list[str]) -> Any:
     try:
-        return yaml.safe_load(sokvag.read_text(encoding="utf-8"))
+        return las_yaml_text(sokvag.read_text(encoding="utf-8"))
     except FileNotFoundError:
         fel.append(f"Filen saknas: {sokvag}")
     except RiskanalysFel as undantag:
